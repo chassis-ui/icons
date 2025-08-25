@@ -1,0 +1,4 @@
+# Prettier ignore
+build/font/*.hbs
+icons/preview.html
+icons/package/*

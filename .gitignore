@@ -1,3 +1,28 @@
+# Mac
+.DS_Store
+
+# Node.js
+node_modules/
+
+# IDE
+.vscode/
+.idea/
+
+# Icon Distribution (generated files)
+icons/package/
+dist/
+
+# Release files
+chassis-icons-*.zip
+chassis-icons-*.tgz
+
+# Build artifacts
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
 # Logs
 logs
 *.log

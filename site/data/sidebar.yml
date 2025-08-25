@@ -1,0 +1,17 @@
+# This file holds all sidebar menu's entries for Chassis Icons.
+
+- title: Icons
+  icon: star-solid
+  icon_color: yellow
+  pages:
+    - title: Getting Started
+
+- title: About
+  icon: info-circle-solid
+  icon_color: indigo
+  pages:
+    - title: Overview
+    - title: Brand
+    - title: License
+    - title: Translations
+    - title: Team

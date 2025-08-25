@@ -1,0 +1,49 @@
+---
+title: Icons reference
+description: Examples of Chassis Icons usage and implementation.
+aliases: "/docsref/"
+toc: true
+robots: noindex,follow
+---
+
+## Icon Usage
+
+Icons can be used in multiple formats:
+
+### SVG Icons
+
+Individual SVG files for maximum flexibility:
+
+```html
+<svg class="icon" aria-hidden="true">
+  <use href="/chassis-icons.svg#icon-home"></use>
+</svg>
+```
+
+### Icon Font
+
+Use the icon font for text-based implementation:
+
+```css
+.icon-home::before {
+  font-family: 'chassis-icons';
+  content: '\e001';
+}
+```
+
+## Code example
+
+```html
+<div class="icon-container">
+  <svg class="icon" aria-hidden="true">
+    <use href="/chassis-icons.svg#icon-settings"></use>
+  </svg>
+  <span>Settings</span>
+</div>
+```
+
+<div class="cxd-example">
+  Icons provide visual communication and enhance user experience.
+</div>
+
+<Example code={`<svg class="icon" aria-hidden="true"><use href="/chassis-icons.svg#icon-star"></use></svg>`} />

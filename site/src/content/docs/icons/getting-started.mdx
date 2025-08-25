@@ -1,0 +1,59 @@
+---
+title: Getting started
+description: Getting started with Chassis Icons
+group: icons
+toc: true
+---
+
+# Getting Started with Chassis Icons
+
+Chassis Icons provides a comprehensive collection of scalable SVG icons for web projects.
+
+## Installation
+
+Install Chassis Icons via npm:
+
+```bash
+npm install @ozgurgunes/chassis-icons
+```
+
+## Usage
+
+### SVG Sprite
+
+Use icons from the SVG sprite:
+
+```html
+<svg class="icon" aria-hidden="true">
+  <use href="/chassis-icons.svg#icon-home"></use>
+</svg>
+```
+
+### Icon Font
+
+Include the icon font CSS and use the icon classes:
+
+```html
+<link rel="stylesheet" href="path/to/chassis-icons.css">
+<i class="icon-home"></i>
+```
+
+### Individual SVG Files
+
+Import individual SVG files for specific use cases:
+
+```html
+<img src="path/to/icons/home.svg" alt="Home icon">
+```
+
+## Styling
+
+Icons inherit the current color and can be styled with CSS:
+
+```css
+.icon {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+}
+```
