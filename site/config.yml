@@ -1,14 +1,13 @@
 title:                  "Chassis - Icons"
-baseURL:                "https://icons.chassis.dev"
+baseURL:                "https://chassis-ui.com/icons"
 
-docsDir:                "."
+docsDir:                "site"
 
 subtitle:               "A comprehensive SVG icon library with 478+ optimized icons for web and mobile applications."
 description:            "Chassis Icons provides a complete set of SVG icons with font generation, sprite optimization, and distribution packages for multiple platforms."
 authors:                "Ozgur Gunes"
 
 current_version:        "0.1.0"
-current_ruby_version:   "0.1.0"
 docs_version:           "0.1"
 rfs_version:            "v10.0.0"
 github_org:             "https://github.com/ozgurgunes"

@@ -3,7 +3,7 @@ import { getConfig } from '@libs/config'
 import { getVersionedDocsPath } from '@libs/path'
 
 export function getVersionedCxCssProps(direction: 'rtl' | undefined) {
-  let cxCssLinkHref = '/dist/css/chassis'
+  let cxCssLinkHref = '/css/chassis'
 
   if (direction === 'rtl') {
     cxCssLinkHref = `${cxCssLinkHref}.rtl`

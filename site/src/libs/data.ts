@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import fs from 'node:fs'
 import yaml from 'js-yaml'
 import { z } from 'zod'
 import {
@@ -135,11 +135,11 @@ export function getData<TType extends DataType>(type: TType): z.infer<(typeof da
     return data.get(type)
   }
 
-  const dataPath = `./data/${type}.yml`
+  const dataPath = `./site/data/${type}.yml`
 
   try {
     // Load the data from the yml  file.
-    const rawData = yaml.load(readFileSync(dataPath, 'utf8'))
+    const rawData = yaml.load(fs.readFileSync(dataPath, 'utf8'))
 
     // Parse the data using the data schema to validate its content and get back a fully typed data object.
     const parsedData = dataDefinitions[type].parse(rawData)

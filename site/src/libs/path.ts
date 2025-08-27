@@ -17,7 +17,7 @@ export function getVersionedDocsPath(docsPath: string): string {
     generatedVersionedDocsPaths.push(sanitizedDocsPath)
   }
 
-  return `/docs/${docs_version}/${sanitizedDocsPath}`
+  return `/${sanitizedDocsPath}`
 }
 
 // Validate that all the generated versioned docs paths point to an existing page or asset.
