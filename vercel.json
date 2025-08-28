@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm build:site",
+  "buildCommand": "pnpm build && pnpm build:site",
   "outputDirectory": "_site",
   "public": true
 }
