@@ -10,7 +10,6 @@ node_modules/
 
 # Icon Distribution (generated files)
 icons/package/
-dist/
 
 # Release files
 chassis-icons-*.zip
@@ -156,7 +155,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
