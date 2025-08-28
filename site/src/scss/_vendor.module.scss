@@ -1,6 +1,6 @@
-@import "../../../vendor/css/scss/settings";
-@import "../../../vendor/css/scss/tokens";
-@import "../../../vendor/css/scss/variables";
+@import "settings";
+@import "../../../node_modules/@ozgurgunes/chassis-css/scss/tokens";
+@import "../../../node_modules/@ozgurgunes/chassis-css/scss/variables";
 
 // stylelint-disable
 :export {

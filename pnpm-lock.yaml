@@ -29,6 +29,12 @@ importers:
       '@docsearch/js':
         specifier: ^3.9.0
         version: 3.9.0(@algolia/client-search@5.35.0)(search-insights@2.17.3)
+      '@ozgurgunes/chassis-css':
+        specifier: github:ozgurgunes/chassis-css#app/docs
+        version: https://codeload.github.com/ozgurgunes/chassis-css/tar.gz/32bad5c7dd6693f1e1ce19d27d86ac4c62d25476(@popperjs/core@2.11.8)
+      '@ozgurgunes/chassis-tokens':
+        specifier: github:ozgurgunes/chassis-tokens#app/docs
+        version: https://codeload.github.com/ozgurgunes/chassis-tokens/tar.gz/66c56b02347b367d142ed5a4cb7837bcaf6a4483
       '@stackblitz/sdk':
         specifier: ^1.11.0
         version: 1.11.0
@@ -737,6 +743,16 @@ packages:
   '@oslojs/encoding@1.1.0':
     resolution: {integrity: sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ==}
 
+  '@ozgurgunes/chassis-css@https://codeload.github.com/ozgurgunes/chassis-css/tar.gz/32bad5c7dd6693f1e1ce19d27d86ac4c62d25476':
+    resolution: {tarball: https://codeload.github.com/ozgurgunes/chassis-css/tar.gz/32bad5c7dd6693f1e1ce19d27d86ac4c62d25476}
+    version: 0.1.0
+    peerDependencies:
+      '@popperjs/core': ^2.11.8
+
+  '@ozgurgunes/chassis-tokens@https://codeload.github.com/ozgurgunes/chassis-tokens/tar.gz/66c56b02347b367d142ed5a4cb7837bcaf6a4483':
+    resolution: {tarball: https://codeload.github.com/ozgurgunes/chassis-tokens/tar.gz/66c56b02347b367d142ed5a4cb7837bcaf6a4483}
+    version: 0.1.0
+
   '@parcel/watcher-android-arm64@2.5.1':
     resolution: {integrity: sha512-KF8+j9nNbUN8vzOFDpRMsaKBHZ/mcjEjMToVMJOhTozkDonQFFrRcfdLWn6yWKCmJKmdVxSgHiYvTCef4/qcBA==}
     engines: {node: '>= 10.0.0'}
@@ -822,6 +838,9 @@ packages:
   '@pkgr/core@0.2.4':
     resolution: {integrity: sha512-ROFF39F6ZrnzSUEmQQZUar0Jt4xVoP9WnDRdWwF4NNcXs3xBTLgBUDoOwW141y1jP+S8nahIbdxbFC7IShw9Iw==}
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+
+  '@popperjs/core@2.11.8':
+    resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
 
   '@resvg/resvg-js-android-arm-eabi@2.6.2':
     resolution: {integrity: sha512-FrJibrAk6v29eabIPgcTUMPXiEz8ssrAk7TXxsiZzww9UTQ1Z5KAbFJs+Z0Ez+VZTYgnE5IQJqBcoSiMebtPHA==}
@@ -4922,6 +4941,12 @@ snapshots:
 
   '@oslojs/encoding@1.1.0': {}
 
+  '@ozgurgunes/chassis-css@https://codeload.github.com/ozgurgunes/chassis-css/tar.gz/32bad5c7dd6693f1e1ce19d27d86ac4c62d25476(@popperjs/core@2.11.8)':
+    dependencies:
+      '@popperjs/core': 2.11.8
+
+  '@ozgurgunes/chassis-tokens@https://codeload.github.com/ozgurgunes/chassis-tokens/tar.gz/66c56b02347b367d142ed5a4cb7837bcaf6a4483': {}
+
   '@parcel/watcher-android-arm64@2.5.1':
     optional: true
 
@@ -4984,6 +5009,8 @@ snapshots:
     optional: true
 
   '@pkgr/core@0.2.4': {}
+
+  '@popperjs/core@2.11.8': {}
 
   '@resvg/resvg-js-android-arm-eabi@2.6.2':
     optional: true
@@ -6256,7 +6283,7 @@ snapshots:
     dependencies:
       eslint: 9.25.0
 
-  eslint-config-standard-jsx@11.0.0(eslint-plugin-react@7.37.5(eslint@9.25.0))(eslint@8.57.1):
+  eslint-config-standard-jsx@11.0.0(eslint-plugin-react@7.37.5(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       eslint: 8.57.1
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
@@ -8694,7 +8721,7 @@ snapshots:
     dependencies:
       eslint: 8.57.1
       eslint-config-standard: 17.1.0(eslint-plugin-import@2.32.0(eslint@9.25.0))(eslint-plugin-n@15.7.0(eslint@9.25.0))(eslint-plugin-promise@6.6.0(eslint@9.25.0))(eslint@8.57.1)
-      eslint-config-standard-jsx: 11.0.0(eslint-plugin-react@7.37.5(eslint@9.25.0))(eslint@8.57.1)
+      eslint-config-standard-jsx: 11.0.0(eslint-plugin-react@7.37.5(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-import: 2.32.0(eslint@8.57.1)
       eslint-plugin-n: 15.7.0(eslint@8.57.1)
       eslint-plugin-promise: 6.6.0(eslint@8.57.1)
