@@ -1,15 +1,8 @@
 {
   "version": 2,
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  },
   "buildCommand": "pnpm build:site",
   "outputDirectory": "_site",
   "installCommand": "pnpm install",
-  "devCommand": "pnpm dev:site",
-  "framework": "astro",
   "headers": [
     {
       "source": "/(.*)",

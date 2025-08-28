@@ -5,7 +5,6 @@ import { algoliaPlugin } from './src/plugins/algolia-plugin'
 import { stackblitzPlugin } from './src/plugins/stackblitz-plugin'
 
 const isDev = process.env.NODE_ENV === 'development'
-const isStaging = process.env.VERCEL_GIT_COMMIT_REF === 'staging'
 
 const site = isDev
   ? // In development mode, use the local dev server.
@@ -13,15 +12,11 @@ const site = isDev
   : process.env.DEPLOY_PRIME_URL !== undefined
     ? // If deploying on Netlify, use the `DEPLOY_PRIME_URL` environment variable.
       process.env.DEPLOY_PRIME_URL
-    : isStaging
-      ? // If staging branch, deploy to staging subdomain
-        'https://staging.chassis-ui.com'
-      : // Otherwise, use the `baseURL` value defined in the `config.yml` file.
-        getConfig().baseURL
+    : // Otherwise, use the `baseURL` value defined in the `config.yml` file.
+      getConfig().baseURL
 
 // https://astro.build/config
 export default defineConfig({
-  base: isStaging ? '/icons/' : '/',
   build: {
     assets: `docs/${getConfig().docs_version}/assets`
   },
