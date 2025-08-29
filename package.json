@@ -44,6 +44,10 @@
     "registry": "https://registry.npmjs.org/",
     "access": "public"
   },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
+  },
   "scripts": {
     "build": "pnpm icons",
     "build:site": "astro build --root site && rm -rf _site && cp -r site/dist _site",

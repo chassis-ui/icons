@@ -141,7 +141,8 @@ function cleanPublicDirectory() {
 // Copy the `dist` folder from the root of the repo containing the latest version of Chassis to make it available from
 // the `/docs/${docs_version}/dist` URL.
 function copyChassis() {
-  const source = path.join(process.cwd(), 'vendor/css/dist')
+  // const source = path.join(process.cwd(), 'vendor/css/dist')
+  const source = path.join(process.cwd(), 'node_modules/@ozgurgunes/chassis-css/dist')
   const destination = path.join(getDocsPublicFsPath())
 
   fs.mkdirSync(destination, { recursive: true })

@@ -21,7 +21,7 @@ async function modifyPackageJson(remove) {
 
 async function runFantasticon() {
   try {
-    await modifyPackageJson(true)
+    // await modifyPackageJson(true)
     const { stdout, stderr } = await execAsync('npx fantasticon')
     console.log('Fantasticon output:', stdout)
     if (stderr) {
@@ -30,7 +30,7 @@ async function runFantasticon() {
   } catch (error) {
     console.error('Error running fantasticon:', error)
   } finally {
-    await modifyPackageJson(false)
+    // await modifyPackageJson(false)
   }
 }
 
