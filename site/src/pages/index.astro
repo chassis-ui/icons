@@ -1,4 +1,5 @@
 ---
-// Redirect home page to /docs/icons
-return Astro.redirect('/docs/icons')
+import RedirectLayout from '@layouts/RedirectLayout.astro'
 ---
+
+<RedirectLayout path="/docs/icons" />

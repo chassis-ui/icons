@@ -59,7 +59,7 @@
     "build": "pnpm icons",
     "build:site": "node build/build-site.js",
     "build:astro": "astro build --root site",
-    "build:docs": "node build/build-docs.js",
+    "build:pages": "node build/build-pages.js",
     "dev:site": "astro dev --root site --port 4323",
     "icons": "rm -rf font/*.{css,scss,woff,woff2,svg} && pnpm icons-main --aggregate-output --parallel && pnpm icons-sprite && pnpm icons-font",
     "icons-main": "node build/build-svgs.js",
@@ -71,7 +71,6 @@
     "check": "node build/check-icons.js",
     "sync:submodules": "node build/sync-submodules.js",
     "validate": "eslint . --fix && prettier --write .",
-    "preview": "open preview.html",
     "release-version": "node build/bump-version.js",
     "release": "pnpm build && pnpm icons-zip",
     "test:fusv": "find-unused-sass-variables site/src/scss/",
@@ -79,7 +78,8 @@
     "test:stylelint": "stylelint site/src/scss/ --cache --cache-location .cache/.stylelintcache",
     "test:audit": "pnpm audit --audit-level moderate",
     "test:check-icons": "node build/check-icons.js",
-    "test": "npm-run-all --parallel --aggregate-output --continue-on-error test:*"
+    "test:vnu": "node build/vnu-jar.js",
+    "test": "pnpm build:site && npm-run-all --parallel --aggregate-output --continue-on-error test:*"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",

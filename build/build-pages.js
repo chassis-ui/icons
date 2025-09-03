@@ -39,12 +39,6 @@ description: ${iconTitle} icon for Chassis Design System
 categories: ${category}
 tags: icon, ${style}, svg
 ---
-
-This is the **${iconTitle}** icon from the Chassis Design System.
-
-- **Style**: ${style}
-- **Category**: ${category}
-- **Filename**: \`${iconBasename}.svg\`
 `
 
   try {

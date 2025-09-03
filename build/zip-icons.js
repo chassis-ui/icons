@@ -12,7 +12,7 @@ async function getPackageVersion() {
     )
     return packageJson.version
   } catch (error) {
-    throw new Error('Failed to read package.json: ' + error.message)
+    throw new Error(`Failed to read package.json: ${  error.message}`)
   }
 }
 

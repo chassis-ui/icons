@@ -15,7 +15,7 @@ async function modifyPackageJson(remove) {
     packageData.type = 'module'
   }
 
-  const updatedPackageJson = JSON.stringify(packageData, null, 2) + '\n'
+  const updatedPackageJson = `${JSON.stringify(packageData, null, 2)  }\n`
   await fs.writeFile(packageJsonPath, updatedPackageJson)
 }
 

@@ -3,7 +3,6 @@ import type { MdxJsxAttribute, MdxJsxExpressionAttribute } from 'mdast-util-mdx-
 import type { Plugin } from 'unified'
 import { visit } from 'unist-util-visit'
 import { getConfig } from './config'
-import { getVersionedDocsPath } from './path'
 
 // [[config:foo]]
 // [[config:foo.bar]]
@@ -56,36 +55,6 @@ export const remarkCxConfig: Plugin<[], Root> = function () {
   }
 }
 
-// A remark plugin to add versionned docs links in markdown (or MDX) files.
-// For example, [[docsref:/foo]] will be replaced with the `/docs/${docs_version}/foo` value with the `docs_version`
-// value being read from the `config.yml` file.
-// Note: this also works in frontmatter.
-// Note: this plugin is meant to facilitate the migration from Hugo to Astro while keeping the differences to a minimum.
-// At some point, this plugin should maybe be removed and embrace a more MDX-friendly syntax.
-export const remarkCxDocsref: Plugin<[], Root> = function () {
-  return function remarkCxDocsrefPlugin(ast, file) {
-    if (containsFrontmatter(file.data.astro)) {
-      replaceInFrontmatter(file.data.astro.frontmatter, replaceDocsrefInText)
-    }
-
-    // https://github.com/syntax-tree/mdast#nodes
-    // https://github.com/syntax-tree/mdast-util-mdx-jsx#nodes
-    visit(ast, ['definition', 'link', 'mdxJsxTextElement'], (node) => {
-      switch (node.type) {
-        case 'definition':
-        case 'link': {
-          node.url = replaceDocsrefInText(node.url)
-          break
-        }
-        case 'mdxJsxTextElement': {
-          node.attributes = replaceDocsrefInAttributes(node.attributes)
-          break
-        }
-      }
-    })
-  }
-}
-
 export function replaceConfigInText(text: string) {
   return text.replace(configRegExp, (_match, path) => {
     const value = getConfigValueAtPath(path)
@@ -102,22 +71,6 @@ function replaceConfigInAttributes(attributes: (MdxJsxAttribute | MdxJsxExpressi
   return attributes.map((attribute) => {
     if (attribute.type === 'mdxJsxAttribute' && typeof attribute.value === 'string') {
       attribute.value = replaceConfigInText(attribute.value)
-    }
-
-    return attribute
-  })
-}
-
-function replaceDocsrefInText(text: string) {
-  return text.replace(docsrefRegExp, (_match, path) => {
-    return getVersionedDocsPath(path)
-  })
-}
-
-function replaceDocsrefInAttributes(attributes: (MdxJsxAttribute | MdxJsxExpressionAttribute)[]) {
-  return attributes.map((attribute) => {
-    if (attribute.type === 'mdxJsxAttribute' && typeof attribute.value === 'string') {
-      attribute.value = replaceDocsrefInText(attribute.value)
     }
 
     return attribute

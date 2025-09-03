@@ -22,7 +22,7 @@ const hexCodepoint = parseInt(codepoints[icon.title]).toString(16).toUpperCase()
 
   <h3 class="mb-0">Download</h3>
   <p>Download the SVG to use or edit.</p>
-  <a href={svgPath} class="button large primary" download>Download SVG</a>
+  <a href={path.join('/assets/icons/svgs', `${icon.title}.svg`)} class="button large primary" download>Download SVG</a>
 
   <h3 class="mb-0">SVG sprite</h3>
   <p>Use this code for svg icons.</p>
