@@ -164,7 +164,7 @@ function copyChassisIcons() {
   const source = getChassisIconsFsPath()
   const destination = path.join(getDocsPublicFsPath(), 'assets', 'icons')
 
-  fs.mkdirSync(path.join(getDocsPublicFsPath(), 'assets', 'icons'), { recursive: true })
+  // fs.mkdirSync(path.join(getDocsPublicFsPath(), 'assets', 'icons'), { recursive: true })
   fs.mkdirSync(path.join(getDocsPublicFsPath(), 'assets', 'icons', 'svgs'), { recursive: true })
   fs.cpSync(path.join(process.cwd(), 'font'), path.join(getDocsPublicFsPath(), 'assets', 'icons'), { recursive: true })
   fs.cpSync(path.join(process.cwd(), 'svgs'), path.join(getDocsPublicFsPath(), 'assets', 'icons', 'svgs'), { recursive: true })
@@ -199,7 +199,7 @@ function copyStaticRecursively(source: string, destination: string) {
     if (entry.isFile()) {
       fs.cpSync(path.join(source, entry.name), path.join(destination, entry.name))
     } else if (entry.isDirectory()) {
-      fs.mkdirSync(path.join(destination, entry.name)), { recursive: true }
+      fs.mkdirSync(path.join(destination, entry.name), { recursive: true })
 
       copyStaticRecursively(path.join(source, entry.name), path.join(destination, entry.name))
     }

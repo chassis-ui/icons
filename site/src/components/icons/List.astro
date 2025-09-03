@@ -20,7 +20,7 @@ import path from 'node:path'
             data-name={filename}
             data-tags={iconPage.data.tags?.split(',')?.join(' ').toLowerCase()}
             data-categories={iconPage.data.categories?.split(',')?.join(' ').toLowerCase()}>
-          <a class="d-block text-decoration-none" href={`/icons/${filename}/`}>
+          <a class="d-block text-decoration-none" href={`/docs/icons/${filename}/`}>
             <div class="bg-even px-medium py-3xlarge mb-xsmall text-center rounded">
               <svg class="icon">
                 <use xlink:href={`#${filename}`}/>

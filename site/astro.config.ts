@@ -31,6 +31,19 @@ export default defineConfig({
     plugins: [algoliaPlugin(), stackblitzPlugin()],
     ssr: {
       noExternal: ['@astrojs/prism']
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          // chunkFileNames: 'assets/js/[name].[hash].js',
+          assetFileNames: (assetInfo) => {
+            if (assetInfo.name?.endsWith('.css')) {
+              return 'assets/css/docs.[hash].css'
+            }
+            return 'assets/[name].[hash][extname]'
+          }
+        }
+      }
     }
   }
 })
