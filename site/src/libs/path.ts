@@ -25,7 +25,7 @@ export function getChassisIconsFsPath() {
 }
 
 export function getDocsStaticFsPath() {
-  return path.join(getDocsFsPath(), 'assets')
+  return path.join(getDocsFsPath(), 'src/assets')
 }
 
 export function getDocsPublicFsPath() {
