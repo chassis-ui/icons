@@ -9,7 +9,8 @@ interface Props {
 }
 
 const { icon } = Astro.props
-const iconAdapt = `<svg class="icon icon-adaptive"><use xlink:href="#${icon.title}"/></svg>`
+const iconName = icon.title
+const iconAdapt = `<svg class="icon icon-adaptive"><use xlink:href="#${iconName}"/></svg>`
 ---
 
 <Title icon={icon} />

@@ -1,11 +1,8 @@
 {
   "mode": {
     "symbol": {
-      "dest": "icons/package",
-      "sprite": "chassis-icons.svg",
-      "example": {
-        "dest": "../preview.html"
-      }
+      "dest": "font",
+      "sprite": "chassis-icons.svg"
     }
   },
   "svg": {

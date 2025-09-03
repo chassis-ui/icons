@@ -13,10 +13,12 @@ import { remarkCxConfig, remarkCxDocsref } from './remark'
 import { configurePrism } from './prism'
 import {
   docsDirectory,
+  getChassisAssetsFsPath,
+  getChassisCSSFsPath,
+  getChassisIconsFsPath,
   getDocsFsPath,
   getDocsPublicFsPath,
-  getDocsStaticFsPath,
-  validateVersionedDocsPaths
+  getDocsStaticFsPath
 } from './path'
 
 // A list of directories in `src/components` that contains components that will be auto imported in all pages for
@@ -26,8 +28,8 @@ const autoImportedComponentDirectories = ['shortcodes']
 
 // A list of static file paths that will be aliased to a different path.
 const staticFileAliases = {
-  '/docs/[version]/assets/img/favicons/apple-touch-icon.png': '/apple-touch-icon.png',
-  '/docs/[version]/assets/img/favicons/favicon.ico': '/favicon.ico'
+  '/images/apple-touch-icon.png': '/apple-touch-icon.png',
+  '/images/favicon.png': '/favicon.ico'
 }
 
 // A list of pages that will be excluded from the sitemap.
@@ -71,13 +73,11 @@ export function chassis(): AstroIntegration[] {
         },
         'astro:config:done': () => {
           cleanPublicDirectory()
-          copyChassis()
-          // copyIcons()
-          // copyStatic()
-          // aliasStatic()
-        },
-        'astro:build:done': ({ dir }) => {
-          validateVersionedDocsPaths(dir)
+          copyStatic()
+          copyChassisAssets()
+          copyChassisCSS()
+          copyChassisIcons()
+          aliasStatic()
         }
       }
     },
@@ -140,37 +140,50 @@ function cleanPublicDirectory() {
 
 // Copy the `dist` folder from the root of the repo containing the latest version of Chassis to make it available from
 // the `/docs/${docs_version}/dist` URL.
-function copyChassis() {
-  // const source = path.join(process.cwd(), 'vendor/css/dist')
-  const source = path.join(process.cwd(), 'node_modules/@ozgurgunes/chassis-css/dist')
-  const destination = path.join(getDocsPublicFsPath())
+function copyChassisAssets() {
+  const source = getChassisAssetsFsPath()
+  const destination = path.join(getDocsPublicFsPath(), 'assets')
+
+  // fs.mkdirSync(destination, { recursive: true })
+  // copyStaticRecursively(source, destination)
+  fs.mkdirSync(destination, { recursive: true })
+  fs.cpSync(source, destination, { recursive: true })
+}
+
+// Copy the `icons` folder from the current project to make it available from the `/icons` URL.
+function copyChassisCSS() {
+  const source = getChassisCSSFsPath()
+  const destination = path.join(getDocsPublicFsPath(), 'assets')
 
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(source, destination, { recursive: true })
 }
 
 // Copy the `icons` folder from the current project to make it available from the `/icons` URL.
-function copyIcons() {
-  const source = path.join(process.cwd(), 'icons', 'package')
-  const destination = path.join(getDocsPublicFsPath(), 'docs', getConfig().docs_version, 'assets', 'icons')
+function copyChassisIcons() {
+  const source = getChassisIconsFsPath()
+  const destination = path.join(getDocsPublicFsPath(), 'assets', 'icons')
 
-  fs.mkdirSync(destination, { recursive: true })
-  fs.cpSync(source, destination, { recursive: true })
+  fs.mkdirSync(path.join(getDocsPublicFsPath(), 'assets', 'icons'), { recursive: true })
+  fs.mkdirSync(path.join(getDocsPublicFsPath(), 'assets', 'icons', 'svgs'), { recursive: true })
+  fs.cpSync(path.join(process.cwd(), 'font'), path.join(getDocsPublicFsPath(), 'assets', 'icons'), { recursive: true })
+  fs.cpSync(path.join(process.cwd(), 'svgs'), path.join(getDocsPublicFsPath(), 'assets', 'icons', 'svgs'), { recursive: true })
 }
+
 
 // Copy the content as-is of the `static` folder to make it available from the `/` URL.
 // A folder named `[version]` will automatically be renamed to the current version of the docs extracted from the
 // `config.yml` file.
 function copyStatic() {
   const source = getDocsStaticFsPath()
-  const destination = path.join(getDocsPublicFsPath())
+  const destination = path.join(getDocsPublicFsPath(), 'assets')
 
   copyStaticRecursively(source, destination)
 }
 
 // Alias (copy) some static files to different paths.
 function aliasStatic() {
-  const source = getDocsStaticFsPath()
+  const source = getChassisAssetsFsPath()
   const destination = path.join(getDocsPublicFsPath())
 
   for (const [aliasSource, aliasDestination] of Object.entries(staticFileAliases)) {
@@ -184,17 +197,13 @@ function copyStaticRecursively(source: string, destination: string) {
 
   for (const entry of entries) {
     if (entry.isFile()) {
-      fs.cpSync(path.join(source, entry.name), replacePathVersionPlaceholder(path.join(destination, entry.name)))
+      fs.cpSync(path.join(source, entry.name), path.join(destination, entry.name))
     } else if (entry.isDirectory()) {
-      fs.mkdirSync(replacePathVersionPlaceholder(path.join(destination, entry.name)), { recursive: true })
+      fs.mkdirSync(path.join(destination, entry.name)), { recursive: true }
 
       copyStaticRecursively(path.join(source, entry.name), path.join(destination, entry.name))
     }
   }
-}
-
-function replacePathVersionPlaceholder(name: string) {
-  return name.replace('[version]', getConfig().docs_version)
 }
 
 function sitemapFilter(page: string, excludedUrls: string[]) {

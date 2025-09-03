@@ -5,14 +5,13 @@ import Skippy from '@components/header/Skippy.astro'
 import Navigation from '@components/header/Navigation.astro'
 
 interface Props {
-  addedIn?: CollectionEntry<'icons'>['data']['added']
   layout: Layout
   title: string
 }
 
-const { addedIn, layout, title } = Astro.props
+const { layout, title } = Astro.props
 ---
 
 <Skippy layout={layout} />
 
-<Navigation layout={layout} title={title} addedIn={addedIn} />
+<Navigation layout={layout} title={title} />

@@ -7,21 +7,21 @@ import Details from '@components/icons/Details.astro'
 
 export async function getStaticPaths() {
   return iconsPages.map((iconsPage) => {
+    // Use the title as the slug since title now contains the filename
     return {
-      params: { slug: iconsPage.slug, version: getConfig().docs_version },
+      params: { slug: iconsPage.data.title },
       props: iconsPage
     }
   })
 }
 
-const { id, data, render } = Astro.props
-const { Content, headings, remarkPluginFrontmatter } = await render()
-const frontmatter = remarkPluginFrontmatter as typeof data
+const { id, data, body } = Astro.props
+const frontmatter = data
 ---
 
-<IconsLayout frontmatter={frontmatter} headings={headings} id={id}>
+<IconsLayout frontmatter={frontmatter} id={id}>
   <div class="container container-fluid">
     <Details icon={frontmatter} />
   </div>
-  <Content components={{ pre: Code }} />
+  <div set:html={body || ''} />
 </IconsLayout>

@@ -10,7 +10,7 @@ import { loadConfig, optimize } from 'svgo'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const iconsDir = path.join(__dirname, '../icons/svgs')
+const iconsDir = path.join(__dirname, '../svgs')
 
 const VERBOSE = process.argv.includes('--verbose')
 

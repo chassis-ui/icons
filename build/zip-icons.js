@@ -32,9 +32,9 @@ async function distIcons() {
 
     await runCommand(`rm -rf ${baseDir} ${baseDir}.zip`)
     await runCommand(`mkdir -p ${svgDir}`)
-    await runCommand(`cp -r icons/svgs/ ${svgDir}`)
-    await runCommand(`cp icons/package/chassis-icons.svg ${baseDir}`)
-    await runCommand(`cp -r icons/package/* ${baseDir}`)
+    await runCommand(`cp -r svgs/ ${svgDir}`)
+    await runCommand(`cp fonts/chassis-icons.svg ${baseDir}`)
+    await runCommand(`cp -r fonts/* ${baseDir}`)
     await runCommand(`zip -qr9 ${baseDir}.zip ${baseDir}`)
     await runCommand(`rm -rf ${baseDir}`)
 

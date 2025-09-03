@@ -41,8 +41,8 @@ chassis-icons/
 ### **Adding New Icons**
 
 ```bash
-# 1. Add SVG files to icons/svgs/
-cp new-icon.svg icons/svgs/
+# 1. Add SVG files to svgs/
+cp new-icon.svg svgs/
 
 # 2. Build all icons
 pnpm build
@@ -80,14 +80,15 @@ pnpm icons-font     # Font generation only
 ### **Generated Outputs**
 
 ```
-icons/package/
+font/
 ├── chassis-icons.css      # Complete stylesheet (32KB)
 ├── chassis-icons.min.css  # Minified stylesheet (29KB)
 ├── chassis-icons.scss     # SCSS with variables (18KB)
 ├── chassis-icons.svg      # SVG sprite (316KB)
 ├── chassis-icons.woff2    # Modern font (34KB)
 ├── chassis-icons.woff     # Legacy font (42KB)
-└── chassis-icons.json     # Icon codepoint mapping (15KB)
+├── chassis-icons.json     # Icon codepoint mapping (15KB)
+└── codepoints.json        # Source codepoint mapping
 ```
 
 ### **CSS Classes**
@@ -167,10 +168,10 @@ pnpm release  # Runs build + zip
 // package.json
 {
   "name": "@ozgurgunes/chassis-icons",
-  "main": "icons/package/chassis-icons.css",
+  "main": "font/chassis-icons.css",
   "files": [
-    "icons/package/*.{woff,woff2,css,scss,svg,json}",
-    "icons/svgs/*.svg"
+    "font/*.{woff,woff2,css,scss,svg,json}",
+    "svgs/*.svg"
   ]
 }
 ```
@@ -178,10 +179,10 @@ pnpm release  # Runs build + zip
 ### **Icon Font Configuration**
 
 ```javascript
-// .fantasticonrc.js
+// .fantasticonrc.cjs
 {
-  inputDir: './icons/svgs',
-  outputDir: './icons/package',
+  inputDir: './svgs',
+  outputDir: './fonts',
   name: 'chassis-icons',
   prefix: 'chassis-icon',
   fontTypes: ['woff2', 'woff'],
