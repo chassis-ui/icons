@@ -9,7 +9,7 @@ node_modules/
 .idea/
 
 # Icon Distribution (generated files)
-icons/package/
+preview.html
 
 # Release files
 chassis-icons-*.zip
@@ -17,6 +17,12 @@ chassis-icons-*.tgz
 
 # Ignore docs files
 /_site/
+
+# Site
+/site/dist
+/site/node_modules
+/site/.astro
+/site/public
 
 # Numerous always-ignore extensions
 *.diff

@@ -1,0 +1,18 @@
+---
+import { getChassisJsProps } from '@libs/chassis'
+import type { Layout } from '@libs/layout'
+
+interface Props {
+  layout: Layout
+}
+
+const { layout } = Astro.props
+---
+
+<script is:inline {...getChassisJsProps()}></script>
+
+<script is:inline src="/assets/application.js"></script>
+<script is:inline src="/assets/search.js"></script>
+
+{layout === 'docs' && <script is:inline src="/assets/stackblitz.js" />}
+{layout === 'icons' && <script is:inline src="/assets/icon-search.js" />}

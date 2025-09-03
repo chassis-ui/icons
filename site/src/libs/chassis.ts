@@ -1,9 +1,8 @@
 import type { HTMLAttributes } from 'astro/types'
 import { getConfig } from '@libs/config'
-import { getVersionedDocsPath } from '@libs/path'
 
-export function getVersionedCxCssProps(direction: 'rtl' | undefined) {
-  let cxCssLinkHref = '/css/chassis'
+export function getChassisCssProps(direction: 'rtl' | undefined) {
+  let cxCssLinkHref = '/assets/css/chassis'
 
   if (direction === 'rtl') {
     cxCssLinkHref = `${cxCssLinkHref}.rtl`
@@ -16,19 +15,20 @@ export function getVersionedCxCssProps(direction: 'rtl' | undefined) {
   cxCssLinkHref = `${cxCssLinkHref}.css`
 
   const cxCssLinkProps: HTMLAttributes<'link'> = {
-    href: getVersionedDocsPath(cxCssLinkHref),
+    href: cxCssLinkHref,
     rel: 'stylesheet'
   }
 
-  if (import.meta.env.PROD) {
+  // Only apply integrity checks for CDN URLs (starting with 'http')
+  if (import.meta.env.PROD && cxCssLinkHref.startsWith('http')) {
     cxCssLinkProps.integrity = direction === 'rtl' ? getConfig().cdn.css_rtl_hash : getConfig().cdn.css_hash
   }
 
   return cxCssLinkProps
 }
 
-export function getVersionedCxJsProps() {
-  let cxJsScriptSrc = '/dist/js/chassis.bundle'
+export function getChassisJsProps() {
+  let cxJsScriptSrc = '/assets/js/chassis.bundle'
 
   if (import.meta.env.PROD) {
     cxJsScriptSrc = `${cxJsScriptSrc}.min`
@@ -37,10 +37,11 @@ export function getVersionedCxJsProps() {
   cxJsScriptSrc = `${cxJsScriptSrc}.js`
 
   const cxJsLinkProps: HTMLAttributes<'script'> = {
-    src: getVersionedDocsPath(cxJsScriptSrc)
+    src: cxJsScriptSrc
   }
 
-  if (import.meta.env.PROD) {
+  // Only apply integrity checks for CDN URLs (starting with 'http')
+  if (import.meta.env.PROD && cxJsScriptSrc.startsWith('http')) {
     cxJsLinkProps.integrity = getConfig().cdn.js_bundle_hash
   }
 

@@ -6,8 +6,6 @@
  * @see site/src/libs/astro.ts
  */
 export declare global {
-  export const Callout: typeof import('@shortcodes/Callout.astro').default
   export const Code: typeof import('@shortcodes/Code.astro').default
-  export const CxTable: typeof import('@shortcodes/CxTable.astro').default
   export const Example: typeof import('@shortcodes/Example.astro').default
 }
