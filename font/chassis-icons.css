@@ -78,10 +78,6 @@ url("./chassis-icons.woff?223524638bf7d595a7c02993c94ec179") format("woff");
 .icon-briefcase-solid::before { content: "\f132"; }
 .icon-building-outline::before { content: "\f133"; }
 .icon-building-solid::before { content: "\f134"; }
-.icon-bus-outline::before { content: "\f135"; }
-.icon-bus-simple-outline::before { content: "\f136"; }
-.icon-bus-simple-solid::before { content: "\f137"; }
-.icon-bus-solid::before { content: "\f138"; }
 .icon-cake-candles-outline::before { content: "\f139"; }
 .icon-cake-candles-solid::before { content: "\f13a"; }
 .icon-calendar-check-outline::before { content: "\f13b"; }
@@ -100,8 +96,6 @@ url("./chassis-icons.woff?223524638bf7d595a7c02993c94ec179") format("woff");
 .icon-camera-circle-solid::before { content: "\f148"; }
 .icon-camera-outline::before { content: "\f149"; }
 .icon-camera-solid::before { content: "\f14a"; }
-.icon-car-bus-outline::before { content: "\f14b"; }
-.icon-car-bus-solid::before { content: "\f14c"; }
 .icon-caret-down-outline::before { content: "\f14d"; }
 .icon-caret-down-solid::before { content: "\f14e"; }
 .icon-caret-left-outline::before { content: "\f14f"; }
@@ -110,8 +104,6 @@ url("./chassis-icons.woff?223524638bf7d595a7c02993c94ec179") format("woff");
 .icon-caret-right-solid::before { content: "\f152"; }
 .icon-caret-up-outline::before { content: "\f153"; }
 .icon-caret-up-solid::before { content: "\f154"; }
-.icon-chalkboard-user-outline::before { content: "\f155"; }
-.icon-chalkboard-user-solid::before { content: "\f156"; }
 .icon-chart-line-down-outline::before { content: "\f157"; }
 .icon-chart-line-down-solid::before { content: "\f158"; }
 .icon-chart-line-up-outline::before { content: "\f159"; }
@@ -142,8 +134,6 @@ url("./chassis-icons.woff?223524638bf7d595a7c02993c94ec179") format("woff");
 .icon-chevron-up-solid::before { content: "\f172"; }
 .icon-circle-dot-outline::before { content: "\f173"; }
 .icon-circle-dot-solid::before { content: "\f174"; }
-.icon-circle-half-stroke-outline::before { content: "\f175"; }
-.icon-circle-half-stroke-solid::before { content: "\f176"; }
 .icon-circle-outline::before { content: "\f177"; }
 .icon-circle-small-outline::before { content: "\f178"; }
 .icon-circle-small-solid::before { content: "\f179"; }
@@ -244,8 +234,6 @@ url("./chassis-icons.woff?223524638bf7d595a7c02993c94ec179") format("woff");
 .icon-info-solid::before { content: "\f1d8"; }
 .icon-key-outline::before { content: "\f1d9"; }
 .icon-key-solid::before { content: "\f1da"; }
-.icon-late-shift-outline::before { content: "\f1db"; }
-.icon-late-shift-solid::before { content: "\f1dc"; }
 .icon-leaf-outline::before { content: "\f1dd"; }
 .icon-leaf-solid::before { content: "\f1de"; }
 .icon-link-outline::before { content: "\f1df"; }
@@ -314,10 +302,6 @@ url("./chassis-icons.woff?223524638bf7d595a7c02993c94ec179") format("woff");
 .icon-palette-solid::before { content: "\f21e"; }
 .icon-paper-plane-outline::before { content: "\f21f"; }
 .icon-paper-plane-solid::before { content: "\f220"; }
-.icon-passenger-boarding-outline::before { content: "\f221"; }
-.icon-passenger-boarding-solid::before { content: "\f222"; }
-.icon-passenger-landing-outline::before { content: "\f223"; }
-.icon-passenger-landing-solid::before { content: "\f224"; }
 .icon-pause-circle-outline::before { content: "\f225"; }
 .icon-pause-circle-solid::before { content: "\f226"; }
 .icon-pause-outline::before { content: "\f227"; }
@@ -378,8 +362,6 @@ url("./chassis-icons.woff?223524638bf7d595a7c02993c94ec179") format("woff");
 .icon-slash-back-solid::before { content: "\f25e"; }
 .icon-slash-forward-outline::before { content: "\f25f"; }
 .icon-slash-forward-solid::before { content: "\f260"; }
-.icon-sort-outline::before { content: "\f261"; }
-.icon-sort-solid::before { content: "\f262"; }
 .icon-sparkles-outline::before { content: "\f263"; }
 .icon-sparkles-solid::before { content: "\f264"; }
 .icon-split-outline::before { content: "\f265"; }
@@ -436,14 +418,6 @@ url("./chassis-icons.woff?223524638bf7d595a7c02993c94ec179") format("woff");
 .icon-tree-solid::before { content: "\f298"; }
 .icon-trees-outline::before { content: "\f299"; }
 .icon-trees-solid::before { content: "\f29a"; }
-.icon-trip-inbound-alt-outline::before { content: "\f29b"; }
-.icon-trip-inbound-alt-solid::before { content: "\f29c"; }
-.icon-trip-inbound-outline::before { content: "\f29d"; }
-.icon-trip-inbound-solid::before { content: "\f29e"; }
-.icon-trip-outbound-alt-outline::before { content: "\f29f"; }
-.icon-trip-outbound-alt-solid::before { content: "\f2a0"; }
-.icon-trip-outbound-outline::before { content: "\f2a1"; }
-.icon-trip-outbound-solid::before { content: "\f2a2"; }
 .icon-trophy-outline::before { content: "\f2a3"; }
 .icon-trophy-solid::before { content: "\f2a4"; }
 .icon-turkish-lira-outline::before { content: "\f2a5"; }
@@ -464,8 +438,6 @@ url("./chassis-icons.woff?223524638bf7d595a7c02993c94ec179") format("woff");
 .icon-user-solid::before { content: "\f2b4"; }
 .icon-users-outline::before { content: "\f2b5"; }
 .icon-users-solid::before { content: "\f2b6"; }
-.icon-van-shuttle-outline::before { content: "\f2b7"; }
-.icon-van-shuttle-solid::before { content: "\f2b8"; }
 .icon-venus-outline::before { content: "\f2b9"; }
 .icon-venus-solid::before { content: "\f2ba"; }
 .icon-wifi-outline::before { content: "\f2bb"; }
