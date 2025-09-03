@@ -9,7 +9,7 @@ import picocolors from 'picocolors'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-const fontJsonPath = path.join(__dirname, '../fonts/chassis-icons.json')
+const fontJsonPath = path.join(__dirname, '../font/chassis-icons.json')
 const iconsDir = path.join(__dirname, '../svgs/')
 
 ;(async () => {
