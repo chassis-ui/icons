@@ -1,47 +1,55 @@
-import { exec } from 'child_process'
-import { promisify } from 'util'
-import { readFile } from 'fs/promises'
-import path from 'path'
+#!/usr/bin/env node
+
+/*!
+ * Icon Archive Creation Script
+ *
+ * Creates a versioned ZIP archive containing SVG icons and generated fonts.
+ *
+ * Copyright 2025 Ozgur Gunes
+ * Licensed under MIT
+ */
+
+import { exec } from 'node:child_process'
+import { promisify } from 'node:util'
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
+import picocolors from 'picocolors'
 
 const execAsync = promisify(exec)
 
 async function getPackageVersion() {
-  try {
-    const packageJson = JSON.parse(
-      await readFile(new URL('../package.json', import.meta.url))
-    )
-    return packageJson.version
-  } catch (error) {
-    throw new Error(`Failed to read package.json: ${  error.message}`)
-  }
+  const packageJson = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+  return packageJson.version
 }
 
-async function runCommand(command) {
+async function main() {
   try {
-    await execAsync(command)
-  } catch (error) {
-    throw new Error(`Failed to execute command "${command}": ${error.message}`)
-  }
-}
+    const basename = path.basename(import.meta.url.replace('file://', ''))
+    console.log(picocolors.cyan(`🔄 [${basename}] started`))
 
-async function distIcons() {
-  try {
+    console.time(picocolors.cyan(`[${basename}] finished`))
+
     const version = await getPackageVersion()
     const baseDir = `chassis-icons-${version}`
     const svgDir = path.join(baseDir, 'svgs')
+    const zipFile = `${baseDir}.zip`
 
-    await runCommand(`rm -rf ${baseDir} ${baseDir}.zip`)
-    await runCommand(`mkdir -p ${svgDir}`)
-    await runCommand(`cp -r svgs/ ${svgDir}`)
-    await runCommand(`cp fonts/chassis-icons.svg ${baseDir}`)
-    await runCommand(`cp -r fonts/* ${baseDir}`)
-    await runCommand(`zip -qr9 ${baseDir}.zip ${baseDir}`)
-    await runCommand(`rm -rf ${baseDir}`)
+    console.log(picocolors.cyan(`📦 Creating ${zipFile}...`))
 
-    console.log(`Done: ${baseDir}.zip\n`)
+    await execAsync(`rm -rf "${baseDir}" "${zipFile}"`)
+    await execAsync(`mkdir -p "${svgDir}"`)
+    await execAsync(`cp -r svgs/* "${svgDir}/"`)
+    await execAsync(`cp font/chassis-icons.* "${baseDir}/"`)
+    await execAsync(`zip -qr9 "${zipFile}" "${baseDir}"`)
+    await execAsync(`rm -rf "${baseDir}"`)
+
+    console.log(picocolors.green(`✅ Created: ${zipFile}`))
+    console.timeEnd(picocolors.cyan(`[${basename}] finished`))
+
   } catch (error) {
-    console.error('Error running icons-zip:', error)
+    console.error(picocolors.red('❌ Error:'), error.message)
+    process.exit(1)
   }
+}if (import.meta.url === `file://${process.argv[1]}`) {
+  main()
 }
-
-distIcons()

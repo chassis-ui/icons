@@ -1,15 +1,38 @@
 #!/usr/bin/env node
 
-/**
- * Chassis Build Tools
- * Utility functions for building and managing Chassis projects
+/*!
+ * Site Builder Script for Chassis Icons
+ *
+ * Comprehensive build tool for managing Chassis documentation site.
+ * Handles vendor asset synchronization, Astro site building, and deployment validation.
+ *
+ * Usage:
+ *   node build-site.js [command]
+ *
+ * Commands:
+ *   (none)    Full build process (default)
+ *   site      Build Astro documentation site only
+ *   vendor    Update and build vendor assets
+ *   clean     Remove build artifacts and node_modules
+ *   validate  Validate build output
+ *
+ * Copyright 2025 Ozgur Gunes
+ * Licensed under MIT
  */
 
 import fs from 'node:fs'
 import path from 'node:path'
 import { execSync } from 'node:child_process'
+import picocolors from 'picocolors'
 
+/**
+ * Chassis site builder with vendor asset management
+ */
 class ChassisBuilder {
+  /**
+   * Initialize builder with project directories
+   * @param {string} rootDir - Root directory of the project
+   */
   constructor(rootDir = process.cwd()) {
     this.rootDir = rootDir
     this.vendorDir = path.join(rootDir, 'vendor')
@@ -17,7 +40,20 @@ class ChassisBuilder {
     this.outputDir = path.join(rootDir, '_site')
   }
 
+  /**
+   * Log formatted messages with icons and colors
+   * @param {string} message - Message to log
+   * @param {string} type - Type of message (info, success, error, warning, build)
+   */
   log(message, type = 'info') {
+    const colors = {
+      info: picocolors.cyan,
+      success: picocolors.green,
+      error: picocolors.red,
+      warning: picocolors.yellow,
+      build: picocolors.magenta
+    }
+
     const icons = {
       info: '📋',
       success: '✅',
@@ -25,9 +61,18 @@ class ChassisBuilder {
       warning: '⚠️',
       build: '🏗️'
     }
-    console.log(`${icons[type]} ${message}`)
+
+    const colorFn = colors[type] || picocolors.white
+    console.log(colorFn(`${icons[type]} ${message}`))
   }
 
+  /**
+   * Execute shell command with error handling
+   * @param {string} command - Command to execute
+   * @param {string} cwd - Working directory
+   * @param {boolean} silent - Suppress output
+   * @returns {string} Command output
+   */
   runCommand(command, cwd = this.rootDir, silent = false) {
     try {
       if (!silent) {
@@ -47,6 +92,9 @@ class ChassisBuilder {
     }
   }
 
+  /**
+   * Check for required project dependencies and directories
+   */
   checkDependencies() {
     this.log('Checking project dependencies...', 'info')
 
@@ -64,6 +112,9 @@ class ChassisBuilder {
     }
   }
 
+  /**
+   * Build the Astro documentation site
+   */
   buildSite() {
     this.log('Building Astro documentation site...', 'build')
 
@@ -82,6 +133,9 @@ class ChassisBuilder {
     this.log('Astro site built successfully', 'success')
   }
 
+  /**
+   * Update and build vendor assets from submodules
+   */
   updateVendorAssets() {
     this.log('Updating vendor/assets submodule...', 'info')
 
@@ -128,6 +182,9 @@ class ChassisBuilder {
     }
   }
 
+  /**
+   * Validate the build output and required directories
+   */
   validateBuild() {
     this.log('Validating build...', 'info')
 
@@ -151,6 +208,9 @@ class ChassisBuilder {
     }
   }
 
+  /**
+   * Clean build artifacts and node_modules directories
+   */
   clean() {
     this.log('Cleaning build artifacts...', 'info')
 
@@ -168,6 +228,9 @@ class ChassisBuilder {
     }
   }
 
+  /**
+   * Execute the complete build process
+   */
   buildAll() {
     this.log('Starting complete build process...', 'build')
 
@@ -185,37 +248,69 @@ class ChassisBuilder {
   }
 }
 
-// CLI interface
-if (import.meta.url === `file://${process.argv[1]}`) {
+/**
+ * CLI interface and command routing
+ */
+function main() {
   const command = process.argv[2]
   const builder = new ChassisBuilder()
 
-  switch (command) {
-    case 'site': {
-      builder.buildSite()
-      break
-    }
+  try {
+    switch (command) {
+      case 'site': {
+        builder.buildSite()
+        break
+      }
 
-    case 'vendor': {
-      builder.updateVendorAssets()
-      break
-    }
+      case 'vendor': {
+        builder.updateVendorAssets()
+        break
+      }
 
-    case 'clean': {
-      builder.clean()
-      break
-    }
+      case 'clean': {
+        builder.clean()
+        break
+      }
 
-    case 'validate': {
-      builder.validateBuild()
-      break
-    }
+      case 'validate': {
+        builder.validateBuild()
+        break
+      }
 
-    default: {
-      builder.buildAll()
-      break
+      case 'help':
+      case '--help':
+      case '-h': {
+        console.log(`
+${picocolors.cyan('Chassis Site Builder')}
+
+${picocolors.yellow('Usage:')}
+  node build-site.js [command]
+
+${picocolors.yellow('Commands:')}
+  ${picocolors.green('(none)')}    Full build process (default)
+  ${picocolors.green('site')}      Build Astro documentation site only
+  ${picocolors.green('vendor')}    Update and build vendor assets
+  ${picocolors.green('clean')}     Remove build artifacts and node_modules
+  ${picocolors.green('validate')}  Validate build output
+  ${picocolors.green('help')}      Show this help message
+`)
+        break
+      }
+
+      default: {
+        builder.buildAll()
+        break
+      }
     }
+  } catch (error) {
+    console.error(picocolors.red('❌ Error:'), error.message)
+    process.exit(1)
   }
+}
+
+// Execute main function if this file is run directly
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main()
 }
 
 export default ChassisBuilder

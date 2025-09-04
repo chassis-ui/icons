@@ -1,28 +1,26 @@
 #!/usr/bin/env node
 
-/**
- * Sync Submodules
- * Updates git submodules to their latest versions
+/*!
+ * Git Submodule Sync
+ *
+ * Synchronizes git submodules to their latest versions.
+ *
+ * Copyright 2025 Ozgur Gunes
+ * Licensed under MIT
  */
 
 import { execSync } from 'node:child_process'
 import path from 'node:path'
 import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import picocolors from 'picocolors'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-console.log('🔄 Syncing Chassis submodules...\n')
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const submodules = [{ name: 'chassis-assets', path: 'vendor/assets' }]
 
 function runCommand(command, cwd = process.cwd(), silent = false) {
   try {
-    if (!silent) {
-      console.log(`Running: ${command}`)
-    }
-
     const result = execSync(command, {
       cwd,
       encoding: 'utf8',
@@ -30,86 +28,81 @@ function runCommand(command, cwd = process.cwd(), silent = false) {
     })
     return result
   } catch (error) {
-    if (!silent) {
-      console.error(`Error running command: ${command}`)
-      console.error(error.message)
-    }
-
     throw error
   }
 }
 
 function syncSubmodule(submodule) {
-  console.log(`\n📦 Syncing ${submodule.name}...`)
+  console.log(picocolors.cyan(`📦 Syncing ${submodule.name}...`))
 
   const submodulePath = path.join(process.cwd(), submodule.path)
 
   if (!fs.existsSync(submodulePath)) {
-    console.log(`⚠️  ${submodule.name} not found at ${submodule.path}`)
+    console.log(picocolors.yellow(`   ⚠️  ${submodule.name} not found at ${submodule.path}`))
     return
   }
 
   try {
-    // Try to update submodule, but don't fail if it has local changes
     runCommand(
       `git submodule update --remote --merge ${submodule.path}`,
       process.cwd(),
       true
     )
-    console.log(`✅ ${submodule.name} synced successfully`)
+    console.log(picocolors.green(`   ✅ ${submodule.name} synced successfully`))
   } catch {
     console.log(
-      `⚠️  ${submodule.name} has local changes or conflicts, keeping current version`
+      picocolors.yellow(`   ⚠️  ${submodule.name} has local changes, keeping current version`)
     )
   }
 }
 
 function main() {
-  // Check if submodules exist, if not initialize them
   try {
-    runCommand('git submodule status', process.cwd(), true)
-  } catch {
-    console.log('📦 Initializing submodules...')
+    console.log(picocolors.cyan('🔄 Syncing git submodules...'))
+
+    // Check if submodules exist, if not initialize them
     try {
-      runCommand('git submodule update --init --recursive')
+      runCommand('git submodule status', process.cwd(), true)
     } catch {
-      console.log(
-        '⚠️  Some submodules may not be available or have uncommitted changes'
-      )
-      console.log('Continuing with existing submodules...')
+      console.log(picocolors.cyan('📦 Initializing submodules...'))
+      try {
+        runCommand('git submodule update --init --recursive')
+      } catch {
+        console.log(
+          picocolors.yellow('⚠️  Some submodules may not be available or have uncommitted changes')
+        )
+        console.log(picocolors.yellow('Continuing with existing submodules...'))
+      }
     }
-  }
 
-  // Sync each submodule individually with error handling
-  for (const submodule of submodules) {
-    try {
+    // Sync each submodule individually with error handling
+    for (const submodule of submodules) {
       syncSubmodule(submodule)
-    } catch (error) {
-      console.log(`⚠️  Failed to sync ${submodule.name}: ${error.message}`)
-      console.log('Continuing with existing version...')
     }
-  }
 
-  // Check if there are any changes
-  try {
-    const status = execSync('git status --porcelain', { encoding: 'utf8' })
-    if (status.trim()) {
-      console.log('\n📝 Changes detected in submodules')
-      console.log(
-        'Run `git add . && git commit -m "chore: update submodules"` to commit changes'
-      )
-    } else {
-      console.log('\n✨ All submodules are up to date')
+    // Check if there are any changes
+    try {
+      const status = execSync('git status --porcelain', { encoding: 'utf8' })
+      if (status.trim()) {
+        console.log(picocolors.cyan('\n📝 Changes detected in submodules'))
+        console.log(
+          picocolors.gray('   Run `git add . && git commit -m "chore: update submodules"` to commit changes')
+        )
+      } else {
+        console.log(picocolors.green('\n✅ All submodules are up to date'))
+      }
+    } catch {
+      // Ignore git status errors
     }
-  } catch {
-    console.log('ℹ️  Git status check skipped')
-  }
 
-  console.log('\n🎉 Submodule sync completed!')
+    console.log(picocolors.green('🎉 Submodule sync completed!'))
+
+  } catch (error) {
+    console.error(picocolors.red('❌ Error:'), error.message)
+    process.exit(1)
+  }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
   main()
 }
-
-export { syncSubmodule, runCommand }
