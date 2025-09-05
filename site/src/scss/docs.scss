@@ -81,3 +81,6 @@ $enable-cssgrid: true;
   colorPrimary: $cx-color-base-context-light-primary-base-color;
 }
 // stylelint-enable
+html {
+  scroll-padding-top: 129px; /* height of sticky header */
+}

@@ -129,7 +129,7 @@ export default [
   {
     files: [
       'site/src/assets/application.js',
-      'site/src/assets/cx-icons/icon-search.js',
+      'site/src/assets/icons-docs/icon-search.js',
       'site/src/assets/partials/*.js',
       'site/src/assets/search.js',
       'site/src/assets/snippets.js',
