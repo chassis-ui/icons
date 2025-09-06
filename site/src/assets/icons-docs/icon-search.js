@@ -64,5 +64,5 @@ import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.mjs'
   const trimmedQuery = query.trim()
   search(trimmedQuery)
   searchInput.value = trimmedQuery
-  document.querySelector('#content').scrollIntoView()
+  document.querySelector('#icons-section').scrollIntoView()
 })()
