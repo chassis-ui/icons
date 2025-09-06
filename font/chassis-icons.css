@@ -7,8 +7,8 @@
 @font-face {
   font-display: block;
   font-family: "chassis-icons";
-  src: url("./chassis-icons.woff2?223524638bf7d595a7c02993c94ec179") format("woff2"),
-url("./chassis-icons.woff?223524638bf7d595a7c02993c94ec179") format("woff");
+  src: url("./chassis-icons.woff2?cd21919f2c07303d657d3b27220ed912") format("woff2"),
+url("./chassis-icons.woff?cd21919f2c07303d657d3b27220ed912") format("woff");
 }
 
 .icon::before,
@@ -494,8 +494,6 @@ url("./chassis-icons.woff?223524638bf7d595a7c02993c94ec179") format("woff");
 .icon-list-square-solid::before { content: "\f2ee"; }
 .icon-magic-outline::before { content: "\f2ef"; }
 .icon-magic-solid::before { content: "\f2f0"; }
-.icon-microchip-1::before { content: "\f2f1"; }
-.icon-microchip::before { content: "\f2f2"; }
 .icon-music-outline::before { content: "\f2f3"; }
 .icon-music-solid::before { content: "\f2f4"; }
 .icon-plug-outline::before { content: "\f2f5"; }
@@ -504,3 +502,15 @@ url("./chassis-icons.woff?223524638bf7d595a7c02993c94ec179") format("woff");
 .icon-swatchbook-solid::before { content: "\f2f8"; }
 .icon-tools-outline::before { content: "\f2f9"; }
 .icon-tools-solid::before { content: "\f2fa"; }
+.icon-arrow-up-from-bracket-outline::before { content: "\f135"; }
+.icon-arrow-up-from-bracket-solid::before { content: "\f136"; }
+.icon-arrow-up-from-square-outline::before { content: "\f137"; }
+.icon-arrow-up-from-square-solid::before { content: "\f138"; }
+.icon-github-brand::before { content: "\f14b"; }
+.icon-github-square-brand::before { content: "\f14c"; }
+.icon-rocket-outline::before { content: "\f155"; }
+.icon-rocket-solid::before { content: "\f156"; }
+.icon-x-twitter-brand::before { content: "\f175"; }
+.icon-x-twitter-square-brand::before { content: "\f176"; }
+.icon-microchip-outline::before { content: "\f1db"; }
+.icon-microchip-solid::before { content: "\f1dc"; }

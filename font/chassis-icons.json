@@ -467,8 +467,6 @@
   "list-square-solid": 62190,
   "magic-outline": 62191,
   "magic-solid": 62192,
-  "microchip-1": 62193,
-  "microchip": 62194,
   "music-outline": 62195,
   "music-solid": 62196,
   "plug-outline": 62197,
@@ -476,5 +474,17 @@
   "swatchbook-outline": 62199,
   "swatchbook-solid": 62200,
   "tools-outline": 62201,
-  "tools-solid": 62202
+  "tools-solid": 62202,
+  "arrow-up-from-bracket-outline": 61749,
+  "arrow-up-from-bracket-solid": 61750,
+  "arrow-up-from-square-outline": 61751,
+  "arrow-up-from-square-solid": 61752,
+  "github-brand": 61771,
+  "github-square-brand": 61772,
+  "rocket-outline": 61781,
+  "rocket-solid": 61782,
+  "x-twitter-brand": 61813,
+  "x-twitter-square-brand": 61814,
+  "microchip-outline": 61915,
+  "microchip-solid": 61916
 }

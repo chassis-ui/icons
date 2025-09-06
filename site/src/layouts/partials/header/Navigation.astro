@@ -91,11 +91,11 @@ const { layout, title } = Astro.props
 
         <ul class="navbar-nav flex-row flex-wrap ms-medium-auto align-items-center">
           <LinkItem class="nav-link px-0 px-large-2" href={getConfig().github_org} target="_blank" rel="noopener">
-            <GitHubIcon class="icon icon-default icon-small" height={16} width={16} />
+            <svg class="icon" aria-hidden="true"><use href="#github-brand"></use></svg>
             <small class="d-large-none ms-xsmall">GitHub</small>
           </LinkItem>
           <LinkItem class="nav-link px-0 px-large-2" href={getConfig().github_org} target="_blank" rel="noopener">
-            <XIcon class="icon icon-default icon-small" height={16} width={16} />
+            <svg class="icon" aria-hidden="true"><use href="#x-twitter-brand"></use></svg>
             <small class="d-large-none ms-xsmall">X</small>
           </LinkItem>
           <li class="nav-item col-12 col-large-auto">
