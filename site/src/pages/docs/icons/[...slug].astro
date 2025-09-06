@@ -20,8 +20,5 @@ const frontmatter = data
 ---
 
 <IconsLayout frontmatter={frontmatter} id={id}>
-  <div class="container container-fluid">
-    <Details icon={frontmatter} />
-  </div>
-  <div set:html={body || ''} />
+  <Details icon={frontmatter} />
 </IconsLayout>
