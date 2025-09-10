@@ -20,20 +20,22 @@
   --cx-button-hover-border-color: var(--cx-button-hover-bg-color);
 }
 
-#icons-body,
-#icons-list li a .icon {
+// stylelint-disable selector-max-id
+#icons-body {
   --cx-icon-color: var(--cx-fg-main);
 }
-
 #icons-list li a {
   --cx-link-color: var(--cx-fg-subtle);
   --cx-fg-color: var(--cx-fg-main);
+  > .icon {
+    --cx-icon-color: var(--cx-fg-main);
+  }
+  &:hover .icon {
+    --cx-link-color: var(--cx-link-main);
+    --cx-icon-color: var(--cx-link-main);
+  }
 }
-
-#icons-list li a:hover .icon {
-  --cx-link-color: var(--cx-link-main);
-  --cx-icon-color: var(--cx-link-main);
-}
+// stylelint-enable selector-max-id
 
 .icon-search {
   @media (min-width: 768px) {

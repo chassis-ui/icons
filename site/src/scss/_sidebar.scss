@@ -33,7 +33,7 @@
   }
 
   @include media-breakpoint-up(large) {
-    & li::before {
+    li::before {
       position: absolute;
       width: 4px;
       height: 48px;
@@ -43,16 +43,16 @@
       background-color: var(--cx-secondary-30);
     }
 
-    & li:first-child::before {
+    li:first-child::before {
       height: 14px;
       margin-top: 14px;
     }
 
-    & li:last-child::before {
+    li:last-child::before {
       height: 14px;
     }
 
-    & li::after {
+    li::after {
       //border-left: 8px var(--cx-border-style) var(--cx-secondary-base-color);
       position: absolute;
       left: 1.025rem;

@@ -5,10 +5,10 @@
  */
 
 @font-face {
-  font-display: block;
   font-family: "chassis-icons";
   src: url("./chassis-icons.woff2?cd21919f2c07303d657d3b27220ed912") format("woff2"),
 url("./chassis-icons.woff?cd21919f2c07303d657d3b27220ed912") format("woff");
+  font-display: block;
 }
 
 .icon::before,
@@ -19,8 +19,8 @@ url("./chassis-icons.woff?cd21919f2c07303d657d3b27220ed912") format("woff");
   font-style: normal;
   font-weight: normal !important;
   font-variant: normal;
-  text-transform: none;
   line-height: 1;
+  text-transform: none;
   vertical-align: -.125em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

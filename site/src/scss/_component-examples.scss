@@ -108,13 +108,13 @@
   .fixed-top,
   .sticky-top {
     position: static;
-    margin: calc(var(--cxd-example-padding) * -1) calc(var(--cxd-example-padding) * -1) var(--cxd-example-padding); // stylelint-disable-line function-disallowed-list
+    margin: calc(var(--cxd-example-padding) * -1) calc(var(--cxd-example-padding) * -1) var(--cxd-example-padding);
   }
 
   .fixed-bottom,
   .sticky-bottom {
     position: static;
-    margin: var(--cxd-example-padding) calc(var(--cxd-example-padding) * -1) calc(var(--cxd-example-padding) * -1); // stylelint-disable-line function-disallowed-list
+    margin: var(--cxd-example-padding) calc(var(--cxd-example-padding) * -1) calc(var(--cxd-example-padding) * -1);
 
   }
 
@@ -368,7 +368,7 @@
 
 
   @include media-breakpoint-up(medium) {
-    padding: 1.25rem 1.25rem;
+    padding: 1.25rem;
     @include border-radius(calc(var(--cx-border-radius) - 1px));
   }
 

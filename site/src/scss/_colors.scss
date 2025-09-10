@@ -1,9 +1,15 @@
 @each $name, $value in $base-palette {
-  .cxd-#{$name} { color: color-contrast($value); background-color: $value; };
+  .cxd-#{$name} {
+    color: color-contrast($value);
+    background-color: $value;
+  };
 }
 
 @each $name, $value in map-merge($context-border-colors, $context-border-colors) {
-  .cxd-#{$name} { color: color-contrast($value); background-color: $value; };
+  .cxd-#{$name} {
+    color: color-contrast($value);
+    background-color: $value;
+  };
 }
 
 @each $color, $value in map-merge($context-base-colors, ("gray-500": $neutral-50)) {

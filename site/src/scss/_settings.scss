@@ -1,5 +1,6 @@
 $prefix: cx- !default;
 
+// fusv-disable
 $color-mode-type:               data !default; // `data` or `media-query`
 
 $enable-accordion-sizes:        true !default;
@@ -26,6 +27,7 @@ $enable-table-font-tokens:      true !default;
 $enable-transitions:            true !default;
 $enable-validation-icons:       true !default;
 $enable-visited-links:          false !default;
+// fusv-enable
 
 // Import tokens from the Chassis Tokens package
 @import "../../../node_modules/@ozgurgunes/chassis-tokens/dist/tokens/web/chassis-docs/allTokens";

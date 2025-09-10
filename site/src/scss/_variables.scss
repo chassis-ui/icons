@@ -191,14 +191,14 @@ $cxd-callout-variants: info, warning, danger, default !default;
 .cxd-content > h2,
 .cxd-content > h3,
 .cxd-content > h4 {
-  font-family: var(--cx-font-family-display) !important;
-  font-weight: var(--cx-font-weight-display-strong) !important;
+  font-family: var(--cx-font-family-display) !important; // stylelint-disable-line declaration-no-important
+  font-weight: var(--cx-font-weight-display-strong) !important; // stylelint-disable-line declaration-no-important
 }
 
 .cxd-playground textarea {
-  font-family: var(--cx-font-family-code) !important;
+  font-family: var(--cx-font-family-code) !important; // stylelint-disable-line declaration-no-important
   //font-size: var(--cx-font-small) !important;
-  background-color: var(--cx-default-bg-even) !important;
+  background-color: var(--cx-default-bg-even) !important; // stylelint-disable-line declaration-no-important
   border-color: var(--cx-default-border-subtle);
 }
 

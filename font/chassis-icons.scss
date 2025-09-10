@@ -1,17 +1,39 @@
-/*! * Chassis Icons v0.1.0 * Copyright 2025 Ozgur Gunes * Licensed under MIT
-(https://github.com/ozgurgunes/chassis-icons/blob/main/LICENSE) */ $chassis-icons-font:
-"chassis-icons" !default; $chassis-icons-font-dir: "." !default; $chassis-icons-font-file:
-"#{$chassis-icons-font-dir}/#{$chassis-icons-font}" !default; $chassis-icons-font-hash:
-"24e3eb84d0bcaf83d77f904c78ac1f47" !default; $chassis-icons-font-src: url("#{$chassis-icons-font-file}.woff2?#{$chassis-icons-font-hash}")
-format("woff2"), url("#{$chassis-icons-font-file}.woff?#{$chassis-icons-font-hash}")
-format("woff") !default; @font-face { font-display: block; font-family: $chassis-icons-font;
-src: $chassis-icons-font-src; } .icon::before, [class^="icon-"]::before,
-[class*="
-icon-"]::before { display: inline-block; font-family: $chassis-icons-font
-!important; font-style: normal; font-weight: normal !important; font-variant:
-normal; text-transform: none; line-height: 1; vertical-align: -.125em;
--webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; } $chassis-icons-map:
-(
+/*!
+ * Chassis Icons v0.1.0
+ * Copyright 2025 Ozgur Gunes
+ * Licensed under MIT (https://github.com/ozgurgunes/chassis-icons/blob/main/LICENSE)
+ */
+
+$chassis-icons-font: "chassis-icons" !default;
+$chassis-icons-font-dir: "." !default;
+$chassis-icons-font-file: "#{$chassis-icons-font-dir}/#{$chassis-icons-font}" !default;
+$chassis-icons-font-hash: "cd21919f2c07303d657d3b27220ed912" !default;
+$chassis-icons-font-src:
+  url("#{$chassis-icons-font-file}.woff2?#{$chassis-icons-font-hash}") format("woff2"),
+  url("#{$chassis-icons-font-file}.woff?#{$chassis-icons-font-hash}") format("woff") !default;
+
+@font-face {
+  font-display: block;
+  font-family: $chassis-icons-font;
+  src: $chassis-icons-font-src;
+}
+
+.icon::before,
+[class^="icon-"]::before,
+[class*=" icon-"]::before {
+  display: inline-block;
+  font-family: $chassis-icons-font !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: -.125em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+$chassis-icons-map: (
   "alarm-clock-outline": "\f101",
   "alarm-clock-solid": "\f102",
   "arrow-down-long-outline": "\f103",
@@ -500,5 +522,8 @@ normal; text-transform: none; line-height: 1; vertical-align: -.125em;
   "x-twitter-square-brand": "\f176",
   "microchip-outline": "\f1db",
   "microchip-solid": "\f1dc",
-); @each $icon, $codepoint in $chassis-icons-map { .icon-#{$icon}::before {
-content: $codepoint; } }
+);
+
+@each $icon, $codepoint in $chassis-icons-map {
+  .icon-#{$icon}::before { content: $codepoint; }
+}
