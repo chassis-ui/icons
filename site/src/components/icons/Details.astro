@@ -23,13 +23,13 @@ const iconAdapt = `<svg class="icon icon-adaptive"><use xlink:href="#${iconName}
       role="img"
       aria-label={`${icon.title} - large preview`}
     >
-      <Fragment set:html={iconAdapt}>
+      <Fragment set:html={iconAdapt} />
     </div>
     <div>
-      <Examples icon={icon}>
+      <Examples icon={icon} />
     </div>
   </main>
   <aside class="col-medium-4">
-    <Snippets icon={icon}>
+    <Snippets icon={icon} />
   </aside>
 </div>

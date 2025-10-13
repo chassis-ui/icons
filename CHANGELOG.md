@@ -19,15 +19,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **Package Name**: Renamed from `@ozgurgunes/chassis-tokens` to `@ozgurgunes/chassis-icons`
+- **Package Name**: Renamed from `@chassis-ui/tokens` to `@chassis-ui/icons`
 - **Focus**: Specialized for icon generation and font creation only
 - **Dependencies**: Removed token-related dependencies, kept icon-specific tools
 - **Scripts**: Streamlined build scripts for icon-only workflow
 
 ### Removed
 
-- **Design Tokens**: Moved to separate `@ozgurgunes/chassis-tokens` package
-- **Assets Management**: Moved to separate `@ozgurgunes/chassis-assets` package
+- **Design Tokens**: Moved to separate `@chassis-ui/tokens` package
+- **Assets Management**: Moved to separate `@chassis-ui/assets` package
 - **Token Build Scripts**: Removed Style Dictionary and token-related tooling
 
 ### Technical Details

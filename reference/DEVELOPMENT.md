@@ -6,7 +6,7 @@
 
 ### **Split Details (August 25, 2025)**
 
-- **Origin**: Extracted from `@ozgurgunes/chassis-tokens`
+- **Origin**: Extracted from `@chassis-ui/tokens`
 - **Purpose**: Dedicated icon processing and font generation
 - **Scope**: SVG optimization, sprite creation, icon fonts
 
@@ -167,7 +167,7 @@ pnpm release  # Runs build + zip
 ```json
 // package.json
 {
-  "name": "@ozgurgunes/chassis-icons",
+  "name": "@chassis-ui/icons",
   "main": "font/chassis-icons.css",
   "files": [
     "font/*.{woff,woff2,css,scss,svg,json}",

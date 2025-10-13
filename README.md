@@ -2,7 +2,7 @@
 
 > **Icon generator and font builder for Chassis Design System**
 
-[![npm version](https://img.shields.io/npm/v/@ozgurgunes/chassis-icons.svg)](https://www.npmjs.com/package/@ozgurgunes/chassis-icons)
+[![npm version](https://img.shields.io/npm/v/@chassis-ui/icons.svg)](https://www.npmjs.com/package/@chassis-ui/icons)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## ✨ Features
@@ -18,10 +18,10 @@
 
 ```bash
 # Install the package
-npm install @ozgurgunes/chassis-icons
+npm install @chassis-ui/icons
 
 # Or with pnpm
-pnpm install @ozgurgunes/chassis-icons
+pnpm install @chassis-ui/icons
 ```
 
 ## 🚀 Quick Start
@@ -32,7 +32,7 @@ pnpm install @ozgurgunes/chassis-icons
 <!-- Include the CSS -->
 <link
   rel="stylesheet"
-  href="node_modules/@ozgurgunes/chassis-icons/icons/package/chassis-icons.css"
+  href="node_modules/@chassis-ui/icons/icons/package/chassis-icons.css"
 />
 
 <!-- Use icon classes -->
@@ -46,7 +46,7 @@ pnpm install @ozgurgunes/chassis-icons
 <!-- Include the sprite -->
 <svg style="display: none;">
   <use
-    href="node_modules/@ozgurgunes/chassis-icons/icons/package/chassis-icons.svg"
+    href="node_modules/@chassis-ui/icons/icons/package/chassis-icons.svg"
   ></use>
 </svg>
 
@@ -160,9 +160,9 @@ After building, you'll find these generated files:
 
 This package is part of the **Chassis Design System**:
 
-- [`@ozgurgunes/chassis-tokens`](https://github.com/ozgurgunes/chassis-tokens) - Design tokens
-- [`@ozgurgunes/chassis-assets`](https://github.com/ozgurgunes/chassis-assets) - Brand assets
-- [`@ozgurgunes/chassis-css`](https://github.com/ozgurgunes/chassis-css) - CSS framework
+- [`@chassis-ui/tokens`](https://github.com/chassis-ui/tokens) - Design tokens
+- [`@chassis-ui/assets`](https://github.com/chassis-ui/assets) - Brand assets
+- [`@chassis-ui/css`](https://github.com/chassis-ui/css) - CSS framework
 
 ## 📄 License
 
