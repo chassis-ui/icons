@@ -30,4 +30,4 @@ $enable-visited-links:          false !default;
 // fusv-enable
 
 // Import tokens from the Chassis Tokens package
-@import "../../../node_modules/@chassis-ui/tokens/dist/tokens/web/chassis-docs/allTokens";
+@import "@chassis-ui/tokens/dist/web/chassis-docs/base";
