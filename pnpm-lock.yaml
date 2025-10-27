@@ -5,8 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  devalue: '>=5.3.2'
-  brace-expansion: '>=2.0.2'
+  '@chassis-ui/docs': link:../chassis-website/packages/docs
 
 importers:
 
@@ -29,10 +28,13 @@ importers:
         version: 3.6.0
       '@chassis-ui/css':
         specifier: github:chassis-ui/css#app/docs
-        version: https://codeload.github.com/chassis-ui/css/tar.gz/8050ae56c828d8f42e99fae1a6044fe53b0ad5b0(@popperjs/core@2.11.8)
+        version: https://codeload.github.com/chassis-ui/css/tar.gz/3f90d1d43743a12c29637df43678044ab7c97168(@popperjs/core@2.11.8)
+      '@chassis-ui/docs':
+        specifier: link:../chassis-website/packages/docs
+        version: link:../chassis-website/packages/docs
       '@chassis-ui/tokens':
         specifier: github:chassis-ui/tokens#app/docs
-        version: https://codeload.github.com/chassis-ui/tokens/tar.gz/5f28392c96889070e1adab00bd45328b81330306
+        version: https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a
       '@docsearch/css':
         specifier: ^3.9.0
         version: 3.9.0
@@ -364,14 +366,14 @@ packages:
     resolution: {integrity: sha512-+ntATQe1AlL7nTOYjwjj6w3299CgRot48wL761TUGYpYgAou3AaONZazp0PKZyCyWhudWsjhq1nvRHOvbMzhTA==}
     engines: {node: '>=18'}
 
-  '@chassis-ui/css@https://codeload.github.com/chassis-ui/css/tar.gz/8050ae56c828d8f42e99fae1a6044fe53b0ad5b0':
-    resolution: {tarball: https://codeload.github.com/chassis-ui/css/tar.gz/8050ae56c828d8f42e99fae1a6044fe53b0ad5b0}
+  '@chassis-ui/css@https://codeload.github.com/chassis-ui/css/tar.gz/3f90d1d43743a12c29637df43678044ab7c97168':
+    resolution: {tarball: https://codeload.github.com/chassis-ui/css/tar.gz/3f90d1d43743a12c29637df43678044ab7c97168}
     version: 0.1.0
     peerDependencies:
       '@popperjs/core': ^2.11.8
 
-  '@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/5f28392c96889070e1adab00bd45328b81330306':
-    resolution: {tarball: https://codeload.github.com/chassis-ui/tokens/tar.gz/5f28392c96889070e1adab00bd45328b81330306}
+  '@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a':
+    resolution: {tarball: https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a}
     version: 0.1.0
 
   '@colors/colors@1.6.0':
@@ -1579,12 +1581,11 @@ packages:
   bail@2.0.2:
     resolution: {integrity: sha512-0xO6mYd7JB2YesxDKplafRpsiOzPt9V02ddPCLbY1xYGPOX24NTyN50qnUxgCPcSoYMhKpAuBTjQoRZCAkUDRw==}
 
+  balanced-match@1.0.2:
+    resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
+
   balanced-match@2.0.0:
     resolution: {integrity: sha512-1ugUSr8BHXRnK23KfuYS+gVMC3LB8QGH9W1iGtDPsNWoQbgtXSExkBu2aDR4epiGWZOjZsj6lDl/N/AqqTC3UA==}
-
-  balanced-match@3.0.1:
-    resolution: {integrity: sha512-vjtV3hiLqYDNRoiAv0zC4QaGAMPomEoq83PRmYIofPswwZurCeWR5LByXm7SyoL0Zh5+2z0+HC7jG8gSZJUh0w==}
-    engines: {node: '>= 16'}
 
   bare-events@2.8.0:
     resolution: {integrity: sha512-AOhh6Bg5QmFIXdViHbMc2tLDsBIRxdkIaIddPslJF9Z5De3APBScuqGP2uThXnIpqFrgoxMNC6km7uXNIMLHXA==}
@@ -1618,9 +1619,11 @@ packages:
     resolution: {integrity: sha512-F3PH5k5juxom4xktynS7MoFY+NUWH5LC4CnH11YB8NPew+HLpmBLCybSAEyb2F+4pRXhuhWqFesoQd6DAyc2hw==}
     engines: {node: '>=18'}
 
-  brace-expansion@4.0.1:
-    resolution: {integrity: sha512-YClrbvTCXGe70pU2JiEiPLYXO9gQkyxYeKpJIQHVS/gOs6EWMQP2RYBwjFLNT322Ji8TOC3IMPfsYCedNpzKfA==}
-    engines: {node: '>= 18'}
+  brace-expansion@1.1.12:
+    resolution: {integrity: sha512-9T9UjW3r0UW5c1Q7GTwllptXwhvYmEzFhzMfZ9H7FQWt+uZePjZPjBP/W1ZEyZ1twGWom5/56TF4lPcqjnDHcg==}
+
+  brace-expansion@2.0.2:
+    resolution: {integrity: sha512-Jt0vHyM+jmUBqojB7E1NIYadt0vI0Qxjxd2TErW94wDz+E2LAm5vKMXXwg6ZZBTHPuUlDgQHKXvjGBdfcF1ZDQ==}
 
   braces@3.0.3:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
@@ -1828,6 +1831,9 @@ packages:
 
   common-ancestor-path@1.0.1:
     resolution: {integrity: sha512-L3sHRo1pXXEqX8VU28kfgUY+YGsk09hPqZiZmLacNib6XNTCM8ubYeT7ryXQw8asB1sKgcU5lkB7ONug08aB8w==}
+
+  concat-map@0.0.1:
+    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
   console-control-strings@1.1.0:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}
@@ -5270,14 +5276,11 @@ snapshots:
     dependencies:
       fontkit: 2.0.4
 
-  '@chassis-ui/css@https://codeload.github.com/chassis-ui/css/tar.gz/8050ae56c828d8f42e99fae1a6044fe53b0ad5b0(@popperjs/core@2.11.8)':
+  '@chassis-ui/css@https://codeload.github.com/chassis-ui/css/tar.gz/3f90d1d43743a12c29637df43678044ab7c97168(@popperjs/core@2.11.8)':
     dependencies:
       '@popperjs/core': 2.11.8
 
-  '@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/5f28392c96889070e1adab00bd45328b81330306':
-    dependencies:
-      '@chassis-ui/docs': link:../chassis-docs/packages/docs
-      chassis-docs: link:../../../.local/share/pnpm/5/node_modules/@chassis-ui/docs
+  '@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a': {}
 
   '@colors/colors@1.6.0': {}
 
@@ -6516,9 +6519,9 @@ snapshots:
 
   bail@2.0.2: {}
 
-  balanced-match@2.0.0: {}
+  balanced-match@1.0.2: {}
 
-  balanced-match@3.0.1: {}
+  balanced-match@2.0.0: {}
 
   bare-events@2.8.0: {}
 
@@ -6547,9 +6550,14 @@ snapshots:
       widest-line: 5.0.0
       wrap-ansi: 9.0.2
 
-  brace-expansion@4.0.1:
+  brace-expansion@1.1.12:
     dependencies:
-      balanced-match: 3.0.1
+      balanced-match: 1.0.2
+      concat-map: 0.0.1
+
+  brace-expansion@2.0.2:
+    dependencies:
+      balanced-match: 1.0.2
 
   braces@3.0.3:
     dependencies:
@@ -6768,6 +6776,8 @@ snapshots:
   commander@9.5.0: {}
 
   common-ancestor-path@1.0.1: {}
+
+  concat-map@0.0.1: {}
 
   console-control-strings@1.1.0: {}
 
@@ -8896,15 +8906,15 @@ snapshots:
 
   minimatch@3.1.2:
     dependencies:
-      brace-expansion: 4.0.1
+      brace-expansion: 1.1.12
 
   minimatch@5.1.6:
     dependencies:
-      brace-expansion: 4.0.1
+      brace-expansion: 2.0.2
 
   minimatch@9.0.5:
     dependencies:
-      brace-expansion: 4.0.1
+      brace-expansion: 2.0.2
 
   minimist@1.2.8: {}
 

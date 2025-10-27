@@ -1,6 +1,7 @@
 ---
 import type { LayoutOverridesHTMLAttributes } from '@libs/layout'
-import BaseLayout from '@layouts/BaseLayout.astro'
+import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
+import '../scss/docs.scss'
 
 const bodyProps: LayoutOverridesHTMLAttributes<'body'> = {}
 
@@ -10,5 +11,7 @@ bodyProps['data-cx-target'] = '#icons-nav'
 ---
 
 <BaseLayout {...Astro.props} layout="icons" overrides={{ body: bodyProps }}>
+  <div slot="main" class="container-2xlarge cxd-gutter">
   <slot />
+  </div>
 </BaseLayout>

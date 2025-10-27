@@ -52,33 +52,47 @@
   },
   "pnpm": {
     "overrides": {
-      "devalue": ">=5.3.2",
-      "brace-expansion": ">=2.0.2"
+      "@chassis-ui/docs": "link:../chassis-website/packages/docs"
     }
   },
   "scripts": {
-    "build": "pnpm build:icons && pnpm build:pages && pnpm build:site",
+    "build": "pnpm icons:build && pnpm site:pages && pnpm site:build",
     "dev": "astro dev --root site --port 4323",
     "release": "pnpm build && pnpm icons:zip",
-    "test": "pnpm build:site && npm-run-all --parallel --aggregate-output --continue-on-error test:*",
-    "change-version": "node build/change-version.js",
-    "sync-submodules": "node build/sync-submodules.js",
-    "build:astro": "astro build --root site",
-    "build:icons": "rm -rf font/*.{css,scss,woff,woff2,svg} && pnpm icons:main --aggregate-output --parallel && pnpm icons:sprite && pnpm icons:font",
-    "build:pages": "node build/build-pages.js",
-    "build:site": "node build/build-site.js",
+    "test": "pnpm site:build && npm-run-all --parallel --aggregate-output --continue-on-error check:*",
+
+    "site": "pnpm site:build && pnpm site:lint",
+    "site:pages": "node build/build-pages.js",
+    "site:build": "node build/build-site.js",
+    "site:format": "prettier --write --cache site",
+    "site:lint": "pnpm site:lint:eslint && pnpm site:lint:stylelint && pnpm site:lint:prettier && pnpm site:lint:vnu",
+    "site:lint:fusv": "find-unused-sass-variables site/src/scss/",
+    "site:lint:eslint": "prettier -c --cache site",
+    "site:lint:prettier": "prettier -c --cache packages/website",
+    "site:lint:stylelint": "stylelint site/src/scss/ --cache --cache-location .cache/.stylelintcache",
+    "site:lint:vnu": "node build/vnu-jar.js",
+
+    "icons:build": "rm -rf font/*.{css,scss,woff,woff2,svg} && pnpm icons:main --aggregate-output --parallel && pnpm icons:sprite && pnpm icons:font",
     "icons:font": "pnpm icons:font-main && pnpm icons:font-min",
     "icons:font-main": "node build/build-icons.js",
     "icons:font-min": "cleancss -O1 --format breakWith=lf --with-rebase --output font/chassis-icons.min.css font/chassis-icons.css",
     "icons:main": "node build/build-svgs.js",
     "icons:sprite": "svg-sprite --config svg-sprite.json --log=info \"svgs/*.svg\"",
     "icons:zip": "node build/zip-icons.js",
+
+    "astro:dev": "astro dev --root site --port 4323",
+    "astro:build": "astro build --root site",
+    "astro:preview": "astro preview --root site",
+
     "test:audit": "pnpm audit --audit-level moderate",
     "test:eslint": "eslint --cache --cache-location .cache/.eslintcache .",
     "test:fusv": "find-unused-sass-variables site/src/scss/",
     "test:icons": "node build/check-icons.js",
     "test:stylelint": "stylelint site/src/scss/ --cache --cache-location .cache/.stylelintcache",
-    "test:vnu": "node build/vnu-jar.js"
+    "test:vnu": "node build/vnu-jar.js",
+
+    "change-version": "node build/change-version.js",
+    "sync-submodules": "node build/sync-submodules.js"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
@@ -86,11 +100,12 @@
     "@astrojs/mdx": "^4.3.5",
     "@astrojs/prism": "^3.3.0",
     "@astrojs/sitemap": "^3.6.0",
+    "@chassis-ui/css": "github:chassis-ui/css#app/docs",
+    "@chassis-ui/docs": "^0.1.1",
+    "@chassis-ui/tokens": "github:chassis-ui/tokens#app/docs",
     "@docsearch/css": "^3.9.0",
     "@docsearch/js": "^3.9.0",
     "@eslint/js": "^9.36.0",
-    "@chassis-ui/css": "github:chassis-ui/css#app/docs",
-    "@chassis-ui/tokens": "github:chassis-ui/tokens#app/docs",
     "@stackblitz/sdk": "^1.11.0",
     "@twbs/fantasticon": "^3.1.0",
     "@types/hast": "^3.0.4",

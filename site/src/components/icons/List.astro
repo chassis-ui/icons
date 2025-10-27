@@ -34,7 +34,7 @@ const {
             data-name={filename}
             data-tags={iconPage.data.tags?.split(',')?.join(' ').toLowerCase()}
             data-categories={iconPage.data.categories?.split(',')?.join(' ').toLowerCase()}>
-          <a class="d-block text-decoration-none" href={`/docs/icons/${filename}`}>
+          <a class="d-block text-decoration-none" href={`/icons/docs/${filename}`}>
             <div class="bg-even py-3xlarge text-center rounded">
               <svg class="icon">
                 <use xlink:href={`#${filename}`}/>
@@ -48,5 +48,5 @@ const {
   </ul>
 </section>
 <Fragment slot="scripts">
-  <script type="module" src="/assets/icons-docs/icon-search.js"></script>
+  <script type="module" src="/static/icons-docs/icon-search.js"></script>
 </Fragment>

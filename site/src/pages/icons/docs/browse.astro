@@ -40,8 +40,8 @@ const frontmatter = {
   <nav aria-label="breadcrumb">
     <div class="border-bottom border-subtle mb-medium">
       <ol class="breadcrumb">
-        <li class="breadcrumb-page"><a href="/docs/icons">Icons</a></li>
-        <li class="breadcrumb-page"><a href="/docs/icons/browse">Browse</a></li>
+        <li class="breadcrumb-page"><a href="/icons/docs">Icons</a></li>
+        <li class="breadcrumb-page"><a href="/icons/docs/browse">Browse</a></li>
       </ol>
     </div>
   </nav>
@@ -57,7 +57,7 @@ const frontmatter = {
       <div class="d-flex flex-wrap gap-medium mb-4">
         {
           sortedCategories.map(([category, count]) => (
-            <a href={`/docs/icons/category/${category}/`} class="button outline border-subtle">
+            <a href={`/icons/docs/category/${category}/`} class="button outline border-subtle">
               {category.charAt(0).toUpperCase() + category.slice(1)}
               <span class="badge default ms-2xsmall">{count}</span>
             </a>
@@ -72,7 +72,7 @@ const frontmatter = {
       <div class="d-flex flex-wrap gap-medium mb-4">
         {
           sortedTags.map(([tag, count]) => (
-            <a href={`/docs/icons/tag/${tag}/`} class="button outline border-subtle">
+            <a href={`/icons/docs/tag/${tag}/`} class="button outline border-subtle">
               {tag}
               <span class="badge default ms-2xsmall">{count}</span>
             </a>
