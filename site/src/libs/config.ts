@@ -11,7 +11,7 @@ const configSchema = z.object({
     index_name: z.string()
   }),
   analytics: z.object({
-    fathom_site: z.string()
+    google_id: z.string()
   }),
   anchors: z.object({
     min: z.number(),
@@ -20,35 +20,18 @@ const configSchema = z.object({
   authors: z.string(),
   baseURL: z.string().url(),
   blog: z.string().url(),
-  cdn: z.object({
-    css: z.string().url(),
-    css_rtl: z.string().url(),
-    css_hash: z.string(),
-    css_rtl_hash: z.string(),
-    js: z.string().url(),
-    js_hash: z.string(),
-    js_bundle: z.string().url(),
-    js_bundle_hash: z.string(),
-    popper: z.string().url(),
-    popper_esm: z.string().url(),
-    popper_hash: z.string()
-  }),
   current_version: zVersionSemver,
   description: z.string(),
   docs_version: zVersionMajorMinor,
   docsDir: z.string(),
+  docsPath: z.string(),
   download: z.object({
     dist: z.string().url(),
-    dist_examples: z.string().url(),
     source: z.string().url()
   }),
   github_org: z.string().url(),
-  icons: z.string().url(),
-  opencollective: z.string().url(),
   repo: z.string().url(),
   subtitle: z.string(),
-  swag: z.string().url(),
-  themes: z.string().url(),
   title: z.string(),
   toc: z.object({
     min: z.number(),

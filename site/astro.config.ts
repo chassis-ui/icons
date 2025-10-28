@@ -3,17 +3,9 @@ import { chassis } from './src/libs/astro'
 import { getConfig } from './src/libs/config'
 import { algoliaPlugin } from './src/plugins/algolia-plugin'
 import { stackblitzPlugin } from './src/plugins/stackblitz-plugin'
+import { getSiteUrl } from '@chassis-ui/docs'
 
-const isDev = process.env.NODE_ENV === 'development'
-
-const site = isDev
-  ? // In development mode, use the local dev server.
-    'http://localhost:4323'
-  : process.env.DEPLOY_PRIME_URL !== undefined
-    ? // If deploying on Netlify, use the `DEPLOY_PRIME_URL` environment variable.
-      process.env.DEPLOY_PRIME_URL
-    : // Otherwise, use the `baseURL` value defined in the `config.yml` file.
-      getConfig().baseURL
+const site = getSiteUrl(getConfig())
 
 // https://astro.build/config
 export default defineConfig({

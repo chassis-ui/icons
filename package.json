@@ -50,14 +50,9 @@
     "node": ">=18.0.0",
     "pnpm": ">=9.0.0"
   },
-  "pnpm": {
-    "overrides": {
-      "@chassis-ui/docs": "link:../chassis-website/packages/docs"
-    }
-  },
   "scripts": {
     "build": "pnpm icons:build && pnpm site:pages && pnpm site:build",
-    "dev": "astro dev --root site --port 4323",
+    "dev": "pnpm astro:dev",
     "release": "pnpm build && pnpm icons:zip",
     "test": "pnpm site:build && npm-run-all --parallel --aggregate-output --continue-on-error check:*",
 
@@ -80,7 +75,7 @@
     "icons:sprite": "svg-sprite --config svg-sprite.json --log=info \"svgs/*.svg\"",
     "icons:zip": "node build/zip-icons.js",
 
-    "astro:dev": "astro dev --root site --port 4323",
+    "astro:dev": "astro dev --root site --port 4324",
     "astro:build": "astro build --root site",
     "astro:preview": "astro preview --root site",
 

@@ -4,9 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@chassis-ui/docs': link:../chassis-website/packages/docs
-
 importers:
 
   .:
@@ -30,8 +27,8 @@ importers:
         specifier: github:chassis-ui/css#app/docs
         version: https://codeload.github.com/chassis-ui/css/tar.gz/3f90d1d43743a12c29637df43678044ab7c97168(@popperjs/core@2.11.8)
       '@chassis-ui/docs':
-        specifier: link:../chassis-website/packages/docs
-        version: link:../chassis-website/packages/docs
+        specifier: ^0.1.1
+        version: 0.1.1(@chassis-ui/css@https://codeload.github.com/chassis-ui/css/tar.gz/3f90d1d43743a12c29637df43678044ab7c97168(@popperjs/core@2.11.8))(@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a)(astro@5.14.4(@types/node@22.18.10)(rollup@4.52.4)(sass@1.78.0)(typescript@5.9.3)(yaml@2.8.1))
       '@chassis-ui/tokens':
         specifier: github:chassis-ui/tokens#app/docs
         version: https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a
@@ -371,6 +368,15 @@ packages:
     version: 0.1.0
     peerDependencies:
       '@popperjs/core': ^2.11.8
+
+  '@chassis-ui/docs@0.1.1':
+    resolution: {integrity: sha512-SXHLfAI6dmWwkQ2kz5794S9bXd1qks+g7umNCPSpzl3eABej+4TvQP59SavMZcMnewzc3gqlE6ph0rnHtzyM0Q==}
+    version: 0.1.1
+    peerDependencies:
+      '@chassis-ui/css': github:chassis-ui/css#app/docs
+      '@chassis-ui/icons': github:chassis-ui/icons#app/docs
+      '@chassis-ui/tokens': github:chassis-ui/tokens#app/docs
+      astro: ^4.0.0 || ^5.0.0
 
   '@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a':
     resolution: {tarball: https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a}
@@ -5280,6 +5286,12 @@ snapshots:
     dependencies:
       '@popperjs/core': 2.11.8
 
+  '@chassis-ui/docs@0.1.1(@chassis-ui/css@https://codeload.github.com/chassis-ui/css/tar.gz/3f90d1d43743a12c29637df43678044ab7c97168(@popperjs/core@2.11.8))(@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a)(astro@5.14.4(@types/node@22.18.10)(rollup@4.52.4)(sass@1.78.0)(typescript@5.9.3)(yaml@2.8.1))':
+    dependencies:
+      '@chassis-ui/css': https://codeload.github.com/chassis-ui/css/tar.gz/3f90d1d43743a12c29637df43678044ab7c97168(@popperjs/core@2.11.8)
+      '@chassis-ui/tokens': https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a
+      astro: 5.14.4(@types/node@22.18.10)(rollup@4.52.4)(sass@1.78.0)(typescript@5.9.3)(yaml@2.8.1)
+
   '@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a': {}
 
   '@colors/colors@1.6.0': {}
@@ -7165,7 +7177,7 @@ snapshots:
       eslint: 8.57.1
       eslint-plugin-react: 7.37.5(eslint@8.57.1)
 
-  eslint-config-standard@17.1.0(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.0(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0))(eslint-plugin-n@15.7.0(eslint@8.57.1))(eslint-plugin-promise@6.6.0(eslint@8.57.1))(eslint@8.57.1):
+  eslint-config-standard@17.1.0(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.0(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0))(eslint-plugin-n@15.7.0(eslint@9.37.0))(eslint-plugin-promise@6.6.0(eslint@9.37.0))(eslint@8.57.1):
     dependencies:
       eslint: 8.57.1
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.0(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0)
@@ -9930,7 +9942,7 @@ snapshots:
   standard@17.1.2(@typescript-eslint/parser@8.46.0(eslint@9.37.0)(typescript@5.9.3)):
     dependencies:
       eslint: 8.57.1
-      eslint-config-standard: 17.1.0(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.0(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0))(eslint-plugin-n@15.7.0(eslint@8.57.1))(eslint-plugin-promise@6.6.0(eslint@8.57.1))(eslint@8.57.1)
+      eslint-config-standard: 17.1.0(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.46.0(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0))(eslint-plugin-n@15.7.0(eslint@9.37.0))(eslint-plugin-promise@6.6.0(eslint@9.37.0))(eslint@8.57.1)
       eslint-config-standard-jsx: 11.0.0(eslint-plugin-react@7.37.5(eslint@8.57.1))(eslint@8.57.1)
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.46.0(eslint@9.37.0)(typescript@5.9.3))(eslint@8.57.1)
       eslint-plugin-n: 15.7.0(eslint@8.57.1)

@@ -55,7 +55,7 @@ This document provides a mapping of Bootstrap classes to their Chassis CSS equiv
 <div class="card">
   <div class="card-body">
     <h3 class="card-title">Title</h3>
-    <p>Content</p>
+    <p class="card-text">Content</p>
   </div>
 </div>
 
@@ -63,14 +63,14 @@ This document provides a mapping of Bootstrap classes to their Chassis CSS equiv
 <div class="card">
   <div class="card-content">
     <h3 class="card-title">Title</h3>
-    <p>Content</p>
+    <p class="card-body">Content</p>
   </div>
 </div>
 ```
 
 ### Pattern Differences
-- **Bootstrap**: Uses `card` + `card-body` + `card-title` structure
-- **Chassis CSS**: Uses `card` + `card-content` + `card-title` structure (only `card-body` → `card-content`)
+- **Bootstrap**: Uses `card` + `card-body` + `card-title`, `card-text` structure
+- **Chassis CSS**: Uses `card` + `card-content` + `card-title`, `card-body` structure (`card-body` → `card-content`, `card-text` → `card-body`)
 
 ## Typography
 
@@ -79,11 +79,9 @@ This document provides a mapping of Bootstrap classes to their Chassis CSS equiv
 ```html
 <!-- Bootstrap -->
 <div class="display-6 text-primary">Large Display Text</div>
-<div class="h1">Large Heading</div>
 
 <!-- Chassis CSS -->
 <div class="font-display font-6xlarge text-primary">Large Display Text</div>
-<div class="font-6xlarge">Large Heading</div>
 ```
 
 ### Pattern Differences
@@ -156,12 +154,12 @@ These classes are similar or identical between Bootstrap and Chassis CSS:
     <div class="row text-center">
       <div class="col-4">
         <div class="font-display font-6xlarge text-primary">150</div>
-        <div class="text-muted">Icons</div>
+        <div class="fg-subtle">Icons</div>
       </div>
     </div>
     <a href="/browse" class="button primary outline small">
       Browse All
-      <span class="badge primary ms-2">150</span>
+      <span class="badge primary ms-small">150</span>
     </a>
   </div>
 </div>
