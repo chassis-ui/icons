@@ -27,8 +27,8 @@ importers:
         specifier: github:chassis-ui/css#app/docs
         version: https://codeload.github.com/chassis-ui/css/tar.gz/3f90d1d43743a12c29637df43678044ab7c97168(@popperjs/core@2.11.8)
       '@chassis-ui/docs':
-        specifier: ^0.1.1
-        version: 0.1.1(@chassis-ui/css@https://codeload.github.com/chassis-ui/css/tar.gz/3f90d1d43743a12c29637df43678044ab7c97168(@popperjs/core@2.11.8))(@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a)(astro@5.14.4(@types/node@22.18.10)(rollup@4.52.4)(sass@1.78.0)(typescript@5.9.3)(yaml@2.8.1))
+        specifier: ^0.1.2
+        version: 0.1.2(astro@5.14.4(@types/node@22.18.10)(rollup@4.52.4)(sass@1.78.0)(typescript@5.9.3)(yaml@2.8.1))
       '@chassis-ui/tokens':
         specifier: github:chassis-ui/tokens#app/docs
         version: https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a
@@ -369,14 +369,10 @@ packages:
     peerDependencies:
       '@popperjs/core': ^2.11.8
 
-  '@chassis-ui/docs@0.1.1':
-    resolution: {integrity: sha512-SXHLfAI6dmWwkQ2kz5794S9bXd1qks+g7umNCPSpzl3eABej+4TvQP59SavMZcMnewzc3gqlE6ph0rnHtzyM0Q==}
-    version: 0.1.1
+  '@chassis-ui/docs@0.1.2':
+    resolution: {integrity: sha512-7gyC5+KA+ZeguRI+3XK7gTFGyT9nnGJekP7PpXWLOCVB/N5ctxa4MT8QhF+VAa+foXUg6M8yIbSvdnASbrBIww==}
     peerDependencies:
-      '@chassis-ui/css': github:chassis-ui/css#app/docs
-      '@chassis-ui/icons': github:chassis-ui/icons#app/docs
-      '@chassis-ui/tokens': github:chassis-ui/tokens#app/docs
-      astro: ^4.0.0 || ^5.0.0
+      astro: ^5.0.0
 
   '@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a':
     resolution: {tarball: https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a}
@@ -5286,10 +5282,8 @@ snapshots:
     dependencies:
       '@popperjs/core': 2.11.8
 
-  '@chassis-ui/docs@0.1.1(@chassis-ui/css@https://codeload.github.com/chassis-ui/css/tar.gz/3f90d1d43743a12c29637df43678044ab7c97168(@popperjs/core@2.11.8))(@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a)(astro@5.14.4(@types/node@22.18.10)(rollup@4.52.4)(sass@1.78.0)(typescript@5.9.3)(yaml@2.8.1))':
+  '@chassis-ui/docs@0.1.2(astro@5.14.4(@types/node@22.18.10)(rollup@4.52.4)(sass@1.78.0)(typescript@5.9.3)(yaml@2.8.1))':
     dependencies:
-      '@chassis-ui/css': https://codeload.github.com/chassis-ui/css/tar.gz/3f90d1d43743a12c29637df43678044ab7c97168(@popperjs/core@2.11.8)
-      '@chassis-ui/tokens': https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a
       astro: 5.14.4(@types/node@22.18.10)(rollup@4.52.4)(sass@1.78.0)(typescript@5.9.3)(yaml@2.8.1)
 
   '@chassis-ui/tokens@https://codeload.github.com/chassis-ui/tokens/tar.gz/9f591bf253436fe093da58668bc4fa72a641142a': {}

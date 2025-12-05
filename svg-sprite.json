@@ -2,7 +2,10 @@
   "mode": {
     "symbol": {
       "dest": "font",
-      "sprite": "chassis-icons.svg"
+      "sprite": "chassis-icons.svg",
+      "example": {
+        "dest": "preview.html"
+      }
     }
   },
   "svg": {
