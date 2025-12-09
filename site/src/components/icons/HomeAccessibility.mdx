@@ -20,11 +20,11 @@ When using icons as images, it's important to provide an `alt` attribute that de
 
 <Example
   showMarkup={false}
-  code={`<img src="/static/icons/info-circle-solid.svg" alt="Chassis" width="24" height="24">`}
+  code={`<img src="/static/icons/${getConfig().example_icon}.svg" alt="Chassis" width="24" height="24">`}
 />
 
 <Code lang="html" code={`<!-- alt="..." on <img> element -->
-<img ... alt="Information icon" />
+<img ... alt="Example icon" />
 `} />
 
   </div>
@@ -41,14 +41,14 @@ When using icons, it's important to provide a text alternative for screen reader
 
 <Example
   showMarkup={false}
-  code={`<span class="icon icon-clock-solid" role="img" aria-label="GitHub"></span>
+  code={`<span class="icon icon-${getConfig().example_icon}" role="img" aria-label="Example Icon"></span>
 <span class="icon icon-tools" role="img" style="font-size: 2em" aria-label="Tools"></span>`}
 />
 
 <Code
   lang="html"
-  code={`<svg class="icon" ... role="img" aria-label="Tools">
-    <use xlink:href="chassis-icons.svg#tools"/>
+  code={`<svg class="icon" ... role="img" aria-label="Example Icon">
+    <use xlink:href="chassis-icons.svg#${getConfig().example_icon}"/>
   </svg>`}
 />
 
@@ -66,13 +66,13 @@ When using icons as decorative elements, it's important to hide them from screen
 
 <Example
   showMarkup={false}
-  code={`<button type="button" class="button default" aria-label="Help">
-    <svg class="icon icon-start" aria-hidden="true"><use xlink:href="#question-circle-solid"/></svg>
+  code={`<button type="button" class="button default" aria-label="Example">
+    <svg class="icon icon-start" aria-hidden="true"><use xlink:href="#${getConfig().example_icon}"/></svg>
   </button>`}
 />
 
 <Code lang="html" code={`<!-- aria-label="..." on the control -->
-  <button ... aria-label="Help">
+  <button ... aria-label="Example">
     <svg class="icon" aria-hidden="true" ...>
     ...
     </svg>

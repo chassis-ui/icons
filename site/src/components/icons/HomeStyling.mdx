@@ -20,10 +20,10 @@ You can use `icon-*` classes to change both their size and colors. Put any _cont
 
 <Example
   code={`<svg class="icon">
-    <use xlink:href="#info-circle-solid"/>
+    <use xlink:href="#${getConfig().example_icon}"/>
   </svg>
   <svg class="icon icon-info icon-xlarge">
-    <use xlink:href="#info-circle-solid"/>
+    <use xlink:href="#${getConfig().example_icon}"/>
   </svg>`}
 />
 
@@ -42,7 +42,7 @@ Put `.icon-adaptive` to change their values to `--cx-font-size` and `--cx-fg-col
 
 <Example
   code={`<h2 class="fg-subtle">
-    <svg class="icon icon-adaptive"><use xlink:href="#info-circle-solid"/></svg>
+    <svg class="icon icon-adaptive"><use xlink:href="#${getConfig().example_icon}"/></svg>
     Heading
   </h2>`}
 />
@@ -63,12 +63,12 @@ Note that, `.icon-primary` and `.primary-icon-main` are different colors. While 
   <div class="col-medium-8">
 
 <Example code={`<div class="context secondary p-medium">
-    <svg class="icon"><use xlink:href="#info-circle-solid"/></svg>
-    <svg class="icon icon-subtle icon-medium"><use xlink:href="#info-circle-solid"/></svg>
+    <svg class="icon"><use xlink:href="#${getConfig().example_icon}"/></svg>
+    <svg class="icon icon-subtle icon-medium"><use xlink:href="#${getConfig().example_icon}"/></svg>
 
-    <span class="icon fg-subtle icon-2xlarge icon-info-circle-solid"></span>
-    <span class="icon primary-icon-main icon-info-circle-solid "></span>
-    <span class="icon primary-fg-main icon-xsmall icon-info-circle-solid "></span>
+    <span class="icon fg-subtle icon-2xlarge icon-${getConfig().example_icon}"></span>
+    <span class="icon primary-icon-main icon-${getConfig().example_icon} "></span>
+    <span class="icon primary-fg-main icon-xsmall icon-${getConfig().example_icon} "></span>
 
   </div>`} />
 

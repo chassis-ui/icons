@@ -10,21 +10,6 @@ Chassis Icons are SVGs, so you can include them into your HTML in a few ways dep
 
 <div class="row my-large mt-4xlarge">
   <div class="col-medium-4">
-### Embedded
-Embed your icons within the HTML of your page (as opposed to an external image file). Here we've used a custom `width` and `height`.
-  </div>
-  <div class="col-medium-8">
-
-<Example
-  code={`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.453 2 2 6.492 2 12a9.97 9.97 0 0 0 10 10c5.508 0 10-4.453 10-10 0-5.508-4.492-10-10-10m0 5c.664 0 1.25.586 1.25 1.25 0 .703-.586 1.25-1.25 1.25-.703 0-1.25-.547-1.25-1.25 0-.664.547-1.25 1.25-1.25m1.563 10h-3.126c-.546 0-.937-.39-.937-.937 0-.508.39-.938.938-.938h.624v-2.5h-.312c-.547 0-.937-.39-.937-.937 0-.508.39-.938.937-.938H12a.95.95 0 0 1 .938.938v3.437h.624a.95.95 0 0 1 .938.938c0 .546-.43.937-.937.937"/></svg>`}
-/>
-
-  </div>
-</div>
-
-<div class="row my-large">
-  <div class="col-medium-4">
-
 ### Sprite
 
 Use the SVG sprite to insert any icon through the `<use>` element. Use the icon's filename as the fragment identifier (e.g., `icon-name` is `#icon-name`). SVG sprites allow you to reference an external file similar to an `<img>` element, but with the power of `currentColor` for easy theming.
@@ -36,10 +21,7 @@ Use the SVG sprite to insert any icon through the `<use>` element. Use the icon'
 
 <Example
   code={`<svg class="icon">
-    <use xlink:href="#info-circle-solid"/>
-  </svg>
-  <svg class="icon">
-    <use xlink:href="#info-circle-outline"/>
+    <use xlink:href="#${getConfig().example_icon}"/>
   </svg>
   `}
 />
@@ -58,7 +40,7 @@ Copy the Chassis Icons SVGs to your directory of choice and reference them like 
   <div class="col-medium-8">
 
 <Example
-  code={`<img src="/static/icons/info-circle-solid.svg" alt="Chassis" width="24" height="24">`}
+  code={`<img src="/static/icons/${getConfig().example_icon}.svg" alt="Chassis" width="24" height="24">`}
 />
 
   </div>
@@ -77,8 +59,7 @@ Use `font-size` and `color` to change the icon appearance.
   <div class="col-medium-8">
 
 <Example
-  code={`<span class="icon icon-info-circle-solid"></span>
-<span class="icon icon-info-circle-outline"></span>
+  code={`<span class="icon icon-${getConfig().example_icon}"></span>
 `}
 />
 

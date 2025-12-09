@@ -51,7 +51,7 @@
     "pnpm": ">=9.0.0"
   },
   "scripts": {
-    "build": "pnpm icons:build && pnpm site:pages && pnpm site:build",
+    "build": "pnpm icons && pnpm site:pages && pnpm site:build",
     "dev": "pnpm astro:dev",
     "release": "pnpm build && pnpm icons:zip",
     "test": "pnpm site:build && npm-run-all --parallel --aggregate-output --continue-on-error check:*",
@@ -67,12 +67,12 @@
     "site:lint:stylelint": "stylelint site/src/scss/ --cache --cache-location .cache/.stylelintcache",
     "site:lint:vnu": "node build/vnu-jar.js",
 
-    "icons:build": "rm -rf font/*.{css,scss,woff,woff2,svg} && pnpm icons:main --aggregate-output --parallel && pnpm icons:sprite && pnpm icons:font",
+    "icons": "rm -rf font/*.{css,scss,woff,woff2,svg} && pnpm icons:svgs --aggregate-output --parallel && pnpm icons:sprite && pnpm icons:font",
     "icons:font": "pnpm icons:font-main && pnpm icons:font-min",
     "icons:font-main": "node build/build-icons.js",
     "icons:font-min": "cleancss -O1 --format breakWith=lf --with-rebase --output font/chassis-icons.min.css font/chassis-icons.css",
-    "icons:main": "node build/build-svgs.js",
     "icons:sprite": "svg-sprite --config svg-sprite.json --log=info \"svgs/*.svg\"",
+    "icons:svgs": "node build/build-svgs.js",
     "icons:zip": "node build/zip-icons.js",
 
     "astro:dev": "astro dev --root site --port 4324",

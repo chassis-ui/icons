@@ -29,6 +29,7 @@ const configSchema = z.object({
     dist: z.string().url(),
     source: z.string().url()
   }),
+  example_icon: z.string(),
   github_org: z.string().url(),
   repo: z.string().url(),
   subtitle: z.string(),

@@ -25,7 +25,7 @@ const {
       </form>
     )}
   </header>
-  <ul id="icons-list" class="row row-cols-3 gy-medium row-cols-small-4 row-cols-large-6 row-cols-xlarge-8 bulletless icon-list icon-xlarge">
+  <ul id="icons-list" class="row row-cols-3 gy-medium row-cols-small-4 row-cols-large-6 row-cols-xlarge-8 bulletless icons-list icon-xlarge">
     {icons.map((iconPage) => {
       const filename = iconPage.id.split('/').pop()?.replace('.mdx', '')
       if (!filename) return null
