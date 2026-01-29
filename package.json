@@ -1,6 +1,6 @@
 {
   "name": "@chassis-ui/icons",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Comprehensive SVG icon library for Chassis Design System. Features optimized icons with automated font generation, sprite creation, and multi-format distribution for web and mobile applications.",
   "repository": {
@@ -55,7 +55,6 @@
     "dev": "pnpm astro:dev",
     "release": "pnpm build && pnpm icons:zip",
     "test": "pnpm site:build && npm-run-all --parallel --aggregate-output --continue-on-error check:*",
-
     "site": "pnpm site:build && pnpm site:lint",
     "site:pages": "node build/build-pages.js",
     "site:build": "node build/build-site.js",
@@ -66,7 +65,6 @@
     "site:lint:prettier": "prettier -c --cache packages/website",
     "site:lint:stylelint": "stylelint site/src/scss/ --cache --cache-location .cache/.stylelintcache",
     "site:lint:vnu": "node build/vnu-jar.js",
-
     "icons:build": "rm -rf font/*.{css,scss,woff,woff2,svg} && pnpm icons:main --aggregate-output --parallel && pnpm icons:sprite && pnpm icons:font",
     "icons:font": "pnpm icons:font-main && pnpm icons:font-min",
     "icons:font-main": "node build/build-icons.js",
@@ -74,18 +72,15 @@
     "icons:main": "node build/build-svgs.js",
     "icons:sprite": "svg-sprite --config svg-sprite.json --log=info \"svgs/*.svg\"",
     "icons:zip": "node build/zip-icons.js",
-
     "astro:dev": "astro dev --root site --port 4324",
     "astro:build": "astro build --root site",
     "astro:preview": "astro preview --root site",
-
     "test:audit": "pnpm audit --audit-level moderate",
     "test:eslint": "eslint --cache --cache-location .cache/.eslintcache .",
     "test:fusv": "find-unused-sass-variables site/src/scss/",
     "test:icons": "node build/check-icons.js",
     "test:stylelint": "stylelint site/src/scss/ --cache --cache-location .cache/.stylelintcache",
     "test:vnu": "node build/vnu-jar.js",
-
     "change-version": "node build/change-version.js",
     "sync-submodules": "node build/sync-submodules.js"
   },

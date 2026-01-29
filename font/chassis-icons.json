@@ -299,5 +299,15 @@
   "zap-off": 61994,
   "zap": 61995,
   "zoom-in": 61996,
-  "zoom-out": 61997
+  "zoom-out": 61997,
+  "clock-back": 61998,
+  "dollar-sign-2": 61999,
+  "euro": 62000,
+  "file-report": 62001,
+  "history": 62002,
+  "investment-deposit": 62003,
+  "investment-fund": 62004,
+  "investment-repo": 62005,
+  "turkish-lira-2": 62006,
+  "vault": 62007
 }

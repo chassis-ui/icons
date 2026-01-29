@@ -128,7 +128,7 @@ class ChassisBuilder {
 
     // Build Astro site (outputs directly to _site via outDir config)
     this.log('Building Astro site...', 'info')
-    this.runCommand('pnpm build:astro')
+    this.runCommand('pnpm astro:build')
 
     this.log('Astro site built successfully', 'success')
   }

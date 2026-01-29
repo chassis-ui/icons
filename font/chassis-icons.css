@@ -1,13 +1,13 @@
 /*!
- * Chassis Icons v0.1.0
+ * Chassis Icons v0.1.1
  * Copyright 2025 Ozgur Gunes
  * Licensed under MIT (https://github.com/chassis-ui/icons/blob/main/LICENSE)
  */
 
 @font-face {
   font-family: "chassis-icons";
-  src: url("./chassis-icons.woff2?6dbcc742cbdbe6dfc7364557564105c0") format("woff2"),
-url("./chassis-icons.woff?6dbcc742cbdbe6dfc7364557564105c0") format("woff");
+  src: url("./chassis-icons.woff2?3765cc0b480c06862b062926a20d7588") format("woff2"),
+url("./chassis-icons.woff?3765cc0b480c06862b062926a20d7588") format("woff");
   font-display: block;
 }
 
@@ -327,3 +327,13 @@ url("./chassis-icons.woff?6dbcc742cbdbe6dfc7364557564105c0") format("woff");
 .icon-zap::before { content: "\f22b"; }
 .icon-zoom-in::before { content: "\f22c"; }
 .icon-zoom-out::before { content: "\f22d"; }
+.icon-clock-back::before { content: "\f22e"; }
+.icon-dollar-sign-2::before { content: "\f22f"; }
+.icon-euro::before { content: "\f230"; }
+.icon-file-report::before { content: "\f231"; }
+.icon-history::before { content: "\f232"; }
+.icon-investment-deposit::before { content: "\f233"; }
+.icon-investment-fund::before { content: "\f234"; }
+.icon-investment-repo::before { content: "\f235"; }
+.icon-turkish-lira-2::before { content: "\f236"; }
+.icon-vault::before { content: "\f237"; }

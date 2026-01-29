@@ -1,5 +1,5 @@
 /*!
- * Chassis Icons v0.1.0
+ * Chassis Icons v0.1.1
  * Copyright 2025 Ozgur Gunes
  * Licensed under MIT (https://github.com/chassis-ui/icons/blob/main/LICENSE)
  */
@@ -335,6 +335,16 @@ $chassis-icons-map: (
   "zap": "\f22b",
   "zoom-in": "\f22c",
   "zoom-out": "\f22d",
+  "clock-back": "\f22e",
+  "dollar-sign-2": "\f22f",
+  "euro": "\f230",
+  "file-report": "\f231",
+  "history": "\f232",
+  "investment-deposit": "\f233",
+  "investment-fund": "\f234",
+  "investment-repo": "\f235",
+  "turkish-lira-2": "\f236",
+  "vault": "\f237",
 );
 
 @each $icon, $codepoint in $chassis-icons-map {
