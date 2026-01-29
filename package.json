@@ -23,11 +23,11 @@
     "fantasticon",
     "icon generator"
   ],
-  "main": "font/chassis-icons.css",
-  "style": "font/chassis-icons.css",
-  "sass": "font/chassis-icons.scss",
+  "main": "icons/chassis-icons.css",
+  "style": "icons/chassis-icons.css",
+  "sass": "icons/chassis-icons.scss",
   "files": [
-    "font/*.{woff,woff2,css,scss,svg,json}",
+    "icons/*.{woff,woff2,css,scss,svg,json}",
     "svgs/*.svg",
     "!.DS_Store"
   ],
@@ -67,10 +67,10 @@
     "site:lint:stylelint": "stylelint site/src/scss/ --cache --cache-location .cache/.stylelintcache",
     "site:lint:vnu": "node build/vnu-jar.js",
 
-    "icons": "rm -rf font/*.{css,scss,woff,woff2,svg} && pnpm icons:svgs --aggregate-output --parallel && pnpm icons:sprite && pnpm icons:font",
+    "icons": "rm -rf icons/*.{css,scss,woff,woff2,svg} && pnpm icons:svgs --aggregate-output --parallel && pnpm icons:sprite && pnpm icons:font",
     "icons:font": "pnpm icons:font-main && pnpm icons:font-min",
     "icons:font-main": "node build/build-icons.js",
-    "icons:font-min": "cleancss -O1 --format breakWith=lf --with-rebase --output font/chassis-icons.min.css font/chassis-icons.css",
+    "icons:font-min": "cleancss -O1 --format breakWith=lf --with-rebase --output icons/chassis-icons.min.css icons/chassis-icons.css",
     "icons:sprite": "svg-sprite --config svg-sprite.json --log=info \"svgs/*.svg\"",
     "icons:svgs": "node build/build-svgs.js",
     "icons:zip": "node build/zip-icons.js",

@@ -1,10 +1,10 @@
 const { readFileSync } = require('fs')
 
-const codepoints = JSON.parse(readFileSync('./font/chassis-icons.json', 'utf-8'))
+const codepoints = JSON.parse(readFileSync('./icons/chassis-icons.json', 'utf-8'))
 
 module.exports = {
   inputDir: './svgs',
-  outputDir: './font',
+  outputDir: './icons',
   fontTypes: ['woff2', 'woff'],
   assetTypes: ['css', 'scss', 'json'],
   name: 'chassis-icons',
@@ -23,10 +23,10 @@ module.exports = {
     scss: './build/font/scss.hbs'
   },
   pathOptions: {
-    json: './font/chassis-icons.json',
-    css: './font/chassis-icons.css',
-    scss: './font/chassis-icons.scss',
-    woff: './font/chassis-icons.woff',
-    woff2: './font/chassis-icons.woff2'
+    json: './icons/chassis-icons.json',
+    css: './icons/chassis-icons.css',
+    scss: './icons/chassis-icons.scss',
+    woff: './icons/chassis-icons.woff',
+    woff2: './icons/chassis-icons.woff2'
   }
 }

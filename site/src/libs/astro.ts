@@ -111,12 +111,14 @@ function copyChassisCSS() {
 // Copy the `icons` folder from the chassis-tokens repo to make it available from the `/icons` URL.
 function copyChassisIcons() {
   const svgs_source = path.join(getChassisIconsFsPath(), 'svgs')
-  const font_source = path.join(getChassisIconsFsPath(), 'font')
+  const icons_source = path.join(getChassisIconsFsPath(), 'icons')
   const destination = path.join(getDocsPublicFsPath(), 'static', 'icons')
+  const icons_dest = path.join(getDocsPublicFsPath(), 'static', 'icons')
+  const svgs_dest = path.join(getDocsPublicFsPath(), 'static', 'icons', 'svgs')
 
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(svgs_source, destination, { recursive: true })
-  fs.cpSync(font_source, destination, { recursive: true })
+  fs.cpSync(icons_source, destination, { recursive: true })
 }
 
 // Copy the content as-is of the `static` folder to make it available from the `/` URL.
