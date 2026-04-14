@@ -1,19 +1,14 @@
 import Prism, { type hooks } from 'prismjs'
 const { Token } = Prism
 
-// Use a global variable to persist the state across server reloads
-declare global {
-  var isPrismConfigured: boolean | undefined
-}
-
-globalThis.isPrismConfigured = globalThis.isPrismConfigured || false
+let isPrismConfigured = false
 
 export function configurePrism() {
-  if (globalThis.isPrismConfigured) {
+  if (isPrismConfigured) {
     return
   }
 
-  globalThis.isPrismConfigured = true
+  isPrismConfigured = true
 
   Prism.hooks.add('after-tokenize', lineWrapPlugin)
 }
@@ -57,7 +52,9 @@ function lineWrapPlugin(env: hooks.HookEnvironmentMap['after-tokenize']) {
     const line = lines[i]
 
     // Check if this is an empty line
-    const isEmptyLine = line.length === 0 || (line.length === 1 && typeof line[0] === 'string' && line[0].trim() === '')
+    const isEmptyLine =
+      line.length === 0 ||
+      (line.length === 1 && typeof line[0] === 'string' && line[0].trim() === '')
 
     // Check if this is a comment-only line
     const isCommentLine = line.every((token) => {

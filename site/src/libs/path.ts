@@ -15,11 +15,11 @@ export function getDocsRelativePath(docsPath: string) {
 }
 
 export function getChassisAssetsFsPath() {
-  return path.join(process.cwd(), 'vendor/assets/dist/web/chassis-docs/')
+  return path.join(process.cwd(), 'vendor/assets/dist/web/docs', 'chassis')
 }
 
 export function getChassisTokensFsPath() {
-  return path.join(process.cwd(), 'node_modules/@chassis-ui/tokens/dist/web/chassis-docs')
+  return path.join(process.cwd(), 'node_modules/@chassis-ui/tokens/dist/web/docs', 'chassis')
 }
 
 export function getChassisCSSFsPath() {
@@ -38,13 +38,10 @@ export function getDocsPublicFsPath() {
   return path.join(getDocsFsPath(), 'public')
 }
 
-
 // A list of all the docs paths that were generated during a build.
 const generatedVersionedDocsPaths: string[] = []
 
 export function getChassisDocsPath(docsPath: string): string {
-  const { docs_version } = getConfig()
-
   const sanitizedDocsPath = docsPath.replace(/^\//, '')
 
   if (import.meta.env.PROD) {
@@ -52,7 +49,7 @@ export function getChassisDocsPath(docsPath: string): string {
   }
 
   // return `/docs/${docs_version}/${sanitizedDocsPath}`
-  return `/icons/docs/${sanitizedDocsPath}`
+  return `/icons/${sanitizedDocsPath}`
 }
 
 // Validate that all the generated versioned docs paths point to an existing page or asset.
@@ -63,8 +60,6 @@ export function getChassisDocsPath(docsPath: string): string {
 // containing information regarding the last page generated page for dynamic routes.
 // @see https://github.com/withastro/astro/issues/5802
 export function validateChassisDocsPaths(distUrl: URL) {
-  const { docs_version } = getConfig()
-
   for (const docsPath of generatedVersionedDocsPaths) {
     const sanitizedDocsPath = sanitizeChassisDocsPathForValidation(docsPath)
     const absoluteDocsPath = fileURLToPath(

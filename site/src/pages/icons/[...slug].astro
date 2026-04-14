@@ -1,7 +1,8 @@
 ---
 import IconsLayout from '@layouts/IconsLayout.astro'
 import { iconsPages } from '@libs/content'
-import Details from '@components/icons/Details.astro'
+import Details from '@components/Details.astro'
+import '@scss/_icons.scss'
 
 export async function getStaticPaths() {
   return iconsPages.map((iconsPage) => {
@@ -13,7 +14,7 @@ export async function getStaticPaths() {
   })
 }
 
-const { id, data, body } = Astro.props
+const { id, data } = Astro.props
 const frontmatter = data
 ---
 

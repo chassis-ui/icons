@@ -1,8 +1,8 @@
 title:                  "Chassis - Icons"
-baseURL:                "https://chassis-ui.com/icons/docs"
+baseURL:                "https://chassis-ui.com/icons"
 
 docsDir:                "site"
-docsPath:                "/icons/docs"
+docsPath:                "/icons"
 
 example_icon:           "info-circle-solid"
 

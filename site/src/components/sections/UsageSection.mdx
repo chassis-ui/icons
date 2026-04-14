@@ -1,12 +1,40 @@
 ---
 ---
+
 import { getConfig } from '@libs/config'
 
-<section id="usage-section">
+<section id="usage-section" class="home-section py-3xlarge py-medium-6xlarge">
+  <div class="container-2xlarge section-content">
+    <div class="row mb-3xlarge mb-medium-6xlarge">
 
+<header class="section-header col col-large-10 col-xlarge-8">
 ## Usage
 
 Chassis Icons are SVGs, so you can include them into your HTML in a few ways depending on how your project is setup. We recommend using using sprite and customize its color by changing `--cx-icon-size` and `-cx-icon-color`. Those values are `--cx-icon-medium` and `--cx-default-icon-main` by default. Icon utilities are also available as `.icon-*` classes both for size and context base colors.
+
+</header>
+</div>
+
+<div class="row my-large mt-4xlarge">
+  <div class="col-medium-4">
+### Sprite
+
+Use the SVG sprite to insert any icon through the `<use>` element. Use the icon's filename as the fragment identifier (e.g., `icon-name` is `#icon-name`). SVG sprites allow you to reference an external file similar to an `<img>` element, but with the power of `currentColor` for easy theming.
+
+**Heads up!** There's an issue with Chrome where [`<use>` doesn't work across domains](https://bugs.chromium.org/p/chromium/issues/detail?id=470601).
+
+  </div>
+  <div class="col-medium-8">
+
+<Example
+  code={`<svg class="icon">
+    <use xlink:href="#${getConfig().example_icon}"/>
+  </svg>
+  `}
+/>
+
+  </div>
+</div>
 
 <div class="row my-large mt-4xlarge">
   <div class="col-medium-4">
@@ -65,4 +93,5 @@ Use `font-size` and `color` to change the icon appearance.
 
   </div>
 </div>
+  </div>
 </section>

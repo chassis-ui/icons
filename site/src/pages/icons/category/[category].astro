@@ -1,23 +1,26 @@
 ---
 import IconsLayout from '@layouts/IconsLayout.astro'
-import { getConfig } from '@libs/config'
 import { iconsPages } from '@libs/content'
-import List from '@components/icons/List.astro'
+import ListSection from '@components/sections/ListSection.astro'
 
 export async function getStaticPaths() {
   // Collect all categories from icon pages
   const categories = new Set()
 
-  iconsPages.forEach(page => {
+  iconsPages.forEach((page) => {
     if (page.data.categories) {
-      const iconCategories = Array.isArray(page.data.categories) ? page.data.categories : [page.data.categories]
-      iconCategories.forEach(cat => categories.add(cat))
+      const iconCategories = Array.isArray(page.data.categories)
+        ? page.data.categories
+        : [page.data.categories]
+      iconCategories.forEach((cat) => categories.add(cat))
     }
   })
 
-  return Array.from(categories).map(category => {
-    const categoryIcons = iconsPages.filter(page => {
-      const iconCategories = Array.isArray(page.data.categories) ? page.data.categories : [page.data.categories]
+  return Array.from(categories).map((category) => {
+    const categoryIcons = iconsPages.filter((page) => {
+      const iconCategories = Array.isArray(page.data.categories)
+        ? page.data.categories
+        : [page.data.categories]
       return iconCategories.includes(String(category))
     })
 
@@ -33,7 +36,6 @@ export async function getStaticPaths() {
 }
 
 const { category, icons, count } = Astro.props
-const config = await getConfig()
 
 const frontmatter = {
   title: `${String(category).charAt(0).toUpperCase() + String(category).slice(1)} icons`,
@@ -46,19 +48,12 @@ const frontmatter = {
   <nav aria-label="breadcrumb" class="pt-medium">
     <div class="border-bottom border-subtle mb-medium">
       <ol class="breadcrumb">
-        <li class="breadcrumb-page"><a href="/icons/docs">Icons</a></li>
-        <li class="breadcrumb-page"><a href="/icons/docs/browse">Browse</a></li>
+        <li class="breadcrumb-page"><a href="/icons/">Icons</a></li>
+        <li class="breadcrumb-page"><a href="/icons/browse/">Browse</a></li>
         <li class="breadcrumb-page active" aria-current="page">{category}</li>
       </ol>
     </div>
   </nav>
-  <div class="border-bottom border-subtle">
-    <h1>{frontmatter.title}</h1>
-    <p>{frontmatter.description}</p>
-  </div>
 
-  <List
-    icons={icons}
-    title={`Icons in ${String(category).charAt(0).toUpperCase() + String(category).slice(1)} category`}
-  />
+  <ListSection icons={icons} title={`${count} icons in ${String(category)} category`} />
 </IconsLayout>

@@ -1,25 +1,28 @@
 ---
 import IconsLayout from '@layouts/IconsLayout.astro'
-import { getConfig } from '@libs/config'
 import { iconsPages } from '@libs/content'
 
 // Collect all categories and tags
 const categories = new Map()
 const tags = new Map()
 
-iconsPages.forEach(page => {
+iconsPages.forEach((page) => {
   // Process categories
   if (page.data.categories) {
-    const iconCategories = Array.isArray(page.data.categories) ? page.data.categories : [page.data.categories]
-    iconCategories.forEach(cat => {
+    const iconCategories = Array.isArray(page.data.categories)
+      ? page.data.categories
+      : [page.data.categories]
+    iconCategories.forEach((cat) => {
       categories.set(cat, (categories.get(cat) || 0) + 1)
     })
   }
 
   // Process tags
   if (page.data.tags) {
-    const iconTags = Array.isArray(page.data.tags) ? page.data.tags : page.data.tags.split(',').map(tag => tag.trim())
-    iconTags.forEach(tag => {
+    const iconTags = Array.isArray(page.data.tags)
+      ? page.data.tags
+      : page.data.tags.split(',').map((tag) => tag.trim())
+    iconTags.forEach((tag) => {
       tags.set(tag, (tags.get(tag) || 0) + 1)
     })
   }
@@ -27,8 +30,6 @@ iconsPages.forEach(page => {
 
 const sortedCategories = Array.from(categories.entries()).sort((a, b) => b[1] - a[1])
 const sortedTags = Array.from(tags.entries()).sort((a, b) => b[1] - a[1])
-
-const config = await getConfig()
 
 const frontmatter = {
   title: 'Browse Icons by Category & Tags',
@@ -40,8 +41,8 @@ const frontmatter = {
   <nav aria-label="breadcrumb" class="pt-medium">
     <div class="border-bottom border-subtle mb-medium">
       <ol class="breadcrumb">
-        <li class="breadcrumb-page"><a href="/icons/docs">Icons</a></li>
-        <li class="breadcrumb-page"><a href="/icons/docs/browse">Browse</a></li>
+        <li class="breadcrumb-page"><a href="/icons/">Icons</a></li>
+        <li class="breadcrumb-page"><a href="/icons/browse/">Browse</a></li>
       </ol>
     </div>
   </nav>
@@ -57,9 +58,9 @@ const frontmatter = {
       <div class="d-flex flex-wrap gap-medium mb-4">
         {
           sortedCategories.map(([category, count]) => (
-            <a href={`/icons/docs/category/${category}/`} class="button outline border-subtle">
+            <a href={`/icons/category/${category}/`} class="button default small">
               {category.charAt(0).toUpperCase() + category.slice(1)}
-              <span class="badge default ms-2xsmall">{count}</span>
+              <span class="badge primary smooth ms-2xsmall">{count}</span>
             </a>
           ))
         }
@@ -72,9 +73,9 @@ const frontmatter = {
       <div class="d-flex flex-wrap gap-medium mb-4">
         {
           sortedTags.map(([tag, count]) => (
-            <a href={`/icons/docs/tag/${tag}/`} class="button outline border-subtle">
+            <a href={`/icons/tag/${tag}/`} class="button default small">
               {tag}
-              <span class="badge default ms-2xsmall">{count}</span>
+              <span class="badge primary smooth ms-2xsmall">{count}</span>
             </a>
           ))
         }

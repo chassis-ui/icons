@@ -10,13 +10,13 @@ const { icon } = Astro.props
 // const { title, categories, tags } = Astro.props.icon
 ---
 
-<div class="row align-items-md-center">
+<div class="row align-items-md-center mb-medium">
   <nav class="col" aria-label="breadcrumb">
-    <div class="border-bottom border-subtle mb-medium">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-page"><a href="/icons/docs">Icons</a></li>
-      <li class="breadcrumb-page active" aria-current="page">{icon.title}</li>
-    </ol>
+    <div class="border-bottom border-subtle mb-medium pt-medium">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-page"><a href="/icons/">Icons</a></li>
+        <li class="breadcrumb-page active" aria-current="page">{icon.title}</li>
+      </ol>
     </div>
   </nav>
   <h1 class="cxd-title mb-0" id="title">{icon.title}</h1>
@@ -28,7 +28,7 @@ const { icon } = Astro.props
             <li class="my-xsmall">
               <strong>Tags:</strong>
               {icon.tags.split(',').map((tag) => (
-                <a class="badge default ms-2xsmall" href={`/icons/docs/tag/${getSlug(tag.trim())}/`}>
+                <a class="badge default ms-2xsmall" href={`/icons/tag/${getSlug(tag.trim())}/`}>
                   {tag.trim()}
                 </a>
               ))}
@@ -38,7 +38,10 @@ const { icon } = Astro.props
             <li>
               <strong>Category:</strong>
               {icon.categories.split(',').map((category) => (
-                <a class="badge default ms-2xsmall" href={`/icons/docs/category/${getSlug(category.trim())}/`}>
+                <a
+                  class="badge default ms-2xsmall"
+                  href={`/icons/category/${getSlug(category.trim())}/`}
+                >
                   {category.trim()}
                 </a>
               ))}

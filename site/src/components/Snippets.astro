@@ -14,15 +14,18 @@ const { icon } = Astro.props
 const projectRoot = existsSync('./site') ? '.' : '..'
 const svgPath = path.join(process.cwd(), projectRoot, 'svgs', `${icon.title}.svg`)
 const svgCode = readFileSync(svgPath, 'utf-8')
-const codepoints = JSON.parse(readFileSync(path.join(process.cwd(), projectRoot, 'icons', 'chassis-icons.json'), 'utf-8'))
+const codepoints = JSON.parse(
+  readFileSync(path.join(process.cwd(), projectRoot, 'icons', 'chassis-icons.json'), 'utf-8')
+)
 const hexCodepoint = parseInt(codepoints[icon.title]).toString(16).toUpperCase()
 ---
 
 <div class="col-lg-4 mb-large">
-
   <h3 class="mb-0">Download</h3>
   <p>Download the SVG to use or edit.</p>
-  <a href={path.join('/static/icons', `${icon.title}.svg`)} class="button large primary" download>Download SVG</a>
+  <a href={path.join('/static/icons', `${icon.title}.svg`)} class="button large primary" download
+    >Download SVG</a
+  >
 
   <h3 class="mb-0">SVG sprite</h3>
   <p>Use this code for svg icons.</p>
@@ -57,6 +60,4 @@ const hexCodepoint = parseInt(codepoints[icon.title]).toString(16).toUpperCase()
       <dd class="col-small-9"><code>&amp;#x{hexCodepoint};</code></dd>
     </dl>
   </div>
-
-
 </div>

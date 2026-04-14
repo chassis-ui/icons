@@ -1,8 +1,8 @@
 ---
 import type { CollectionEntry } from 'astro:content'
-import Title from '@components/icons/Title.astro'
-import Examples from '@components/icons/Examples.astro'
-import Snippets from '@components/icons/Snippets.astro'
+import Title from '@components/Title.astro'
+import Examples from '@components/Examples.astro'
+import Snippets from '@components/Snippets.astro'
 
 interface Props {
   icon: CollectionEntry<'icons'>['data']
@@ -14,8 +14,7 @@ const iconAdapt = `<svg class="icon icon-adaptive"><use xlink:href="#${iconName}
 ---
 
 <Title icon={icon} />
-<hr class="mb-xlarge" />
-<div class="row">
+<div class="row mb-xlarge">
   <main class="col-medium-8" id="content">
     <div
       class="icon-demo border rounded d-flex align-items-center justify-content-center"

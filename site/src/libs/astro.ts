@@ -4,7 +4,6 @@ import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import type { AstroIntegration } from 'astro'
-import autoImport from 'astro-auto-import'
 import type { Element } from 'hast'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import { getConfig } from './config'
@@ -12,7 +11,6 @@ import { rehypeCxTable } from './rehype'
 import { remarkCxConfig } from './remark'
 import { configurePrism } from './prism'
 import {
-  docsDirectory,
   getChassisAssetsFsPath,
   getChassisCSSFsPath,
   getChassisIconsFsPath,
@@ -21,7 +19,6 @@ import {
   getDocsStaticFsPath
 } from './path'
 import chassisAutoImport from './shortcode'
-
 
 // A list of static file paths that will be aliased to a different path.
 const staticFileAliases = {
@@ -44,7 +41,7 @@ export function chassis(): AstroIntegration[] {
     {
       name: 'chassis-integration',
       hooks: {
-        'astro:config:setup': ({ command, addWatchFile, updateConfig }) => {
+        'astro:config:setup': ({ addWatchFile, updateConfig }) => {
           // Reload the config when the integration is modified.
           addWatchFile(path.join(getDocsFsPath(), 'src/libs/astro.ts'))
 
@@ -113,8 +110,6 @@ function copyChassisIcons() {
   const svgs_source = path.join(getChassisIconsFsPath(), 'svgs')
   const icons_source = path.join(getChassisIconsFsPath(), 'icons')
   const destination = path.join(getDocsPublicFsPath(), 'static', 'icons')
-  const icons_dest = path.join(getDocsPublicFsPath(), 'static', 'icons')
-  const svgs_dest = path.join(getDocsPublicFsPath(), 'static', 'icons', 'svgs')
 
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(svgs_source, destination, { recursive: true })

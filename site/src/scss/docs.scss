@@ -1,6 +1,11 @@
-@import "settings";
+// Chassis tokens for docs
+@import "@chassis-ui/tokens/dist/web/docs/chassis/main";
+
+// Shared docs settings
+@import "@chassis-ui/docs/scss/settings";
 
 // Chassis CSS variables and mixins
+@import "@chassis-ui/css/scss/settings";
 @import "@chassis-ui/css/scss/functions";
 @import "@chassis-ui/css/scss/tokens";
 @import "@chassis-ui/css/scss/variables";
@@ -11,10 +16,3 @@
 
 // Shared docs styles
 @import "@chassis-ui/docs/scss/main";
-
-// Icons docs styles
-@import "icons";
-
-html {
-  scroll-padding-top: 129px; /* height of sticky header */
-}
