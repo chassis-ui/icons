@@ -2,18 +2,18 @@
 import IconsLayout from '@layouts/IconsLayout.astro'
 import HeroSection from '@components/sections/HeroSection.astro'
 import ListSection from '@components/sections/ListSection.astro'
-import BuildSection from '@components/sections/BuildSection.mdx'
+import BuildSection from '@components/sections/BuildSection.astro'
 import UsageSection from '@components/sections/UsageSection.mdx'
 import StylingSection from '@components/sections/StylingSection.mdx'
 import AccessibilitySection from '@components/sections/AccessibilitySection.mdx'
-import SVGSection from '@components/sections/SVGSection.mdx'
+import SVGSection from '@components/sections/SVGSection.astro'
 import HomeIcons from '/static/icons/cx-sprite.svg?raw'
 import '@scss/_icons.scss'
 ---
 
 <IconsLayout frontmatter={{ title: 'Chassis Icons' }} id="icons-layout">
   <HeroSection />
-  <nav class="sticky-top bg-main mb-6xlarge" style="top: 4rem; z-index: 10;">
+  <nav class="container-2xlarge sticky-top bg-main mb-6xlarge" style="top: 4rem; z-index: 10;">
     <ul id="icons-nav" class="nav nav-underline justify-content-center">
       <li class="nav-item">
         <a class="nav-link py-xsmall" href="#icons-section">Sprite</a>

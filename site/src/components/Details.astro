@@ -13,22 +13,24 @@ const iconName = icon.title
 const iconAdapt = `<svg class="icon icon-adaptive"><use xlink:href="#${iconName}"/></svg>`
 ---
 
-<Title icon={icon} />
-<div class="row mb-xlarge">
-  <main class="col-medium-8" id="content">
-    <div
-      class="icon-demo border rounded d-flex align-items-center justify-content-center"
-      style="font-size: 10rem;"
-      role="img"
-      aria-label={`${icon.title} - large preview`}
-    >
-      <Fragment set:html={iconAdapt} />
-    </div>
-    <div>
-      <Examples icon={icon} />
-    </div>
-  </main>
-  <aside class="col-medium-4">
-    <Snippets icon={icon} />
-  </aside>
+<div class="container-2xlarge">
+  <Title icon={icon} />
+  <div class="row mb-xlarge">
+    <main class="col-medium-8" id="content">
+      <div
+        class="icon-demo border rounded d-flex align-items-center justify-content-center"
+        style="font-size: 10rem;"
+        role="img"
+        aria-label={`${icon.title} - large preview`}
+      >
+        <Fragment set:html={iconAdapt} />
+      </div>
+      <div>
+        <Examples icon={icon} />
+      </div>
+    </main>
+    <aside class="col-medium-4">
+      <Snippets icon={icon} />
+    </aside>
+  </div>
 </div>

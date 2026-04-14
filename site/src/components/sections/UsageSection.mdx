@@ -36,27 +36,6 @@ Use the SVG sprite to insert any icon through the `<use>` element. Use the icon'
   </div>
 </div>
 
-<div class="row my-large mt-4xlarge">
-  <div class="col-medium-4">
-### Sprite
-
-Use the SVG sprite to insert any icon through the `<use>` element. Use the icon's filename as the fragment identifier (e.g., `icon-name` is `#icon-name`). SVG sprites allow you to reference an external file similar to an `<img>` element, but with the power of `currentColor` for easy theming.
-
-**Heads up!** There's an issue with Chrome where [`<use>` doesn't work across domains](https://bugs.chromium.org/p/chromium/issues/detail?id=470601).
-
-  </div>
-  <div class="col-medium-8">
-
-<Example
-  code={`<svg class="icon">
-    <use xlink:href="#${getConfig().example_icon}"/>
-  </svg>
-  `}
-/>
-
-  </div>
-</div>
-
 <div class="row my-large">
   <div class="col-medium-4">
 
