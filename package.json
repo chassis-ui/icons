@@ -1,6 +1,6 @@
 {
   "name": "@chassis-ui/icons",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Comprehensive SVG icon library for Chassis Design System. Features optimized icons with automated font generation, sprite creation, and multi-format distribution for web and mobile applications.",
   "repository": {
@@ -54,7 +54,7 @@
     "build": "pnpm icons && pnpm site:pages && pnpm site:build",
     "dev": "pnpm astro:dev",
     "release": "pnpm build && pnpm icons:zip",
-    "test": "pnpm site:build && icons:check",
+    "test": "pnpm site:build && pnpm icons:check",
     "icons": "rm -rf icons/*.{css,scss,woff,woff2,svg} && pnpm icons:svgs --aggregate-output --parallel && pnpm icons:sprite && pnpm icons:font",
     "icons:check": "node build/check-icons.js",
     "icons:font": "pnpm icons:font-main && pnpm icons:font-min",
