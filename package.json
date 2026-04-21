@@ -1,6 +1,6 @@
 {
   "name": "@chassis-ui/icons",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "Comprehensive SVG icon library for Chassis Design System. Features optimized icons with automated font generation, sprite creation, and multi-format distribution for web and mobile applications.",
   "repository": {

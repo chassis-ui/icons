@@ -18,7 +18,9 @@ import picocolors from 'picocolors'
 const execAsync = promisify(exec)
 
 async function getPackageVersion() {
-  const packageJson = JSON.parse(await readFile(new URL('../package.json', import.meta.url), 'utf8'))
+  const packageJson = JSON.parse(
+    await readFile(new URL('../package.json', import.meta.url), 'utf8')
+  )
   return packageJson.version
 }
 
@@ -39,17 +41,17 @@ async function main() {
     await execAsync(`rm -rf "${baseDir}" "${zipFile}"`)
     await execAsync(`mkdir -p "${svgDir}"`)
     await execAsync(`cp -r svgs/* "${svgDir}/"`)
-    await execAsync(`cp font/chassis-icons.* "${baseDir}/"`)
+    await execAsync(`cp icons/chassis-icons.* "${baseDir}/"`)
     await execAsync(`zip -qr9 "${zipFile}" "${baseDir}"`)
     await execAsync(`rm -rf "${baseDir}"`)
 
     console.log(picocolors.green(`✅ Created: ${zipFile}`))
     console.timeEnd(picocolors.cyan(`[${basename}] finished`))
-
   } catch (error) {
     console.error(picocolors.red('❌ Error:'), error.message)
     process.exit(1)
   }
-}if (import.meta.url === `file://${process.argv[1]}`) {
+}
+if (import.meta.url === `file://${process.argv[1]}`) {
   main()
 }

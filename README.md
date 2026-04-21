@@ -3,7 +3,7 @@
 > A complete toolkit for building custom icon libraries for Chassis-based design systems.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Version: 0.1.1](https://img.shields.io/badge/Version-0.1.1-blue.svg)](https://github.com/chassis-ui/icons)
+[![Version: 0.1.2](https://img.shields.io/badge/Version-0.1.2-blue.svg)](https://github.com/chassis-ui/icons)
 
 ## Overview
 
