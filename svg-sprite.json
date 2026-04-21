@@ -1,7 +1,7 @@
 {
   "mode": {
     "symbol": {
-      "dest": "font",
+      "dest": "icons",
       "sprite": "chassis-icons.svg",
       "example": {
         "dest": "preview.html"

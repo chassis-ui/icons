@@ -1,5 +1,44 @@
 ---
-import RedirectLayout from '@chassis-ui/docs/layouts/RedirectLayout.astro'
+import IconsLayout from '@layouts/IconsLayout.astro'
+import HeroSection from '@components/homepage/HeroSection.astro'
+import ListSection from '@components/homepage/ListSection.astro'
+import BuildSection from '@components/homepage/BuildSection.astro'
+import UsageSection from '@components/homepage/UsageSection.astro'
+import StylingSection from '@components/homepage/StylingSection.astro'
+import AccessibilitySection from '@components/homepage/AccessibilitySection.astro'
+import SVGSection from '@components/homepage/SVGSection.astro'
+import HomeIcons from '/static/icons/cx-sprite.svg?raw'
+import '@scss/_icons.scss'
 ---
 
-<RedirectLayout path="/icons/docs" />
+<IconsLayout frontmatter={{ title: 'Chassis Icons' }} id="icons-layout">
+  <HeroSection />
+  <nav class="container-2xlarge sticky-top bg-main mb-6xlarge" style="top: 4rem; z-index: 10;">
+    <ul id="icons-nav" class="nav nav-underline justify-content-center">
+      <li class="nav-item">
+        <a class="nav-link py-xsmall" href="#icons-section">Sprite</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link py-xsmall" href="#build-section">Build</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link py-xsmall" href="#usage-section">Usage</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link py-xsmall" href="#styling-section">Styling</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link py-xsmall" href="#accessibility-section">Accessibility</a>
+      </li>
+    </ul>
+  </nav>
+  <ListSection />
+  <BuildSection />
+  <UsageSection />
+  <StylingSection />
+  <AccessibilitySection />
+  <SVGSection />
+  <div class="d-none">
+    <Fragment set:html={HomeIcons} />
+  </div>
+</IconsLayout>

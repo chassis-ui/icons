@@ -1,8 +1,10 @@
 title:                  "Chassis - Icons"
-baseURL:                "https://chassis-ui.com/icons/docs"
+baseURL:                "https://chassis-ui.com/icons"
 
 docsDir:                "site"
-docsPath:                "/icons/docs"
+docsPath:                "/icons"
+
+example_icon:           "info"
 
 subtitle:               "A comprehensive SVG icon library with 478+ optimized icons for web and mobile applications."
 description:            "Chassis Icons provides a complete set of SVG icons with font generation, sprite optimization, and distribution packages for multiple platforms."

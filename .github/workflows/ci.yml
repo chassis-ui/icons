@@ -39,17 +39,17 @@ jobs:
 
       - name: Verify icon generation
         run: |
-          if [ ! -f "fonts/chassis-icons.css" ]; then
+          if [ ! -f "icons/chassis-icons.css" ]; then
             echo "Error: CSS file not generated"
             exit 1
           fi
 
-          if [ ! -f "fonts/chassis-icons.woff2" ]; then
+          if [ ! -f "icons/chassis-icons.woff2" ]; then
             echo "Error: WOFF2 font not generated"
             exit 1
           fi
 
-          if [ ! -f "fonts/chassis-icons.svg" ]; then
+          if [ ! -f "icons/chassis-icons.svg" ]; then
             echo "Error: SVG sprite not generated"
             exit 1
           fi
@@ -58,7 +58,7 @@ jobs:
 
       - name: Check icon count
         run: |
-          ICON_COUNT=$(grep -c "chassis-icon-" fonts/chassis-icons.css || echo "0")
+          ICON_COUNT=$(grep -c "chassis-icon-" icons/chassis-icons.css || echo "0")
           echo "Generated $ICON_COUNT icon classes"
 
           if [ "$ICON_COUNT" -lt "400" ]; then
@@ -72,5 +72,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: chassis-icons-${{ matrix.node-version }}
-          path: fonts/
+          path: icons/
           retention-days: 7

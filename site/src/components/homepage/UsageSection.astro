@@ -1,0 +1,85 @@
+---
+import { getConfig } from '@libs/config'
+import Example from '@components/shortcodes/Example.astro'
+---
+
+<section id="usage-section" class="home-section py-3xlarge py-medium-6xlarge">
+  <div class="container-2xlarge section-content">
+    <div class="row mb-3xlarge mb-medium-6xlarge">
+      <header class="section-header col col-large-10 col-xlarge-8">
+        <h2>Usage</h2>
+        <p>
+          Chassis Icons are SVGs, so you can include them into your HTML in a few ways depending on
+          how your project is setup. We recommend using using sprite and customize its color by
+          changing <code>--cx-icon-size</code> and <code>-cx-icon-color</code>. Those values are <code
+            >--cx-icon-medium</code
+          > and <code>--cx-default-icon-main</code> by default. Icon utilities are also available as <code
+            >.icon-*</code
+          > classes both for size and context base colors.
+        </p>
+      </header>
+    </div>
+
+    <div class="row my-large mt-4xlarge">
+      <div class="col-medium-4">
+        <h3>Sprite</h3>
+        <p>
+          Use the SVG sprite to insert any icon through the <code>&lt;use&gt;</code> element. Use the
+          icon's filename as the fragment identifier (e.g., <code>icon-name</code> is <code
+            >#icon-name</code
+          >). SVG sprites allow you to reference an external file similar to an <code
+            >&lt;img&gt;</code
+          > element, but with the power of <code>currentColor</code> for easy theming.
+        </p>
+        <p>
+          <strong>Heads up!</strong> There's an issue with Chrome where <a
+            href="https://bugs.chromium.org/p/chromium/issues/detail?id=470601"
+            ><code>&lt;use&gt;</code> doesn't work across domains</a
+          >.
+        </p>
+      </div>
+      <div class="col-medium-8">
+        <Example
+          code={`<svg class="icon">
+  <use xlink:href="#${getConfig().example_icon}"/>
+</svg>`}
+        />
+      </div>
+    </div>
+
+    <div class="row my-large">
+      <div class="col-medium-4">
+        <h3>External image</h3>
+        <p>
+          Copy the Chassis Icons SVGs to your directory of choice and reference them like normal
+          images with the <code>&lt;img&gt;</code> element. Icon color could not be changed in this way.
+        </p>
+      </div>
+      <div class="col-medium-8">
+        <Example
+          code={`<img src="/static/icons/${getConfig().example_icon}.svg" alt="Chassis" width="24" height="24">`}
+        />
+      </div>
+    </div>
+
+    <div class="row my-large">
+      <div class="col-medium-4">
+        <h3>Icon font</h3>
+        <p>
+          Icon fonts with classes for every icon are also available in Chassis Icons. Include the
+          icon web fonts in your page via CSS, then reference the class names as needed in your
+          HTML.
+        </p>
+        <p>
+          Use <code>font-size</code> and <code>color</code> to change the icon appearance.
+        </p>
+      </div>
+      <div class="col-medium-8">
+        <Example
+          code={`<span class="icon icon-${getConfig().example_icon}"></span>
+`}
+        />
+      </div>
+    </div>
+  </div>
+</section>

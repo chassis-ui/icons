@@ -1,6 +1,10 @@
+@use "docs" as *;
 // .cxd-gutter {
 //   --cx-gutter-x: #{$cxd-gutter-x};
 // }
+html {
+  scroll-padding-top: 129px; /* height of sticky header */
+}
 
 .hero-notice {
   color: var(--cx-info-fg-main);
@@ -21,9 +25,24 @@
 }
 
 // stylelint-disable selector-max-id
-#icons-body {
+.icons-list,
+.icon-demo {
   --cx-icon-color: var(--cx-fg-main);
 }
+
+// #icons-nav {
+//   --cx-link-main-color: var(--cx-fg-main);
+//   --cx-active-fg-color: var(--cx-fg-main);
+//   --cx-active-bg-color: var(--cx-bg-main);
+//   background-color: var(--cx-bg-evident);
+//   padding: var(--cx-space-2xsmall);
+//   backdrop-filter: blur(24px);
+//   @include border-radius(var(--cx-border-radius-medium));
+//   .active {
+//     box-shadow: var(--cx-box-shadow-medium);
+//   }
+// }
+
 #icons-list li a {
   --cx-link-color: var(--cx-fg-subtle);
   --cx-fg-color: var(--cx-fg-main);
@@ -43,7 +62,8 @@
   }
 }
 
-.icon-list {
+.icons-list {
+  // --cx-icon-color: var(--cx-fg-main);
   font-size: 2rem;
 
   // stylelint-disable  declaration-no-important
