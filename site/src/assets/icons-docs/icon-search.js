@@ -7,7 +7,7 @@ import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.mjs'
     return
   }
 
-  const searchInput = iconsBody.querySelector('#search')
+  const searchInput = iconsBody.querySelector('#icon-search-input')
   const iconListContainer = iconsBody.querySelector('#icons-list')
   const iconElementList = Array.from(iconListContainer.children)
 
