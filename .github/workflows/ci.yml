@@ -1,0 +1,76 @@
+name: Build and Test Icons
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint code
+        run: pnpm validate
+
+      - name: Build icons
+        run: pnpm build
+
+      - name: Verify icon generation
+        run: |
+          if [ ! -f "icons/chassis-icons.css" ]; then
+            echo "Error: CSS file not generated"
+            exit 1
+          fi
+
+          if [ ! -f "icons/chassis-icons.woff2" ]; then
+            echo "Error: WOFF2 font not generated"
+            exit 1
+          fi
+
+          if [ ! -f "icons/chassis-icons.svg" ]; then
+            echo "Error: SVG sprite not generated"
+            exit 1
+          fi
+
+          echo "✅ All icon files generated successfully"
+
+      - name: Check icon count
+        run: |
+          ICON_COUNT=$(grep -c "chassis-icon-" icons/chassis-icons.css || echo "0")
+          echo "Generated $ICON_COUNT icon classes"
+
+          if [ "$ICON_COUNT" -lt "400" ]; then
+            echo "Warning: Expected more than 400 icons, got $ICON_COUNT"
+            exit 1
+          fi
+
+          echo "✅ Icon count validation passed"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: chassis-icons-${{ matrix.node-version }}
+          path: icons/
+          retention-days: 7
