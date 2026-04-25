@@ -10,9 +10,6 @@ const site = getSiteUrl(getConfig())
 // https://astro.build/config
 export default defineConfig({
   outDir: '../_site',
-  build: {
-    assets: `assets`
-  },
   integrations: [chassis()],
   markdown: {
     smartypants: false,
@@ -27,12 +24,13 @@ export default defineConfig({
     build: {
       rollupOptions: {
         output: {
-          // chunkFileNames: 'static/js/[name].[hash].js',
+          entryFileNames: `static/js/docs.[hash].js`,
+          // chunkFileNames: 'static/js/chunk/docs.[hash].js',
           assetFileNames: (assetInfo) => {
             if (assetInfo.name?.endsWith('.css')) {
-              return 'static/icons-docs/docs.[hash].css'
+              return 'static/css/docs.[hash].css'
             }
-            return 'static/icons-docs/[name].[hash][extname]'
+            return 'static/[name].[hash][extname]'
           }
         }
       }
