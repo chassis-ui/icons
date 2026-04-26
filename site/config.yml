@@ -6,8 +6,8 @@ docsPath:                "/icons"
 
 example_icon:           "info-circle-solid"
 
-subtitle:               "A comprehensive SVG icon library with 478+ optimized icons for web and mobile applications."
-description:            "Chassis Icons provides a complete set of SVG icons with font generation, sprite optimization, and distribution packages for multiple platforms."
+subtitle:               "A Toolkit for Building Custom Icon Libraries"
+description:            "An open-source toolkit for building custom icon libraries: SVG optimization, sprite generation, web fonts (WOFF/WOFF2), and a live preview site."
 authors:                "Ozgur Gunes"
 
 current_version:        "0.1.1"
