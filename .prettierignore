@@ -2,8 +2,9 @@
 *.css
 *.scss
 build/font/*.hbs
-icons/
-svgs/
+/icons
+/svgs
 site/config.yml
 site/content
-vendor/
+site/src/assets
+/vendor
