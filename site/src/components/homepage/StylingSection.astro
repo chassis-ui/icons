@@ -10,8 +10,10 @@ import Code from '@components/shortcodes/Code.astro'
       <header class="section-header col col-large-10 col-xlarge-8">
         <h2>Styling</h2>
         <p>
-          Icons use <code>--cx-icon-size</code> and <code>--cx-icon-color</code> for their size and color.
-          You can change those values in different ways.
+          Easily style icons with <a href="https://chassis-ui.com/css">Chassis CSS</a>. Icons use <code
+            >--cx-icon-size</code
+          > and <code>--cx-icon-color</code> for their size and color. You can change those values in
+          different ways.
         </p>
       </header>
     </div>
@@ -41,7 +43,8 @@ import Code from '@components/shortcodes/Code.astro'
       <div class="col-medium-4">
         <h3>Adaptive</h3>
         <p>
-          Put <code>.icon-adaptive</code> to change their values to <code>--cx-font-size</code> and <code
+          Put <code>.icon-adaptive</code> and
+          <code>.icon-reset</code> to change their values to <code>--cx-font-size</code> and <code
             >--cx-fg-color</code
           >.
         </p>
@@ -49,7 +52,7 @@ import Code from '@components/shortcodes/Code.astro'
       <div class="col-medium-8">
         <Example
           code={`<h2 class="fg-subtle">
-  <svg class="icon icon-adaptive">
+  <svg class="icon icon-adaptive icon-reset">
     <use xlink:href="#${getConfig().example_icon}"/>
   </svg>
   Heading
