@@ -3,13 +3,14 @@ import type { MdxJsxAttribute, MdxJsxExpressionAttribute } from 'mdast-util-mdx-
 import type { Plugin } from 'unified'
 import { visit } from 'unist-util-visit'
 import { getConfig } from './config'
+import { getChassisDocsPath } from './path'
 
 // [[config:foo]]
 // [[config:foo.bar]]
-const configRegExp = /\[\[config:(?<name>[\w\.]+)]]/g
+const configRegExp = /\[\[config:(?<name>[\w.]+)\]\]/g
 // [[docsref:/foo]]
 // [[docsref:/foo/bar#baz]]
-const docsrefRegExp = /\[\[docsref:(?<path>[\w\.\/#-]+)]]/g
+const docsrefRegExp = /\[\[docsref:(?<path>[\w./#-]+)\]\]/g
 
 // A remark plugin to replace config values embedded in markdown (or MDX) files.
 // For example, [[config:foo]] will be replaced with the value of the `foo` key in the `config.yml` file.
@@ -25,33 +26,85 @@ export const remarkCxConfig: Plugin<[], Root> = function () {
 
     // https://github.com/syntax-tree/mdast#nodes
     // https://github.com/syntax-tree/mdast-util-mdx-jsx#nodes
-    visit(ast, ['code', 'definition', 'image', 'inlineCode', 'link', 'mdxJsxFlowElement', 'text'], (node) => {
-      switch (node.type) {
-        case 'code':
-        case 'inlineCode':
-        case 'text': {
-          node.value = replaceConfigInText(node.value)
-          break
-        }
-        case 'image': {
-          if (node.alt) {
-            node.alt = replaceConfigInText(node.alt)
+    visit(
+      ast,
+      ['code', 'definition', 'image', 'inlineCode', 'link', 'mdxJsxFlowElement', 'text'],
+      (node) => {
+        switch (node.type) {
+          case 'code':
+          case 'inlineCode':
+          case 'text': {
+            node.value = replaceConfigInText(node.value)
+            break
           }
+          case 'image': {
+            if (node.alt) {
+              node.alt = replaceConfigInText(node.alt)
+            }
 
-          node.url = replaceConfigInText(node.url)
-          break
-        }
-        case 'definition':
-        case 'link': {
-          node.url = replaceConfigInText(node.url)
-          break
-        }
-        case 'mdxJsxFlowElement': {
-          node.attributes = replaceConfigInAttributes(node.attributes)
-          break
+            node.url = replaceConfigInText(node.url)
+            break
+          }
+          case 'definition':
+          case 'link': {
+            node.url = replaceConfigInText(node.url)
+            break
+          }
+          case 'mdxJsxFlowElement': {
+            node.attributes = replaceConfigInAttributes(node.attributes)
+            break
+          }
         }
       }
-    })
+    )
+  }
+}
+
+// A remark plugin to add versionned docs links in markdown (or MDX) files.
+// For example, [[docsref:/foo]] will be replaced with the `/docs/foo`
+// Note: this also works in frontmatter.
+// At some point, this plugin should maybe be removed and embrace a more MDX-friendly syntax.
+export const remarkCxDocsref: Plugin<[], Root> = function () {
+  return function remarkCxDocsrefPlugin(ast, file) {
+    if (containsFrontmatter(file.data.astro)) {
+      replaceInFrontmatter(file.data.astro.frontmatter, replaceDocsrefInText)
+    }
+
+    // https://github.com/syntax-tree/mdast#nodes
+    // https://github.com/syntax-tree/mdast-util-mdx-jsx#nodes
+    visit(
+      ast,
+      [
+        'code',
+        'definition',
+        'image',
+        'inlineCode',
+        'link',
+        'mdxJsxFlowElement',
+        'mdxJsxTextElement',
+        'text'
+      ],
+      (node) => {
+        switch (node.type) {
+          case 'code':
+          case 'inlineCode':
+          case 'text': {
+            node.value = replaceDocsrefInText(node.value)
+            break
+          }
+          case 'definition':
+          case 'link': {
+            node.url = replaceDocsrefInText(node.url)
+            break
+          }
+          case 'mdxJsxFlowElement':
+          case 'mdxJsxTextElement': {
+            node.attributes = replaceDocsrefInAttributes(node.attributes)
+            break
+          }
+        }
+      }
+    )
   }
 }
 
@@ -77,6 +130,22 @@ function replaceConfigInAttributes(attributes: (MdxJsxAttribute | MdxJsxExpressi
   })
 }
 
+export function replaceDocsrefInText(text: string) {
+  return text.replace(docsrefRegExp, (_match, path) => {
+    return getChassisDocsPath(path)
+  })
+}
+
+function replaceDocsrefInAttributes(attributes: (MdxJsxAttribute | MdxJsxExpressionAttribute)[]) {
+  return attributes.map((attribute) => {
+    if (attribute.type === 'mdxJsxAttribute' && typeof attribute.value === 'string') {
+      attribute.value = replaceDocsrefInText(attribute.value)
+    }
+
+    return attribute
+  })
+}
+
 function getConfigValueAtPath(path: string) {
   const config = getConfig()
 
@@ -91,7 +160,10 @@ function getConfigValueAtPath(path: string) {
   return typeof value === 'string' ? value : undefined
 }
 
-function replaceInFrontmatter(record: Record<string, unknown>, replacer: (value: string) => string) {
+function replaceInFrontmatter(
+  record: Record<string, unknown>,
+  replacer: (value: string) => string // eslint-disable-line no-unused-vars
+) {
   for (const [key, value] of Object.entries(record)) {
     if (typeof value === 'string') {
       record[key] = replacer(value)

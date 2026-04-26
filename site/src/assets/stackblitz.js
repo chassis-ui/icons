@@ -12,14 +12,13 @@
  */
 
 import sdk from '@stackblitz/sdk'
-// eslint-disable-next-line import/no-unresolved
-import snippetsContent from './partials/snippets.js?raw'
+
+import snippetsContent from './snippets.js?raw'
 
 // These values will be replaced by Astro's Vite plugin
 const CONFIG = {
   cssCdn: '__CSS_CDN__',
-  jsBundleCdn: '__JS_BUNDLE_CDN__',
-  docsVersion: '__DOCS_VERSION__'
+  jsBundleCdn: '__JS_BUNDLE_CDN__'
 }
 
 // Open in StackBlitz logic
@@ -44,7 +43,6 @@ const openChassisSnippet = (htmlSnippet, jsSnippet, classes) => {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="${CONFIG.cssCdn}" rel="stylesheet">
-    <link href="https://chassis-ui.com/docs/${CONFIG.docsVersion}/assets/css/docs.css" rel="stylesheet">
     <title>Chassis Example</title>
     <script defer src="${CONFIG.jsBundleCdn}"></script>
   </head>
@@ -55,29 +53,10 @@ ${htmlSnippet.trimStart().replace(/^/gm, '    ').replace(/^ {4}$/gm, '').trimEnd
   </body>
 </html>`
 
-  // Modify the snippets content to convert export default to a variable and invoke it
-  let modifiedSnippetsContent = ''
-
-  if (jsSnippet) {
-    // Replace export default with a variable assignment
-    modifiedSnippetsContent = snippetsContent.replace(
-      'export default () => {',
-      'const snippets_default = () => {'
-    )
-
-    // Add IIFE wrapper and execution
-    modifiedSnippetsContent = `(() => {
-  ${modifiedSnippetsContent}
-
-  // <stdin>
-  snippets_default();
-})();`
-  }
-
   const project = {
     files: {
       'index.html': indexHtml,
-      ...(jsSnippet && { 'index.js': modifiedSnippetsContent })
+      ...(jsSnippet && { 'index.js': snippetsContent })
     },
     title: 'Chassis Example',
     description: `Official example from ${window.location.href}`,

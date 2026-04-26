@@ -1,49 +1,32 @@
 title:                  "Chassis - Icons"
-baseURL:                "https://chassis-ui.com/docs/icons"
+baseURL:                "https://chassis-ui.com/icons"
 
 docsDir:                "site"
+docsPath:                "/icons"
 
-subtitle:               "A comprehensive SVG icon library with 478+ optimized icons for web and mobile applications."
-description:            "Chassis Icons provides a complete set of SVG icons with font generation, sprite optimization, and distribution packages for multiple platforms."
+example_icon:           "info-circle-solid"
+
+subtitle:               "A Toolkit for Building Custom Icon Libraries"
+description:            "An open-source toolkit for building custom icon libraries: SVG optimization, sprite generation, web fonts (WOFF/WOFF2), and a live preview site."
 authors:                "Ozgur Gunes"
 
-current_version:        "0.1.0"
-docs_version:           "0.1"
-rfs_version:            "v10.0.0"
-github_org:             "https://github.com/ozgurgunes"
+current_version:        "0.1.1"
+github_org:             "https://github.com/chassis-ui"
 repo:                   "https://github.com/chassis-ui/icons"
+blog:                   "https://chassis-ui.com/blog/"
 x:                      "chassis_ui"
-opencollective:         "https://opencollective.com/chassis"
-blog:                   "https://blog.chassis.dev/"
-themes:                 "https://themes.chassis.dev/"
-icons:                  "https://icons.chassis.dev/"
-swag:                   "https://cottonbureau.com/people/chassis"
 
 analytics:
-  fathom_site:          "ITUSEYJG"
+  google_id:            "G-QGR8C28VYN"
 
 algolia:
-  app_id:               "AK7KMZKZHQ"
-  api_key:              "3151f502c7b9e9dafd5e6372b691a24e"
-  index_name:           "chassis-icons"
+  app_id:               "TMI5N9J6TZ"
+  api_key:              "e318e0636b0a951e4f82c8283345df13"
+  index_name:           "chassis-docs"
 
 download:
-  source:               "https://github.com/chassis-ui/icons/archive/v0.1.0.zip"
-  dist:                 "https://github.com/chassis-ui/icons/releases/download/v0.1.0/chassis-icons-0.1.0-dist.zip"
-  dist_examples:        "https://github.com/chassis-ui/icons/releases/download/v0.1.0/chassis-icons-0.1.0-examples.zip"
-
-cdn:
-  css:                  "https://cdn.jsdelivr.net/npm/@chassis-ui/icons@0.1.0/dist/css/chassis-icons.min.css"
-  css_hash:             "sha384-placeholder"
-  css_rtl:              "https://cdn.jsdelivr.net/npm/@chassis-ui/icons@0.1.0/dist/css/chassis-icons.rtl.min.css"
-  css_rtl_hash:         "sha384-placeholder"
-  js:                   "https://cdn.jsdelivr.net/npm/@chassis-ui/icons@0.1.0/dist/js/chassis-icons.min.js"
-  js_hash:              "sha384-placeholder"
-  js_bundle:            "https://cdn.jsdelivr.net/npm/@chassis-ui/icons@0.1.0/dist/js/chassis-icons.bundle.min.js"
-  js_bundle_hash:       "sha384-placeholder"
-  popper:               "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-  popper_hash:          "sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-  popper_esm:           "https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/esm/popper.min.js"
+  source:               "https://github.com/chassis-ui/icons/archive/v0.1.1.zip"
+  dist:                 "https://github.com/chassis-ui/icons/releases/download/v0.1.1/chassis-icons-0.1.1-dist.zip"
 
 anchors:
   min:                  2

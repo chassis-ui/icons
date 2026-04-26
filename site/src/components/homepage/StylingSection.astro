@@ -1,0 +1,145 @@
+---
+import { getConfig } from '@libs/config'
+import Example from '@components/shortcodes/Example.astro'
+import Code from '@components/shortcodes/Code.astro'
+---
+
+<section id="styling-section" class="home-section py-3xlarge py-medium-6xlarge">
+  <div class="container-2xlarge section-content">
+    <div class="row mb-3xlarge mb-medium-6xlarge">
+      <header class="section-header col col-large-10 col-xlarge-8">
+        <h2>Styling</h2>
+        <p>
+          Easily style icons with <a href="https://chassis-ui.com/css">Chassis CSS</a>. Icons use <code
+            >--cx-icon-size</code
+          > and <code>--cx-icon-color</code> for their size and color. You can change those values in
+          different ways.
+        </p>
+      </header>
+    </div>
+
+    <div class="row my-large">
+      <div class="col-medium-4">
+        <h3>Utilities</h3>
+        <p>
+          You can use <code>icon-*</code> classes to change both their size and colors. Put any <em
+            >context color</em
+          > or <em>icon size</em> after.
+        </p>
+      </div>
+      <div class="col-medium-8">
+        <Example
+          code={`<svg class="icon">
+  <use xlink:href="#${getConfig().example_icon}"/>
+</svg>
+<svg class="icon icon-info icon-xlarge">
+  <use xlink:href="#${getConfig().example_icon}"/>
+</svg>`}
+        />
+      </div>
+    </div>
+
+    <div class="row my-large">
+      <div class="col-medium-4">
+        <h3>Adaptive</h3>
+        <p>
+          Put <code>.icon-adaptive</code> and
+          <code>.icon-reset</code> to change their values to <code>--cx-font-size</code> and <code
+            >--cx-fg-color</code
+          >.
+        </p>
+      </div>
+      <div class="col-medium-8">
+        <Example
+          code={`<h2 class="fg-subtle">
+  <svg class="icon icon-adaptive icon-reset">
+    <use xlink:href="#${getConfig().example_icon}"/>
+  </svg>
+  Heading
+</h2>`}
+        />
+      </div>
+    </div>
+
+    <div class="row my-large">
+      <div class="col-medium-4">
+        <h3>Context Colors</h3>
+        <p>
+          Icons color and sizes fit to context and components automatically. Context object color
+          utilities are also available. Put <code>.*-icon-main</code> or <code>.*-icon-subtle</code> classes
+          to change their <code>color</code> ad <code>fill-color</code> properties directly with an <code
+            >!important</code
+          > flag.
+        </p>
+        <p>
+          Note that, <code>.icon-primary</code> and <code>.primary-icon-main</code> are different colors.
+          While <code>.primary-icon-main</code> using <code>--cx-primary-icon-main</code> color, <code
+            >.icon-primary</code
+          > uses <code>--cx-primary-base-color</code> for its property.
+        </p>
+      </div>
+      <div class="col-medium-8">
+        <Example
+          code={`<div class="context secondary p-medium">
+  <svg class="icon"><use xlink:href="#${getConfig().example_icon}"/></svg>
+  <svg class="icon icon-subtle icon-medium"><use xlink:href="#${getConfig().example_icon}"/></svg>
+
+  <span class="icon fg-subtle icon-2xlarge icon-${getConfig().example_icon}"></span>
+  <span class="icon primary-icon-main icon-${getConfig().example_icon} "></span>
+  <span class="icon primary-fg-main icon-xsmall icon-${getConfig().example_icon} "></span>
+</div>`}
+        />
+      </div>
+    </div>
+
+    <div class="row my-large">
+      <div class="col-medium-4">
+        <h3>CSS</h3>
+        <p>
+          You can also use the SVG within your CSS (<strong>be sure to escape any characters</strong
+          >, such as <code>#</code> to <code>%23</code> when specifying hex color values). When no dimensions
+          are specified via <code>width</code> and <code>height</code> on the <code
+            >&lt;svg&gt;</code
+          >, the icon will fill the available space.
+        </p>
+        <p>
+          The <code>viewBox</code> attribute is required if you wish to resize icons with <code
+            >background-size</code
+          >. Note that the <code>xmlns</code> attribute is required.
+        </p>
+        <p>
+          Note that, it is not possible to change color if SVG used as <code>background-image</code
+          >. Because of this, we prefer to use <code>mask-image</code> if any CSS usage needed.
+        </p>
+      </div>
+      <div class="col-medium-8">
+        <Code
+          lang="css"
+          code={`.icon-bg::before {
+  display: inline-block;
+  content: "";
+  vertical-align: -.125em;
+  background-image: url("data:image/svg+xml,<svg viewBox='0 0 24 24' fill='%23ff5b14' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z' clip-rule='evenodd'/></svg>");
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+}`}
+        />
+        <Code
+          lang="css"
+          code={`.icon-mask::before {
+  position: absolute;
+  width: 1rem
+  height: 1rem
+  margin-top: 0;
+  margin-left: .5rem;
+  content: "";
+  background-color: #ff5b14;
+  mask-image: url("data:image/svg+xml,<svg viewBox='0 0 24 24' fill='currentColor' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z' clip-rule='evenodd'/></svg>");
+  mask-position: center;
+  mask-size: 1rem 1rem;
+}`}
+        />
+      </div>
+    </div>
+  </div>
+</section>

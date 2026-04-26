@@ -1,4 +1,10 @@
 # Prettier ignore
+*.css
+*.scss
 build/font/*.hbs
-icons/preview.html
-icons/package/*
+/icons
+/svgs
+site/config.yml
+site/content
+site/src/assets
+/vendor

@@ -25,7 +25,11 @@ execFile('java', ['-version'], (error, stdout, stderr) => {
 
   // vnu-jar accepts multiple ignores joined with a `|`.
   // Also note that the ignores are string regular expressions.
-  const ignores = [].join('|')
+  const ignores = [
+    'Trailing slash on void elements.*',
+    'Attribute “track” not allowed on element “a” at this point.',
+    '.*two consecutive hyphens in a comment.*'
+  ].join('|')
 
   const args = [
     '-jar',
@@ -33,7 +37,7 @@ execFile('java', ['-version'], (error, stdout, stderr) => {
     '--asciiquotes',
     '--skip-non-html',
     '--Werror',
-    `--filterpattern "${ignores}"`,
+    `--filterpattern '${ignores}'`,
     '_site/'
   ]
 

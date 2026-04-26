@@ -21,7 +21,7 @@ async function main() {
     console.log(picocolors.cyan('🔍 Checking icon consistency...'))
 
     // Read font JSON
-    const fontJsonPath = path.join(__dirname, '../font/chassis-icons.json')
+    const fontJsonPath = path.join(__dirname, '../icons/chassis-icons.json')
     const fontJsonString = await fs.readFile(fontJsonPath, 'utf8')
     const fontJson = JSON.parse(fontJsonString)
     const fontIcons = new Set(Object.keys(fontJson))

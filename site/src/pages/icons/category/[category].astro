@@ -1,0 +1,59 @@
+---
+import IconsLayout from '@layouts/IconsLayout.astro'
+import { iconsPages } from '@libs/content'
+import ListSection from '@components/homepage/ListSection.astro'
+
+export async function getStaticPaths() {
+  // Collect all categories from icon pages
+  const categories = new Set()
+
+  iconsPages.forEach((page) => {
+    if (page.data.categories) {
+      const iconCategories = Array.isArray(page.data.categories)
+        ? page.data.categories
+        : [page.data.categories]
+      iconCategories.forEach((cat) => categories.add(cat))
+    }
+  })
+
+  return Array.from(categories).map((category) => {
+    const categoryIcons = iconsPages.filter((page) => {
+      const iconCategories = Array.isArray(page.data.categories)
+        ? page.data.categories
+        : [page.data.categories]
+      return iconCategories.includes(String(category))
+    })
+
+    return {
+      params: { category },
+      props: {
+        category,
+        icons: categoryIcons,
+        count: categoryIcons.length
+      }
+    }
+  })
+}
+
+const { category, icons, count } = Astro.props
+
+const frontmatter = {
+  title: `${String(category).charAt(0).toUpperCase() + String(category).slice(1)} icons`,
+  description: `Browse ${count} icons in "${category}" category`,
+  categories: [category]
+}
+---
+
+<IconsLayout frontmatter={frontmatter}>
+  <nav aria-label="breadcrumb" class="container-2xlarge pt-medium">
+    <div class="border-bottom border-subtle mb-medium">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-page"><a href="/icons/">Icons</a></li>
+        <li class="breadcrumb-page"><a href="/icons/browse/">Browse</a></li>
+        <li class="breadcrumb-page active" aria-current="page">{category}</li>
+      </ol>
+    </div>
+  </nav>
+
+  <ListSection icons={icons} title={`${count} icons in ${String(category)} category`} />
+</IconsLayout>

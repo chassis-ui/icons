@@ -1,5 +1,5 @@
-import { z, defineCollection } from "astro:content";
-import { glob } from "astro/loaders";
+import { z, defineCollection } from 'astro:content'
+import { glob } from 'astro/loaders'
 
 const iconsSchema = z.object({
   added: z
@@ -33,14 +33,14 @@ const iconsSchema = z.object({
 })
 
 const iconsCollection = defineCollection({
-  loader: glob({ pattern: "**/*.mdx", base: "./content/icons" }),
+  loader: glob({ pattern: '**/*.mdx', base: './content/icons' }),
   schema: iconsSchema
 })
 
 const calloutsSchema = z.object({})
 
 const calloutsCollection = defineCollection({
-  loader: glob({ pattern: "**/*.mdx", base: "./content/callouts" }),
+  loader: glob({ pattern: '**/*.mdx', base: './content/callouts' }),
   schema: calloutsSchema
 })
 

@@ -13,13 +13,10 @@ export default defineConfig([
     ignores: [
       '**/*.min.js',
       '**/dist/',
-      '**/vendor/',
       '_site/',
-      'site/public/',
       'site/.astro/',
-      'node_modules/',
-      '.cache/',
-      'reference/**/*.md'
+      'site/public/',
+      'vendor/',
     ]
   },
   eslint.configs.recommended,

@@ -1,0 +1,77 @@
+---
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
+---
+
+<section id="svg-section" class="home-section py-3xlarge py-medium-6xlarge">
+  <div class="container-2xlarge section-content">
+    <div class="row mb-3xlarge mb-medium-6xlarge">
+      <header class="section-header col col-large-10 col-xlarge-8">
+        <h2>Working with SVGs</h2>
+
+        <p>
+          SVGs offer powerful flexibility for icon systems, but require specific implementation
+          considerations for accessibility and cross-browser compatibility. The issues below address
+          known platform quirks that aren't included in our default markup.
+        </p>
+      </header>
+    </div>
+
+    <div class="row row-cols-1 row-cols-medium-2 row-cols-large-3 g-medium g-medium-xlarge">
+      <div class="col">
+        <FeatureCard icon="cx-shapes">
+          <Fragment slot="title">Focus in Legacy Browsers</Fragment>
+          <Fragment slot="body">
+            SVG elements receive keyboard focus by default in Internet Explorer and Edge Legacy. Add
+            `focusable="false"` to prevent this behavior.
+          </Fragment>
+          <div class="border-top border-subtle pt-medium mb-0">
+            <a
+              href="https://stackoverflow.com/questions/18646111/disable-onfocus-event-for-svg-element"
+              class="link-secondary"
+              target="_blank"
+              rel="noopener"
+            >
+              View solution on Stack Overflow →
+            </a>
+          </div>
+        </FeatureCard>
+      </div>
+
+      <div class="col">
+        <FeatureCard icon="cx-megaphone">
+          <Fragment slot="title">Screen Reader Announcements</Fragment>
+          <Fragment slot="body">
+            When using <code>&lt;img&gt;</code> elements with SVG sources, screen readers may skip the
+            image or fail to announce it properly. Include <code>role="img"</code> on the element.
+          </Fragment>
+          <div class="border-top border-subtle pt-medium mt-auto">
+            <a
+              href="https://web.archive.org/web/20201112013541/https://simplyaccessible.com/article/7-solutions-svgs/#acc-heading-2"
+              class="link-secondary"
+              target="_blank"
+              rel="noopener">Read accessibility guidance →</a
+            >
+          </div>
+        </FeatureCard>
+      </div>
+
+      <div class="col">
+        <FeatureCard icon="cx-thumbs-up">
+          <Fragment slot="title">External Sprite Support (IE)</Fragment>
+          <Fragment slot="body">
+            External SVG sprites using <code>&lt;use&gt;</code> with <code>href</code> attributes don't
+            work in Internet Explorer. Apply the svg4everybody polyfill if IE support is required.
+          </Fragment>
+          <div class="border-top border-subtle pt-medium mt-auto">
+            <a
+              href="https://github.com/jonathantneal/svg4everybody"
+              class="link-secondary mb-0"
+              target="_blank"
+              rel="noopener">View polyfill on GitHub →</a
+            >
+          </div>
+        </FeatureCard>
+      </div>
+    </div>
+  </div>
+</section>

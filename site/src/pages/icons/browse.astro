@@ -1,0 +1,104 @@
+---
+import IconsLayout from '@layouts/IconsLayout.astro'
+import { iconsPages } from '@libs/content'
+
+// Collect all categories and tags
+const categories = new Map()
+const tags = new Map()
+
+iconsPages.forEach((page) => {
+  // Process categories
+  if (page.data.categories) {
+    const iconCategories = Array.isArray(page.data.categories)
+      ? page.data.categories
+      : [page.data.categories]
+    iconCategories.forEach((cat) => {
+      categories.set(cat, (categories.get(cat) || 0) + 1)
+    })
+  }
+
+  // Process tags
+  if (page.data.tags) {
+    const iconTags = Array.isArray(page.data.tags)
+      ? page.data.tags
+      : page.data.tags.split(',').map((tag) => tag.trim())
+    iconTags.forEach((tag) => {
+      tags.set(tag, (tags.get(tag) || 0) + 1)
+    })
+  }
+})
+
+const sortedCategories = Array.from(categories.entries()).sort((a, b) => b[1] - a[1])
+const sortedTags = Array.from(tags.entries()).sort((a, b) => b[1] - a[1])
+
+const frontmatter = {
+  title: 'Browse Icons by Category & Tags',
+  description: `Explore ${iconsPages.length} icons organized by categories and tags`
+}
+---
+
+<IconsLayout frontmatter={frontmatter}>
+  <div class="container-2xlarge">
+  <nav aria-label="breadcrumb" class="pt-medium">
+    <div class="border-bottom border-subtle mb-medium">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-page"><a href="/icons/">Icons</a></li>
+        <li class="breadcrumb-page"><a href="/icons/browse/">Browse</a></li>
+      </ol>
+    </div>
+  </nav>
+  <div class="border-bottom border-subtle">
+    <h1>{frontmatter.title}</h1>
+    <p class="lead">{frontmatter.description}</p>
+  </div>
+
+  <div class="row my-2xlarge">
+    <div class="col-medium-6">
+      <h2>Categories</h2>
+      <p class="text-muted">Icons grouped by primary function or theme</p>
+      <div class="d-flex flex-wrap gap-medium mb-4">
+        {
+          sortedCategories.map(([category, count]) => (
+            <a href={`/icons/category/${category}/`} class="button default small">
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+              <span class="badge primary smooth ms-2xsmall">{count}</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="col-medium-6">
+      <h2>Tags</h2>
+      <p class="text-muted">Icons labeled by style, type, or characteristics</p>
+      <div class="d-flex flex-wrap gap-medium mb-4">
+        {
+          sortedTags.map(([tag, count]) => (
+            <a href={`/icons/tag/${tag}/`} class="button default small">
+              {tag}
+              <span class="badge primary smooth ms-2xsmall">{count}</span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <section class="surface border p-4 mb-2xlarge rounded">
+    <h6 class="fg-subtle">Quick Stats</h6>
+    <div class="row text-center">
+      <div class="col-4">
+        <div class="font-5xlarge font-strong">{iconsPages.length}</div>
+        <div>Total Icons</div>
+      </div>
+      <div class="col-4">
+        <div class="font-5xlarge font-strong">{categories.size}</div>
+        <div>Categories</div>
+      </div>
+      <div class="col-4">
+        <div class="font-5xlarge font-strong">{tags.size}</div>
+        <div>Tags</div>
+      </div>
+    </div>
+  </section>
+</div></IconsLayout>
