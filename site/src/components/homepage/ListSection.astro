@@ -10,8 +10,8 @@ interface Props {
 const { icons = iconsPages, showSearch = true, title = 'Icons' } = Astro.props
 ---
 
-<section id="icons-section" class="home-section py-3xlarge py-medium-6xlarge">
-  <div class="container-2xlarge section-content">
+<section id="icons-section" class="home-section py-3xlarge medium:py-6xlarge">
+  <div class="container 2xlarge section-content">
     <header class="d-flex my-2xlarge">
       <h2 id="icons">{title}</h2>
       {
@@ -33,7 +33,7 @@ const { icons = iconsPages, showSearch = true, title = 'Icons' } = Astro.props
     </header>
     <ul
       id="icons-list"
-      class="row row-cols-3 gy-medium row-cols-small-4 row-cols-large-6 row-cols-xlarge-8 bulletless icons-list icon-xlarge"
+      class="row row-cols-3 gy-medium small:row-cols-4 large:row-cols-6 xlarge:row-cols-8 bulletless icons-list icon-xlarge"
     >
       {
         icons.map((iconPage) => {

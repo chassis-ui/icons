@@ -4,10 +4,10 @@ import Example from '@components/shortcodes/Example.astro'
 import Code from '@components/shortcodes/Code.astro'
 ---
 
-<section id="accessibility-section" class="home-section py-3xlarge py-medium-6xlarge">
-  <div class="container-2xlarge section-content">
-    <div class="row mb-3xlarge mb-medium-6xlarge">
-      <header class="section-header col col-large-10 col-xlarge-8">
+<section id="accessibility-section" class="home-section py-3xlarge medium:py-6xlarge">
+  <div class="container 2xlarge section-content">
+    <div class="row mb-3xlarge medium:mb-6xlarge">
+      <header class="section-header col large:col-10 xlarge:col-8">
         <h2>Accessibility</h2>
         <p>
           Icons are a great way to add visual interest to your site, but they can also be a barrier
@@ -18,7 +18,7 @@ import Code from '@components/shortcodes/Code.astro'
     </div>
 
     <div class="row my-large">
-      <div class="col-medium-4">
+      <div class="medium:col-4">
         <h3>Image Alt Text</h3>
         <p>
           When using icons as images, it's important to provide an <code>alt</code> attribute that describes
@@ -27,7 +27,7 @@ import Code from '@components/shortcodes/Code.astro'
           > text to users who cannot see the icon.
         </p>
       </div>
-      <div class="col-medium-8">
+      <div class="medium:col-8">
         <Example
           showMarkup={false}
           code={`<img src="/static/icons/${getConfig().example_icon}.svg" alt="Chassis" width="24" height="24">`}
@@ -42,7 +42,7 @@ import Code from '@components/shortcodes/Code.astro'
     </div>
 
     <div class="row my-large">
-      <div class="col-medium-4">
+      <div class="medium:col-4">
         <h3>ARIA Label</h3>
         <p>
           When using icons, it's important to provide a text alternative for screen readers. This
@@ -50,7 +50,7 @@ import Code from '@components/shortcodes/Code.astro'
           a visually hidden text label that describes the icon's purpose.
         </p>
       </div>
-      <div class="col-medium-8">
+      <div class="medium:col-8">
         <Example
           showMarkup={false}
           code={`<span class="icon icon-${getConfig().example_icon}" role="img" aria-label="Example Icon"></span>
@@ -66,7 +66,7 @@ import Code from '@components/shortcodes/Code.astro'
     </div>
 
     <div class="row my-large">
-      <div class="col-medium-4">
+      <div class="medium:col-4">
         <h3>ARIA Hidden</h3>
         <p>
           When using icons as decorative elements, it's important to hide them from screen readers.
@@ -74,7 +74,7 @@ import Code from '@components/shortcodes/Code.astro'
           screen readers to ignore the icon and not announce it to users.
         </p>
       </div>
-      <div class="col-medium-8">
+      <div class="medium:col-8">
         <Example
           showMarkup={false}
           code={`<button type="button" class="button default" aria-label="Example">
