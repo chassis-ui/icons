@@ -13,10 +13,10 @@ const iconName = icon.title
 const iconAdapt = `<svg class="icon icon-adaptive"><use xlink:href="#${iconName}"/></svg>`
 ---
 
-<div class="container-2xlarge">
+<div class="container 2xlarge">
   <Title icon={icon} />
   <div class="row mb-xlarge">
-    <main class="col-medium-8" id="content">
+    <main class="medium:col-8" id="content">
       <div
         class="icon-demo border rounded d-flex align-items-center justify-content-center"
         style="font-size: 10rem;"
@@ -29,7 +29,7 @@ const iconAdapt = `<svg class="icon icon-adaptive"><use xlink:href="#${iconName}
         <Examples icon={icon} />
       </div>
     </main>
-    <aside class="col-medium-4">
+    <aside class="medium:col-4">
       <Snippets icon={icon} />
     </aside>
   </div>
