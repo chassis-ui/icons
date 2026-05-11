@@ -1,13 +1,13 @@
 /*!
- * Chassis Icons v0.1.1
+ * Chassis Icons v0.2.0
  * Copyright 2025 Ozgur Gunes
  * Licensed under MIT (https://github.com/chassis-ui/icons/blob/main/LICENSE)
  */
 
 @font-face {
   font-family: "chassis-icons";
-  src: url("./chassis-icons.woff2?cd21919f2c07303d657d3b27220ed912") format("woff2"),
-url("./chassis-icons.woff?cd21919f2c07303d657d3b27220ed912") format("woff");
+  src: url("./chassis-icons.woff2?1ff47de8ff006206db8c07f50a57322b") format("woff2"),
+url("./chassis-icons.woff?1ff47de8ff006206db8c07f50a57322b") format("woff");
   font-display: block;
 }
 
@@ -514,3 +514,5 @@ url("./chassis-icons.woff?cd21919f2c07303d657d3b27220ed912") format("woff");
 .icon-x-twitter-square-brand::before { content: "\f176"; }
 .icon-microchip-outline::before { content: "\f1db"; }
 .icon-microchip-solid::before { content: "\f1dc"; }
+.icon-cut-outline::before { content: "\f221"; }
+.icon-cut-solid::before { content: "\f222"; }

@@ -1,5 +1,5 @@
 /*!
- * Chassis Icons v0.1.1
+ * Chassis Icons v0.2.0
  * Copyright 2025 Ozgur Gunes
  * Licensed under MIT (https://github.com/chassis-ui/icons/blob/main/LICENSE)
  */
@@ -522,6 +522,8 @@ $chassis-icons-map: (
   "x-twitter-square-brand": "\f176",
   "microchip-outline": "\f1db",
   "microchip-solid": "\f1dc",
+  "cut-outline": "\f221",
+  "cut-solid": "\f222",
 );
 
 @each $icon, $codepoint in $chassis-icons-map {
