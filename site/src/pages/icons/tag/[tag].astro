@@ -39,7 +39,7 @@ export async function getStaticPaths() {
 const { tag, icons, count } = Astro.props
 
 const frontmatter = {
-  title: `${String(tag).charAt(0).toUpperCase() + String(tag).slice(1)} icons`,
+  title: `${String(tag).charAt(0).toUpperCase() + String(tag).slice(1)} tag`,
   description: `Browse ${count} icons tagged with "${tag}"`,
   tags: [tag]
 }
@@ -49,12 +49,12 @@ const frontmatter = {
   <nav aria-label="breadcrumb" class="container 2xlarge pt-medium">
     <div class="border-bottom border-subtle mb-medium">
       <ol class="breadcrumb">
-        <li class="breadcrumb-page"><a href="/icons/">Icons</a></li>
-        <li class="breadcrumb-page"><a href="/icons/browse/">Browse</a></li>
-        <li class="breadcrumb-page active" aria-current="page">{tag}</li>
+        <li class="breadcrumb-item"><a href="/icons/">Icons</a></li>
+        <li class="breadcrumb-item"><a href="/icons/browse/">Browse</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{tag}</li>
       </ol>
     </div>
   </nav>
-
+  <div class="container 2xlarge"><h1>{frontmatter.title}</h1></div>
   <ListSection icons={icons} title={`${count} icons with ${String(tag)} tag`} />
 </IconsLayout>

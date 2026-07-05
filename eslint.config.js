@@ -10,14 +10,7 @@ import astroPlugin from 'eslint-plugin-astro'
 export default defineConfig([
   // Global ignores
   {
-    ignores: [
-      '**/*.min.js',
-      '**/dist/',
-      '_site/',
-      'site/.astro/',
-      'site/public/',
-      'vendor/',
-    ]
+    ignores: ['**/*.min.js', '**/dist/', '_site/', 'site/.astro/', 'site/public/', 'vendor/']
   },
   eslint.configs.recommended,
   tseslint.configs.eslintRecommended,
@@ -27,7 +20,7 @@ export default defineConfig([
   {
     plugins: { import: importPlugin, unicorn: unicornPlugin },
     rules: {
-      'no-unused-vars': 'warn',
+      'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       'no-useless-escape': 'warn',
       'prettier/prettier': 'warn'
     }

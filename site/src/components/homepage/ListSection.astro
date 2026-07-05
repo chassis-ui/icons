@@ -1,4 +1,5 @@
 ---
+import Icon from '@chassis-ui/docs/components/shortcodes/Icon.astro'
 import { iconsPages } from '@libs/content'
 
 interface Props {
@@ -7,10 +8,10 @@ interface Props {
   title?: string
 }
 
-const { icons = iconsPages, showSearch = true, title = 'Icons' } = Astro.props
+const { icons = iconsPages, showSearch = true, title = 'Sprite' } = Astro.props
 ---
 
-<section id="icons-section" class="home-section py-3xlarge medium:py-6xlarge">
+<section id="icons-section" class="home-section py-xlarge" data-pagefind-ignore>
   <div class="container 2xlarge section-content">
     <header class="d-flex my-2xlarge">
       <h2 id="icons">{title}</h2>
@@ -27,6 +28,9 @@ const { icons = iconsPages, showSearch = true, title = 'Icons' } = Astro.props
               placeholder="Start typing to filter..."
               autocomplete="off"
             />
+            <button type="submit" hidden>
+              Search
+            </button>
           </form>
         )
       }
@@ -48,9 +52,7 @@ const { icons = iconsPages, showSearch = true, title = 'Icons' } = Astro.props
             >
               <a class="d-block text-decoration-none" href={`/icons/${filename}`}>
                 <div class="bg-even py-3xlarge text-center rounded">
-                  <svg class="icon">
-                    <use xlink:href={`#${filename}`} />
-                  </svg>
+                  <Icon name={filename} />
                 </div>
                 <div class="name text-muted text-decoration-none text-center">{filename}</div>
               </a>

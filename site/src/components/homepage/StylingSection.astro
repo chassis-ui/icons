@@ -1,14 +1,14 @@
 ---
 import { getConfig } from '@libs/config'
-import Example from '@components/shortcodes/Example.astro'
-import Code from '@components/shortcodes/Code.astro'
+import Example from '@chassis-ui/docs/shortcodes/Example.astro'
+import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 ---
 
 <section id="styling-section" class="home-section py-3xlarge medium:py-6xlarge">
   <div class="container 2xlarge section-content">
     <div class="row mb-3xlarge medium:mb-6xlarge">
       <header class="section-header col large:col-10 xlarge:col-8">
-        <h2>Styling</h2>
+        <h2 id="styling">Styling</h2>
         <p>
           Easily style icons with <a href="https://chassis-ui.com/css">Chassis CSS</a>. Icons use <code
             >--cx-icon-size</code
@@ -29,12 +29,8 @@ import Code from '@components/shortcodes/Code.astro'
       </div>
       <div class="medium:col-8">
         <Example
-          code={`<svg class="icon">
-  <use xlink:href="#${getConfig().example_icon}"/>
-</svg>
-<svg class="icon icon-info icon-xlarge">
-  <use xlink:href="#${getConfig().example_icon}"/>
-</svg>`}
+          code={`<Icon name="${getConfig().example_icon}" />
+          <Icon name="${getConfig().example_icon}" class="icon-info icon-xlarge" />`}
         />
       </div>
     </div>
@@ -52,9 +48,7 @@ import Code from '@components/shortcodes/Code.astro'
       <div class="medium:col-8">
         <Example
           code={`<h2 class="fg-subtle">
-  <svg class="icon icon-adaptive icon-reset">
-    <use xlink:href="#${getConfig().example_icon}"/>
-  </svg>
+  <Icon name="${getConfig().example_icon}" class="icon-adaptive icon-reset" />
   Heading
 </h2>`}
         />
@@ -81,13 +75,13 @@ import Code from '@components/shortcodes/Code.astro'
       <div class="medium:col-8">
         <Example
           code={`<div class="context secondary p-medium">
-  <svg class="icon"><use xlink:href="#${getConfig().example_icon}"/></svg>
-  <svg class="icon icon-subtle icon-medium"><use xlink:href="#${getConfig().example_icon}"/></svg>
+    <Icon name="${getConfig().example_icon}" />
+    <Icon name="${getConfig().example_icon}" class="icon-subtle icon-medium" />
 
-  <span class="icon fg-subtle icon-2xlarge icon-${getConfig().example_icon}"></span>
-  <span class="icon primary-icon-main icon-${getConfig().example_icon} "></span>
-  <span class="icon primary-fg-main icon-xsmall icon-${getConfig().example_icon} "></span>
-</div>`}
+    <Icon name="${getConfig().example_icon}" class="fg-subtle icon-2xlarge" font />
+    <Icon name="${getConfig().example_icon}" class="primary-icon-main" font />
+    <Icon name="${getConfig().example_icon}" class="primary-fg-main icon-xsmall" font />
+  </div>`}
         />
       </div>
     </div>

@@ -10,7 +10,7 @@ subtitle:               "A Toolkit for Building Custom Icon Libraries"
 description:            "An open-source toolkit for building custom icon libraries: SVG optimization, sprite generation, web fonts (WOFF/WOFF2), and a live preview site."
 authors:                "Ozgur Gunes"
 
-current_version:        "0.2.0"
+current_version:        "0.3.0"
 github_org:             "https://github.com/chassis-ui"
 repo:                   "https://github.com/chassis-ui/icons"
 blog:                   "https://chassis-ui.com/blog/"
@@ -19,14 +19,9 @@ x:                      "chassis_ui"
 analytics:
   google_id:            "G-QGR8C28VYN"
 
-algolia:
-  app_id:               "TMI5N9J6TZ"
-  api_key:              "e318e0636b0a951e4f82c8283345df13"
-  index_name:           "chassis-docs"
-
 download:
-  source:               "https://github.com/chassis-ui/icons/archive/v0.2.0.zip"
-  dist:                 "https://github.com/chassis-ui/icons/releases/download/v0.2.0/chassis-icons-0.2.0-dist.zip"
+  source:               "https://github.com/chassis-ui/icons/archive/v0.3.0.zip"
+  dist:                 "https://github.com/chassis-ui/icons/releases/download/v0.3.0/chassis-icons-0.3.0-dist.zip"
 
 anchors:
   min:                  2

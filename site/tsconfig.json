@@ -3,9 +3,8 @@
   "compilerOptions": {
     "ignoreDeprecations": "6.0",
     "baseUrl": ".",
-    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "paths": {
-      "@css/*": ["../node_modules/@chassis-ui/css/dist/*"],
+      "@chassis-ui/css/*": ["node_modules/@chassis-ui/css/*"],
       "@icons/*": ["../*"],
       "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],
@@ -14,5 +13,6 @@
       "@scss/*": ["src/scss/*"],
       "@shortcodes/*": ["src/components/shortcodes/*"]
     }
-  }
+  },
+  "exclude": ["public"]
 }

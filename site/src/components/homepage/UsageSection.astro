@@ -1,13 +1,13 @@
 ---
 import { getConfig } from '@libs/config'
-import Example from '@components/shortcodes/Example.astro'
+import Example from '@chassis-ui/docs/shortcodes/Example.astro'
 ---
 
 <section id="usage-section" class="home-section py-3xlarge medium:py-6xlarge">
   <div class="container 2xlarge section-content">
     <div class="row mb-3xlarge medium:mb-6xlarge">
       <header class="section-header col large:col-10 xlarge:col-8">
-        <h2>Usage</h2>
+        <h2 id="usage">Usage</h2>
         <p>
           Chassis Icons are SVGs, so you can include them into your HTML in a few ways depending on
           how your project is setup. We recommend using using sprite and customize its color by
@@ -39,11 +39,7 @@ import Example from '@components/shortcodes/Example.astro'
         </p>
       </div>
       <div class="medium:col-8">
-        <Example
-          code={`<svg class="icon">
-  <use xlink:href="#${getConfig().example_icon}"/>
-</svg>`}
-        />
+        <Example code={`<Icon name="${getConfig().example_icon}" />`} />
       </div>
     </div>
 
@@ -75,10 +71,7 @@ import Example from '@components/shortcodes/Example.astro'
         </p>
       </div>
       <div class="medium:col-8">
-        <Example
-          code={`<span class="icon icon-${getConfig().example_icon}"></span>
-`}
-        />
+        <Example code={`<Icon name="${getConfig().example_icon}" font />`} />
       </div>
     </div>
   </div>
