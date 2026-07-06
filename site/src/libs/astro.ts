@@ -3,7 +3,6 @@ import path from 'node:path'
 import mdx from '@astrojs/mdx'
 import sitemap from '@astrojs/sitemap'
 import type { AstroIntegration } from 'astro'
-import { chassisBundlePlugin } from '@chassis-ui/docs'
 import { getConfig } from './config'
 import {
   getChassisAssetsFsPath,
@@ -49,9 +48,6 @@ export function chassis(): AstroIntegration[] {
           command = cmd
           // Reload the config when the integration is modified.
           addWatchFile(path.join(getDocsFsPath(), 'src/libs/astro.ts'))
-
-          const { plugin, define } = chassisBundlePlugin(getChassisCSSFsPath)
-          updateConfig({ vite: { plugins: [plugin], define } })
         },
         'astro:config:done': () => {
           if (command === 'sync') return
@@ -77,14 +73,15 @@ export function chassis(): AstroIntegration[] {
 }
 
 /**
- * Copies the previously-generated Pagefind search index from `_site/pagefind/`
- * into `public/pagefind/` so `astro dev` can serve search at `/pagefind/`.
+ * Copies the previously-generated Pagefind search index from `_site/icons/pagefind/`
+ * into `public/icons/pagefind/` so `astro dev` can serve search at `/icons/pagefind/`,
+ * matching the path prefix this site is proxied under in production.
  * No-op if no production build has been run yet — dev simply returns no results.
  */
 function copyPagefindIndex() {
-  const source = path.join(process.cwd(), '_site', 'pagefind')
+  const source = path.join(process.cwd(), '_site', 'icons', 'pagefind')
   if (!fs.existsSync(source)) return
-  const destination = path.join(getDocsPublicFsPath(), 'pagefind')
+  const destination = path.join(getDocsPublicFsPath(), 'icons', 'pagefind')
 
   fs.mkdirSync(destination, { recursive: true })
   fs.cpSync(source, destination, { recursive: true })
