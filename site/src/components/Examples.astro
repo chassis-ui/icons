@@ -1,84 +1,82 @@
 ---
 import type { CollectionEntry } from 'astro:content'
+import Icon from '@chassis-ui/docs/components/shortcodes/Icon.astro'
 
 interface Props {
   icon: CollectionEntry<'icons'>['data']
 }
 
 const { icon } = Astro.props
-const iconAdapt = `<svg class="icon icon-adaptive"><use xlink:href="#${icon.title}"/></svg>`
-const iconBase = `<svg class="icon"><use xlink:href="#${icon.title}"/></svg>`
 ---
 
 <h2 class="font-strong">Examples</h2>
 <div class="p-medium p-md-large border rounded icon-demo-examples">
   <div class="h1 align-items-center">
-    <Fragment set:html={iconAdapt} />
-    Heading
+    <Icon name={icon.title} class="icon-adaptive" /> Heading
   </div>
   <div class="h3">
-    <Fragment set:html={iconAdapt} />
-    Smaller heading
+    <Icon name={icon.title} class="icon-adaptive" /> Smaller heading
   </div>
   <p>
-    Inline text <Fragment set:html={iconAdapt} />
+    Inline text <Icon name={icon.title} class="icon-adaptive" />
   </p>
   <p>
     <a href="#here" class="text-decoration-none">
-      Example link text
-      <Fragment set:html={iconAdapt} />
+      Example link text <Icon name={icon.title} class="icon-adaptive" />
     </a>
   </p>
   <div class="d-flex gap-small mb-medium">
     <button type="button" class="button default">
-      <Fragment set:html={iconBase} />
-      Button
+      <Icon name={icon.title} />
+      <span>Button</span>
     </button>
     <button type="button" class="button primary">
-      <Fragment set:html={iconBase} />
-      Button
+      <Icon name={icon.title} />
+      <span>Button</span>
     </button>
     <button type="button" class="button primary outline">
-      <Fragment set:html={iconBase} />
-      Button
+      <Icon name={icon.title} />
+      <span>Button</span>
     </button>
     <button type="button" class="button primary smooth">
-      <Fragment set:html={iconBase} />
-      Button
+      <Icon name={icon.title} />
+      <span>Button</span>
     </button>
   </div>
   <div class="d-flex gap-small mb-medium">
-    <button type="button" class="button default">
-      <Fragment set:html={iconBase} />
+    <button type="button" class="button default icon-only">
+      <Icon name={icon.title} />
+      <span class="visually-hidden">Button</span>
     </button>
-    <button type="button" class="button secondary">
-      <Fragment set:html={iconBase} />
+    <button type="button" class="button secondary icon-only">
+      <Icon name={icon.title} />
+      <span class="visually-hidden">Button</span>
     </button>
     <div class="button-group">
-      <button type="button" class="button default">
-        <Fragment set:html={iconBase} />
+      <button type="button" class="button default icon-only">
+        <Icon name={icon.title} />
         <span class="visually-hidden">Button</span>
       </button>
-      <button type="button" class="button default">
-        <Fragment set:html={iconBase} />
+      <button type="button" class="button default icon-only">
+        <Icon name={icon.title} />
         <span class="visually-hidden">Button</span>
       </button>
-      <button type="button" class="button default">
-        <Fragment set:html={iconBase} />
+      <button type="button" class="button default icon-only">
+        <Icon name={icon.title} />
         <span class="visually-hidden">Button</span>
       </button>
     </div>
     <div class="button-group">
-      <button type="button" class="button secondary">
-        <Fragment set:html={iconBase} />
+      <button type="button" class="button secondary icon-only">
+        <Icon name={icon.title} />
         <span class="visually-hidden">Button</span>
       </button>
-      <button type="button" class="button secondary">
-        <Fragment set:html={iconBase} />
+      <button type="button" class="button secondary icon-only">
+        <Icon name={icon.title} />
         <span class="visually-hidden">Button</span>
       </button>
-      <button type="button" class="button secondary">
-        <Fragment set:html={iconBase} />
+      <button type="button" class="button secondary icon-only">
+        <Icon name={icon.title} />
         <span class="visually-hidden">Button</span>
       </button>
     </div>
@@ -86,7 +84,7 @@ const iconBase = `<svg class="icon"><use xlink:href="#${icon.title}"/></svg>`
   <div class="mb-medium">
     <div class="input-group">
       <span class="input-addon" id="basic-addon1">
-        <Fragment set:html={iconBase} />
+        <Icon name={icon.title} />
       </span>
       <input
         type="text"
@@ -97,8 +95,8 @@ const iconBase = `<svg class="icon"><use xlink:href="#${icon.title}"/></svg>`
       />
     </div>
   </div>
-  <div class="notification success d-flex align-items-center" role="alert">
-    <Fragment set:html={iconBase} />
+  <div class="notification success" role="alert">
+    <Icon name={icon.title} class="notification-icon" />
     <p>An example notification with an icon!</p>
   </div>
 </div>

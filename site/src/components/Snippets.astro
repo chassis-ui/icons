@@ -2,7 +2,7 @@
 import path from 'path'
 import type { CollectionEntry } from 'astro:content'
 import { readFileSync, existsSync } from 'fs'
-import Code from '@shortcodes/Code.astro'
+import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 
 interface Props {
   icon: CollectionEntry<'icons'>['data']
@@ -30,18 +30,18 @@ const hexCodepoint = parseInt(codepoints[icon.title]).toString(16).toUpperCase()
   <h3 class="mb-0">SVG sprite</h3>
   <p>Use this code for svg icons.</p>
   <div>
-    <Code lang="html" code={`<svg><use xlink:href="#${icon.title}"/></svg>`} />
+    <Code noToolbar lang="html" code={`<svg><use xlink:href="#${icon.title}"/></svg>`} />
   </div>
 
   <h3 class="mb-0">Icon font</h3>
   <p>Using the web font with a span element.</p>
   <div>
-    <Code lang="html" code={`<span class="icon icon-${icon.title}"/></span>`} />
+    <Code noToolbar lang="html" code={`<span class="icon icon-${icon.title}"/></span>`} />
   </div>
 
   <h3 class="mb-0">Embedded</h3>
   <p>Paste the SVG right into your project's code.</p>
-  <Code lang="html" code={svgCode} />
+  <Code noToolbar lang="html" code={svgCode} />
 
   <h3 class="mb-0">Code point</h3>
   <p>Paste the code point into your project.</p>

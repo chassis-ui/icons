@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content'
 import Title from '@components/Title.astro'
 import Examples from '@components/Examples.astro'
 import Snippets from '@components/Snippets.astro'
+import Icon from '@chassis-ui/docs/components/shortcodes/Icon.astro'
 
 interface Props {
   icon: CollectionEntry<'icons'>['data']
@@ -10,7 +11,6 @@ interface Props {
 
 const { icon } = Astro.props
 const iconName = icon.title
-const iconAdapt = `<svg class="icon icon-adaptive"><use xlink:href="#${iconName}"/></svg>`
 ---
 
 <div class="container 2xlarge">
@@ -23,7 +23,7 @@ const iconAdapt = `<svg class="icon icon-adaptive"><use xlink:href="#${iconName}
         role="img"
         aria-label={`${icon.title} - large preview`}
       >
-        <Fragment set:html={iconAdapt} />
+        <Icon name={iconName} class="icon-adaptive" />
       </div>
       <div>
         <Examples icon={icon} />

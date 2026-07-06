@@ -5,6 +5,26 @@ All notable changes to the Chassis Icons project will be documented in this file
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-07-04
+
+### Added
+
+- **New Icons**: CSS3, JS, MDN, Sass, Sass (alt), Hashtag, Cut, and Envelope variants (13 new icons total, bringing total to 501 icons)
+  - `css-brand`, `js-brand`, `mdn-brand`, `sass-brand`, `sass-alt-brand`
+  - `hashtag-outline` and `hashtag-solid`
+  - `cut-outline` and `cut-solid`
+  - `envelope-outline`, `envelope-solid`, `envelope-open-outline`, and `envelope-open-solid`
+- **Native HTML Validation**: Added `build/html-validate.js` and `pagefind.yml` for site validation and search indexing
+
+### Changed
+
+- **Icon Class Prefix**: Renamed CSS class prefix from `icon` to `cx` (breaking change)
+- **CSS Layering**: Wrapped generated icon font CSS in `@layer content` for more predictable cascade behavior
+- **Site Components**: Adopted the shared `<Icon>` component and `example-mode.js` from `@chassis-ui/docs`, removing local duplicates
+- **Dependencies**: Switched design tokens to the npm package instead of a git submodule; updated packages and lockfile
+- **Vercel & Search**: Updated `vercel.json` and fixed Pagefind search indexing on the site
+- **Build Pipeline**: Fixed `sync-submodules` script and release workflow (renamed to `publish-release.yml`)
+
 ## [0.1.1] - 2026-04-14
 
 ### Added

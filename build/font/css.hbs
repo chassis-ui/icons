@@ -1,5 +1,5 @@
 /*!
- * Chassis Icons v0.2.0
+ * Chassis Icons v0.3.0
  * Copyright 2025 Ozgur Gunes
  * Licensed under MIT (https://github.com/chassis-ui/icons/blob/main/LICENSE)
  */
@@ -10,19 +10,20 @@
   font-display: block;
 }
 
-.{{ prefix }}::before,
-[class^="{{ prefix }}-"]::before,
-[class*=" {{ prefix }}-"]::before {
-  display: inline-block;
-  font-family: {{ name }} !important;
-  font-style: normal;
-  font-weight: normal !important;
-  font-variant: normal;
-  line-height: 1;
-  text-transform: none;
-  vertical-align: -.125em;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@layer content {
+  [class^="{{ prefix }}-"]::before,
+  [class*=" {{ prefix }}-"]::before {
+    display: inline-block;
+    font-family: {{ name }} !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    line-height: 1;
+    text-transform: none;
+    vertical-align: -.125em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 {{# each codepoints }}

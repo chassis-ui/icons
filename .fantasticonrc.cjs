@@ -9,7 +9,7 @@ module.exports = {
   assetTypes: ['css', 'scss', 'json'],
   name: 'chassis-icons',
   codepoints,
-  prefix: 'icon',
+  prefix: 'cx',
   selector: '.icon',
   fontsUrl: '.',
   formatOptions: {

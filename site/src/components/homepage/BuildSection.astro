@@ -1,14 +1,14 @@
 ---
 import { getConfig } from '@libs/config'
 import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
-import Code from '@shortcodes/Code.astro'
+import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 ---
 
 <section id="build-section" class="home-section py-3xlarge medium:py-6xlarge">
   <div class="container 2xlarge section-content">
     <div class="row mb-3xlarge medium:mb-6xlarge">
       <header class="section-header col large:col-10 xlarge:col-8">
-        <h2>Build</h2>
+        <h2 id="build">Build</h2>
         <p>
           Get started with Chassis Icons in just a few steps. Save your icon files, build the icons,
           and import the CSS stylesheet to your project.
@@ -25,6 +25,7 @@ import Code from '@shortcodes/Code.astro'
           >
           <div class="border-top border-subtle pt-medium">
             <Code
+              noToolbar
               lang="text"
               code={`svgs/
 ├── icon-file.svg
@@ -41,6 +42,7 @@ import Code from '@shortcodes/Code.astro'
           <Fragment slot="body">Use the build scripts to generate icon fonts and CSS.</Fragment>
           <div class="border-top border-subtle pt-medium">
             <Code
+              noToolbar
               lang="shell"
               code={`# Build icons
 pnpm icons
@@ -59,11 +61,13 @@ pnpm site:pages`}
           >
           <div class="border-top border-subtle pt-medium">
             <Code
+              noToolbar
               lang="html"
               code={`<!-- HTML -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chassis-icons@${getConfig().current_version}/font/chassis-icons.min.css">`}
             />
             <Code
+              noToolbar
               lang="css"
               containerClass="mt-nmedium"
               code={`/* CSS */

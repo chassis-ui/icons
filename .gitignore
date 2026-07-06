@@ -5,13 +5,10 @@ preview.html
 chassis-icons-*.zip
 chassis-icons-*.tgz
 
-# Ignore docs files
-/_site/
-
 # Site
+/_site/
+.astro
 /site/dist
-/site/node_modules
-/site/.astro
 /site/public
 
 # OS
@@ -25,6 +22,7 @@ Thumbs.db
 .project
 .settings
 .tmproj
+.claude
 
 # Test coverage
 coverage/

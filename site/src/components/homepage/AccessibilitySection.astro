@@ -1,14 +1,13 @@
 ---
 import { getConfig } from '@libs/config'
-import Example from '@components/shortcodes/Example.astro'
-import Code from '@components/shortcodes/Code.astro'
+import Example from '@chassis-ui/docs/shortcodes/Example.astro'
 ---
 
 <section id="accessibility-section" class="home-section py-3xlarge medium:py-6xlarge">
   <div class="container 2xlarge section-content">
     <div class="row mb-3xlarge medium:mb-6xlarge">
       <header class="section-header col large:col-10 xlarge:col-8">
-        <h2>Accessibility</h2>
+        <h2 id="accessibility">Accessibility</h2>
         <p>
           Icons are a great way to add visual interest to your site, but they can also be a barrier
           to accessibility if not used correctly. Here are some tips for making sure your icons are
@@ -29,12 +28,8 @@ import Code from '@components/shortcodes/Code.astro'
       </div>
       <div class="medium:col-8">
         <Example
-          showMarkup={false}
           code={`<img src="/static/icons/${getConfig().example_icon}.svg" alt="Chassis" width="24" height="24">`}
-        />
-        <Code
-          lang="html"
-          code={`<!-- alt="..." on <img> element -->
+          customMarkup={`<!-- alt="..." on <img> element -->
 <img ... alt="Example icon" />
 `}
         />
@@ -52,13 +47,9 @@ import Code from '@components/shortcodes/Code.astro'
       </div>
       <div class="medium:col-8">
         <Example
-          showMarkup={false}
-          code={`<span class="icon icon-${getConfig().example_icon}" role="img" aria-label="Example Icon"></span>
+          code={`<span class="icon cx-${getConfig().example_icon}" role="img" aria-label="Example Icon"></span>
 <span class="icon icon-tools" role="img" style="font-size: 2em" aria-label="Tools"></span>`}
-        />
-        <Code
-          lang="html"
-          code={`<svg class="icon" ... role="img" aria-label="Example Icon">
+          customMarkup={`<svg class="icon" ... role="img" aria-label="Example Icon">
   <use xlink:href="chassis-icons.svg#${getConfig().example_icon}"/>
 </svg>`}
         />
@@ -76,14 +67,10 @@ import Code from '@components/shortcodes/Code.astro'
       </div>
       <div class="medium:col-8">
         <Example
-          showMarkup={false}
-          code={`<button type="button" class="button default" aria-label="Example">
-  <svg class="icon icon-start" aria-hidden="true"><use xlink:href="#${getConfig().example_icon}"/></svg>
+          code={`<button type="button" class="button default icon-only" aria-label="Example">
+          <Icon name="${getConfig().example_icon}" />
 </button>`}
-        />
-        <Code
-          lang="html"
-          code={`<!-- aria-label="..." on the control -->
+          customMarkup={`<!-- aria-label="..." on the control -->
 <button ... aria-label="Example">
   <svg class="icon" aria-hidden="true" ...>
   ...
