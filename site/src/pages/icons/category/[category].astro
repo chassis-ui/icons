@@ -54,6 +54,9 @@ const frontmatter = {
       </ol>
     </div>
   </nav>
-  <div class="container 2xlarge"><h1>{frontmatter.title}</h1></div>
+  <div class="container 2xlarge">
+    <h1>{frontmatter.title}</h1>
+    <p class="lead">{frontmatter.description}</p>
+  </div>
   <ListSection icons={icons} title={`${count} icons in ${String(category)} category`} />
 </IconsLayout>

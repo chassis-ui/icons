@@ -1,5 +1,5 @@
 /*!
- * Chassis Icons v0.3.0
+ * Chassis Icons v0.3.1
  * Copyright 2025 Ozgur Gunes
  * Licensed under MIT (https://github.com/chassis-ui/icons/blob/main/LICENSE)
  */
@@ -536,6 +536,8 @@ $chassis-icons-map: (
   "sass-alt-brand": "\f29f",
   "hashtag-outline": "\f2a0",
   "hashtag-solid": "\f2a1",
+  "figma-brand": "\f2a2",
+  "figma-square-brand": "\f2b7",
 );
 
 @each $icon, $codepoint in $chassis-icons-map {

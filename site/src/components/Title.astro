@@ -26,24 +26,28 @@ const { icon } = Astro.props
         <ul class="bulletless mb-medium">
           {icon.tags && (
             <li class="my-xsmall">
-              <strong>Tags:</strong>
+              <strong>Tags:</strong>{' '}
               {icon.tags.split(',').map((tag) => (
-                <a class="badge default ms-2xsmall" href={`/icons/tag/${getSlug(tag.trim())}/`}>
-                  {tag.trim()}
-                </a>
+                <>
+                  <a class="badge default ms-2xsmall" href={`/icons/tag/${getSlug(tag.trim())}/`}>
+                    {tag.trim()}
+                  </a>{' '}
+                </>
               ))}
             </li>
           )}
           {icon.categories && (
             <li>
-              <strong>Category:</strong>
+              <strong>Category:</strong>{' '}
               {icon.categories.split(',').map((category) => (
-                <a
-                  class="badge default ms-2xsmall"
-                  href={`/icons/category/${getSlug(category.trim())}/`}
-                >
-                  {category.trim()}
-                </a>
+                <>
+                  <a
+                    class="badge default ms-2xsmall"
+                    href={`/icons/category/${getSlug(category.trim())}/`}
+                  >
+                    {category.trim()}
+                  </a>{' '}
+                </>
               ))}
             </li>
           )}

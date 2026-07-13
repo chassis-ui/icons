@@ -1,13 +1,13 @@
 /*!
- * Chassis Icons v0.3.0
+ * Chassis Icons v0.3.1
  * Copyright 2025 Ozgur Gunes
  * Licensed under MIT (https://github.com/chassis-ui/icons/blob/main/LICENSE)
  */
 
 @font-face {
   font-family: "chassis-icons";
-  src: url("./chassis-icons.woff2?a8c5a925fe808f172af645b11fe06298") format("woff2"),
-url("./chassis-icons.woff?a8c5a925fe808f172af645b11fe06298") format("woff");
+  src: url("./chassis-icons.woff2?7d23aa5a0a9abe7b603e85fe8bf57c2d") format("woff2"),
+url("./chassis-icons.woff?7d23aa5a0a9abe7b603e85fe8bf57c2d") format("woff");
   font-display: block;
 }
 
@@ -528,3 +528,5 @@ url("./chassis-icons.woff?a8c5a925fe808f172af645b11fe06298") format("woff");
 .cx-sass-alt-brand::before { content: "\f29f"; }
 .cx-hashtag-outline::before { content: "\f2a0"; }
 .cx-hashtag-solid::before { content: "\f2a1"; }
+.cx-figma-brand::before { content: "\f2a2"; }
+.cx-figma-square-brand::before { content: "\f2b7"; }

@@ -12,9 +12,7 @@ bodyProps['data-cx-target'] = '#icons-nav'
 ---
 
 <BaseLayout {...Astro.props} layout="icons" overrides={{ body: bodyProps }}>
-  <div slot="main">
-    <slot />
-  </div>
+  <slot />
   <Fragment slot="scripts">
     <script src="@chassis-ui/docs/js/example-mode.js"></script>
   </Fragment>

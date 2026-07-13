@@ -11,7 +11,7 @@ interface Props {
 const { icons = iconsPages, showSearch = true, title = 'Sprite' } = Astro.props
 ---
 
-<section id="icons-section" class="home-section py-xlarge" data-pagefind-ignore>
+<section id="icons-section" class="home-section py-xlarge">
   <div class="container 2xlarge section-content">
     <header class="d-flex my-2xlarge">
       <h2 id="icons">{title}</h2>
@@ -38,7 +38,7 @@ const { icons = iconsPages, showSearch = true, title = 'Sprite' } = Astro.props
     <ul
       id="icons-list"
       class="row row-cols-3 gy-medium small:row-cols-4 large:row-cols-6 xlarge:row-cols-8 bulletless icons-list icon-xlarge"
-    >
+      data-pagefind-ignore>
       {
         icons.map((iconPage) => {
           const filename = iconPage.id.split('/').pop()?.replace('.mdx', '')
