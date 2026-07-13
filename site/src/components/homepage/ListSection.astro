@@ -38,7 +38,8 @@ const { icons = iconsPages, showSearch = true, title = 'Sprite' } = Astro.props
     <ul
       id="icons-list"
       class="row row-cols-3 gy-medium small:row-cols-4 large:row-cols-6 xlarge:row-cols-8 bulletless icons-list icon-xlarge"
-      data-pagefind-ignore>
+      data-pagefind-ignore
+    >
       {
         icons.map((iconPage) => {
           const filename = iconPage.id.split('/').pop()?.replace('.mdx', '')
