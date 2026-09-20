@@ -3,10 +3,10 @@ import { getConfig } from '@libs/config'
 import Example from '@chassis-ui/docs/shortcodes/Example.astro'
 ---
 
-<section id="accessibility-section" class="home-section py-3xlarge medium:py-6xlarge">
-  <div class="container 2xlarge section-content">
-    <div class="row mb-3xlarge medium:mb-6xlarge">
-      <header class="section-header col large:col-10 xlarge:col-8">
+<section id="accessibility-section" class="home-section py-3xl md:py-6xl">
+  <div class="container 2xl section-content">
+    <div class="row mb-3xl md:mb-6xl">
+      <header class="section-header col lg:col-10 xl:col-8">
         <h2 id="accessibility">Accessibility</h2>
         <p>
           Icons are a great way to add visual interest to your site, but they can also be a barrier
@@ -16,8 +16,8 @@ import Example from '@chassis-ui/docs/shortcodes/Example.astro'
       </header>
     </div>
 
-    <div class="row my-large">
-      <div class="medium:col-4">
+    <div class="row my-lg">
+      <div class="md:col-4">
         <h3>Image Alt Text</h3>
         <p>
           When using icons as images, it's important to provide an <code>alt</code> attribute that describes
@@ -26,7 +26,7 @@ import Example from '@chassis-ui/docs/shortcodes/Example.astro'
           > text to users who cannot see the icon.
         </p>
       </div>
-      <div class="medium:col-8">
+      <div class="md:col-8">
         <Example
           code={`<img src="/static/icons/${getConfig().example_icon}.svg" alt="Chassis" width="24" height="24">`}
           customMarkup={`<!-- alt="..." on <img> element -->
@@ -36,8 +36,8 @@ import Example from '@chassis-ui/docs/shortcodes/Example.astro'
       </div>
     </div>
 
-    <div class="row my-large">
-      <div class="medium:col-4">
+    <div class="row my-lg">
+      <div class="md:col-4">
         <h3>ARIA Label</h3>
         <p>
           When using icons, it's important to provide a text alternative for screen readers. This
@@ -45,7 +45,7 @@ import Example from '@chassis-ui/docs/shortcodes/Example.astro'
           a visually hidden text label that describes the icon's purpose.
         </p>
       </div>
-      <div class="medium:col-8">
+      <div class="md:col-8">
         <Example
           code={`<span class="icon cx-${getConfig().example_icon}" role="img" aria-label="Example Icon"></span>
 <span class="icon icon-tools" role="img" style="font-size: 2em" aria-label="Tools"></span>`}
@@ -56,8 +56,8 @@ import Example from '@chassis-ui/docs/shortcodes/Example.astro'
       </div>
     </div>
 
-    <div class="row my-large">
-      <div class="medium:col-4">
+    <div class="row my-lg">
+      <div class="md:col-4">
         <h3>ARIA Hidden</h3>
         <p>
           When using icons as decorative elements, it's important to hide them from screen readers.
@@ -65,7 +65,7 @@ import Example from '@chassis-ui/docs/shortcodes/Example.astro'
           screen readers to ignore the icon and not announce it to users.
         </p>
       </div>
-      <div class="medium:col-8">
+      <div class="md:col-8">
         <Example
           code={`<button type="button" class="button default icon-only" aria-label="Example">
           <Icon name="${getConfig().example_icon}" />

@@ -10,7 +10,7 @@ const { icon } = Astro.props
 ---
 
 <h2 class="font-strong">Examples</h2>
-<div class="p-medium p-md-large border rounded icon-demo-examples">
+<div class="p-md md:p-lg border rounded icon-demo-examples">
   <div class="h1 align-items-center">
     <Icon name={icon.title} class="icon-adaptive" /> Heading
   </div>
@@ -25,7 +25,7 @@ const { icon } = Astro.props
       Example link text <Icon name={icon.title} class="icon-adaptive" />
     </a>
   </p>
-  <div class="d-flex gap-small mb-medium">
+  <div class="d-flex gap-sm mb-md">
     <button type="button" class="button default">
       <Icon name={icon.title} />
       <span>Button</span>
@@ -43,7 +43,7 @@ const { icon } = Astro.props
       <span>Button</span>
     </button>
   </div>
-  <div class="d-flex gap-small mb-medium">
+  <div class="d-flex gap-sm mb-md">
     <button type="button" class="button default icon-only">
       <Icon name={icon.title} />
       <span class="visually-hidden">Button</span>
@@ -81,7 +81,7 @@ const { icon } = Astro.props
       </button>
     </div>
   </div>
-  <div class="mb-medium">
+  <div class="mb-md">
     <div class="input-group">
       <span class="input-addon" id="basic-addon1">
         <Icon name={icon.title} />

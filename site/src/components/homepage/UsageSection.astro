@@ -3,16 +3,16 @@ import { getConfig } from '@libs/config'
 import Example from '@chassis-ui/docs/shortcodes/Example.astro'
 ---
 
-<section id="usage-section" class="home-section py-3xlarge medium:py-6xlarge">
-  <div class="container 2xlarge section-content">
-    <div class="row mb-3xlarge medium:mb-6xlarge">
-      <header class="section-header col large:col-10 xlarge:col-8">
+<section id="usage-section" class="home-section py-3xl md:py-6xl">
+  <div class="container 2xl section-content">
+    <div class="row mb-3xl md:mb-6xl">
+      <header class="section-header col lg:col-10 xl:col-8">
         <h2 id="usage">Usage</h2>
         <p>
           Chassis Icons are SVGs, so you can include them into your HTML in a few ways depending on
           how your project is setup. We recommend using using sprite and customize its color by
           changing <code>--cx-icon-size</code> and <code>-cx-icon-color</code>. Those values are <code
-            >--cx-icon-medium</code
+            >--cx-icon-md</code
           > and <code>--cx-default-icon-main</code> by default. Icon utilities are also available as <code
             >.icon-*</code
           > classes both for size and context base colors.
@@ -20,8 +20,8 @@ import Example from '@chassis-ui/docs/shortcodes/Example.astro'
       </header>
     </div>
 
-    <div class="row my-large mt-4xlarge">
-      <div class="medium:col-4">
+    <div class="row my-lg mt-4xl">
+      <div class="md:col-4">
         <h3>Sprite</h3>
         <p>
           Use the SVG sprite to insert any icon through the <code>&lt;use&gt;</code> element. Use the
@@ -38,28 +38,28 @@ import Example from '@chassis-ui/docs/shortcodes/Example.astro'
           >.
         </p>
       </div>
-      <div class="medium:col-8">
+      <div class="md:col-8">
         <Example code={`<Icon name="${getConfig().example_icon}" />`} />
       </div>
     </div>
 
-    <div class="row my-large">
-      <div class="medium:col-4">
+    <div class="row my-lg">
+      <div class="md:col-4">
         <h3>External image</h3>
         <p>
           Copy the Chassis Icons SVGs to your directory of choice and reference them like normal
           images with the <code>&lt;img&gt;</code> element. Icon color could not be changed in this way.
         </p>
       </div>
-      <div class="medium:col-8">
+      <div class="md:col-8">
         <Example
           code={`<img src="/static/icons/${getConfig().example_icon}.svg" alt="Chassis" width="24" height="24">`}
         />
       </div>
     </div>
 
-    <div class="row my-large">
-      <div class="medium:col-4">
+    <div class="row my-lg">
+      <div class="md:col-4">
         <h3>Icon font</h3>
         <p>
           Icon fonts with classes for every icon are also available in Chassis Icons. Include the
@@ -70,7 +70,7 @@ import Example from '@chassis-ui/docs/shortcodes/Example.astro'
           Use <code>font-size</code> and <code>color</code> to change the icon appearance.
         </p>
       </div>
-      <div class="medium:col-8">
+      <div class="md:col-8">
         <Example code={`<Icon name="${getConfig().example_icon}" font />`} />
       </div>
     </div>

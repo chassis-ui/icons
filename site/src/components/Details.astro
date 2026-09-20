@@ -13,15 +13,15 @@ const { icon } = Astro.props
 const iconName = icon.title
 ---
 
-<div class="container 2xlarge">
+<div class="container 2xl">
   <Title icon={icon} />
-  <div class="row mb-xlarge">
-    <div class="medium:col-8" id="content">
+  <div class="row mb-xl">
+    <div class="md:col-8" id="content">
       <div
         class="icon-demo border rounded d-flex align-items-center justify-content-center"
         style="font-size: 10rem;"
         role="img"
-        aria-label={`${icon.title} - large preview`}
+        aria-label={`${icon.title} - lg preview`}
       >
         <Icon name={iconName} class="icon-adaptive" />
       </div>
@@ -29,7 +29,7 @@ const iconName = icon.title
         <Examples icon={icon} />
       </div>
     </div>
-    <aside class="medium:col-4">
+    <aside class="md:col-4">
       <Snippets icon={icon} />
     </aside>
   </div>

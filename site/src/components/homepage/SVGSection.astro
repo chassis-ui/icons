@@ -2,10 +2,10 @@
 import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 ---
 
-<section id="svg-section" class="home-section py-3xlarge medium:py-6xlarge">
-  <div class="container 2xlarge section-content">
-    <div class="row mb-3xlarge medium:mb-6xlarge">
-      <header class="section-header col large:col-10 xlarge:col-8">
+<section id="svg-section" class="home-section py-3xl md:py-6xl">
+  <div class="container 2xl section-content">
+    <div class="row mb-3xl md:mb-6xl">
+      <header class="section-header col lg:col-10 xl:col-8">
         <h2 id="svg">Working with SVGs</h2>
 
         <p>
@@ -16,7 +16,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
       </header>
     </div>
 
-    <div class="row row-cols-1 medium:row-cols-2 large:row-cols-3 g-medium medium:g-xlarge">
+    <div class="row row-cols-1 md:row-cols-2 lg:row-cols-3 g-md md:g-xl">
       <div class="col">
         <FeatureCard icon="cx-shapes">
           <Fragment slot="title">Focus in Legacy Browsers</Fragment>
@@ -24,7 +24,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
             SVG elements receive keyboard focus by default in Internet Explorer and Edge Legacy. Add
             `focusable="false"` to prevent this behavior.
           </Fragment>
-          <div class="border-top border-subtle pt-medium mb-0">
+          <div class="border-top border-subtle pt-md mb-0">
             <a
               href="https://stackoverflow.com/questions/18646111/disable-onfocus-event-for-svg-element"
               class="link-secondary"
@@ -44,7 +44,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
             When using <code>&lt;img&gt;</code> elements with SVG sources, screen readers may skip the
             image or fail to announce it properly. Include <code>role="img"</code> on the element.
           </Fragment>
-          <div class="border-top border-subtle pt-medium mt-auto">
+          <div class="border-top border-subtle pt-md mt-auto">
             <a
               href="https://web.archive.org/web/20201112013541/https://simplyaccessible.com/article/7-solutions-svgs/#acc-heading-2"
               class="link-secondary"
@@ -62,7 +62,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
             External SVG sprites using <code>&lt;use&gt;</code> with <code>href</code> attributes don't
             work in Internet Explorer. Apply the svg4everybody polyfill if IE support is required.
           </Fragment>
-          <div class="border-top border-subtle pt-medium mt-auto">
+          <div class="border-top border-subtle pt-md mt-auto">
             <a
               href="https://github.com/jonathantneal/svg4everybody"
               class="link-secondary mb-0"

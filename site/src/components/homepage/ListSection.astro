@@ -11,9 +11,9 @@ interface Props {
 const { icons = iconsPages, showSearch = true, title = 'Sprite' } = Astro.props
 ---
 
-<section id="icons-section" class="home-section py-xlarge">
-  <div class="container 2xlarge section-content">
-    <header class="d-flex my-2xlarge">
+<section id="icons-section" class="home-section py-xl">
+  <div class="container 2xl section-content">
+    <header class="d-flex my-2xl">
       <h2 id="icons">{title}</h2>
       {
         showSearch && (
@@ -37,7 +37,7 @@ const { icons = iconsPages, showSearch = true, title = 'Sprite' } = Astro.props
     </header>
     <ul
       id="icons-list"
-      class="row row-cols-3 gy-medium small:row-cols-4 large:row-cols-6 xlarge:row-cols-8 bulletless icons-list icon-xlarge"
+      class="row row-cols-3 gy-md sm:row-cols-4 lg:row-cols-6 xl:row-cols-8 bulletless icons-list icon-xl"
       data-pagefind-ignore
     >
       {
@@ -52,7 +52,7 @@ const { icons = iconsPages, showSearch = true, title = 'Sprite' } = Astro.props
               data-categories={iconPage.data.categories?.split(',')?.join(' ').toLowerCase()}
             >
               <a class="d-block text-decoration-none" href={`/icons/${filename}`}>
-                <div class="bg-even py-3xlarge text-center rounded">
+                <div class="bg-even py-3xl text-center rounded">
                   <Icon name={filename} />
                 </div>
                 <div class="name text-muted text-decoration-none text-center">{filename}</div>

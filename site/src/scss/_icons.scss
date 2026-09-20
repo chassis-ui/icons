@@ -35,11 +35,11 @@ html {
 //   --cx-active-fg-color: var(--cx-fg-main);
 //   --cx-active-bg-color: var(--cx-bg-main);
 //   background-color: var(--cx-bg-evident);
-//   padding: var(--cx-space-2xsmall);
+//   padding: var(--cx-space-2xs);
 //   backdrop-filter: blur(24px);
-//   @include border-radius(var(--cx-border-radius-medium));
+//   @include border-radius(var(--cx-border-radius-md));
 //   .active {
-//     box-shadow: var(--cx-box-shadow-medium);
+//     box-shadow: var(--cx-box-shadow-md);
 //   }
 // }
 
@@ -99,7 +99,7 @@ html {
 }
 
 @media (min-width: 1200px) {
-  .row-cols-xlarge-8 {
+  .row-cols-xl-8 {
     > * {
       flex: 0 0 12.5%;
       max-width: 12.5%;

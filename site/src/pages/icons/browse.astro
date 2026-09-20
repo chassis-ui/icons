@@ -38,9 +38,9 @@ const frontmatter = {
 ---
 
 <IconsLayout frontmatter={frontmatter}>
-  <div class="container 2xlarge">
-    <nav aria-label="breadcrumb" class="pt-medium">
-      <div class="border-bottom border-subtle mb-medium">
+  <div class="container 2xl">
+    <nav aria-label="breadcrumb" class="pt-md">
+      <div class="border-bottom border-subtle mb-md">
         <ol class="breadcrumb">
           <li class="breadcrumb-page"><a href="/icons/">Icons</a></li>
           <li class="breadcrumb-page"><a href="/icons/browse/">Browse</a></li>
@@ -52,31 +52,31 @@ const frontmatter = {
       <p class="lead">{frontmatter.description}</p>
     </div>
 
-    <div class="row my-2xlarge">
-      <div class="medium:col-6">
+    <div class="row my-2xl">
+      <div class="md:col-6">
         <h2>Categories</h2>
         <p class="text-muted">Icons grouped by primary function or theme</p>
-        <div class="d-flex flex-wrap gap-medium mb-4">
+        <div class="d-flex flex-wrap gap-md mb-4">
           {
             sortedCategories.map(([category, count]) => (
-              <a href={`/icons/category/${category}/`} class="button default small">
+              <a href={`/icons/category/${category}/`} class="button default sm">
                 {category.charAt(0).toUpperCase() + category.slice(1)}
-                <span class="badge primary smooth ms-2xsmall">{count}</span>
+                <span class="badge primary smooth ms-2xs">{count}</span>
               </a>
             ))
           }
         </div>
       </div>
 
-      <div class="medium:col-6">
+      <div class="md:col-6">
         <h2>Tags</h2>
         <p class="text-muted">Icons labeled by style, type, or characteristics</p>
-        <div class="d-flex flex-wrap gap-medium mb-4">
+        <div class="d-flex flex-wrap gap-md mb-4">
           {
             sortedTags.map(([tag, count]) => (
-              <a href={`/icons/tag/${tag}/`} class="button default small">
+              <a href={`/icons/tag/${tag}/`} class="button default sm">
                 {tag}
-                <span class="badge primary smooth ms-2xsmall">{count}</span>
+                <span class="badge primary smooth ms-2xs">{count}</span>
               </a>
             ))
           }
@@ -84,19 +84,19 @@ const frontmatter = {
       </div>
     </div>
 
-    <section class="p-xlarge mb-2xlarge bg-even rounded">
-      <h3 class="font-xlarge fg-subtle">Quick Stats</h3>
+    <section class="p-xl mb-2xl bg-even rounded">
+      <h3 class="font-xl fg-subtle">Quick Stats</h3>
       <div class="row text-center">
         <div class="col-4">
-          <div class="font-5xlarge font-strong">{iconsPages.length}</div>
+          <div class="font-5xl font-strong">{iconsPages.length}</div>
           <div>Total Icons</div>
         </div>
         <div class="col-4">
-          <div class="font-5xlarge font-strong">{categories.size}</div>
+          <div class="font-5xl font-strong">{categories.size}</div>
           <div>Categories</div>
         </div>
         <div class="col-4">
-          <div class="font-5xlarge font-strong">{tags.size}</div>
+          <div class="font-5xl font-strong">{tags.size}</div>
           <div>Tags</div>
         </div>
       </div>
