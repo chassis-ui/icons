@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content'
-import Icon from '@chassis-ui/docs/components/shortcodes/Icon.astro'
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
 
 interface Props {
   icon: CollectionEntry<'icons'>['data']
@@ -21,7 +21,7 @@ const { icon } = Astro.props
     Inline text <Icon name={icon.title} class="icon-adaptive" />
   </p>
   <p>
-    <a href="#here" class="text-decoration-none">
+    <a href="#content" class="text-decoration-none">
       Example link text <Icon name={icon.title} class="icon-adaptive" />
     </a>
   </p>

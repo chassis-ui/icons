@@ -2,13 +2,13 @@
 
 - title: Icons
   icon: star-solid
-  icon_color: yellow
+  iconColor: yellow
   pages:
     - title: Getting Started
 
 - title: About
   icon: info-circle-solid
-  icon_color: indigo
+  iconColor: indigo
   pages:
     - title: Overview
     - title: Brand

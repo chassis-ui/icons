@@ -1,36 +1,12 @@
 import { defineCollection } from 'astro:content'
-import { z } from 'zod'
 import { glob } from 'astro/loaders'
+import { calloutsSchema, docsSchema, z } from '@chassis-ui/docs/schema'
 
-const iconsSchema = z.object({
-  added: z
-    .object({
-      show_badge: z.boolean().optional(),
-      version: z.string()
-    })
-    .optional(),
-  aliases: z.string().or(z.string().array()).optional(),
+// The frontmatter of a docs page, with what an icon page adds.
+const iconsSchema = docsSchema.extend({
   categories: z.string().optional(),
-  description: z.string().optional(),
-  direction: z.literal('rtl').optional(),
-  extra_js: z
-    .object({
-      async: z.boolean().optional(),
-      src: z.string()
-    })
-    .array()
-    .optional(),
-  sections: z
-    .object({
-      description: z.string(),
-      title: z.string()
-    })
-    .array()
-    .optional(),
   tags: z.string().optional(),
-  thumbnail: z.string().optional(),
-  title: z.string(),
-  toc: z.boolean().optional()
+  title: z.string()
 })
 
 const iconsCollection = defineCollection({
@@ -38,10 +14,8 @@ const iconsCollection = defineCollection({
   schema: iconsSchema
 })
 
-const calloutsSchema = z.object({})
-
 const calloutsCollection = defineCollection({
-  loader: glob({ pattern: '**/*.mdx', base: './content/callouts' }),
+  loader: glob({ pattern: '**/*.md', base: './content/callouts' }),
   schema: calloutsSchema
 })
 

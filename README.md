@@ -162,8 +162,9 @@ Once you've built your custom icon library, you can use it in multiple ways:
 
 ### Prerequisites
 
-- Node.js >= 18.0.0
-- pnpm >= 9.0.0
+- Node.js >= 22.12.0 (`.nvmrc` names the version that CI uses)
+- pnpm, the version in `packageManager` of `package.json`
+- Git LFS, for the `vendor/assets` submodule that the documentation site needs
 
 ### Building Your Icons
 
@@ -216,7 +217,8 @@ pnpm test
 pnpm icons:check           # Validate icon files
 pnpm site:lint:eslint      # JavaScript/TypeScript linting
 pnpm site:lint:stylelint   # SCSS linting
-pnpm site:lint:vnu         # HTML validation
+pnpm site:lint:html        # HTML validation with html-validate
+pnpm site:lint:vnu         # HTML validation with the Nu Html Checker (needs Java)
 pnpm site:lint:fusv        # Find unused SASS variables
 ```
 
@@ -359,18 +361,21 @@ Fine-tune SVGO optimization for your icons:
 | `pnpm icons:check` | Validate icon files and structure |
 | `pnpm site:lint:eslint` | Lint JavaScript/TypeScript code |
 | `pnpm site:lint:stylelint` | Lint SCSS stylesheets |
-| `pnpm site:lint:vnu` | Validate HTML output |
+| `pnpm site:lint:html` | Validate HTML output with html-validate |
+| `pnpm site:lint:vnu` | Validate HTML output with the Nu Html Checker |
 | `pnpm site:lint:prettier` | Check code formatting |
 | `pnpm site:lint:fusv` | Find unused SASS variables |
-| `pnpm check:pnpm` | Run security audit on dependencies |
-| `pnpm check:lockfile` | Validate lockfile integrity |
+| `pnpm check:astro` | Type-check the site |
+| `pnpm check:pnpm` | Run security audit on the dependencies a consumer installs |
 
 ### Utilities
 
 | Command | Description |
 |---------|-------------|
-| `pnpm change-version` | Update version across files |
-| `pnpm sync-submodules` | Sync Git submodules |
+| `pnpm changeset` | Describe a change to the package for the next release |
+| `pnpm changeset:version` | Make the next version: bump it, write the CHANGELOG entry, update version references |
+| `pnpm vendor` | Check out and build the `vendor/assets` submodule at the pinned commit |
+| `pnpm sync-submodules` | Move `vendor/assets` to the latest `app/docs` and build it |
 
 ## Output Files
 
@@ -419,13 +424,16 @@ All documentation sites share the `@chassis-ui/docs` package for consistent layo
 
 ## Contributing
 
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the dev setup, the conventions, what a pull request needs before merge, and how a version is released.
+
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
+2. Create a feature branch from `develop`: `git checkout -b feature/my-feature develop`
 3. Make your changes
 4. Test the build: `pnpm build && pnpm test`
-5. Commit your changes: `git commit -m "feat: add my feature"`
-6. Push to the branch: `git push origin feature/my-feature`
-7. Open a Pull Request
+5. Add a changeset if `icons/` or `svgs/` changed: `pnpm changeset`
+6. Commit your changes: `git commit -m "feat: add my feature"`
+7. Push to the branch: `git push origin feature/my-feature`
+8. Open a Pull Request against `develop`
 
 ## License
 

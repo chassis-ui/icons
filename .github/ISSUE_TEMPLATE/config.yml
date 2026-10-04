@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Icon gallery
+    url: https://chassis-ui.com/icons/
+    about: Every icon, with its name, its code point and how to use it as an SVG, in the sprite or with the icon font.
+  - name: Chassis Assets, Tokens, CSS, Figma, React or the website
+    url: https://github.com/chassis-ui
+    about: A problem in one of those projects, or in its docs under chassis-ui.com, belongs in its own repository.
+  - name: Security vulnerability
+    url: https://github.com/chassis-ui/icons/security/advisories/new
+    about: Report it privately, not as a public issue.

@@ -62,17 +62,18 @@ pnpm preview  # Opens preview.html in browser
 ### **Testing Changes**
 
 ```bash
-# Lint and format code
-pnpm validate
+# Lint the build scripts and the site
+pnpm icons:lint
+pnpm site:lint:eslint
 
 # Build and verify
 pnpm build
-pnpm check  # Validates icon files
+pnpm icons:check  # Validates icon files
 
 # Test specific steps
-pnpm icons-main     # SVG optimization only
-pnpm icons-sprite   # Sprite generation only
-pnpm icons-font     # Font generation only
+pnpm icons:svgs     # SVG optimization only
+pnpm icons:sprite   # Sprite generation only
+pnpm icons:font     # Font generation only
 ```
 
 ## 📦 Distribution Files
@@ -108,57 +109,49 @@ font/
 
 ### **GitHub Actions Workflows**
 
-#### **CI Pipeline** (`.github/workflows/ci.yml`)
+#### **CI** (`.github/workflows/ci.yml`)
 
-```yaml
-Triggers: push, pull_request
-Matrix: Node.js 18.x, 20.x
-Steps: 1. Checkout code
-  2. Setup Node.js + pnpm
-  3. Install dependencies
-  4. Lint validation
-  5. Build icons
-  6. Verify outputs
-  7. Upload artifacts
-```
+Runs on pushes to `develop` and on pull requests, with the Node.js version of `.nvmrc`.
 
-#### **Release Pipeline** (`.github/workflows/release.yml`)
+- **Lint**: ESLint on `build/` and `site/`, Stylelint and Prettier on `site/`
+- **Type Check**: `astro check`
+- **Build**: `pnpm icons`, then the files of `icons/` and `pnpm icons:check`
+- **Site**: `pnpm site:build`, then html-validate and the Nu Html Checker
+- **Changeset**: a change to `icons/` or `svgs/` has a changeset
+- **Audit**: `pnpm check:pnpm`
+- **Dependency Review**: on pull requests
 
-```yaml
-Triggers: release published, manual workflow
-Steps: 1. Build distribution
-  2. Create zip package
-  3. Publish to npm
-  4. Upload release assets
-```
+#### **Release** (`.github/workflows/release.yml`)
 
-### **Quality Checks**
-
-- ✅ **Icon count validation** (minimum 400 icons)
-- ✅ **File generation verification** (CSS, fonts, sprite)
-- ✅ **Code formatting** (Prettier + ESLint)
-- ✅ **Build artifact testing**
+Runs on pushes to `main`. Publishes the version of `package.json` to npm with trusted
+publishing when npm does not have it and the CI jobs passed on the commit, then creates the
+GitHub release `v<version>` from the CHANGELOG entry.
 
 ## 🔄 Version Management
 
 ### **Release Process**
 
 ```bash
-# 1. Update version
-pnpm release-version  # Updates package.json and template files
+# 1. On develop: make the version from the changesets
+pnpm changeset:version
 
-# 2. Build and package
-pnpm release  # Runs build + zip
+# 2. Review, commit and push develop. CI runs on the commit
 
-# 3. Create GitHub release
-# (Triggers automatic npm publish)
+# 3. Push the same commit to main. release.yml publishes it
 ```
+
+See "Releases" in [CONTRIBUTING.md](../.github/CONTRIBUTING.md#releases).
 
 ### **Version Locations**
 
-- `package.json` - Main version
+- `package.json` - Main version, bumped by `changeset version`
+- `README.md` - Version badge
+- `site/config.yml` - `currentVersion`
 - `build/font/css.hbs` - CSS header version
 - `build/font/scss.hbs` - SCSS header version
+
+`build/sync-version-refs.js` copies the version of `package.json` to the other four and
+rebuilds `icons/`.
 
 ## 🛠️ Configuration Files
 
@@ -211,7 +204,7 @@ pnpm release  # Runs build + zip
 - **478 Icons** - Complete icon library
 - **7 Output Formats** - CSS, SCSS, WOFF2, WOFF, SVG, JSON, HTML
 - **~500KB Total** - Distribution package size
-- **Node.js 18+** - Minimum requirements
+- **Node.js 22.12+** - Minimum requirements
 - **MIT License** - Open source
 
 ### **Performance Metrics**

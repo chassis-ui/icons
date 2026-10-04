@@ -1,7 +1,9 @@
 ---
-import { getConfig } from '@libs/config'
+import { getConfig } from '@chassis-ui/docs/site'
 import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
+
+const config = getConfig()
 ---
 
 <section id="build-section" class="home-section py-3xl md:py-6xl">
@@ -64,14 +66,14 @@ pnpm site:pages`}
               noToolbar
               lang="html"
               code={`<!-- HTML -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chassis-icons@${getConfig().current_version}/font/chassis-icons.min.css">`}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chassis-icons@${config.currentVersion}/font/chassis-icons.min.css">`}
             />
             <Code
               noToolbar
               lang="css"
               containerClass="mt-nmd"
               code={`/* CSS */
-@import url("https://cdn.jsdelivr.net/npm/chassis-icons@${getConfig().current_version}/font/chassis-icons.min.css");`}
+@import url("https://cdn.jsdelivr.net/npm/chassis-icons@${config.currentVersion}/font/chassis-icons.min.css");`}
             />
           </div>
         </FeatureCard>

@@ -1,0 +1,47 @@
+name: Bug report
+description: An icon that is drawn wrong, a file of the package that is missing or broken, or a build or check that fails
+labels: [bug, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This repository holds the icons of the Chassis Design System and the build that turns them into optimized SVG files, an SVG sprite and an icon font. A problem with a token, a style or a component belongs in [that project's repository](https://github.com/chassis-ui).
+  - type: dropdown
+    id: area
+    attributes:
+      label: Where
+      options:
+        - An icon, in svgs/
+        - The sprite, the icon font or its CSS and SCSS, in icons/
+        - The build, pnpm icons
+        - A check, such as pnpm icons:check
+        - The documentation site
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you saw. Include the exact error message or the output of the command if there was one, or a screenshot for an icon.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: How to reproduce it
+      description: The name of the icon and how you use it (SVG file, sprite or font), or the command you ran.
+      placeholder: <span class="icon cx-search-outline"></span>
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: The version of `@chassis-ui/icons` or the commit, and the browser or Node.js version.
+      placeholder: 0.3.1, Safari 26

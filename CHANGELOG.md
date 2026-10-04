@@ -1,9 +1,16 @@
 # Changelog
 
-All notable changes to the Chassis Icons project will be documented in this file.
+## [0.3.1] - 2026-07-13
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### Added
+
+- **New Icons**: Figma brand icons (2 new icons, bringing total to 503 icons)
+  - `figma-brand` and `figma-square-brand`
+
+### Changed
+
+- **Site Search**: The Pagefind index is written under `/icons/pagefind/`, so the search of chassis-ui.com covers the icon pages
+- **Dependencies**: Updated the Chassis packages of the site
 
 ## [0.3.0] - 2026-07-04
 

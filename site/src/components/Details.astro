@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content'
 import Title from '@components/Title.astro'
 import Examples from '@components/Examples.astro'
 import Snippets from '@components/Snippets.astro'
-import Icon from '@chassis-ui/docs/components/shortcodes/Icon.astro'
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
 
 interface Props {
   icon: CollectionEntry<'icons'>['data']
@@ -16,7 +16,7 @@ const iconName = icon.title
 <div class="container 2xl">
   <Title icon={icon} />
   <div class="row mb-xl">
-    <div class="md:col-8" id="content">
+    <div class="md:col-8">
       <div
         class="icon-demo border rounded d-flex align-items-center justify-content-center"
         style="font-size: 10rem;"

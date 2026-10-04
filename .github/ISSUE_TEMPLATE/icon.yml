@@ -1,0 +1,42 @@
+name: Icon request
+description: Ask for an icon to be added, redrawn, renamed or removed
+labels: [icon, needs-triage]
+body:
+  - type: dropdown
+    id: type
+    attributes:
+      label: Request
+      options:
+        - A new icon
+        - A change to an icon
+        - A new name for an icon
+        - Remove an icon
+    validations:
+      required: true
+  - type: input
+    id: name
+    attributes:
+      label: Icon name
+      description: The name it has, or the one you propose, as `<name>-outline`, `<name>-solid` or `<name>-brand`.
+      placeholder: arrow-right-outline
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: The icon
+      description: What it shows. Attach the SVG file or link the Figma frame. An icon is drawn on a 24 by 24 frame, in one color.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: The page, the screen or the component that needs it. Renaming or removing an icon breaks every project that uses it.
+    validations:
+      required: true
+  - type: textarea
+    id: license
+    attributes:
+      label: License
+      description: For an icon that is not yours, such as a brand logo, its license or brand guidelines and where it comes from.

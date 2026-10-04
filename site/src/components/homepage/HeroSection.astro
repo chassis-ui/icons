@@ -1,17 +1,16 @@
 ---
-import { getConfig } from '@libs/config'
+import { getConfig, getDocsPath } from '@chassis-ui/docs/site'
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
-import Icon from '@chassis-ui/docs/components/shortcodes/Icon.astro'
-import { getChassisDocsPath } from '@libs/path'
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+
+const config = getConfig()
 ---
 
 <section class="home-section py-3xl md:py-6xl">
   <div class="container 2xl section-content py-3xl md:py-6xl">
     <div class="row justify-content-center mb-3xl md:mb-6xl">
       <div class="col xl:col-10 text-center">
-        <p
-          class="module-title fg-primary md:font-xl font-mass text-uppercase mb-xs md:mb-sm"
-        >
+        <p class="module-title fg-primary md:font-xl font-mass text-uppercase mb-xs md:mb-sm">
           CHASSIS ICONS
         </p>
         <h1 class="font-hero mb-sm md:mb-md lg:mb-lg">
@@ -25,9 +24,7 @@ import { getChassisDocsPath } from '@libs/path'
       </div>
     </div>
 
-    <div
-      class="d-flex flex-column gap-md mb-md md:mb-lg col lg:col-6 lg:offset-3"
-    >
+    <div class="d-flex flex-column gap-md mb-md md:mb-lg col lg:col-6 lg:offset-3">
       <!-- Code snippet -->
       <Code
         noToolbar
@@ -37,11 +34,11 @@ import { getChassisDocsPath } from '@libs/path'
       />
       <!-- Buttons -->
       <div class="d-grid md:d-flex gap-md md:justify-content-center flex-wrap">
-        <a href={getChassisDocsPath('#build-section')} class="button primary lg">
+        <a href={getDocsPath('#build-section')} class="button primary lg">
           <Icon name="book-open-outline" />
           <span>Get Started</span>
         </a>
-        <a href={getConfig().repo} class="button default lg" target="_blank" rel="noopener">
+        <a href={config.repo} class="button default lg" target="_blank" rel="noopener">
           <Icon name="github-brand" />
           <span>View on GitHub</span>
         </a>
@@ -49,9 +46,9 @@ import { getChassisDocsPath } from '@libs/path'
 
       <!-- Version info -->
       <p class="fg-subtle mb-0 text-center font-md">
-        Currently <strong>v{getConfig().current_version}</strong>
+        Currently <strong>v{config.currentVersion}</strong>
         <span class="px-2xs">&middot;</span>
-        <a href={getConfig().repo + '/blob/main/CHANGELOG.md'} class="link-secondary text-nowrap"
+        <a href={config.repo + '/blob/main/CHANGELOG.md'} class="link-secondary text-nowrap"
           >Changes</a
         >
       </p>
