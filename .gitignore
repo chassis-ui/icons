@@ -1,10 +1,6 @@
 # Icon Distribution (generated files)
 preview.html
 
-# Release files
-chassis-icons-*.zip
-chassis-icons-*.tgz
-
 # Site
 /_site/
 .astro

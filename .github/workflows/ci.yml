@@ -124,6 +124,11 @@ jobs:
       - name: Verify the output
         run: pnpm icons:verify
 
+      # What npm would publish: the fields of package.json point at files that the package
+      # holds, in a form that bundlers and Node.js resolve
+      - name: Lint the package
+        run: pnpm icons:lint:package
+
       # The oldest version that `engines` of the package allows
       - name: Setup Node.js 22
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
@@ -167,11 +172,12 @@ jobs:
       - name: Validate HTML with the Nu Html Checker
         run: pnpm site:lint:vnu
 
-  # A change to icons/ or svgs/ of packages/icons, the files of the package, needs a changeset
-  # (changedFilePatterns in .changeset/config.json); `pnpm changeset --empty` adds one that
-  # releases nothing. A pull request is compared with its base branch, a push to develop with
-  # the tip it replaced. The version commit consumes the changesets, so a push that changes
-  # the version is skipped.
+  # A change to source/, to the build of packages/icons or to its output needs a changeset;
+  # `pnpm changeset --empty` adds one that releases nothing. A pull request is compared with
+  # its base branch, a push to develop with the tip it replaced. The version commit consumes
+  # the changesets, so a change of the version passes. `changeset status` cannot see source/:
+  # it is outside the package that has the version. So the job runs a script that reads Git,
+  # and needs no install.
   changeset:
     name: Changeset
     # A manual run has nothing to compare with
@@ -182,21 +188,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          # Changesets compares with an earlier commit
+          # The script compares with an earlier commit
           fetch-depth: 0
           persist-credentials: false
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
 
       - name: Setup Node.js
         uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+          # Nothing is installed, so there is no pnpm store to cache
+          package-manager-cache: false
 
       - name: Check for a changeset
         env:
@@ -212,18 +213,10 @@ jobs:
               exit 0
             fi
 
-            # The commit before the workspace layout has the manifest at the root
-            OLD_VERSION=$( (git show "$BEFORE:packages/icons/package.json" 2>/dev/null || git show "$BEFORE:package.json") | node -p 'JSON.parse(require("node:fs").readFileSync(0, "utf8")).version')
-            NEW_VERSION=$(node -p 'require("./packages/icons/package.json").version')
-            if [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
-              echo "The push changes the version ($OLD_VERSION → $NEW_VERSION): a version step, which consumes changesets"
-              exit 0
-            fi
-
             SINCE="$BEFORE"
           fi
 
-          pnpm changeset status --since "$SINCE"
+          node build/check-changeset.js "$SINCE"
 
   audit:
     name: Audit
