@@ -1,6 +1,18 @@
-const { readFileSync } = require('fs')
+const { existsSync, readFileSync } = require('fs')
 
-const codepoints = JSON.parse(readFileSync('./icons/chassis-icons.json', 'utf-8'))
+// The code points that the last build gave out, so that an icon keeps its own. A set whose
+// file was deleted starts again at the first code point.
+const registry = './icons/chassis-icons.json'
+const codepoints = existsSync(registry) ? JSON.parse(readFileSync(registry, 'utf-8')) : {}
+
+// Fantasticon gives a template the `src` of the font face and not the hash in it. The SCSS
+// keeps the hash in a variable of its own, so its template reads it from the `src` with this
+// helper. It is registered on the Handlebars that Fantasticon renders the templates with.
+const handlebars = require(
+  require.resolve('handlebars', { paths: [require.resolve('@twbs/fantasticon')] })
+)
+
+handlebars.registerHelper('fontHash', (fontSrc) => /\?([\da-f]{32})/.exec(fontSrc)[1])
 
 module.exports = {
   inputDir: './svgs',

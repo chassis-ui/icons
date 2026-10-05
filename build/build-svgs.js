@@ -103,7 +103,11 @@ function formatBytes(bytes) {
  */
 async function main() {
   // Handle help command
-  if (process.argv.includes('--help') || process.argv.includes('-h') || process.argv.includes('help')) {
+  if (
+    process.argv.includes('--help') ||
+    process.argv.includes('-h') ||
+    process.argv.includes('help')
+  ) {
     console.log(`
 ${picocolors.cyan('SVG Optimization Script')}
 
@@ -143,31 +147,44 @@ ${picocolors.yellow('Examples:')}
 
     // Get all SVG files
     const files = await fs.readdir(ICONS_DIR)
-    const svgFiles = files.filter(file => path.extname(file) === '.svg')
+    const svgFiles = files.filter((file) => path.extname(file) === '.svg')
 
     if (svgFiles.length === 0) {
       console.log(picocolors.yellow('⚠️  No SVG files found in icons directory'))
       return
     }
 
-    console.log(picocolors.cyan(`📁 Processing ${svgFiles.length} SVG file${svgFiles.length === 1 ? '' : 's'}...`))
+    console.log(
+      picocolors.cyan(
+        `📁 Processing ${svgFiles.length} SVG file${svgFiles.length === 1 ? '' : 's'}...`
+      )
+    )
 
     // Process all SVG files
-    await Promise.all(svgFiles.map(file => processFile(file, config)))
+    await Promise.all(svgFiles.map((file) => processFile(file, config)))
 
     // Summary
-    const totalSizeMB = formatBytes(totalSize)
     const savedSizeMB = formatBytes(savedSize)
     const percentSaved = totalSize > 0 ? ((savedSize / totalSize) * 100).toFixed(1) : '0'
 
     if (DRY_RUN) {
       console.log(picocolors.blue(`\n📊 Dry-run Summary:`))
-      console.log(picocolors.white(`   ${optimizedCount} file${optimizedCount === 1 ? '' : 's'} would be optimized`))
+      console.log(
+        picocolors.white(
+          `   ${optimizedCount} file${optimizedCount === 1 ? '' : 's'} would be optimized`
+        )
+      )
       console.log(picocolors.white(`   ${savedSizeMB} would be saved (${percentSaved}% reduction)`))
     } else {
-      console.log(picocolors.green(`\n✅ Success: ${optimizedCount} file${optimizedCount === 1 ? '' : 's'} optimized, ${svgFiles.length} total!`))
+      console.log(
+        picocolors.green(
+          `\n✅ Success: ${optimizedCount} file${optimizedCount === 1 ? '' : 's'} optimized, ${svgFiles.length} total!`
+        )
+      )
       if (savedSize > 0) {
-        console.log(picocolors.green(`💾 Size reduction: ${savedSizeMB} saved (${percentSaved}% reduction)`))
+        console.log(
+          picocolors.green(`💾 Size reduction: ${savedSizeMB} saved (${percentSaved}% reduction)`)
+        )
       }
     }
 

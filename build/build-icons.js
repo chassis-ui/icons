@@ -34,7 +34,6 @@ async function runFantasticon() {
     if (stderr) {
       console.warn('⚠️ Fantasticon warnings:', stderr.trim())
     }
-
   } catch (error) {
     console.error('❌ Error running Fantasticon:', error.message)
     process.exit(1)

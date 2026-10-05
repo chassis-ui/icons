@@ -42,7 +42,7 @@ async function generateIconPage(file) {
   const iconBasename = path.basename(file, path.extname(file))
   const iconTitle = iconBasename
     .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ')
   const pagePath = path.join(PAGES_DIR, `${iconBasename}.mdx`)
 
@@ -124,10 +124,12 @@ async function main() {
     await ensurePagesDirectory()
 
     // Process all icons in parallel
-    await Promise.all(files.map(file => generateIconPage(file)))
+    await Promise.all(files.map((file) => generateIconPage(file)))
 
     console.log(
-      picocolors.green(`✓ Success: ${counter} new page${counter === 1 ? '' : 's'}, ${files.length} total!`)
+      picocolors.green(
+        `✓ Success: ${counter} new page${counter === 1 ? '' : 's'}, ${files.length} total!`
+      )
     )
     console.timeEnd(timeLabel)
   } catch (error) {

@@ -30,14 +30,12 @@ async function main() {
     const iconsDir = path.join(__dirname, '../svgs/')
     const svgFiles = await fs.readdir(iconsDir)
     const svgIcons = new Set(
-      svgFiles
-        .filter(file => file.endsWith('.svg'))
-        .map(file => path.basename(file, '.svg'))
+      svgFiles.filter((file) => file.endsWith('.svg')).map((file) => path.basename(file, '.svg'))
     )
 
     // Find differences
-    const missingInFont = [...svgIcons].filter(icon => !fontIcons.has(icon))
-    const missingInSvg = [...fontIcons].filter(icon => !svgIcons.has(icon))
+    const missingInFont = [...svgIcons].filter((icon) => !fontIcons.has(icon))
+    const missingInSvg = [...fontIcons].filter((icon) => !svgIcons.has(icon))
 
     // Report results
     if (missingInFont.length === 0 && missingInSvg.length === 0) {
@@ -47,21 +45,20 @@ async function main() {
 
     if (missingInFont.length > 0) {
       console.log(picocolors.red(`❌ ${missingInFont.length} SVG files missing from font:`))
-      missingInFont.forEach(icon => {
+      missingInFont.forEach((icon) => {
         console.log(picocolors.red(`   ✗ ${icon}.svg`))
       })
     }
 
     if (missingInSvg.length > 0) {
       console.log(picocolors.red(`❌ ${missingInSvg.length} font entries missing SVG files:`))
-      missingInSvg.forEach(icon => {
+      missingInSvg.forEach((icon) => {
         console.log(picocolors.red(`   ✗ ${icon}`))
       })
     }
 
-    console.log(picocolors.yellow('\n💡 Run pnpm build:icons to regenerate fonts'))
+    console.log(picocolors.yellow('\n💡 Run pnpm icons to regenerate fonts'))
     process.exit(1)
-
   } catch (error) {
     console.error(picocolors.red('❌ Error:'), error.message)
     process.exit(1)

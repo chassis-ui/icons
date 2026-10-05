@@ -7,7 +7,7 @@
 $chassis-icons-font: "chassis-icons" !default;
 $chassis-icons-font-dir: "." !default;
 $chassis-icons-font-file: "#{$chassis-icons-font-dir}/#{$chassis-icons-font}" !default;
-$chassis-icons-font-hash: "cd21919f2c07303d657d3b27220ed912" !default;
+$chassis-icons-font-hash: "7d57ae26d1866a28397038466df0fd13" !default;
 $chassis-icons-font-src:
   url("#{$chassis-icons-font-file}.woff2?#{$chassis-icons-font-hash}") format("woff2"),
   url("#{$chassis-icons-font-file}.woff?#{$chassis-icons-font-hash}") format("woff") !default;
