@@ -57,6 +57,10 @@ jobs:
       - name: Prettier
         run: pnpm lint:prettier
 
+      # The Markdown files, with the words of .cspell.json
+      - name: Spelling
+        run: pnpm spellcheck
+
   type-check:
     name: Type Check
     runs-on: ubuntu-latest

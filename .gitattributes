@@ -1,0 +1,18 @@
+# Text files are checked out with LF line endings on every machine. The output of the build
+# and the golden files of the tests are compared byte for byte with what the build writes
+* text=auto eol=lf
+
+# The icon fonts
+*.woff binary
+*.woff2 binary
+*.ttf binary
+
+# Written by a command and committed. GitHub collapses them in a diff and leaves them out of
+# the language statistics
+packages/icons/icons/** linguist-generated
+packages/icons/svgs/** linguist-generated
+packages/icons/codepoints.json linguist-generated
+packages/icons/README.md linguist-generated
+packages/icons/test/golden/** linguist-generated
+packages/site/content/icons/** linguist-generated
+pnpm-lock.yaml linguist-generated

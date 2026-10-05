@@ -1,6 +1,27 @@
 {
   "version": "0.2",
-  "words": ["chassis"],
+  "words": [
+    "artboard",
+    "chassis",
+    "codepoint",
+    "codepoints",
+    "currentcolor",
+    "docsref",
+    "fantasticon",
+    "fantasticonrc",
+    "frontmatter",
+    "fusv",
+    "Gunes",
+    "mundi",
+    "npmjs",
+    "Ozgur",
+    "slugifying",
+    "spritesheet",
+    "stackblitz",
+    "viewports",
+    "xlarge",
+    "xmark"
+  ],
   "language": "en-US",
   "files": ["**/*.md", "**/*.mdx"],
   "ignorePaths": [
@@ -10,7 +31,9 @@
     "**/tests/**",
     "_site/",
     "dist/",
+    "packages/icons/test/golden/",
     "packages/site/.astro/",
+    "packages/site/content/icons/",
     "packages/site/public/",
     "vendor/"
   ],
