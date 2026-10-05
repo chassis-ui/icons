@@ -1,5 +1,5 @@
 name: Documentation
-description: Something on the documentation site, in the README or in CONTRIBUTING.md is wrong, missing or unclear
+description: Something on the documentation site, in the README, in CONTRIBUTING.md or in docs/architecture.md is wrong, missing or unclear
 labels: [documentation, needs-triage]
 body:
   - type: markdown
@@ -18,7 +18,7 @@ body:
     id: problem
     attributes:
       label: What is wrong or missing
-      description: If a page says something the build does not do, include the command and what it printed.
+      description: If a document says something the build does not do, or names a command, a path or an option that does not exist, include the command and what it printed.
     validations:
       required: true
   - type: textarea

@@ -1,8 +1,11 @@
 # Contributing to Chassis Icons
 
 Thanks for taking the time to contribute. This doc covers dev setup, conventions, and what a pull
-request needs before it can be merged. For the build details it links to the
-[README](../README.md), rather than repeating them.
+request needs before it can be merged. The commands and the configuration are in the
+[README](../README.md), and how the build works and what it promises to write in
+[docs/architecture.md](../docs/architecture.md); this doc links to them rather than repeating
+them. A team that built its own set from this repository finds how to take a newer build into
+it under [Taking a newer build into your copy](#taking-a-newer-build-into-your-copy).
 
 ## Dev setup
 
@@ -10,7 +13,7 @@ You need Node.js 22.12 or later (`.nvmrc` names the version that CI uses, 24), p
 in `packageManager` of `package.json`; `corepack enable` picks it up), Git and
 [Git LFS](https://git-lfs.com).
 
-```sh
+```bash
 git clone https://github.com/chassis-ui/icons.git chassis-icons
 cd chassis-icons
 pnpm install
@@ -36,6 +39,9 @@ and the source of the icons at the root.
   check for a changeset, the version references, and the notes and the archive of a release.
 - [`chassis.checks.json`](../chassis.checks.json) lists the icons that the Chassis sites and
   Chassis React read by name. `pnpm icons:verify` fails when one is missing.
+- [`docs/architecture.md`](../docs/architecture.md) explains the build, and
+  [`ref/ROADMAP.md`](../ref/ROADMAP.md) holds the plan of the repository, its principles and
+  its decisions.
 - [`vendor/assets`](../vendor/) is the chassis-assets submodule, with the fonts and images of
   the site. `pnpm site:build` checks it out at the pinned commit and builds it, which needs
   Git LFS. `pnpm sync-submodules` moves the pin to the latest `app/docs`.
@@ -113,7 +119,7 @@ The site uses the layouts and components of
 pages, components and styles are in `packages/site/src/`, and its settings in
 `packages/site/config.yml`.
 
-```sh
+```bash
 pnpm site:lint:eslint      # ESLint
 pnpm site:lint:stylelint   # Stylelint
 pnpm lint:prettier         # Prettier, on the whole repository
@@ -128,12 +134,44 @@ The files that Astro builds are written to `_site/icons/static/astro/` and reque
 path, and the shared CSS, fonts and icons from `/static/`. Keep `build.assets` and the name
 patterns of `packages/site/astro.config.ts` on the same folder.
 
+## Changing the documents
+
+The documents follow [WRITING.md](../WRITING.md): plain sentences, no counts and no marketing
+words, and every command, path and option written as it exists. Run a command before you
+write it down.
+
+`packages/icons/README.md` is written by the build: change
+`packages/icons/build/templates/readme.hbs` and run `pnpm icons`. The badge of the version in
+`README.md` and `currentVersion` of `packages/site/config.yml` are written by
+`pnpm changeset:version`.
+
+`pnpm lint:prettier` checks the formatting and `pnpm spellcheck` the spelling of every
+Markdown file. A word that is right and unknown to the checker, such as the name of a tool,
+goes into `words` of `.cspell.json`.
+
+## Checks per changed area
+
+Run the checks of the area you changed before you open a pull request. CI runs all of them.
+
+| Area changed                                             | Run                                                                                                                                     |
+| -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `source/`                                                | `pnpm icons:lint:source`, `pnpm icons`, `pnpm site:pages`, `pnpm icons:verify`. Add a changeset.                                        |
+| `packages/icons/build/`                                  | `pnpm icons:lint`, `pnpm icons:typecheck`, `pnpm icons:test`, `pnpm icons`, `pnpm icons:verify`. Add a changeset.                       |
+| The output is meant to change                            | The row above, with `pnpm icons:test:golden` before the tests: read the diff of `packages/icons/test/golden/` and of `packages/icons/`. |
+| `packages/icons/build/templates/readme.hbs`              | `pnpm icons:test:golden`, `pnpm icons`, `pnpm icons:test`.                                                                              |
+| `packages/icons/test/`                                   | `pnpm icons:lint`, `pnpm icons:test`.                                                                                                   |
+| `chassis.build` or another field of the package manifest | `pnpm icons`, `pnpm icons:verify`, `pnpm icons:lint:package`.                                                                           |
+| `chassis.checks.json`                                    | `pnpm icons:verify`.                                                                                                                    |
+| The scripts of `build/`, the workflows, `.changeset/`    | `pnpm icons:lint`, `pnpm icons:test`.                                                                                                   |
+| `packages/site/`                                         | `pnpm site:lint:eslint`, `pnpm site:lint:stylelint`, `pnpm check:astro`, `pnpm site:build`, `pnpm site:lint:html`.                      |
+| Any Markdown, JSON, YAML or configuration file           | `pnpm lint:prettier`, and `pnpm spellcheck` for Markdown.                                                                               |
+
 ## What a pull request needs before merge
 
 CI runs these jobs on every pull request, and on every push to `develop`:
 
-- **Lint**: `pnpm icons:lint`, `pnpm site:lint:eslint`, `pnpm site:lint:stylelint` and
-  `pnpm lint:prettier`.
+- **Lint**: `pnpm icons:lint`, `pnpm site:lint:eslint`, `pnpm site:lint:stylelint`,
+  `pnpm lint:prettier` and `pnpm spellcheck`.
 - **Type Check**: `pnpm icons:typecheck` and `pnpm check:astro`.
 - **Build**: `pnpm icons:lint:source`, `pnpm icons:test` on the Node.js of `.nvmrc` and on
   Node.js 22, `pnpm icons:verify` and `pnpm icons:lint:package`. It fails when the committed
@@ -151,7 +189,7 @@ CI runs these jobs on every pull request, and on every push to `develop`:
 A pull request that changes `source/`, the build in `packages/icons/build/`, or `icons/` and
 `svgs/` of `packages/icons/`, the files of the published package, adds a changeset:
 
-```sh
+```bash
 pnpm changeset
 ```
 
@@ -206,7 +244,7 @@ A prerelease goes to the npm dist-tag of its first identifier, so `0.4.0-next.0`
 `next`, and its GitHub release is marked as a prerelease; every other version goes to
 `latest`. Changesets makes one in its prerelease mode:
 
-```sh
+```bash
 pnpm changeset pre enter next   # Once: the versions are <next version>-next.<n> from now on
 pnpm changeset:version          # 0.4.0-next.0, then 0.4.0-next.1 with more changesets
 pnpm changeset pre exit         # Once: the next version step makes 0.4.0
@@ -241,6 +279,63 @@ first job. Two names are tied to settings outside the repository, so change them
   Renaming the file breaks publishing until the trusted publisher names the new file.
 - The job names `Lint`, `Type Check`, `Build` and `Site` are the required checks of the ruleset
   of `main`, and they are in the `REQUIRED` list of `release.yml`.
+
+## Taking a newer build into your copy
+
+A team that built its own set from a clone owns `source/`, the configuration and the output,
+and the build stays what this repository ships. So a newer build is taken by folder, and not
+by a merge, which would bring the icons of the Chassis set back into `source/`. The steps
+assume the remote `upstream` of the [README](../README.md#build-your-own-set).
+
+1. Fetch the released state, without the tags of the Chassis set, and read what changed.
+   `upstream/main` holds released versions only.
+
+   ```bash
+   git fetch upstream --no-tags
+   git show upstream/main:packages/icons/CHANGELOG.md
+   ```
+
+2. Take the folders and the files of the toolkit as they are there. `git restore` also
+   removes a file that the newer build no longer has.
+
+   ```bash
+   git restore --source=upstream/main --staged --worktree -- \
+     packages/icons/build packages/icons/test packages/icons/tsconfig.json build docs \
+     .github/workflows .changeset/changelog.js .changeset/config.json \
+     pnpm-lock.yaml pnpm-workspace.yaml eslint.config.js .prettierrc.json .prettierignore
+   ```
+
+3. Two files are shared, and are merged by hand. In the root `package.json`, take `scripts`,
+   `devDependencies`, `engines` and `packageManager`. In `packages/icons/package.json`, take
+   `scripts`, `devDependencies` and `engines`, and keep everything else, which is yours.
+
+   ```bash
+   git diff HEAD upstream/main -- package.json packages/icons/package.json
+   ```
+
+4. Install, build your set with the newer build, and run its checks.
+
+   ```bash
+   pnpm install
+   pnpm icons
+   pnpm icons:verify
+   pnpm icons:test
+   pnpm icons:lint:package
+   ```
+
+5. Read `git diff -- packages/icons` before you commit. A newer build can write other files
+   for the same source, and a change to your output is a change to your package: add a
+   changeset that names what changed for those who use your set.
+
+Never taken, because they are yours: `source/`, `packages/icons/svgs/`,
+`packages/icons/icons/`, `packages/icons/codepoints.json`, `packages/icons/README.md`,
+`packages/icons/CHANGELOG.md`, `chassis.checks.json`, your changesets, and
+`packages/site/config.yml`. The code of the site in `packages/site/src/` is the toolkit's and
+is taken the same way, once the site shows any set: until Phase 5 of the
+[roadmap](../ref/ROADMAP.md) it names icons of the Chassis set.
+
+The tests run on the fixture and on your own set, so `pnpm icons:test` passing in your copy
+says that the newer build works for your configuration.
 
 ## Using the issue tracker
 

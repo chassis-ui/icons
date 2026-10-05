@@ -25,14 +25,14 @@ body:
     id: what
     attributes:
       label: The icon
-      description: What it shows. Attach the SVG file or link the Figma frame. An icon is drawn on a 24 by 24 frame, in one color.
+      description: What it shows. Attach the SVG file or link the Figma frame. An icon is drawn on a 24 by 24 frame, in one color and with filled shapes only. Save a file to `source/` and `pnpm icons:lint:source` says whether it can be an icon.
     validations:
       required: true
   - type: textarea
     id: why
     attributes:
       label: Why
-      description: The page, the screen or the component that needs it. Renaming or removing an icon breaks every project that uses it.
+      description: The page, the screen or the component that needs it. Renaming or removing an icon breaks every project that uses it, and `chassis.checks.json` lists the icons that the Chassis sites and Chassis React read by name.
     validations:
       required: true
   - type: textarea

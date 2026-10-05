@@ -14,7 +14,7 @@ The tests build the fixture, not the default set, so that a part of the build th
 
 After a change that is meant to change the output, write the golden files again and read the diff before you commit it:
 
-```sh
+```bash
 pnpm icons:test:golden
 git diff packages/icons/test/golden
 ```

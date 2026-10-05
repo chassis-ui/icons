@@ -4,7 +4,7 @@ The set of another team: the fixture of the tests of the build
 
 The set has 8 icons. Each is drawn on a frame of 16 by 16 in one color, and takes the color of the text around it.
 
-```sh
+```bash
 npm install @acme/glyphs
 ```
 

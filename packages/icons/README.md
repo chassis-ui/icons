@@ -4,7 +4,7 @@ The icons of the Chassis Design System, in outline, solid and brand styles, as a
 
 The set has 501 icons. Each is drawn on a frame of 24 by 24 in one color, and takes the color of the text around it.
 
-```sh
+```bash
 npm install @chassis-ui/icons
 ```
 
