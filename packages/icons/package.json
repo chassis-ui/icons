@@ -1,6 +1,6 @@
 {
   "name": "@chassis-ui/icons",
-  "version": "0.3.1",
+  "version": "0.4.0-next.0",
   "type": "module",
   "description": "The icons of the Chassis Design System, in outline, solid and brand styles, as an icon font, an SVG sprite and optimized SVG files.",
   "repository": {

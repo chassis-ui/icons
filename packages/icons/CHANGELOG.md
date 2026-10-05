@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.4.0-next.0
+
+### Minor Changes
+
+- The package has an `exports` map. `@chassis-ui/icons` is the stylesheet of the icon font:
+  `icons/chassis-icons.css`, and `icons/chassis-icons.scss` for Sass. `@chassis-ui/icons/icons/*`,
+  `@chassis-ui/icons/svgs/*` and `@chassis-ui/icons/package.json` are the files of the package, at
+  the paths they had. A bundler and the package importer of Sass find all of them by name, and
+  `sideEffects` keeps an import of a stylesheet in a bundle. No other path of the package can
+  be imported, and it holds no other file. The README shows the ways to use an icon.
+- **Breaking.** `road-outline-1` and `road-solid-1` are removed. They were copies of
+  `road-outline` and `road-solid`: use those names. With them go `svgs/road-outline-1.svg` and
+  `svgs/road-solid-1.svg`, the sprite symbols `#road-outline-1` and `#road-solid-1`, and the
+  classes `.cx-road-outline-1` and `.cx-road-solid-1`. The set has 501 icons, and no other icon
+  changes its code point.
+
+### Patch Changes
+
+- Each GitHub release has the archive `chassis-icons-<version>.zip` attached: the folders
+  `icons/` and `svgs/` as the package has them, for a project that does not install from npm.
+- `$chassis-icons-font-hash` of `icons/chassis-icons.scss` is the hash of the font of the same
+  build, as in `icons/chassis-icons.css`. It was a fixed value, so a Sass build kept the
+  cache-busting query of an older font after the font changed.
+
 ## [0.3.1] - 2026-07-13
 
 ### Added
