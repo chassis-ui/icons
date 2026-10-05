@@ -7,7 +7,7 @@
 
 ## Overview
 
-This is **not a ready-to-use icon library**. It's a foundation and automation tool that helps you quickly create a custom icon library tailored to your specific design system or application. The existing 488+ icons are examples from the Chassis design system and should be replaced with your own icons.
+This is **not a ready-to-use icon library**. It's a foundation and automation tool that helps you quickly create a custom icon library tailored to your specific design system or application. The icons in `svgs/`, about 500 of them, are examples from the Chassis design system and should be replaced with your own icons.
 
 ## Features
 
@@ -15,7 +15,7 @@ This is **not a ready-to-use icon library**. It's a foundation and automation to
 - 🖼️ **SVG Sprite Generation** - Create optimized SVG sprites automatically
 - 🔤 **Icon Font Generation** - Generate web fonts (WOFF, WOFF2) from your icons
 - 📱 **Multi-Format Output** - CSS, SCSS, SVG, font files, and JSON metadata
-- 🎨 **Live Preview Generator** - Interactive HTML page to browse your icon library
+- 🎨 **Preview Page** - HTML page that shows every icon of your library
 - ⚡ **SVG Optimization** - Automated SVGO processing with smart defaults
 - 📚 **Documentation Site** - Astro-powered documentation template for your icons
 - 🔍 **Quality Validation** - Automated testing for icon consistency
@@ -32,13 +32,15 @@ This is **not a ready-to-use icon library**. It's a foundation and automation to
 git clone https://github.com/chassis-ui/icons.git my-design-system-icons
 cd my-design-system-icons
 
-# Remove the git history to start fresh
-rm -rf .git
-git init
+# Keep the repository, and point it at your own remote
+git remote rename origin upstream
+git remote add origin https://github.com/your-org/your-project-icons.git
 
 # Install dependencies
 pnpm install
 ```
+
+Keep the Git repository of the clone. The documentation site reads its fonts and images from the `vendor/assets` submodule, which a new `git init` does not have.
 
 ### 2. Customize for Your Project
 
@@ -49,39 +51,41 @@ nano package.json
 ```
 
 **Key fields to update:**
+
 ```json
 {
   "name": "@your-org/your-project-icons",
   "description": "Icon library for Your Design System",
   "repository": "https://github.com/your-org/your-project-icons.git",
   "homepage": "https://your-design-system.com",
-  "author": "Your Name <your.email@example.com>",
-  "chassis": {
-    "defaults": {
-      "iconPrefix": "your-icon",  // Change prefix to match your brand
-      "iconFormat": "woff2"
-    },
-    "icons": {
-      "sprite": "your-icons.svg",  // Customize output names
-      "font": "your-icons",
-      "preview": "preview.html"
-    }
-  }
+  "author": "Your Name <your.email@example.com>"
 }
 ```
+
+The font is named `chassis-icons` and its classes start with `cx-`. They are not settings yet: see [Configuration](#configuration) for the files that name them. The `chassis` block of `package.json` is not read by the build.
 
 ### 3. Add Your Icons
 
 ```bash
 # Remove the example Chassis icons
-rm -rf svgs/*.svg
+rm svgs/*.svg
+
+# Remove their code points, so that your set starts at the first one,
+# and their pages on the documentation site
+rm icons/chassis-icons.json
+rm -r site/content/icons
 
 # Add your design system's SVG icons to the svgs/ directory
 # You can copy them from your design files (Figma, Sketch, Adobe XD, etc.)
 cp /path/to/your/icons/*.svg svgs/
 ```
 
+Do both removals before the first build of your set. The build keeps the code point of every icon in `icons/chassis-icons.json` and never removes an entry, so the stylesheets of a set that is built over the old file list the Chassis icons too.
+
+The build optimizes the files of `svgs/` in place and removes their `fill` attributes. Keep your original artwork elsewhere.
+
 **Icon Requirements:**
+
 - ✅ 24x24px viewBox (or consistent size across all icons)
 - ✅ Single color (black fill, paths will be replaced with CSS)
 - ✅ Optimized/simplified paths
@@ -93,9 +97,17 @@ cp /path/to/your/icons/*.svg svgs/
 # Generate everything: optimized SVGs, sprite, fonts, CSS
 pnpm icons
 
+# Check that every SVG file has an entry in the font, and every entry has a file
+pnpm icons:check
+
+# Write one page per icon for the documentation site
+pnpm site:pages
+
 # Preview your icons
 open icons/preview.html
 ```
+
+The documentation site draws its own interface with icons of the Chassis set, by name. With another set, those icons are missing from the header and the home page until you change the names.
 
 ### 5. Integrate into Your Project
 
@@ -116,24 +128,24 @@ Once you've built your custom icon library, you can use it in multiple ways:
 
 ```html
 <!-- Include your generated CSS -->
-<link rel="stylesheet" href="path/to/your-icons.css" />
+<link rel="stylesheet" href="path/to/chassis-icons.css" />
 
-<!-- Use icon classes (prefix matches your config) -->
-<i class="your-icon your-icon-home-solid"></i>
-<i class="your-icon your-icon-user-outline"></i>
+<!-- One class per icon: the prefix and the name of the SVG file -->
+<i class="cx-home-solid"></i>
+<i class="cx-user-outline"></i>
 ```
 
 ### Using SVG Sprite
 
 ```html
 <!-- Reference your sprite -->
-<svg class="icon">
-  <use href="path/to/your-icons.svg#home-solid"></use>
+<svg class="icon" width="24" height="24">
+  <use href="path/to/chassis-icons.svg#home-solid"></use>
 </svg>
 
 <!-- With custom size -->
 <svg class="icon" width="32" height="32">
-  <use href="path/to/your-icons.svg#logo-brand"></use>
+  <use href="path/to/chassis-icons.svg#github-brand"></use>
 </svg>
 ```
 
@@ -147,14 +159,19 @@ Once you've built your custom icon library, you can use it in multiple ways:
 ### Using in SCSS
 
 ```scss
-@import 'path/to/your-icons.scss';
+@use 'sass:map';
 
-// Custom icon styling
-.my-icon {
-  @extend .your-icon;
-  @extend .your-icon-rocket-solid;
+// The classes of the CSS file, with the font files loaded from your own folder
+@use 'path/to/chassis-icons' as icons with (
+  $chassis-icons-font-dir: '/fonts'
+);
+
+// An icon on a selector of your own, from the map of names and code points
+.my-icon::before {
+  font-family: icons.$chassis-icons-font;
   font-size: 2rem;
   color: var(--brand-color);
+  content: map.get(icons.$chassis-icons-map, 'rocket-solid');
 }
 ```
 
@@ -210,11 +227,13 @@ pnpm site:lint
 ### Testing & Quality Checks
 
 ```bash
-# Run all tests
+# Build the documentation site and check icon consistency
 pnpm test
 
 # Individual checks
-pnpm icons:check           # Validate icon files
+pnpm icons:check           # Every SVG file has an entry in the font, and every entry a file
+pnpm icons:lint            # Lint the build scripts
+pnpm lint:prettier         # Formatting of the whole repository
 pnpm site:lint:eslint      # JavaScript/TypeScript linting
 pnpm site:lint:stylelint   # SCSS linting
 pnpm site:lint:html        # HTML validation with html-validate
@@ -234,8 +253,10 @@ pnpm site:lint:fusv        # Find unused SASS variables
    - Follow consistent naming convention across your library
 
 3. **Run the build process**
+
    ```bash
    pnpm icons
+   pnpm site:pages
    ```
 
 4. **Preview your updated library**
@@ -247,16 +268,19 @@ pnpm site:lint:fusv        # Find unused SASS variables
 Establish a consistent naming pattern for your icons. Common patterns:
 
 **By Style Variant:**
+
 - `{name}-outline.svg` - Outlined/stroke style
 - `{name}-solid.svg` - Filled/solid style
 - `{name}-brand.svg` - Brand/logo icons
 
 **Examples:**
+
 - `home-outline.svg` / `home-solid.svg`
 - `arrow-right-outline.svg` / `arrow-right-solid.svg`
 - `company-logo-brand.svg`
 
 **Pro Tips:**
+
 - Be consistent across your entire library
 - Use descriptive names that make sense for your team
 - Group related icons with common prefixes
@@ -270,7 +294,7 @@ After cloning this project for your design system, you should customize these co
 
 ### 1. Package Configuration (`package.json`)
 
-Update project metadata and icon naming:
+Update the project metadata:
 
 ```json
 {
@@ -279,24 +303,16 @@ Update project metadata and icon naming:
   "description": "Icon library for Your Design System",
   "repository": "https://github.com/your-org/your-project-icons.git",
   "homepage": "https://your-design-system.com",
-  "author": "Your Name <your.email@example.com>",
-  "chassis": {
-    "defaults": {
-      "iconPrefix": "your-icon",     // CSS class prefix
-      "iconFormat": "woff2"
-    },
-    "icons": {
-      "sprite": "your-icons.svg",     // Output sprite filename
-      "font": "your-icons",            // Output font family name
-      "preview": "preview.html"
-    }
-  }
+  "author": "Your Name <your.email@example.com>"
 }
 ```
+
+The build does not read the `chassis` block of `package.json`. The font name `chassis-icons` and the class prefix `cx` are written in the files below, and in the scripts of `package.json`, `build/` and `.github/workflows/` that name the output files. To change them, change every one of those places. One setting for both is planned.
 
 ### 2. Icon Font Configuration (`.fantasticonrc.cjs`)
 
 Customize font generation settings - this is where you define:
+
 - Font family name
 - CSS class prefixes
 - Output file names
@@ -306,6 +322,7 @@ Customize font generation settings - this is where you define:
 ### 3. SVG Sprite Configuration (`svg-sprite.json`)
 
 Adjust sprite generation settings for your needs:
+
 - Output paths
 - Sprite mode (symbol, stack, etc.)
 - ID prefixes
@@ -313,6 +330,7 @@ Adjust sprite generation settings for your needs:
 ### 4. SVG Optimization (`svgo.config.js`)
 
 Fine-tune SVGO optimization for your icons:
+
 - Which plugins to enable/disable
 - Precision settings
 - Attribute cleanup rules
@@ -323,59 +341,60 @@ Fine-tune SVGO optimization for your icons:
 
 ### Main Commands
 
-| Command | Description |
-|---------|-------------|
-| `pnpm build` | Complete build: icons + documentation site |
-| `pnpm dev` | Start Astro dev server on port 4324 |
-| `pnpm release` | Build everything and create release package |
-| `pnpm test` | Run all quality checks and tests |
+| Command        | Description                                              |
+| -------------- | -------------------------------------------------------- |
+| `pnpm build`   | Complete build: icons + documentation site               |
+| `pnpm dev`     | Start Astro dev server on port 4324                      |
+| `pnpm release` | Build everything and create the ZIP archive of the icons |
+| `pnpm test`    | Build the documentation site and check icon consistency  |
 
 ### Icon Generation
 
-| Command | Description |
-|---------|-------------|
-| `pnpm icons` | Build all icons (SVG → sprite + fonts) |
-| `pnpm icons:svgs` | Optimize SVG files with SVGO |
-| `pnpm icons:sprite` | Generate SVG sprite file |
-| `pnpm icons:font` | Generate icon fonts (WOFF/WOFF2) |
-| `pnpm icons:font-main` | Generate unminified CSS |
-| `pnpm icons:font-min` | Minify CSS output |
-| `pnpm icons:zip` | Package icons for distribution |
+| Command                | Description                                                                      |
+| ---------------------- | -------------------------------------------------------------------------------- |
+| `pnpm icons`           | Build all icons (SVG → sprite + fonts)                                           |
+| `pnpm icons:svgs`      | Optimize SVG files with SVGO                                                     |
+| `pnpm icons:sprite`    | Generate SVG sprite file                                                         |
+| `pnpm icons:font`      | Generate icon fonts (WOFF/WOFF2)                                                 |
+| `pnpm icons:font-main` | Generate unminified CSS                                                          |
+| `pnpm icons:font-min`  | Minify CSS output                                                                |
+| `pnpm icons:zip`       | Write `chassis-icons-<version>.zip` with the SVG files and the files of `icons/` |
 
 ### Documentation Site
 
-| Command | Description |
-|---------|-------------|
-| `pnpm site:pages` | Generate documentation pages |
-| `pnpm site:build` | Build complete documentation site |
-| `pnpm site:lint` | Run all site linting checks |
-| `pnpm site:format` | Format site code with Prettier |
-| `pnpm astro:dev` | Start Astro development server |
-| `pnpm astro:build` | Build Astro site for production |
-| `pnpm astro:preview` | Preview production build |
+| Command              | Description                       |
+| -------------------- | --------------------------------- |
+| `pnpm site:pages`    | Generate documentation pages      |
+| `pnpm site:build`    | Build complete documentation site |
+| `pnpm site:lint`     | Run all site linting checks       |
+| `pnpm astro:dev`     | Start Astro development server    |
+| `pnpm astro:build`   | Build Astro site for production   |
+| `pnpm astro:preview` | Preview production build          |
 
 ### Testing & Quality
 
-| Command | Description |
-|---------|-------------|
-| `pnpm icons:check` | Validate icon files and structure |
-| `pnpm site:lint:eslint` | Lint JavaScript/TypeScript code |
-| `pnpm site:lint:stylelint` | Lint SCSS stylesheets |
-| `pnpm site:lint:html` | Validate HTML output with html-validate |
-| `pnpm site:lint:vnu` | Validate HTML output with the Nu Html Checker |
-| `pnpm site:lint:prettier` | Check code formatting |
-| `pnpm site:lint:fusv` | Find unused SASS variables |
-| `pnpm check:astro` | Type-check the site |
-| `pnpm check:pnpm` | Run security audit on the dependencies a consumer installs |
+| Command                    | Description                                                                |
+| -------------------------- | -------------------------------------------------------------------------- |
+| `pnpm icons:check`         | Check that every SVG file has an entry in the font, and every entry a file |
+| `pnpm icons:lint`          | Lint the build scripts                                                     |
+| `pnpm lint:prettier`       | Check the formatting of the whole repository                               |
+| `pnpm site:lint:eslint`    | Lint JavaScript/TypeScript code                                            |
+| `pnpm site:lint:stylelint` | Lint SCSS stylesheets                                                      |
+| `pnpm site:lint:html`      | Validate HTML output with html-validate                                    |
+| `pnpm site:lint:vnu`       | Validate HTML output with the Nu Html Checker                              |
+| `pnpm site:lint:prettier`  | Check the formatting of the site                                           |
+| `pnpm site:lint:fusv`      | Find unused SASS variables                                                 |
+| `pnpm check:astro`         | Type-check the site                                                        |
+| `pnpm check:pnpm`          | Run security audit on the dependencies a consumer installs                 |
 
 ### Utilities
 
-| Command | Description |
-|---------|-------------|
-| `pnpm changeset` | Describe a change to the package for the next release |
+| Command                  | Description                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------------ |
+| `pnpm changeset`         | Describe a change to the package for the next release                                |
 | `pnpm changeset:version` | Make the next version: bump it, write the CHANGELOG entry, update version references |
-| `pnpm vendor` | Check out and build the `vendor/assets` submodule at the pinned commit |
-| `pnpm sync-submodules` | Move `vendor/assets` to the latest `app/docs` and build it |
+| `pnpm vendor`            | Check out and build the `vendor/assets` submodule at the pinned commit               |
+| `pnpm sync-submodules`   | Move `vendor/assets` to the latest `app/docs` and build it                           |
 
 ## Output Files
 
@@ -383,23 +402,23 @@ After running `pnpm icons`, you'll find these generated files in the `icons/` di
 
 ### Stylesheets
 
-- **`your-icons.css`** - Complete stylesheet with font-face definitions and icon classes
-- **`your-icons.min.css`** - Minified version for production use
-- **`your-icons.scss`** - SCSS source with variables for customization
+- **`chassis-icons.css`** - Complete stylesheet with font-face definitions and icon classes
+- **`chassis-icons.min.css`** - Minified version for production use
+- **`chassis-icons.scss`** - SCSS source with variables for customization
 
 ### Font Files
 
-- **`your-icons.woff2`** - Modern web font format (recommended, best compression)
-- **`your-icons.woff`** - Legacy web font format (IE11+ support)
+- **`chassis-icons.woff2`** - Modern web font format (recommended, best compression)
+- **`chassis-icons.woff`** - Legacy web font format (IE11+ support)
 
 ### SVG Assets
 
-- **`your-icons.svg`** - Complete SVG sprite containing all your icons
-- **`your-icons.json`** - Icon metadata with codepoints and names
+- **`chassis-icons.svg`** - Complete SVG sprite containing all your icons
+- **`chassis-icons.json`** - The code point of each icon, by name. The next build reads it, so that an icon keeps its code point
 
 ### Preview
 
-- **`preview.html`** - Interactive HTML page showcasing all your icons with search and copy functionality
+- **`preview.html`** - HTML page that shows every icon of the sprite. It is not committed
 
 ### Documentation Site
 
@@ -411,14 +430,14 @@ After running `pnpm build`, the complete documentation site is generated in `_si
 
 This project is part of the Chassis Design System's multi-repository architecture:
 
-| Project | Description |
-|---------|-------------|
-| [chassis-website](https://github.com/chassis-ui/website) | Main website and shared documentation package |
-| [chassis-css](https://github.com/chassis-ui/css) | CSS framework and component library |
-| [chassis-tokens](https://github.com/chassis-ui/tokens) | Design token generation and management |
-| **chassis-icons** | **Icon library and build toolkit (this repository)** |
-| [chassis-assets](https://github.com/chassis-ui/assets) | Multi-platform asset management |
-| [chassis-figma](https://github.com/chassis-ui/figma) | Figma component documentation |
+| Project                                                  | Description                                          |
+| -------------------------------------------------------- | ---------------------------------------------------- |
+| [chassis-website](https://github.com/chassis-ui/website) | Main website and shared documentation package        |
+| [chassis-css](https://github.com/chassis-ui/css)         | CSS framework and component library                  |
+| [chassis-tokens](https://github.com/chassis-ui/tokens)   | Design token generation and management               |
+| **chassis-icons**                                        | **Icon library and build toolkit (this repository)** |
+| [chassis-assets](https://github.com/chassis-ui/assets)   | Multi-platform asset management                      |
+| [chassis-figma](https://github.com/chassis-ui/figma)     | Figma component documentation                        |
 
 All documentation sites share the `@chassis-ui/docs` package for consistent layouts, components, and styling.
 

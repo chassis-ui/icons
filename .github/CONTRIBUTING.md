@@ -66,9 +66,10 @@ Renaming or removing an icon breaks every project that uses it: say so in the ch
 
 ## Changing the build
 
-The scripts in `build/` are linted with `pnpm icons:lint`. A change to the font templates in
-`build/font/`, to `.fantasticonrc.cjs`, `svg-sprite.json` or `svgo.config.js` changes the files
-of `icons/`: run `pnpm icons` and commit the result with the change.
+The scripts in `build/` are linted with `pnpm icons:lint`, which fails on a warning, and
+formatted with Prettier: `pnpm lint:prettier` checks the whole repository. A change to the font
+templates in `build/font/`, to `.fantasticonrc.cjs`, `svg-sprite.json` or `svgo.config.js`
+changes the files of `icons/`: run `pnpm icons` and commit the result with the change.
 
 ## Changing the site
 
@@ -79,7 +80,7 @@ pages, components and styles are in `site/src/`, and its settings in `site/confi
 ```sh
 pnpm site:lint:eslint      # ESLint
 pnpm site:lint:stylelint   # Stylelint
-pnpm site:lint:prettier    # Prettier
+pnpm lint:prettier         # Prettier, on the whole repository
 pnpm check:astro           # Types
 pnpm site:build            # The same build as Vercel: vendor/assets, Astro and Pagefind
 pnpm site:lint:html        # html-validate, on the built site
@@ -96,9 +97,11 @@ patterns of `site/astro.config.ts` on the same folder.
 CI runs these jobs on every pull request, and on every push to `develop`:
 
 - **Lint**: `pnpm icons:lint`, `pnpm site:lint:eslint`, `pnpm site:lint:stylelint` and
-  `pnpm site:lint:prettier`.
+  `pnpm lint:prettier`.
 - **Type Check**: `pnpm check:astro`.
-- **Build**: `pnpm icons`, then `pnpm icons:check`.
+- **Build**: `pnpm icons`, then `pnpm icons:check`. It fails when the build changes a file of
+  `icons/` or `svgs/`: the committed output is not what the source builds. Run `pnpm icons`
+  and commit the result.
 - **Site**: `pnpm site:build`, then `pnpm site:lint:html` and `pnpm site:lint:vnu`.
 - **Changeset**: a change to `icons/` or `svgs/` has a changeset.
 - **Audit**: `pnpm check:pnpm`.

@@ -23,6 +23,7 @@ This document provides a mapping of Bootstrap classes to their Chassis CSS equiv
 ```
 
 ### Pattern Differences
+
 - **Bootstrap**: `btn` + modifier classes (`btn-primary`, `btn-outline-primary`, `btn-small`)
 - **Chassis CSS**: `button` + space-separated modifiers (`primary`, `outline`, `small`)
 
@@ -43,6 +44,7 @@ This document provides a mapping of Bootstrap classes to their Chassis CSS equiv
 ```
 
 ### Pattern Differences
+
 - **Bootstrap**: `badge` + background color classes (`bg-primary`, `bg-secondary`)
 - **Chassis CSS**: `badge` + color modifier (`primary`, `secondary`, `neutral`)
 
@@ -69,6 +71,7 @@ This document provides a mapping of Bootstrap classes to their Chassis CSS equiv
 ```
 
 ### Pattern Differences
+
 - **Bootstrap**: Uses `card` + `card-body` + `card-title`, `card-text` structure
 - **Chassis CSS**: Uses `card` + `card-content` + `card-title`, `card-body` structure (`card-body` → `card-content`, `card-text` → `card-body`)
 
@@ -85,6 +88,7 @@ This document provides a mapping of Bootstrap classes to their Chassis CSS equiv
 ```
 
 ### Pattern Differences
+
 - **Bootstrap**: `display-{number}` for large text sizes
 - **Chassis CSS**: `font-{size}` with descriptive size names (`font-6xlarge`, `font-5xlarge`, etc.)
 - **Chassis CSS**: Use `font-display` for display fonts combined with size classes
@@ -92,6 +96,7 @@ This document provides a mapping of Bootstrap classes to their Chassis CSS equiv
 ## Layout Classes
 
 ### Similarities
+
 These classes are similar or identical between Bootstrap and Chassis CSS:
 
 ```html
@@ -122,12 +127,14 @@ These classes are similar or identical between Bootstrap and Chassis CSS:
 ```
 
 ### Pattern Differences
+
 - **Bootstrap**: Uses `data-bs-*` prefix
 - **Chassis CSS**: Uses `data-cx-*` prefix
 
 ## Complete Migration Examples
 
 ### Before (Bootstrap)
+
 ```html
 <div class="card">
   <div class="card-body">
@@ -147,6 +154,7 @@ These classes are similar or identical between Bootstrap and Chassis CSS:
 ```
 
 ### After (Chassis CSS)
+
 ```html
 <div class="card">
   <div class="card-content">
