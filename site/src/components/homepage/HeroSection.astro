@@ -29,7 +29,7 @@ const config = getConfig()
       <Code
         noToolbar
         lang="bash"
-        code="git clone git@github.com:chassis-ui/tokens.git"
+        code={`git clone ${config.repo}.git`}
         containerClass="md:mx-auto"
       />
       <!-- Buttons -->
