@@ -20,7 +20,7 @@ packages/icons/       The published package: the build and its output
   build/              The build, as cli.js and its modules, and the templates of the stylesheets
   test/               The tests of the build, with the set of another team as their fixture
 packages/site/        The documentation site (Astro)
-build/                Scripts of the repository: site pages, release notes, version references
+build/                Scripts of the repository: site pages, the changeset check, release notes and archive
 chassis.checks.json   The icons that consumers of the set read by name
 ```
 
@@ -87,6 +87,8 @@ Everything that is particular to your set is in `packages/icons/package.json`: t
 
 With this block the font is `your-icons`, its files are `your-icons.css`, `your-icons.woff2` and so on, and the class of an icon is `yi-<name>`. See [Configuration](#configuration) for each setting.
 
+The build writes the rest of what the package says about itself: the fields `main`, `style`, `sass`, `files`, `exports` and `sideEffects`, which name the files of your font, and `packages/icons/README.md`, which shows how to use your icons. See [The package](#the-package).
+
 ### 3. Add Your Icons
 
 ```bash
@@ -142,11 +144,13 @@ The documentation site draws its own interface with icons of the Chassis set, by
 # Option A: Copy generated files to your project
 cp -r packages/icons/icons/* /path/to/your-project/assets/icons/
 
-# Option B: Publish as a private npm package
-pnpm build
+# Option B: Publish it as an npm package
+pnpm icons:lint:package
 cd packages/icons
 npm publish
 ```
+
+The release workflow does the second for you when a new version reaches `main`, and attaches `<font>-<version>.zip` to the GitHub release. With `"private": true` in `packages/icons/package.json` it publishes nothing, and the release is the archive. See [The package](#the-package), and [Releases](.github/CONTRIBUTING.md#releases) in the contributing guide.
 
 ## Usage in Your Design System
 
@@ -224,6 +228,7 @@ pnpm icons
 pnpm icons:svgs      # Optimize the files of source/ into packages/icons/svgs/
 pnpm icons:sprite    # Write the SVG sprite
 pnpm icons:font      # Write the icon font, its stylesheets and the code points
+pnpm icons --only package   # Write the README and the fields of package.json
 
 # List the files that a build would change, and change none
 pnpm icons --dry-run
@@ -339,9 +344,25 @@ The build reads one block of `packages/icons/package.json`. A setting that the b
 | `formats`        | `["woff2", "woff"]`           | The font formats, in the order of the `src` of the font face: `woff2`, `woff`, `ttf`              |
 | `header`         | `[]`                          | The lines of the comment at the top of each stylesheet. `{version}` is the version of the package |
 
-### The templates of the stylesheets
+### The package
+
+The other fields of `packages/icons/package.json` describe the package, and the build and the release workflow read them.
+
+| Field                                                      | Who writes it | What it does                                                                                                                 |
+| ---------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `name`, `version`                                          | You           | The package that the release workflow publishes, and the `{version}` of `header`. `pnpm changeset:version` bumps the version |
+| `description`, `homepage`, `repository`, `license`         | You           | Shown in `packages/icons/README.md`: the first paragraph, the link to your site, the link to the source, the license         |
+| `main`, `style`, `sass`, `files`, `exports`, `sideEffects` | The build     | Name the files of the font. An entry of `files` or `exports` that is not about `icons/` or `svgs/` is yours, and is kept     |
+| `private`                                                  | You           | With `true`, the release workflow publishes nothing, and the release is the tag and the archive on GitHub                    |
+| `publishConfig`                                            | You           | Read by npm when it publishes: `access`, and `provenance`. Set `provenance` to `false` to publish from your own machine      |
+
+`pnpm icons:lint:package` checks with [publint](https://publint.dev) that the fields point at files that the package holds.
+
+### The templates
 
 `packages/icons/build/templates/css.hbs` and `scss.hbs` are Handlebars templates. Change them to change what the stylesheets hold. They get `name`, `prefix`, `header`, `formats`, `fontSrc`, `fontHash` and `codepoints` from the build.
+
+`readme.hbs` is the template of `packages/icons/README.md`. It gets `packageName`, `description`, `homepage`, `repository` and `license` from `package.json`, `name`, `prefix`, `frame`, `styles` and `formats` from the configuration, the number of icons as `count`, and the first icon as `icon`.
 
 ### The code points
 
@@ -355,23 +376,22 @@ The build reads one block of `packages/icons/package.json`. A setting that the b
 
 ### Main Commands
 
-| Command        | Description                                              |
-| -------------- | -------------------------------------------------------- |
-| `pnpm build`   | Complete build: icons + documentation site               |
-| `pnpm dev`     | Start Astro dev server on port 4324                      |
-| `pnpm release` | Build everything and create the ZIP archive of the icons |
-| `pnpm test`    | Run the tests of the build                               |
+| Command        | Description                                         |
+| -------------- | --------------------------------------------------- |
+| `pnpm build`   | Complete build: icons + documentation site          |
+| `pnpm dev`     | Start Astro dev server on port 4324                 |
+| `pnpm release` | Build everything and write the archive of the icons |
+| `pnpm test`    | Run the tests of the build                          |
 
 ### Icon Generation
 
-| Command             | Description                                                                              |
-| ------------------- | ---------------------------------------------------------------------------------------- |
-| `pnpm icons`        | Build the whole output: SVG files, sprite, font and stylesheets                          |
-| `pnpm icons:svgs`   | Optimize the files of `source/` with SVGO into `packages/icons/svgs/`                    |
-| `pnpm icons:sprite` | Write the SVG sprite                                                                     |
-| `pnpm icons:font`   | Write the icon font, its stylesheets and the code points                                 |
-| `pnpm icons:init`   | Empty the output and the registry of code points, to start a new set                     |
-| `pnpm icons:zip`    | Write `packages/icons/<font>-<version>.zip` with the SVG files and the files of `icons/` |
+| Command             | Description                                                           |
+| ------------------- | --------------------------------------------------------------------- |
+| `pnpm icons`        | Build the whole output: SVG files, sprite, font and stylesheets       |
+| `pnpm icons:svgs`   | Optimize the files of `source/` with SVGO into `packages/icons/svgs/` |
+| `pnpm icons:sprite` | Write the SVG sprite                                                  |
+| `pnpm icons:font`   | Write the icon font, its stylesheets and the code points              |
+| `pnpm icons:init`   | Empty the output and the registry of code points, to start a new set  |
 
 ### Documentation Site
 
@@ -392,6 +412,7 @@ The build reads one block of `packages/icons/package.json`. A setting that the b
 | `pnpm icons:test:golden`   | Write the golden output of the tests again, after a change that is meant to change it   |
 | `pnpm icons:verify`        | Check that the committed output is what the source builds, and that no code point moved |
 | `pnpm icons:lint:source`   | Check the files of `source/`: names, frame, color, pairs                                |
+| `pnpm icons:lint:package`  | Check with publint what npm would publish                                               |
 | `pnpm icons:typecheck`     | Type-check the build                                                                    |
 | `pnpm icons:lint`          | Lint the build scripts and their tests                                                  |
 | `pnpm lint:prettier`       | Check the formatting of the whole repository                                            |
@@ -410,12 +431,15 @@ The build reads one block of `packages/icons/package.json`. A setting that the b
 | ------------------------ | ------------------------------------------------------------------------------------ |
 | `pnpm changeset`         | Describe a change to the package for the next release                                |
 | `pnpm changeset:version` | Make the next version: bump it, write the CHANGELOG entry, update version references |
+| `pnpm changeset:check`   | Check that the commits since a base, such as `develop`, come with a changeset        |
+| `pnpm release:archives`  | Write `.cache/release/<font>-<version>.zip` with `icons/` and `svgs/` in it          |
+| `pnpm release:notes`     | Print the CHANGELOG entry of the version, as the GitHub release shows it             |
 | `pnpm vendor`            | Check out and build the `vendor/assets` submodule at the pinned commit               |
 | `pnpm sync-submodules`   | Move `vendor/assets` to the latest `app/docs` and build it                           |
 
 ## Output Files
 
-After running `pnpm icons`, you'll find the optimized SVG files in `packages/icons/svgs/`, the registry of the code points in `packages/icons/codepoints.json`, and these generated files in `packages/icons/icons/`. They are named after the font, `chassis-icons` for the default set:
+After running `pnpm icons`, you'll find the optimized SVG files in `packages/icons/svgs/`, the registry of the code points in `packages/icons/codepoints.json`, the README of the package in `packages/icons/README.md`, and these generated files in `packages/icons/icons/`. They are named after the font, `chassis-icons` for the default set:
 
 ### Stylesheets
 
@@ -466,7 +490,7 @@ See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the dev setup, the convention
 2. Create a feature branch from `develop`: `git checkout -b feature/my-feature develop`
 3. Make your changes
 4. Test the build: `pnpm build && pnpm test`
-5. Add a changeset if `icons/` or `svgs/` of `packages/icons/` changed: `pnpm changeset`
+5. Add a changeset if `source/`, the build or the output in `packages/icons/` changed: `pnpm changeset`
 6. Commit your changes: `git commit -m "feat: add my feature"`
 7. Push to the branch: `git push origin feature/my-feature`
 8. Open a Pull Request against `develop`

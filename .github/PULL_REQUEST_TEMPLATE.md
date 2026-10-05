@@ -22,8 +22,8 @@ for the details behind each of these.
 - [ ] **`packages/icons/` rebuilt** with `pnpm icons` and committed, and the pages of the new
       icons written with `pnpm site:pages`, if `source/` or the font templates changed
 - [ ] `pnpm icons:lint:source`, `pnpm icons:verify`, `pnpm icons:test` and `pnpm icons:lint` pass
-- [ ] **Changeset** (`pnpm changeset`) if the output in `packages/icons/` changed, naming the
-      icons that are added, renamed or removed; an empty one (`pnpm changeset --empty`) if it
-      changed but nothing is released
+- [ ] **Changeset** (`pnpm changeset`) if `source/`, the build or the output in
+      `packages/icons/` changed, naming the icons that are added, renamed or removed; an empty
+      one (`pnpm changeset --empty`) if it changed but nothing is released
 - [ ] `pnpm site:lint:eslint`, `pnpm site:lint:stylelint`, `pnpm site:lint:prettier`,
       `pnpm check:astro` and `pnpm site:build` pass, if the site changed

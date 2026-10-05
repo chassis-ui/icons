@@ -27,11 +27,13 @@ and the source of the icons at the root.
   published. `codepoints.json` is the registry of the code points, written by the build and
   committed. Its `build/` holds the build and the templates of the font's stylesheets, and
   its `test/` the tests of the build. The `chassis.build` block of its `package.json` is the
-  configuration of the set: the build itself names no font, no prefix and no icon.
+  configuration of the set: the build itself names no font, no prefix and no icon. The build
+  writes `README.md` too, and the fields of `package.json` that name the files of the output:
+  `main`, `style`, `sass`, `files`, `exports` and `sideEffects`.
 - [`packages/site/`](../packages/site/) holds the Astro documentation site, with one page
   per icon in `packages/site/content/icons/`. It is never published to npm.
 - [`build/`](../build/) holds the scripts of the repository: the pages of the site, the
-  release notes and the version references.
+  check for a changeset, the version references, and the notes and the archive of a release.
 - [`chassis.checks.json`](../chassis.checks.json) lists the icons that the Chassis sites and
   Chassis React read by name. `pnpm icons:verify` fails when one is missing.
 - [`vendor/assets`](../vendor/) is the chassis-assets submodule, with the fonts and images of
@@ -66,7 +68,7 @@ Branch names aren't templated; name yours descriptively (for example `feat/calen
    writes the sprite, the font and its stylesheets to `packages/icons/icons/`. A new icon gets
    a code point of its own in `packages/icons/codepoints.json`; the code points of the other
    icons stay as they are. The code point of a removed icon is retired there, and no later
-   icon gets it.
+   icon gets it. `packages/icons/README.md` is written again, with the number of icons.
 3. Run `pnpm site:pages`. It writes the page of each new icon to
    `packages/site/content/icons/`, with
    `categories` and `tags` taken from the file name: correct them where they are wrong. Delete
@@ -92,6 +94,13 @@ team, the fixture, and compare the result with the golden files; see the
 [README of the tests](../packages/icons/test/README.md). A change that is meant to change the
 output writes the golden files again with `pnpm icons:test:golden`, and changes the output of
 the default set too: run `pnpm icons` and commit both with the change.
+
+The build writes what the package says about its output. `packages/icons/README.md` comes
+from `packages/icons/build/templates/readme.hbs`: change the template, never the README. The
+fields `main`, `style`, `sass`, `files`, `exports` and `sideEffects` of
+`packages/icons/package.json` come from `packages/icons/build/manifest.js`; an entry of
+`files` or `exports` that is not about `icons/` or `svgs/` is kept. `pnpm icons:lint:package`
+runs [publint](https://publint.dev) on what npm would publish.
 
 No module of the build names a font, a prefix or an icon. What is particular to a set goes
 into the `chassis.build` block of `packages/icons/package.json` or into
@@ -127,18 +136,20 @@ CI runs these jobs on every pull request, and on every push to `develop`:
   `pnpm lint:prettier`.
 - **Type Check**: `pnpm icons:typecheck` and `pnpm check:astro`.
 - **Build**: `pnpm icons:lint:source`, `pnpm icons:test` on the Node.js of `.nvmrc` and on
-  Node.js 22, and `pnpm icons:verify`. It fails when the committed output is not what the
-  source builds: run `pnpm icons` and commit the result.
+  Node.js 22, `pnpm icons:verify` and `pnpm icons:lint:package`. It fails when the committed
+  output is not what the source builds: run `pnpm icons` and commit the result.
 - **Site**: `pnpm site:build`, then `pnpm site:lint:html` and `pnpm site:lint:vnu`.
-- **Changeset**: a change to `icons/` or `svgs/` of `packages/icons/` has a changeset.
+- **Changeset**: a change to `source/`, to `packages/icons/build/` or to `icons/` and `svgs/`
+  of `packages/icons/` has a changeset. `pnpm changeset:check develop` runs the same check
+  on your branch.
 - **Audit**: `pnpm check:pnpm`.
 - **Dependency Review**, on pull requests: no added dependency has a known vulnerability of
   moderate severity or higher.
 
 ## Changesets
 
-A pull request that changes `icons/` or `svgs/` of `packages/icons/`, the files of the
-published package, adds a changeset:
+A pull request that changes `source/`, the build in `packages/icons/build/`, or `icons/` and
+`svgs/` of `packages/icons/`, the files of the published package, adds a changeset:
 
 ```sh
 pnpm changeset
@@ -146,11 +157,16 @@ pnpm changeset
 
 It asks for the bump (patch, minor or major) and the text of the CHANGELOG entry, and writes a
 Markdown file to `.changeset/`. Commit it with the change. Name the icons that are added,
-renamed or removed.
+renamed or removed. The text becomes the entry of `packages/icons/CHANGELOG.md` as it is
+written, without a commit hash: `.changeset/changelog.js` writes the entries.
 
-A change that releases nothing, such as an SVG that is optimized again with the same drawing,
-adds an empty changeset: `pnpm changeset --empty`. A change to the site or to the tooling needs
-none.
+While the version is `0.x`, a change that removes or renames an icon, a file of the package,
+the class prefix or the font is a `minor` bump, and its text starts with `**Breaking.**`. A
+new icon is a `minor` bump too, and everything else a `patch`.
+
+A change that releases nothing, such as a refactoring of the build that writes the same
+output, adds an empty changeset: `pnpm changeset --empty`. A change to the site, to the tests
+or to the documents needs none.
 
 ## Releases
 
@@ -163,29 +179,65 @@ once, on `develop`; pushing the same commit to `staging` or `main` doesn't run t
    `currentVersion` in `packages/site/config.yml`, then rebuilds the output, so the headers
    of its stylesheets name the new version. The maintainer reviews the result, commits it and
    pushes `develop`.
-2. CI runs on that commit. The Changeset job skips the push, since it changes the version.
+2. CI runs on that commit. The Changeset job passes it, since it changes the version.
 3. When CI has passed, the maintainer pushes the same commit to `main`. The ruleset of `main`
    requires the checks `Lint`, `Type Check`, `Build` and `Site` on the commit, and blocks a
    force push and a deletion.
 4. The push runs `.github/workflows/release.yml`, in three jobs:
-   - **Detect Version** reads the version and asks npm whether it has it. When it has, the
-     workflow stops: a push to `main` without a new version publishes nothing.
+   - **Detect Version** reads the name and the version of the package, asks npm whether it
+     has the version, and asks GitHub whether the tag `v<version>` exists. When both are
+     there, the workflow stops: a push to `main` without a new version releases nothing.
    - **Checks Passed** reads the check-runs of the commit by name. It stops unless `Lint`,
      `Type Check`, `Build` and `Site` passed on it.
-   - **Publish** runs `pnpm icons:verify`, publishes `@chassis-ui/icons` from `packages/icons/`
-     with npm trusted publishing and provenance (no npm token), and creates the GitHub release
-     `v<version>` with the CHANGELOG entry as its body.
+   - **Release** runs `pnpm icons:verify`, reads the CHANGELOG entry of the version, and
+     writes the archive `<font>-<version>.zip` with `icons/` and `svgs/` in it. Then it
+     publishes the package from `packages/icons/` with npm trusted publishing (no npm token),
+     and creates the GitHub release `v<version>` with the CHANGELOG entry as its body and the
+     archive attached.
 
 `develop` and `main` are at the same commit after a release, so nothing is merged back.
 
-A version without a CHANGELOG entry is not published. A prerelease goes to the npm dist-tag of
-its first identifier, so `0.4.0-next.0` goes to `next`, and its GitHub release is marked as a
-prerelease; every other version goes to `latest`.
+A version without a CHANGELOG entry is not published. A run that published and then failed
+can be run again: it skips what is done, and creates the GitHub release alone.
+
+### A prerelease
+
+A prerelease goes to the npm dist-tag of its first identifier, so `0.4.0-next.0` goes to
+`next`, and its GitHub release is marked as a prerelease; every other version goes to
+`latest`. Changesets makes one in its prerelease mode:
+
+```sh
+pnpm changeset pre enter next   # Once: the versions are <next version>-next.<n> from now on
+pnpm changeset:version          # 0.4.0-next.0, then 0.4.0-next.1 with more changesets
+pnpm changeset pre exit         # Once: the next version step makes 0.4.0
+```
+
+Commit `.changeset/pre.json` and `.changeset/pre/` with each step. In this mode a version
+step moves the changesets to `.changeset/pre/`, and the version that follows `pre exit` writes
+its entry from them again and removes them. So the entry of `0.4.0` repeats what the entries of
+its prereleases said.
+
+### What the workflow reads
+
+The workflow names no package. It releases what `packages/icons/package.json` describes, so
+a set of your own is released by the same file:
+
+- `name` and `version` are the package that npm is asked for, and the title of the GitHub
+  release.
+- `"private": true` publishes nothing to a registry. The release is the tag, the GitHub
+  release and its archive.
+- `publishConfig` is read by npm when it publishes: `"access": "restricted"` for a package
+  that only your organization installs, and `"provenance": true` for a signed statement of
+  the commit and the workflow that built the version, which npm accepts from a public
+  repository only.
+
+The package is published to npmjs.com. Another registry needs its address and a token in
+the "Publish to npm" step and in the Node.js setup before it.
 
 The workflow can also be run by hand, on `main` only: a run on another branch stops in its
 first job. Two names are tied to settings outside the repository, so change them together:
 
-- The file name `release.yml` is the trusted publisher of `@chassis-ui/icons` on npmjs.com.
+- The file name `release.yml` is the trusted publisher of the package on npmjs.com.
   Renaming the file breaks publishing until the trusted publisher names the new file.
 - The job names `Lint`, `Type Check`, `Build` and `Site` are the required checks of the ruleset
   of `main`, and they are in the `REQUIRED` list of `release.yml`.

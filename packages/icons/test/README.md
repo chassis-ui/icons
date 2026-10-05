@@ -4,13 +4,13 @@
 
 ## The fixture
 
-`fixture/` is the set of another team, and nothing in it is like the set that the repository ships with: eight icons on a frame of 16, the font `acme-glyphs`, the prefix `ag`, the styles `line` and `fill`, code points from `e900`, the formats `woff2` and `ttf`, and a `checks.json` of its own. Its `package.json` holds the `chassis.build` block, and `fixture/source/` the SVG files as a design tool exports them.
+`fixture/` is the set of another team, and nothing in it is like the set that the repository ships with: eight icons on a frame of 16, the font `acme-glyphs`, the prefix `ag`, the styles `line` and `fill`, code points from `e900`, the formats `woff2` and `ttf`, and a `checks.json` of its own. Its `package.json` holds the `chassis.build` block and the site, the repository and the license of that team, and `fixture/source/` the SVG files as a design tool exports them. The manifest has none of the fields that the build writes, so that a test sees the build write them.
 
 The tests build the fixture, not the default set, so that a part of the build that works for one set only fails here.
 
 ## The golden output
 
-`golden/` is what the build writes for the fixture: `svgs/`, `icons/` and `codepoints.json`. `golden.test.js` builds the fixture and compares every file with it, byte for byte.
+`golden/` is what the build writes for the fixture: `svgs/`, `icons/`, `codepoints.json` and `README.md`. `golden.test.js` builds the fixture and compares every file with it, byte for byte.
 
 After a change that is meant to change the output, write the golden files again and read the diff before you commit it:
 
@@ -32,9 +32,10 @@ Never edit a golden file by hand. Prettier leaves the folder alone.
 | `lint-source.test.js` | The check of the source: frame, color, strokes, scripts, names, pairs                         |
 | `golden.test.js`      | The build of the fixture against the golden output, its steps, and a set that changes         |
 | `verify.test.js`      | `verify`: an output that is not built again, a moved code point, a missing icon of a contract |
+| `manifest.test.js`    | The fields of `package.json` and the README; what npm packs, and what resolves by name        |
 | `journey.test.js`     | A team that adopts the repository: its set has nothing left of the one it replaced            |
 | `cli.test.js`         | The command line: its commands, its options and its exit codes                                |
-| `scripts.test.js`     | The scripts of the root `build/`: the release notes and the version references                |
+| `scripts.test.js`     | The scripts of the root `build/` and the changelog entries of `.changeset/changelog.js`       |
 
 ## Adding a case
 
