@@ -7,8 +7,8 @@ maintenance branches for older versions.
 
 The published package holds generated files only (SVG files, an SVG sprite, the icon font and
 its CSS and SCSS in `icons/` and `svgs/`); it has no dependencies and runs no code in your app.
-The build scripts in `build/` and the documentation site run on contributors' machines, in CI
-and on Vercel.
+The build scripts in `packages/icons/build/` and `build/`, and the documentation site, run on
+contributors' machines, in CI and on Vercel.
 
 ## Reporting a vulnerability
 

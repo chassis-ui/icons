@@ -9,8 +9,8 @@
 ## How to check it
 
 <!--
-The quickest way for a reviewer to see it: the icons to look at in `icons/preview.html` or on
-the site, or the check that fails without the change.
+The quickest way for a reviewer to see it: the icons to look at in
+`packages/icons/icons/preview.html` or on the site, or the check that fails without the change.
 -->
 
 ---
@@ -19,11 +19,11 @@ See [CONTRIBUTING.md](https://github.com/chassis-ui/icons/blob/develop/.github/C
 for the details behind each of these.
 
 - [ ] The pull request targets `develop`
-- [ ] **`icons/` rebuilt** with `pnpm icons` and committed, and the pages of the new icons
-      written with `pnpm site:pages`, if `svgs/` or the font templates changed
+- [ ] **`packages/icons/` rebuilt** with `pnpm icons` and committed, and the pages of the new
+      icons written with `pnpm site:pages`, if `source/` or the font templates changed
 - [ ] `pnpm icons:check` and `pnpm icons:lint` pass
-- [ ] **Changeset** (`pnpm changeset`) if `icons/` or `svgs/` changed, naming the icons that
-      are added, renamed or removed; an empty one (`pnpm changeset --empty`) if they changed
-      but nothing is released
+- [ ] **Changeset** (`pnpm changeset`) if the output in `packages/icons/` changed, naming the
+      icons that are added, renamed or removed; an empty one (`pnpm changeset --empty`) if it
+      changed but nothing is released
 - [ ] `pnpm site:lint:eslint`, `pnpm site:lint:stylelint`, `pnpm site:lint:prettier`,
       `pnpm check:astro` and `pnpm site:build` pass, if the site changed

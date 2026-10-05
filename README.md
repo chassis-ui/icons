@@ -9,6 +9,20 @@
 
 This is **not a ready-to-use icon library**. It's a foundation and automation tool that helps you quickly create a custom icon library tailored to your specific design system or application. The icons in `svgs/`, about 500 of them, are examples from the Chassis design system and should be replaced with your own icons.
 
+## Repository Layout
+
+```text
+source/            The SVG files you save, one per icon. The build only reads them
+packages/icons/    The published package: the build and its output
+  svgs/            Output: the optimized SVG files
+  icons/           Output: the icon font, its stylesheets and the SVG sprite
+  build/           The build scripts and the templates of the stylesheets
+packages/site/     The documentation site (Astro)
+build/             Scripts of the repository: site pages, release notes, version references
+```
+
+Run every command from the root of the repository.
+
 ## Features
 
 - 🎯 **Automated Build Pipeline** - Transform your SVG icons into production-ready formats
@@ -45,9 +59,9 @@ Keep the Git repository of the clone. The documentation site reads its fonts and
 ### 2. Customize for Your Project
 
 ```bash
-# Update package.json with your project details
+# Update the package with your project details
 # Change: name, description, repository, homepage, author, keywords
-nano package.json
+nano packages/icons/package.json
 ```
 
 **Key fields to update:**
@@ -62,27 +76,27 @@ nano package.json
 }
 ```
 
-The font is named `chassis-icons` and its classes start with `cx-`. They are not settings yet: see [Configuration](#configuration) for the files that name them. The `chassis` block of `package.json` is not read by the build.
+The font is named `chassis-icons` and its classes start with `cx-`. They are not settings yet: see [Configuration](#configuration) for the files that name them. The `chassis` block of `packages/icons/package.json` is not read by the build.
 
 ### 3. Add Your Icons
 
 ```bash
 # Remove the example Chassis icons
-rm svgs/*.svg
+rm source/*.svg
 
 # Remove their code points, so that your set starts at the first one,
 # and their pages on the documentation site
-rm icons/chassis-icons.json
-rm -r site/content/icons
+rm packages/icons/icons/chassis-icons.json
+rm -r packages/site/content/icons
 
-# Add your design system's SVG icons to the svgs/ directory
+# Add your design system's SVG icons to the source/ directory
 # You can copy them from your design files (Figma, Sketch, Adobe XD, etc.)
-cp /path/to/your/icons/*.svg svgs/
+cp /path/to/your/icons/*.svg source/
 ```
 
-Do both removals before the first build of your set. The build keeps the code point of every icon in `icons/chassis-icons.json` and never removes an entry, so the stylesheets of a set that is built over the old file list the Chassis icons too.
+Do both removals before the first build of your set. The build keeps the code point of every icon in `packages/icons/icons/chassis-icons.json` and never removes an entry, so the stylesheets of a set that is built over the old file list the Chassis icons too.
 
-The build optimizes the files of `svgs/` in place and removes their `fill` attributes. Keep your original artwork elsewhere.
+The build only reads `source/`. It writes the optimized files, without their `fill` attributes, to `packages/icons/svgs/`, and removes a file there whose source is gone.
 
 **Icon Requirements:**
 
@@ -104,7 +118,7 @@ pnpm icons:check
 pnpm site:pages
 
 # Preview your icons
-open icons/preview.html
+open packages/icons/icons/preview.html
 ```
 
 The documentation site draws its own interface with icons of the Chassis set, by name. With another set, those icons are missing from the header and the home page until you change the names.
@@ -113,10 +127,11 @@ The documentation site draws its own interface with icons of the Chassis set, by
 
 ```bash
 # Option A: Copy generated files to your project
-cp -r icons/* /path/to/your-project/assets/icons/
+cp -r packages/icons/icons/* /path/to/your-project/assets/icons/
 
 # Option B: Publish as a private npm package
 pnpm build
+cd packages/icons
 npm publish
 ```
 
@@ -193,7 +208,7 @@ pnpm build
 pnpm icons
 
 # Build individual components
-pnpm icons:svgs      # Optimize SVG files with SVGO
+pnpm icons:svgs      # Optimize the files of source/ into packages/icons/svgs/
 pnpm icons:sprite    # Generate SVG sprite
 pnpm icons:font      # Generate icon fonts (WOFF, WOFF2)
 pnpm icons:font-min  # Minify CSS output
@@ -248,7 +263,7 @@ pnpm site:lint:fusv        # Find unused SASS variables
    - Use 24x24px artboard/frame
    - Flatten shapes and use single color
 
-2. **Add SVG files** to the `svgs/` directory
+2. **Add SVG files** to the `source/` directory
    - Use kebab-case naming (e.g., `arrow-right-outline.svg`)
    - Follow consistent naming convention across your library
 
@@ -260,7 +275,7 @@ pnpm site:lint:fusv        # Find unused SASS variables
    ```
 
 4. **Preview your updated library**
-   - Open `icons/preview.html` in your browser
+   - Open `packages/icons/icons/preview.html` in your browser
    - Or run `pnpm dev` to see them in the documentation site
 
 ### Icon Naming Convention
@@ -292,7 +307,7 @@ Establish a consistent naming pattern for your icons. Common patterns:
 
 After cloning this project for your design system, you should customize these configuration files:
 
-### 1. Package Configuration (`package.json`)
+### 1. Package Configuration (`packages/icons/package.json`)
 
 Update the project metadata:
 
@@ -307,9 +322,9 @@ Update the project metadata:
 }
 ```
 
-The build does not read the `chassis` block of `package.json`. The font name `chassis-icons` and the class prefix `cx` are written in the files below, and in the scripts of `package.json`, `build/` and `.github/workflows/` that name the output files. To change them, change every one of those places. One setting for both is planned.
+The build does not read the `chassis` block of `packages/icons/package.json`. The font name `chassis-icons` and the class prefix `cx` are written in the files below, and in the scripts of `packages/icons/package.json`, `packages/icons/build/`, `build/` and `.github/workflows/` that name the output files. To change them, change every one of those places. One setting for both is planned.
 
-### 2. Icon Font Configuration (`.fantasticonrc.cjs`)
+### 2. Icon Font Configuration (`packages/icons/.fantasticonrc.cjs`)
 
 Customize font generation settings - this is where you define:
 
@@ -319,7 +334,7 @@ Customize font generation settings - this is where you define:
 - Font formats (WOFF, WOFF2)
 - Template customization
 
-### 3. SVG Sprite Configuration (`svg-sprite.json`)
+### 3. SVG Sprite Configuration (`packages/icons/svg-sprite.json`)
 
 Adjust sprite generation settings for your needs:
 
@@ -327,7 +342,7 @@ Adjust sprite generation settings for your needs:
 - Sprite mode (symbol, stack, etc.)
 - ID prefixes
 
-### 4. SVG Optimization (`svgo.config.js`)
+### 4. SVG Optimization (`packages/icons/svgo.config.js`)
 
 Fine-tune SVGO optimization for your icons:
 
@@ -350,15 +365,15 @@ Fine-tune SVGO optimization for your icons:
 
 ### Icon Generation
 
-| Command                | Description                                                                      |
-| ---------------------- | -------------------------------------------------------------------------------- |
-| `pnpm icons`           | Build all icons (SVG → sprite + fonts)                                           |
-| `pnpm icons:svgs`      | Optimize SVG files with SVGO                                                     |
-| `pnpm icons:sprite`    | Generate SVG sprite file                                                         |
-| `pnpm icons:font`      | Generate icon fonts (WOFF/WOFF2)                                                 |
-| `pnpm icons:font-main` | Generate unminified CSS                                                          |
-| `pnpm icons:font-min`  | Minify CSS output                                                                |
-| `pnpm icons:zip`       | Write `chassis-icons-<version>.zip` with the SVG files and the files of `icons/` |
+| Command                | Description                                                                                     |
+| ---------------------- | ----------------------------------------------------------------------------------------------- |
+| `pnpm icons`           | Build all icons (SVG → sprite + fonts)                                                          |
+| `pnpm icons:svgs`      | Optimize the files of `source/` with SVGO into `packages/icons/svgs/`                           |
+| `pnpm icons:sprite`    | Generate SVG sprite file                                                                        |
+| `pnpm icons:font`      | Generate icon fonts (WOFF/WOFF2)                                                                |
+| `pnpm icons:font-main` | Generate unminified CSS                                                                         |
+| `pnpm icons:font-min`  | Minify CSS output                                                                               |
+| `pnpm icons:zip`       | Write `packages/icons/chassis-icons-<version>.zip` with the SVG files and the files of `icons/` |
 
 ### Documentation Site
 
@@ -398,7 +413,7 @@ Fine-tune SVGO optimization for your icons:
 
 ## Output Files
 
-After running `pnpm icons`, you'll find these generated files in the `icons/` directory:
+After running `pnpm icons`, you'll find the optimized SVG files in `packages/icons/svgs/`, and these generated files in `packages/icons/icons/`:
 
 ### Stylesheets
 
@@ -449,7 +464,7 @@ See [CONTRIBUTING.md](.github/CONTRIBUTING.md) for the dev setup, the convention
 2. Create a feature branch from `develop`: `git checkout -b feature/my-feature develop`
 3. Make your changes
 4. Test the build: `pnpm build && pnpm test`
-5. Add a changeset if `icons/` or `svgs/` changed: `pnpm changeset`
+5. Add a changeset if `icons/` or `svgs/` of `packages/icons/` changed: `pnpm changeset`
 6. Commit your changes: `git commit -m "feat: add my feature"`
 7. Push to the branch: `git push origin feature/my-feature`
 8. Open a Pull Request against `develop`
