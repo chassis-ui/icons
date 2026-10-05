@@ -14,7 +14,7 @@ body:
         - An icon, in source/ or packages/icons/svgs/
         - The sprite, the icon font or its CSS and SCSS, in packages/icons/icons/
         - The build, pnpm icons
-        - A check, such as pnpm icons:check
+        - A check, such as pnpm icons:verify
         - The documentation site
     validations:
       required: true

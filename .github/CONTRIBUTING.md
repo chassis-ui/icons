@@ -24,11 +24,16 @@ and the source of the icons at the root.
 - [`packages/icons/`](../packages/icons/) is the package that is published to npm. Its
   `svgs/` holds the optimized SVG files, and its `icons/` the SVG sprite, the icon font and
   its CSS and SCSS. The build writes both folders, both are committed, and both are
-  published. Its `build/` holds the build scripts and the templates of the font's stylesheets.
+  published. `codepoints.json` is the registry of the code points, written by the build and
+  committed. Its `build/` holds the build and the templates of the font's stylesheets, and
+  its `test/` the tests of the build. The `chassis.build` block of its `package.json` is the
+  configuration of the set: the build itself names no font, no prefix and no icon.
 - [`packages/site/`](../packages/site/) holds the Astro documentation site, with one page
   per icon in `packages/site/content/icons/`. It is never published to npm.
 - [`build/`](../build/) holds the scripts of the repository: the pages of the site, the
   release notes and the version references.
+- [`chassis.checks.json`](../chassis.checks.json) lists the icons that the Chassis sites and
+  Chassis React read by name. `pnpm icons:verify` fails when one is missing.
 - [`vendor/assets`](../vendor/) is the chassis-assets submodule, with the fonts and images of
   the site. `pnpm site:build` checks it out at the pinned commit and builds it, which needs
   Git LFS. `pnpm sync-submodules` moves the pin to the latest `app/docs`.
@@ -55,17 +60,20 @@ Branch names aren't templated; name yours descriptively (for example `feat/calen
 
 1. Add, change or remove the SVG file in `source/`. An icon is drawn on a 24 by 24 frame, in one
    color, and is named in kebab-case with its style as the last part: `<name>-outline`,
-   `<name>-solid` or `<name>-brand`. See "Icon Naming Convention" in the README.
+   `<name>-solid` or `<name>-brand`. An outline icon comes with its solid one. Run
+   `pnpm icons:lint:source`, which checks all of this.
 2. Run `pnpm icons`. It optimizes the SVG files with SVGO into `packages/icons/svgs/`, and
    writes the sprite, the font and its stylesheets to `packages/icons/icons/`. A new icon gets
-   a code point of its own in `packages/icons/icons/chassis-icons.json`; the code points of
-   the other icons stay as they are.
+   a code point of its own in `packages/icons/codepoints.json`; the code points of the other
+   icons stay as they are. The code point of a removed icon is retired there, and no later
+   icon gets it.
 3. Run `pnpm site:pages`. It writes the page of each new icon to
    `packages/site/content/icons/`, with
    `categories` and `tags` taken from the file name: correct them where they are wrong. Delete
    the page of an icon that you removed.
-4. Run `pnpm icons:check`. It fails when a file of `packages/icons/svgs/` has no entry in the
-   font, or the other way round.
+4. Run `pnpm icons:verify`. It builds into a temporary folder and fails when a committed file
+   is not what the source builds, when an icon lost its code point, or when an icon of
+   `chassis.checks.json` is missing.
 5. Look at the result in `packages/icons/icons/preview.html`, or on the site with `pnpm dev`.
 6. Commit `source/`, `packages/icons/` and the pages together, with a
    [changeset](#changesets).
@@ -74,11 +82,20 @@ Renaming or removing an icon breaks every project that uses it: say so in the ch
 
 ## Changing the build
 
-The scripts in `packages/icons/build/` and `build/` are linted with `pnpm icons:lint`, which
-fails on a warning, and formatted with Prettier: `pnpm lint:prettier` checks the whole
-repository. A change to the font templates in `packages/icons/build/font/`, or to
-`.fantasticonrc.cjs`, `svg-sprite.json` or `svgo.config.js` of `packages/icons/`, changes the
-output: run `pnpm icons` and commit the result with the change.
+The build is `packages/icons/build/cli.js` and the modules beside it:
+`node packages/icons/build/cli.js --help` shows its commands. It is JavaScript with JSDoc
+types, checked with `pnpm icons:typecheck`, linted with `pnpm icons:lint`, which fails on a
+warning, and formatted with Prettier: `pnpm lint:prettier` checks the whole repository.
+
+`pnpm icons:test` runs the tests in `packages/icons/test/`. They build the set of another
+team, the fixture, and compare the result with the golden files; see the
+[README of the tests](../packages/icons/test/README.md). A change that is meant to change the
+output writes the golden files again with `pnpm icons:test:golden`, and changes the output of
+the default set too: run `pnpm icons` and commit both with the change.
+
+No module of the build names a font, a prefix or an icon. What is particular to a set goes
+into the `chassis.build` block of `packages/icons/package.json` or into
+`chassis.checks.json`.
 
 ## Changing the site
 
@@ -108,10 +125,10 @@ CI runs these jobs on every pull request, and on every push to `develop`:
 
 - **Lint**: `pnpm icons:lint`, `pnpm site:lint:eslint`, `pnpm site:lint:stylelint` and
   `pnpm lint:prettier`.
-- **Type Check**: `pnpm check:astro`.
-- **Build**: `pnpm icons`, then `pnpm icons:check`. It fails when the build changes a file of
-  `icons/` or `svgs/` in `packages/icons/`: the committed output is not what the source
-  builds. Run `pnpm icons` and commit the result.
+- **Type Check**: `pnpm icons:typecheck` and `pnpm check:astro`.
+- **Build**: `pnpm icons:lint:source`, `pnpm icons:test` on the Node.js of `.nvmrc` and on
+  Node.js 22, and `pnpm icons:verify`. It fails when the committed output is not what the
+  source builds: run `pnpm icons` and commit the result.
 - **Site**: `pnpm site:build`, then `pnpm site:lint:html` and `pnpm site:lint:vnu`.
 - **Changeset**: a change to `icons/` or `svgs/` of `packages/icons/` has a changeset.
 - **Audit**: `pnpm check:pnpm`.
@@ -143,9 +160,9 @@ once, on `develop`; pushing the same commit to `staging` or `main` doesn't run t
 1. On `develop`, a maintainer runs `pnpm changeset:version`. It removes the changesets, bumps
    the version in `packages/icons/package.json`, writes the entry of
    `packages/icons/CHANGELOG.md`, and copies the version to the badge of `README.md`, to
-   `currentVersion` in `packages/site/config.yml` and to the font templates in
-   `packages/icons/build/font/`, then rebuilds the output, so the headers of its stylesheets
-   name the new version. The maintainer reviews the result, commits it and pushes `develop`.
+   `currentVersion` in `packages/site/config.yml`, then rebuilds the output, so the headers
+   of its stylesheets name the new version. The maintainer reviews the result, commits it and
+   pushes `develop`.
 2. CI runs on that commit. The Changeset job skips the push, since it changes the version.
 3. When CI has passed, the maintainer pushes the same commit to `main`. The ruleset of `main`
    requires the checks `Lint`, `Type Check`, `Build` and `Site` on the commit, and blocks a
@@ -155,7 +172,7 @@ once, on `develop`; pushing the same commit to `staging` or `main` doesn't run t
      workflow stops: a push to `main` without a new version publishes nothing.
    - **Checks Passed** reads the check-runs of the commit by name. It stops unless `Lint`,
      `Type Check`, `Build` and `Site` passed on it.
-   - **Publish** runs `pnpm icons:check`, publishes `@chassis-ui/icons` from `packages/icons/`
+   - **Publish** runs `pnpm icons:verify`, publishes `@chassis-ui/icons` from `packages/icons/`
      with npm trusted publishing and provenance (no npm token), and creates the GitHub release
      `v<version>` with the CHANGELOG entry as its body.
 
