@@ -6,8 +6,8 @@
 
 @font-face {
   font-family: "chassis-icons";
-  src: url("./chassis-icons.woff2?7d23aa5a0a9abe7b603e85fe8bf57c2d") format("woff2"),
-url("./chassis-icons.woff?7d23aa5a0a9abe7b603e85fe8bf57c2d") format("woff");
+  src: url("./chassis-icons.woff2?7d57ae26d1866a28397038466df0fd13") format("woff2"),
+url("./chassis-icons.woff?7d57ae26d1866a28397038466df0fd13") format("woff");
   font-display: block;
 }
 
@@ -333,9 +333,7 @@ url("./chassis-icons.woff?7d23aa5a0a9abe7b603e85fe8bf57c2d") format("woff");
 .cx-question-circle-solid::before { content: "\f240"; }
 .cx-question-outline::before { content: "\f241"; }
 .cx-question-solid::before { content: "\f242"; }
-.cx-road-outline-1::before { content: "\f243"; }
 .cx-road-outline::before { content: "\f244"; }
-.cx-road-solid-1::before { content: "\f245"; }
 .cx-road-solid::before { content: "\f246"; }
 .cx-rotate-left-outline::before { content: "\f247"; }
 .cx-rotate-left-solid::before { content: "\f248"; }
