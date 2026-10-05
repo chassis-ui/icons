@@ -10,7 +10,34 @@ import { readVersion, syncVersionRefs } from '../../../build/sync-version-refs.j
 import { build } from '../build/build.js'
 import { loadConfig } from '../build/config.js'
 import { silentLogger as logger } from '../build/logger.js'
-import { copyFixture, listFiles, temporaryDir } from './helpers.js'
+import { copyFixture, listFiles, packageDir, temporaryDir } from './helpers.js'
+
+describe('the scripts of the root', () => {
+  const repositoryDir = path.resolve(packageDir, '../..')
+  const scripts = (/** @type {string} */ dir) =>
+    JSON.parse(fs.readFileSync(path.join(repositoryDir, dir, 'package.json'), 'utf8')).scripts
+
+  // `pnpm --filter <package> init` is `pnpm init`, a command of pnpm, and not the script
+  // `init` of the package. With `run`, a script is never taken for a command.
+  it('run a script of a package by its name, and the package has it', () => {
+    const delegated = Object.entries(scripts('.')).flatMap(([name, command]) =>
+      [...command.matchAll(/pnpm --filter (\S+) (\S+)(?: (\S+))?/g)].map(
+        ([, filter, verb, script]) => ({ name, filter, verb, script })
+      )
+    )
+
+    expect(delegated.length).toBeGreaterThan(0)
+
+    for (const { name, filter, verb, script } of delegated) {
+      expect(filter, name).toMatch(/^\.\/packages\/[a-z-]+$/)
+      expect(['run', 'exec'], `${name} has to run a script with "run"`).toContain(verb)
+
+      if (verb === 'run') {
+        expect(Object.keys(scripts(filter)), name).toContain(script)
+      }
+    }
+  })
+})
 
 describe('the changelog entry of a changeset', () => {
   it('is its text as a list item, without a commit hash', () => {

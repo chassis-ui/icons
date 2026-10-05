@@ -2,6 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { main } from '../build/cli.js'
+import { loadConfig } from '../build/config.js'
 import { listIcons } from '../build/names.js'
 import { fixtureDir, listFiles, packageDir, recordingConsole, temporaryDir } from './helpers.js'
 
@@ -30,10 +31,8 @@ function cloneRepository() {
  * @returns {string} Its source folder
  */
 function sourceOf(dir) {
-  const { source } = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8')).chassis
-    .build
-
-  return path.resolve(dir, source)
+  // With the default of the setting, when the configuration leaves it out
+  return loadConfig(dir).sourceDir
 }
 
 describe('the journey of a team that adopts the repository', () => {
