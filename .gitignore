@@ -8,8 +8,8 @@ chassis-icons-*.tgz
 # Site
 /_site/
 .astro
-/site/dist
-/site/public
+/packages/site/dist
+/packages/site/public
 
 # OS
 ._*

@@ -5,13 +5,14 @@
  *
  * Copies the version of @chassis-ui/icons into the places that show it and that
  * `changeset version` does not update: the badge of README.md, `currentVersion` of
- * site/config.yml, and the header of the font templates in build/font/. When the header of
- * icons/chassis-icons.css then names another version, it rebuilds the files of icons/ with
- * `pnpm icons`. A version step that bumps nothing (only empty changesets) leaves them as
- * they are.
+ * packages/site/config.yml, and the header of the font templates in
+ * packages/icons/build/font/. When the header of packages/icons/icons/chassis-icons.css then
+ * names another version, it rebuilds the output of the package with `pnpm icons`. A version
+ * step that bumps nothing (only empty changesets) leaves them as they are.
  *
- * Runs as part of `pnpm changeset:version`, after `changeset version` has bumped package.json,
- * which is the source of the version.
+ * Runs as part of `pnpm changeset:version`, from the root of the repository, after
+ * `changeset version` has bumped packages/icons/package.json, which is the source of the
+ * version.
  *
  * Copyright 2025-2026 Ozgur Gunes
  * Licensed under MIT
@@ -21,6 +22,7 @@ import { execFileSync } from 'node:child_process'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
+const PACKAGE = 'packages/icons'
 const SEMVER = String.raw`\d+\.\d+\.\d+(?:-[0-9A-Za-z-.]+)?`
 const SEMVER_RE = new RegExp(`^${SEMVER}$`)
 const HEADER_RE = new RegExp(`Chassis Icons v(${SEMVER})`)
@@ -39,27 +41,27 @@ const REFERENCES = [
     format: (version) => version.replaceAll('-', '--')
   },
   {
-    file: 'site/config.yml',
+    file: 'packages/site/config.yml',
     pattern: new RegExp(`^(currentVersion:\\s*")${SEMVER}(")`, 'm'),
     format: (version) => version
   },
   {
-    file: 'build/font/css.hbs',
+    file: `${PACKAGE}/build/font/css.hbs`,
     pattern: new RegExp(`(Chassis Icons v)${SEMVER}()`),
     format: (version) => version
   },
   {
-    file: 'build/font/scss.hbs',
+    file: `${PACKAGE}/build/font/scss.hbs`,
     pattern: new RegExp(`(Chassis Icons v)${SEMVER}()`),
     format: (version) => version
   }
 ]
 
 async function readVersion() {
-  const pkg = JSON.parse(await fs.readFile(path.resolve('package.json'), 'utf8'))
+  const pkg = JSON.parse(await fs.readFile(path.join(PACKAGE, 'package.json'), 'utf8'))
 
   if (!pkg.version || !SEMVER_RE.test(pkg.version)) {
-    console.error(`❌ Invalid or missing version in package.json: "${pkg.version}"`)
+    console.error(`❌ Invalid or missing version in ${PACKAGE}/package.json: "${pkg.version}"`)
     process.exit(1)
   }
 
@@ -95,18 +97,19 @@ async function syncReference({ file, pattern, format }, version) {
 }
 
 /**
- * Rebuilds icons/ when the header of its stylesheet names another version
+ * Rebuilds the output of the package when the header of its stylesheet names another version
  * @param {string} version - The package version
- * @returns {Promise<boolean>} True if icons/ was rebuilt
+ * @returns {Promise<boolean>} True if the output was rebuilt
  */
 async function syncIcons(version) {
-  const match = HEADER_RE.exec(await fs.readFile('icons/chassis-icons.css', 'utf8'))
+  const stylesheet = `${PACKAGE}/icons/chassis-icons.css`
+  const match = HEADER_RE.exec(await fs.readFile(stylesheet, 'utf8'))
 
   if (match && match[1] === version) {
     return false
   }
 
-  console.log('🔨 icons/chassis-icons.css names another version, rebuilding icons/')
+  console.log(`🔨 ${stylesheet} names another version, rebuilding the output`)
   execFileSync('pnpm', ['icons'], { stdio: 'inherit' })
   return true
 }

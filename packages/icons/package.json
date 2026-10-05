@@ -1,0 +1,70 @@
+{
+  "name": "@chassis-ui/icons",
+  "version": "0.3.1",
+  "type": "module",
+  "description": "Comprehensive SVG icon library for Chassis Design System. Features optimized icons with automated font generation, sprite creation, and multi-format distribution for web and mobile applications.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chassis-ui/icons.git",
+    "directory": "packages/icons"
+  },
+  "bugs": {
+    "url": "https://github.com/chassis-ui/icons/issues"
+  },
+  "homepage": "https://chassis-ui.com",
+  "author": "Ozgur Gunes <o.gunes@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "chassis",
+    "design system",
+    "icons",
+    "icon font",
+    "svg",
+    "svg sprite",
+    "fantasticon",
+    "icon generator"
+  ],
+  "main": "icons/chassis-icons.css",
+  "style": "icons/chassis-icons.css",
+  "sass": "icons/chassis-icons.scss",
+  "files": [
+    "icons/*.{woff,woff2,css,scss,svg,json}",
+    "svgs/*.svg",
+    "!.DS_Store"
+  ],
+  "chassis": {
+    "defaults": {
+      "iconPrefix": "chassis-icon",
+      "iconFormat": "woff2"
+    },
+    "icons": {
+      "sprite": "chassis-icons.svg",
+      "font": "chassis-icons",
+      "preview": "preview.html"
+    }
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "rm -rf icons/*.{css,scss,woff,woff2,svg} && pnpm svgs && pnpm sprite && pnpm font",
+    "check": "node build/check-icons.js",
+    "font": "pnpm font-main && pnpm font-min",
+    "font-main": "node build/build-icons.js",
+    "font-min": "cleancss -O1 --format breakWith=lf --with-rebase --output icons/chassis-icons.min.css icons/chassis-icons.css",
+    "sprite": "svg-sprite --config svg-sprite.json --log=info \"svgs/*.svg\"",
+    "svgs": "node build/build-svgs.js",
+    "zip": "node build/zip-icons.js"
+  },
+  "devDependencies": {
+    "@twbs/fantasticon": "^3.1.0",
+    "clean-css-cli": "^5.6.3",
+    "picocolors": "^1.1.1",
+    "svg-sprite": "3.0.0-rc3",
+    "svgo": "^3.3.3"
+  }
+}

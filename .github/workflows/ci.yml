@@ -82,7 +82,7 @@ jobs:
       - name: Astro check
         run: pnpm check:astro
 
-  # The package: the SVG files, the sprite and the icon font, built from svgs/
+  # The package: the SVG files, the sprite and the icon font, built from source/
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -111,21 +111,22 @@ jobs:
       - name: Verify the files of the package
         run: |
           for FILE in chassis-icons.css chassis-icons.min.css chassis-icons.scss chassis-icons.json chassis-icons.svg chassis-icons.woff chassis-icons.woff2; do
-            if [ ! -s "icons/$FILE" ]; then
-              echo "::error::icons/$FILE was not generated"
+            if [ ! -s "packages/icons/icons/$FILE" ]; then
+              echo "::error::packages/icons/icons/$FILE was not generated"
               exit 1
             fi
           done
 
-      # icons/ and svgs/ are committed, and the site, Vercel and chassis-assets read the
-      # committed files. A change to svgs/ or to the build that was committed without its
-      # output shows up here as a changed, a new or a deleted file.
+      # icons/ and svgs/ of the package are committed, and the site, Vercel and chassis-assets
+      # read the committed files. A change to source/ or to the build that was committed
+      # without its output shows up here as a changed, a new or a deleted file.
       - name: Verify that the committed output is what the build writes
+        working-directory: packages/icons
         run: |
           if [ -n "$(git status --porcelain -- icons svgs)" ]; then
             git status --short -- icons svgs
             git diff --stat -- icons svgs
-            echo "::error::icons/ and svgs/ differ from the output of the build. Run 'pnpm icons' and commit the result."
+            echo "::error::icons/ and svgs/ of packages/icons differ from the output of the build. Run 'pnpm icons' and commit the result."
             exit 1
           fi
 
@@ -134,7 +135,7 @@ jobs:
         run: pnpm icons:check
 
   # The same build as Vercel: checks out and builds vendor/assets, then Astro and Pagefind.
-  # The site reads the committed files of icons/ and svgs/.
+  # The site reads the committed files of packages/icons.
   site:
     name: Site
     runs-on: ubuntu-latest
@@ -167,7 +168,7 @@ jobs:
       - name: Validate HTML with the Nu Html Checker
         run: pnpm site:lint:vnu
 
-  # A change to icons/ or svgs/, the files of the package, needs a changeset
+  # A change to icons/ or svgs/ of packages/icons, the files of the package, needs a changeset
   # (changedFilePatterns in .changeset/config.json); `pnpm changeset --empty` adds one that
   # releases nothing. A pull request is compared with its base branch, a push to develop with
   # the tip it replaced. The version commit consumes the changesets, so a push that changes
@@ -212,8 +213,9 @@ jobs:
               exit 0
             fi
 
-            OLD_VERSION=$(git show "$BEFORE:package.json" | node -p 'JSON.parse(require("node:fs").readFileSync(0, "utf8")).version')
-            NEW_VERSION=$(node -p 'require("./package.json").version')
+            # The commit before the workspace layout has the manifest at the root
+            OLD_VERSION=$( (git show "$BEFORE:packages/icons/package.json" 2>/dev/null || git show "$BEFORE:package.json") | node -p 'JSON.parse(require("node:fs").readFileSync(0, "utf8")).version')
+            NEW_VERSION=$(node -p 'require("./packages/icons/package.json").version')
             if [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
               echo "The push changes the version ($OLD_VERSION → $NEW_VERSION): a version step, which consumes changesets"
               exit 0

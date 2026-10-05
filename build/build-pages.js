@@ -3,7 +3,7 @@
 /*!
  * Page Generator Script
  *
- * Generates MDX pages for icon documentation from SVG files.
+ * Generates the MDX pages of the documentation site, one per SVG file of the package.
  *
  * Usage:
  *   node build-pages.js [--clean] [--verbose]
@@ -25,8 +25,8 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // Configuration
-const ICONS_DIR = path.join(__dirname, '../svgs/')
-const PAGES_DIR = path.join(__dirname, '../site/content/icons/')
+const ICONS_DIR = path.join(__dirname, '../packages/icons/svgs/')
+const PAGES_DIR = path.join(__dirname, '../packages/site/content/icons/')
 
 // Command line arguments
 const VERBOSE = process.argv.includes('--verbose')

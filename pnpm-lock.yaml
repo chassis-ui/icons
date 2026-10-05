@@ -8,57 +8,12 @@ importers:
 
   .:
     devDependencies:
-      '@astrojs/check':
-        specifier: ^0.9.10
-        version: 0.9.10(prettier-plugin-astro@0.14.1)(prettier@3.9.4)(typescript@6.0.3)
-      '@astrojs/markdown-remark':
-        specifier: ^7.3.1
-        version: 7.3.1
-      '@astrojs/mdx':
-        specifier: ^8.0.2
-        version: 8.0.2(@astrojs/markdown-remark@7.3.1)(@astrojs/markdown-satteri@0.4.2)(astro@7.3.5(@astrojs/markdown-remark@7.3.1)(@types/node@24.13.2)(sass@1.101.0)(yaml@2.9.0))
-      '@astrojs/sitemap':
-        specifier: ^3.7.4
-        version: 3.7.4
       '@changesets/cli':
         specifier: ^3.0.3
         version: 3.0.3
-      '@chassis-ui/css':
-        specifier: ^0.5.2
-        version: 0.5.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)
-      '@chassis-ui/docs':
-        specifier: ^0.6.3
-        version: 0.6.3(@astrojs/markdown-remark@7.3.1)(@chassis-ui/css@0.5.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0))(@pagefind/component-ui@1.5.2)(@shikijs/transformers@4.3.1)(astro@7.3.5(@astrojs/markdown-remark@7.3.1)(@types/node@24.13.2)(sass@1.101.0)(yaml@2.9.0))(html-validate@11.5.5)(htmlparser2@12.0.0)(rehype-autolink-headings@7.1.0)(sass@1.101.0)(shiki@4.3.1)(vnu-jar@26.7.3)
-      '@chassis-ui/tokens':
-        specifier: ^0.6.0
-        version: 0.6.0
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.6.0)
-      '@floating-ui/dom':
-        specifier: ^1.7.6
-        version: 1.7.6
-      '@pagefind/component-ui':
-        specifier: ^1.5.2
-        version: 1.5.2
-      '@shikijs/transformers':
-        specifier: ^4.3.1
-        version: 4.3.1
-      '@stackblitz/sdk':
-        specifier: ^1.11.1
-        version: 1.11.1
-      '@twbs/fantasticon':
-        specifier: ^3.1.0
-        version: 3.1.0
-      astro:
-        specifier: ^7.3.5
-        version: 7.3.5(@astrojs/markdown-remark@7.3.1)(@types/node@24.13.2)(sass@1.101.0)(yaml@2.9.0)
-      autoprefixer:
-        specifier: ^10.5.2
-        version: 10.5.2(postcss@8.5.16)
-      clean-css-cli:
-        specifier: ^5.6.3
-        version: 5.6.3
       eslint:
         specifier: ^10.6.0
         version: 10.6.0
@@ -86,57 +41,114 @@ importers:
       globals:
         specifier: ^17.7.0
         version: 17.7.0
-      html-validate:
-        specifier: ^11.5.5
-        version: 11.5.5
-      htmlparser2:
-        specifier: ^12.0.0
-        version: 12.0.0
       pagefind:
         specifier: ^1.5.2
         version: 1.5.2
       picocolors:
         specifier: ^1.1.1
         version: 1.1.1
-      postcss:
-        specifier: ^8.5.16
-        version: 8.5.16
-      postcss-prefix-custom-properties:
-        specifier: ^0.1.0
-        version: 0.1.0(postcss@8.5.16)
       prettier:
         specifier: ^3.9.4
         version: 3.9.4
       prettier-plugin-astro:
         specifier: ^0.14.1
         version: 0.14.1
-      rehype-autolink-headings:
-        specifier: ^7.1.0
-        version: 7.1.0
-      sass:
-        specifier: ^1.101.0
-        version: 1.101.0
       stylelint:
         specifier: ^16.26.1
         version: 16.26.1(typescript@6.0.3)
       stylelint-config-twbs-bootstrap:
         specifier: ^16.1.0
         version: 16.1.0(postcss@8.5.16)(stylelint@16.26.1(typescript@6.0.3))
-      svg-sprite:
-        specifier: 3.0.0-rc3
-        version: 3.0.0-rc3
-      svgo:
-        specifier: ^3.3.3
-        version: 3.3.3
-      tinycolor2:
-        specifier: ^1.6.0
-        version: 1.6.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
       typescript-eslint:
         specifier: ^8.62.1
         version: 8.62.1(eslint@10.6.0)(typescript@6.0.3)
+
+  packages/icons:
+    devDependencies:
+      '@twbs/fantasticon':
+        specifier: ^3.1.0
+        version: 3.1.0
+      clean-css-cli:
+        specifier: ^5.6.3
+        version: 5.6.3
+      picocolors:
+        specifier: ^1.1.1
+        version: 1.1.1
+      svg-sprite:
+        specifier: 3.0.0-rc3
+        version: 3.0.0-rc3
+      svgo:
+        specifier: ^3.3.3
+        version: 3.3.3
+
+  packages/site:
+    devDependencies:
+      '@astrojs/check':
+        specifier: ^0.9.10
+        version: 0.9.10(prettier-plugin-astro@0.14.1)(prettier@3.9.4)(typescript@6.0.3)
+      '@astrojs/markdown-remark':
+        specifier: ^7.3.1
+        version: 7.3.1
+      '@astrojs/mdx':
+        specifier: ^8.0.2
+        version: 8.0.2(@astrojs/markdown-remark@7.3.1)(@astrojs/markdown-satteri@0.4.2)(astro@7.3.5(@astrojs/markdown-remark@7.3.1)(@types/node@24.13.2)(sass@1.101.0)(yaml@2.9.0))
+      '@astrojs/sitemap':
+        specifier: ^3.7.4
+        version: 3.7.4
+      '@chassis-ui/css':
+        specifier: ^0.5.2
+        version: 0.5.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)
+      '@chassis-ui/docs':
+        specifier: ^0.6.3
+        version: 0.6.3(@astrojs/markdown-remark@7.3.1)(@chassis-ui/css@0.5.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0))(@pagefind/component-ui@1.5.2)(@shikijs/transformers@4.3.1)(astro@7.3.5(@astrojs/markdown-remark@7.3.1)(@types/node@24.13.2)(sass@1.101.0)(yaml@2.9.0))(html-validate@11.5.5)(htmlparser2@12.0.0)(rehype-autolink-headings@7.1.0)(sass@1.101.0)(shiki@4.3.1)(vnu-jar@26.7.3)
+      '@chassis-ui/icons':
+        specifier: workspace:*
+        version: link:../icons
+      '@chassis-ui/tokens':
+        specifier: ^0.6.0
+        version: 0.6.0
+      '@floating-ui/dom':
+        specifier: ^1.7.6
+        version: 1.7.6
+      '@pagefind/component-ui':
+        specifier: ^1.5.2
+        version: 1.5.2
+      '@shikijs/transformers':
+        specifier: ^4.3.1
+        version: 4.3.1
+      '@stackblitz/sdk':
+        specifier: ^1.11.1
+        version: 1.11.1
+      astro:
+        specifier: ^7.3.5
+        version: 7.3.5(@astrojs/markdown-remark@7.3.1)(@types/node@24.13.2)(sass@1.101.0)(yaml@2.9.0)
+      autoprefixer:
+        specifier: ^10.5.2
+        version: 10.5.2(postcss@8.5.16)
+      html-validate:
+        specifier: ^11.5.5
+        version: 11.5.5
+      htmlparser2:
+        specifier: ^12.0.0
+        version: 12.0.0
+      postcss:
+        specifier: ^8.5.16
+        version: 8.5.16
+      postcss-prefix-custom-properties:
+        specifier: ^0.1.0
+        version: 0.1.0(postcss@8.5.16)
+      rehype-autolink-headings:
+        specifier: ^7.1.0
+        version: 7.1.0
+      sass:
+        specifier: ^1.101.0
+        version: 1.101.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
       vanilla-calendar-pro:
         specifier: ^3.1.0
         version: 3.1.0
@@ -973,12 +985,6 @@ packages:
   '@mdx-js/mdx@3.1.1':
     resolution: {integrity: sha512-f6ZO2ifpwAQIpzGWaBQT2TXxPv6z3RBzQKpVftEWN78Vl/YweF1uwussDx8ECAXVtr3Rs89fKyG9YlzUs9DyGQ==}
 
-  '@napi-rs/wasm-runtime@1.1.6':
-    resolution: {integrity: sha512-ZLv/JdUfkvOy9eCnnBaGfiO+XimbjebAeO+MRQqD/B+FR1tnRN0tpKSJHRbE8sFfS6aqsXZ67TQjfwfsxULVbg==}
-    peerDependencies:
-      '@emnapi/core': ^1.7.1
-      '@emnapi/runtime': ^1.7.1
-
   '@napi-rs/wasm-runtime@1.2.4':
     resolution: {integrity: sha512-AJxoUD2/15ESHbvpcyjU274nsAPLuOtPHCk0vKJM5pj//Fg/B1FXNWjPnXTT9PymCYYiHo4zPj0ZomXBKhoy7g==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=23.5.0}
@@ -1411,9 +1417,6 @@ packages:
   '@types/estree@1.0.9':
     resolution: {integrity: sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==}
 
-  '@types/hast@3.0.4':
-    resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
-
   '@types/hast@3.0.5':
     resolution: {integrity: sha512-rp/ezSWaD1m44dPKICGhiskI13nVr7qTloFwDa/IYkhhf5nzwP+zIQcIJh3WIFSBOy/H1PzB40jPjMDksN4F+g==}
 
@@ -1541,10 +1544,12 @@ packages:
   '@xmldom/xmldom@0.8.13':
     resolution: {integrity: sha512-KRYzxepc14G/CEpEGc3Yn+JKaAeT63smlDr+vjB8jRfgTBBI9wRj/nkQEO+ucV8p8I9bfKLWp37uHgFrbntPvw==}
     engines: {node: '>=10.0.0'}
+    deprecated: this version has critical issues, please update to the latest version
 
   '@xmldom/xmldom@0.9.10':
     resolution: {integrity: sha512-A9gOqLdi6cV4ibazAjcQufGj0B1y/vDqYrcuP6d/6x8P27gRS8643Dj9o1dEKtB6O7fwxb2FgBmJS2mX7gpvdw==}
     engines: {node: '>=14.6'}
+    deprecated: this version has critical issues, please update to the latest version
 
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==}
@@ -4015,10 +4020,6 @@ packages:
   satteri@0.10.5:
     resolution: {integrity: sha512-Ao1LKpAEa9Wdg0otgbVKViZHEq9ebdXe4DMrp3s9vQAU0HNIuHnFEuMuOcm0ZIXyV0Yzxj91NvhLpvXZJO/5ZQ==}
 
-  sax@1.6.0:
-    resolution: {integrity: sha512-6R3J5M4AcbtLUdZmRv2SygeVaM7IhrLXu9BmnOGmmACak8fiUtOsYNWUS4uK7upbmHIBbLBeFeI//477BKLBzA==}
-    engines: {node: '>=11.0.0'}
-
   sax@1.6.1:
     resolution: {integrity: sha512-42tBVwLWnaQvW5zc4HbZrTuWccECCZfBi92FDuwtqxasH+JbPB3/FOKb1m222K42R4WxuxzzMsTswfzgtSu64Q==}
     engines: {node: '>=11.0.0'}
@@ -4121,10 +4122,6 @@ packages:
   smart-buffer@4.2.0:
     resolution: {integrity: sha512-94hK0Hh8rPqQl2xXc3HsaBoOXKV20MToPkcXvwbISWLEs+64sBq5kFgn2kJDHb1Pry9yrP0dxrCI9RRci7RXKg==}
     engines: {node: '>= 6.0.0', npm: '>= 3.0.0'}
-
-  smol-toml@1.7.0:
-    resolution: {integrity: sha512-aqVvWoyO21L23mb+drl4RmMXbf6N7FdHjAhTRA9ZBL7apWBgfWC16KjrASI+1p9GAroljyMHj6fK67i0UiTNvQ==}
-    engines: {node: '>= 18'}
 
   smol-toml@1.9.0:
     resolution: {integrity: sha512-hpd+HLON7HdZXqYchMM/+LaTTbdK0AU3NngIJ4KVyWbY9bfQqdL9cD+4yf6dUoU2Ap4VsU0JkQi6FxAI1B2mXQ==}
@@ -4365,13 +4362,6 @@ packages:
   tinyclip@1.0.3:
     resolution: {integrity: sha512-nTv2raKFMzGG6JJp0lpNDsRPdfFE6UHlu2rVEjXo8vkx1ZS3LW2CVXqIaLu8xZlu+6tbFs9V58Qc/Jmk/Ii7wA==}
     engines: {node: ^16.14.0 || >= 17.3.0}
-
-  tinycolor2@1.6.0:
-    resolution: {integrity: sha512-XPaBkWQJdsf3pLKJV9p4qN/S+fm2Oj8AIPo1BTUhg5oxkvm9+SVEGFdhyOz7tTdUTfvxMiAs4sp6/eZO2Ew+pw==}
-
-  tinyexec@1.2.4:
-    resolution: {integrity: sha512-SHf/r48b7vOrjve9PxJo3MN5v5yuyjHvdUcrQffT3WXMUfnGmHDVbC4k3sHJaJTgZCwpUplIaAo5ANtMyp3YHg==}
-    engines: {node: '>=18'}
 
   tinyexec@1.3.1:
     resolution: {integrity: sha512-GCvB3aoys96IuDFBMcTB46JOR6mdMtAToqwiW8JlWhsoh1mhHi/xn9ss/Dg7N555GiJyEt2qzoG/NHCwM6h1EA==}
@@ -4892,9 +4882,6 @@ packages:
     resolution: {integrity: sha512-4LCcse/U2MHZ63HAJVE+v71o7yOdIe4cZ70Wpf8D/IyjDKYQLV5GD46B+hSTjJsvV5PztjvHoU580EftxjDZFQ==}
     engines: {node: '>=12.20'}
 
-  zod@4.4.3:
-    resolution: {integrity: sha512-ytENFjIJFl2UwYglde2jchW2Hwm4GJFLDiSXWdTrJQBIN9Fcyp7n4DhxJEiWNAJMV1/BqWfW/kkg71UDcHJyTQ==}
-
   zod@4.6.5:
     resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
 
@@ -4971,20 +4958,20 @@ snapshots:
 
   '@astrojs/internal-helpers@0.11.0':
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/mdast': 4.0.4
-      js-yaml: 4.3.0
-      picomatch: 4.0.5
+      js-yaml: 4.3.2
+      picomatch: 4.0.7
       retext-smartypants: 6.2.0
       shiki: 4.3.1
-      smol-toml: 1.7.0
+      smol-toml: 1.9.0
       unified: 11.0.5
 
   '@astrojs/language-server@2.16.11(prettier-plugin-astro@0.14.1)(prettier@3.9.4)(typescript@6.0.3)':
     dependencies:
       '@astrojs/compiler': 2.13.1
       '@astrojs/yaml2ts': 0.2.4
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
       '@volar/kit': 2.4.28(typescript@6.0.3)
       '@volar/language-core': 2.4.28
       '@volar/language-server': 2.4.28
@@ -5056,14 +5043,14 @@ snapshots:
   '@astrojs/sitemap@3.7.4':
     dependencies:
       sitemap: 9.0.1
-      zod: 4.4.3
+      zod: 4.6.5
 
   '@astrojs/telemetry@3.3.3':
     dependencies:
       ci-info: 4.4.0
       dset: 3.1.4
       is-docker: 4.0.0
-      package-manager-detector: 1.7.0
+      package-manager-detector: 1.8.0
 
   '@astrojs/yaml2ts@0.2.4':
     dependencies:
@@ -5661,7 +5648,7 @@ snapshots:
     dependencies:
       '@types/estree': 1.0.9
       '@types/estree-jsx': 1.0.5
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/mdx': 2.0.14
       acorn: 8.17.0
       collapse-white-space: 2.1.0
@@ -5686,13 +5673,6 @@ snapshots:
       vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
-
-  '@napi-rs/wasm-runtime@1.1.6(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)':
-    dependencies:
-      '@emnapi/core': 1.11.1
-      '@emnapi/runtime': 1.11.1
-      '@tybys/wasm-util': 0.10.3
-    optional: true
 
   '@napi-rs/wasm-runtime@1.2.4(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)':
     dependencies:
@@ -5804,7 +5784,7 @@ snapshots:
       detect-libc: 2.1.2
       is-glob: 4.0.3
       node-addon-api: 7.1.1
-      picomatch: 4.0.5
+      picomatch: 4.0.7
     optionalDependencies:
       '@parcel/watcher-android-arm64': 2.5.6
       '@parcel/watcher-darwin-arm64': 2.5.6
@@ -5916,7 +5896,7 @@ snapshots:
     dependencies:
       '@emnapi/core': 1.11.1
       '@emnapi/runtime': 1.11.1
-      '@napi-rs/wasm-runtime': 1.1.6(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)
+      '@napi-rs/wasm-runtime': 1.2.4(@emnapi/core@1.11.1)(@emnapi/runtime@1.11.1)
     optional: true
 
   '@rolldown/binding-win32-arm64-msvc@1.1.4':
@@ -5934,7 +5914,7 @@ snapshots:
       '@shikijs/primitive': 4.3.1
       '@shikijs/types': 4.3.1
       '@shikijs/vscode-textmate': 10.0.2
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       hast-util-to-html: 9.0.5
 
   '@shikijs/engine-javascript@4.3.1':
@@ -5956,7 +5936,7 @@ snapshots:
     dependencies:
       '@shikijs/types': 4.3.1
       '@shikijs/vscode-textmate': 10.0.2
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
 
   '@shikijs/themes@4.3.1':
     dependencies:
@@ -5970,7 +5950,7 @@ snapshots:
   '@shikijs/types@4.3.1':
     dependencies:
       '@shikijs/vscode-textmate': 10.0.2
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
 
   '@shikijs/vscode-textmate@10.0.2': {}
 
@@ -6038,10 +6018,6 @@ snapshots:
       '@types/estree': 1.0.9
 
   '@types/estree@1.0.9': {}
-
-  '@types/hast@3.0.4':
-    dependencies:
-      '@types/unist': 3.0.3
 
   '@types/hast@3.0.5':
     dependencies:
@@ -6416,14 +6392,14 @@ snapshots:
       obug: 3.0.0
       p-limit: 7.3.0
       p-queue: 9.3.1
-      package-manager-detector: 1.7.0
+      package-manager-detector: 1.8.0
       piccolore: 0.1.3
-      picomatch: 4.0.5
+      picomatch: 4.0.7
       shiki: 4.3.1
       smol-toml: 1.9.0
       svgo: 4.1.0
       tinyclip: 1.0.3
-      tinyexec: 1.2.4
+      tinyexec: 1.3.1
       tinyglobby: 0.2.17
       ultrahtml: 1.6.0
       unifont: 0.7.5
@@ -7618,7 +7594,7 @@ snapshots:
 
   hast-util-from-html@2.0.3:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       devlop: 1.1.0
       hast-util-from-parse5: 8.0.3
       parse5: 7.3.0
@@ -7627,7 +7603,7 @@ snapshots:
 
   hast-util-from-parse5@8.0.3:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/unist': 3.0.3
       devlop: 1.1.0
       hastscript: 9.0.1
@@ -7638,11 +7614,11 @@ snapshots:
 
   hast-util-heading-rank@3.0.0:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
 
   hast-util-is-element@3.0.0:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
 
   hast-util-parse-selector@4.0.0:
     dependencies:
@@ -7650,7 +7626,7 @@ snapshots:
 
   hast-util-raw@9.1.0:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/unist': 3.0.3
       '@ungap/structured-clone': 1.3.2
       hast-util-from-parse5: 8.0.3
@@ -7693,7 +7669,7 @@ snapshots:
 
   hast-util-to-html@9.0.5:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/unist': 3.0.3
       ccount: 2.0.1
       comma-separated-tokens: 2.0.3
@@ -7708,7 +7684,7 @@ snapshots:
   hast-util-to-jsx-runtime@2.3.6:
     dependencies:
       '@types/estree': 1.0.9
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/unist': 3.0.3
       comma-separated-tokens: 2.0.3
       devlop: 1.1.0
@@ -7737,14 +7713,14 @@ snapshots:
 
   hast-util-to-text@4.0.2:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/unist': 3.0.3
       hast-util-is-element: 3.0.0
       unist-util-find-after: 5.0.0
 
   hast-util-whitespace@3.0.0:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
 
   hastscript@9.0.1:
     dependencies:
@@ -8341,7 +8317,7 @@ snapshots:
 
   mdast-util-to-hast@13.2.1:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/mdast': 4.0.4
       '@ungap/structured-clone': 1.3.2
       devlop: 1.1.0
@@ -9123,7 +9099,7 @@ snapshots:
 
   rehype-autolink-headings@7.1.0:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@ungap/structured-clone': 1.3.2
       hast-util-heading-rank: 3.0.0
       hast-util-is-element: 3.0.0
@@ -9132,21 +9108,21 @@ snapshots:
 
   rehype-raw@7.0.0:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       hast-util-raw: 9.1.0
       vfile: 6.0.3
 
   rehype-recma@1.0.0:
     dependencies:
       '@types/estree': 1.0.9
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       hast-util-to-estree: 3.1.3
     transitivePeerDependencies:
       - supports-color
 
   rehype-stringify@10.0.1:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       hast-util-to-html: 9.0.5
       unified: 11.0.5
 
@@ -9187,7 +9163,7 @@ snapshots:
 
   remark-rehype@11.1.2:
     dependencies:
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
       '@types/mdast': 4.0.4
       mdast-util-to-hast: 13.2.1
       unified: 11.0.5
@@ -9357,8 +9333,6 @@ snapshots:
       '@bruits/satteri-win32-arm64-msvc': 0.10.5
       '@bruits/satteri-win32-x64-msvc': 0.10.5
 
-  sax@1.6.0: {}
-
   sax@1.6.1: {}
 
   select@1.1.2: {}
@@ -9442,7 +9416,7 @@ snapshots:
       '@shikijs/themes': 4.3.1
       '@shikijs/types': 4.3.1
       '@shikijs/vscode-textmate': 10.0.2
-      '@types/hast': 3.0.4
+      '@types/hast': 3.0.5
 
   side-channel-list@1.0.1:
     dependencies:
@@ -9483,7 +9457,7 @@ snapshots:
       '@types/node': 24.13.2
       '@types/sax': 1.2.7
       arg: 5.0.2
-      sax: 1.6.0
+      sax: 1.6.1
 
   slash@3.0.0: {}
 
@@ -9496,8 +9470,6 @@ snapshots:
   slugify@1.6.9: {}
 
   smart-buffer@4.2.0: {}
-
-  smol-toml@1.7.0: {}
 
   smol-toml@1.9.0: {}
 
@@ -9753,7 +9725,7 @@ snapshots:
       cssom: 0.5.0
       glob: 7.2.3
       import-lazy: 4.0.0
-      js-yaml: 4.3.0
+      js-yaml: 4.3.2
       lodash.escape: 4.0.1
       lodash.merge: 4.6.2
       mustache: 4.2.0
@@ -9782,7 +9754,7 @@ snapshots:
     dependencies:
       commander: 9.5.0
       glob: 8.1.0
-      sax: 1.6.0
+      sax: 1.6.1
       svg-pathdata: 6.0.3
 
   svgo@3.3.3:
@@ -9793,7 +9765,7 @@ snapshots:
       css-what: 6.2.2
       csso: 5.0.5
       picocolors: 1.1.1
-      sax: 1.6.0
+      sax: 1.6.1
 
   svgo@4.1.0:
     dependencies:
@@ -9848,10 +9820,6 @@ snapshots:
   tiny-inflate@1.0.3: {}
 
   tinyclip@1.0.3: {}
-
-  tinycolor2@1.6.0: {}
-
-  tinyexec@1.2.4: {}
 
   tinyexec@1.3.1: {}
 
@@ -10104,7 +10072,7 @@ snapshots:
   vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0):
     dependencies:
       lightningcss: 1.32.0
-      picomatch: 4.0.5
+      picomatch: 4.0.7
       postcss: 8.5.16
       rolldown: 1.1.4
       tinyglobby: 0.2.17
@@ -10378,8 +10346,6 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yocto-queue@1.2.2: {}
-
-  zod@4.4.3: {}
 
   zod@4.6.5: {}
 

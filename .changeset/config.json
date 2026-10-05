@@ -8,5 +8,5 @@
   "baseBranch": "develop",
   "changedFilePatterns": ["icons/**", "svgs/**"],
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": ["chassis-icons-site"]
 }

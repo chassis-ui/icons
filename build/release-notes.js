@@ -4,13 +4,13 @@
  * Release Notes Script
  *
  * Prints the CHANGELOG entry of one version of @chassis-ui/icons, without its heading, for the
- * body of the GitHub release. Reads both heading styles of CHANGELOG.md: the
+ * body of the GitHub release. Reads both heading styles of packages/icons/CHANGELOG.md: the
  * Changesets style (`## 0.4.0`) and the older hand-written style (`## [0.3.0] - 2026-07-04`).
  *
  * Usage:
  *   node build/release-notes.js [version]
  *
- * Without a version, it uses the version in package.json. Fails when the
+ * Without a version, it uses the version in packages/icons/package.json. Fails when the
  * CHANGELOG has no entry for the version, or the entry is empty.
  *
  * Copyright 2025-2026 Ozgur Gunes
@@ -20,7 +20,8 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-const CHANGELOG = 'CHANGELOG.md'
+const PACKAGE = 'packages/icons'
+const CHANGELOG = path.join(PACKAGE, 'CHANGELOG.md')
 
 function regExpQuote(string) {
   return string.replace(/[$()*+-.?[\\\]^{|}]/g, '\\$&')
@@ -66,7 +67,7 @@ async function main() {
   let version = process.argv[2]
 
   if (!version) {
-    const pkg = JSON.parse(await fs.readFile(path.resolve('package.json'), 'utf8'))
+    const pkg = JSON.parse(await fs.readFile(path.join(PACKAGE, 'package.json'), 'utf8'))
     version = pkg.version
   }
 

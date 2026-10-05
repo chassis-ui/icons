@@ -1,11 +1,12 @@
 # Prettier ignore
 *.css
 *.scss
-build/font/*.hbs
-/icons
-/svgs
-site/config.yml
-site/content
-site/src/assets
+/source
+packages/icons/build/font/*.hbs
+packages/icons/icons
+packages/icons/svgs
+packages/site/config.yml
+packages/site/content
+packages/site/src/assets
 /vendor
 pnpm-lock.yaml

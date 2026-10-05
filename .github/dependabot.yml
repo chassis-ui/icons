@@ -27,7 +27,7 @@ updates:
       astro:
         patterns: ['astro', '@astrojs/*']
       # Minor and patch updates of the rest of the tooling in one pull request. The packages
-      # that write the files of icons/ are left out: they get a pull request each, since they
+      # that write the output of packages/icons are left out: they get a pull request each, since they
       # can change the output. Major updates get a pull request each.
       dev-dependencies:
         dependency-type: development
