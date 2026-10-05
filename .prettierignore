@@ -8,3 +8,4 @@ site/config.yml
 site/content
 site/src/assets
 /vendor
+pnpm-lock.yaml

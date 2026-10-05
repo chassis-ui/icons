@@ -53,8 +53,9 @@ jobs:
       - name: Stylelint
         run: pnpm site:lint:stylelint
 
+      # The whole repository, less what .prettierignore names
       - name: Prettier
-        run: pnpm site:lint:prettier
+        run: pnpm lint:prettier
 
   type-check:
     name: Type Check
@@ -115,6 +116,18 @@ jobs:
               exit 1
             fi
           done
+
+      # icons/ and svgs/ are committed, and the site, Vercel and chassis-assets read the
+      # committed files. A change to svgs/ or to the build that was committed without its
+      # output shows up here as a changed, a new or a deleted file.
+      - name: Verify that the committed output is what the build writes
+        run: |
+          if [ -n "$(git status --porcelain -- icons svgs)" ]; then
+            git status --short -- icons svgs
+            git diff --stat -- icons svgs
+            echo "::error::icons/ and svgs/ differ from the output of the build. Run 'pnpm icons' and commit the result."
+            exit 1
+          fi
 
       # Every file of svgs/ has an entry in the font, and every entry has a file
       - name: Check icon consistency
