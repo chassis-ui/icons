@@ -4,6 +4,7 @@
 /source
 packages/icons/build/templates/*.hbs
 packages/icons/codepoints.json
+packages/icons/README.md
 packages/icons/test/golden
 packages/icons/icons
 packages/icons/svgs

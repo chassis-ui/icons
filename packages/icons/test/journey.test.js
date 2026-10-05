@@ -55,7 +55,10 @@ describe('the journey of a team that adopts the repository', () => {
     const team = JSON.parse(fs.readFileSync(path.join(fixtureDir, 'package.json'), 'utf8'))
     const { source } = manifest.chassis.build
 
-    Object.assign(manifest, { name: team.name, version: team.version })
+    for (const key of ['name', 'version', 'description', 'homepage', 'repository', 'license']) {
+      manifest[key] = team[key]
+    }
+
     manifest.chassis.build = { ...team.chassis.build, source, checks: undefined }
     fs.writeFileSync(manifestFile, JSON.stringify(manifest))
 
@@ -70,12 +73,14 @@ describe('the journey of a team that adopts the repository', () => {
     const files = [
       ...listFiles(path.join(adopted, 'svgs')).map((file) => `svgs/${file}`),
       ...listFiles(path.join(adopted, 'icons')).map((file) => `icons/${file}`),
-      'codepoints.json'
+      'codepoints.json',
+      'README.md'
     ].sort()
 
     // The output is the team's set, and nothing but it
     expect(files).toEqual(
       [
+        'README.md',
         'codepoints.json',
         ...['css', 'json', 'min.css', 'scss', 'svg', 'ttf', 'woff2'].map(
           (extension) => `icons/acme-glyphs.${extension}`
@@ -96,6 +101,16 @@ describe('the journey of a team that adopts the repository', () => {
     const { name: fontName, prefix } = shipped.chassis.build
     // The first part of the font name is the name of the set itself
     const words = [fontName, fontName.split('-')[0], shipped.name, `${prefix}-`]
+
+    // The manifest names the files of the team's font, where it named those of the other
+    const built = JSON.parse(fs.readFileSync(manifestFile, 'utf8'))
+    const fields = JSON.stringify(
+      ['main', 'style', 'sass', 'files', 'exports'].map((key) => built[key])
+    )
+
+    expect(built.main).toBe('icons/acme-glyphs.css')
+    expect(fields).toContain('acme-glyphs')
+    expect(fields).not.toContain(fontName)
 
     for (const file of files) {
       const contents = fs.readFileSync(path.join(adopted, file))

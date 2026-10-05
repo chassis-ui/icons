@@ -2,16 +2,16 @@
   "name": "@chassis-ui/icons",
   "version": "0.3.1",
   "type": "module",
-  "description": "Comprehensive SVG icon library for Chassis Design System. Features optimized icons with automated font generation, sprite creation, and multi-format distribution for web and mobile applications.",
+  "description": "The icons of the Chassis Design System, in outline, solid and brand styles, as an icon font, an SVG sprite and optimized SVG files.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chassis-ui/icons.git",
+    "url": "git+https://github.com/chassis-ui/icons.git",
     "directory": "packages/icons"
   },
   "bugs": {
     "url": "https://github.com/chassis-ui/icons/issues"
   },
-  "homepage": "https://chassis-ui.com",
+  "homepage": "https://chassis-ui.com/icons/",
   "author": "Ozgur Gunes <o.gunes@gmail.com>",
   "license": "MIT",
   "keywords": [
@@ -28,9 +28,22 @@
   "style": "icons/chassis-icons.css",
   "sass": "icons/chassis-icons.scss",
   "files": [
-    "icons/*.{woff,woff2,css,scss,svg,json}",
-    "svgs/*.svg",
-    "!.DS_Store"
+    "icons/chassis-icons.*",
+    "svgs/*.svg"
+  ],
+  "exports": {
+    ".": {
+      "sass": "./icons/chassis-icons.scss",
+      "style": "./icons/chassis-icons.css",
+      "default": "./icons/chassis-icons.css"
+    },
+    "./icons/*": "./icons/*",
+    "./svgs/*": "./svgs/*",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "*.css",
+    "*.scss"
   ],
   "chassis": {
     "build": {
@@ -72,6 +85,7 @@
     "build": "node build/cli.js build",
     "font": "node build/cli.js build --only font",
     "init": "node build/cli.js init",
+    "lint:package": "publint --strict",
     "lint:source": "node build/cli.js lint-source",
     "sprite": "node build/cli.js build --only sprite",
     "svgs": "node build/cli.js build --only svgs",
@@ -87,6 +101,7 @@
     "clean-css": "^5.3.3",
     "handlebars": "^4.7.9",
     "picocolors": "^1.1.1",
+    "publint": "^0.3.25",
     "svg-sprite": "3.0.0-rc3",
     "svgo": "^3.3.3",
     "vitest": "^5.0.2"

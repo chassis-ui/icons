@@ -57,7 +57,8 @@ export function listFiles(dir) {
 }
 
 /**
- * The output of a package: `svgs/`, `icons/` and the registry.
+ * The output of a package: `svgs/`, `icons/`, the registry and the README. The build writes
+ * fields of package.json too, which `manifest.test.js` reads.
  * @param {string} dir - The folder of the package
  * @returns {Record<string, Buffer>} The contents of each file, by its path from `dir`
  */
@@ -65,7 +66,8 @@ export function readOutput(dir) {
   const files = [
     ...listFiles(path.join(dir, 'svgs')).map((file) => `svgs/${file}`),
     ...listFiles(path.join(dir, 'icons')).map((file) => `icons/${file}`),
-    'codepoints.json'
+    'codepoints.json',
+    'README.md'
   ]
 
   return Object.fromEntries(files.map((file) => [file, fs.readFileSync(path.join(dir, file))]))

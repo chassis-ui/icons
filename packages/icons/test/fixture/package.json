@@ -3,6 +3,12 @@
   "version": "2.4.0",
   "private": true,
   "description": "The set of another team: the fixture of the tests of the build",
+  "homepage": "https://glyphs.acme.example/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://git.acme.example/design/glyphs.git"
+  },
+  "license": "UNLICENSED",
   "chassis": {
     "build": {
       "name": "acme-glyphs",

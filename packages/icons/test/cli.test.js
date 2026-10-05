@@ -60,7 +60,9 @@ describe('the command line', () => {
 
     expect(code).toBe(0)
     expect(log).toContain('svgs/bar-fill.svg: missing')
-    expect(log).toContain('A build would change 16 files')
+    expect(log).toContain('README.md: missing')
+    expect(log).toContain('package.json: changed')
+    expect(log).toContain('A build would change 18 files')
     expect(fs.readdirSync(dir).sort()).toEqual(['checks.json', 'package.json', 'source'])
   })
 

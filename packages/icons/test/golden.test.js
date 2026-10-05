@@ -73,6 +73,9 @@ describe('the steps of the build', () => {
     ])
 
     await build(config, { only: 'font', logger })
+    expect(fs.existsSync(path.join(dir, 'README.md'))).toBe(false)
+
+    await build(config, { only: 'package', logger })
     expect(readOutput(dir)).toEqual(readOutput(goldenDir))
   })
 

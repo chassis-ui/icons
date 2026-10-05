@@ -1,0 +1,90 @@
+# {{ packageName }}
+
+{{# if description }}
+{{ description }}
+
+{{/ if }}
+The set has {{# if single }}1 icon. It{{ else }}{{ count }} icons. Each{{/ if }} is drawn on a frame of {{ frame }} by {{ frame }} in one color, and takes the color of the text around it.
+
+```sh
+npm install {{ packageName }}
+```
+
+## What the package holds
+
+- `icons/{{ name }}.css` and `icons/{{ name }}.min.css`: the stylesheet of the icon font, with one class per icon
+- `icons/{{ name }}.scss`: the same stylesheet for Sass, with the folder of the font and the map of the icons as variables
+- {{# each formats }}`icons/{{ ../name }}.{{ this }}`{{# unless @last }}, {{/ unless }}{{/ each }}: the icon font, which the stylesheets load from their own folder
+- `icons/{{ name }}.svg`: the SVG sprite, one `<symbol>` per icon with the name of the icon as its `id`
+- `icons/{{ name }}.json`: the code point of each icon in the font, by name
+- `svgs/<name>.svg`: one optimized file per icon
+
+{{# if styles }}
+The last part of a name is the style of the icon: {{# each styles }}{{# if @first }}{{ else if @last }} or {{ else }}, {{/ if }}`<name>-{{ this }}`{{/ each }}. The examples below show `{{ icon }}`.
+{{ else }}
+The examples below show `{{ icon }}`.
+{{/ if }}
+{{# if homepage }}
+
+Browse the icons and their names on the [site of the set]({{ homepage }}).
+{{/ if }}
+
+## Use
+
+### The icon font
+
+One class per icon, `{{ prefix }}-<name>`, on an empty element:
+
+```html
+<link rel="stylesheet" href="node_modules/{{ packageName }}/icons/{{ name }}.min.css" />
+
+<i class="{{ prefix }}-{{ icon }}"></i>
+```
+
+With a bundler, `import '{{ packageName }}'` loads the same stylesheet and its font.
+
+### The SVG sprite
+
+One file for the whole set, and one `<use>` per icon:
+
+```html
+<svg width="{{ frame }}" height="{{ frame }}" fill="currentcolor" aria-hidden="true">
+  <use href="node_modules/{{ packageName }}/icons/{{ name }}.svg#{{ icon }}"></use>
+</svg>
+```
+
+### A single SVG file
+
+```html
+<img src="node_modules/{{ packageName }}/svgs/{{ icon }}.svg" alt="" width="{{ frame }}" height="{{ frame }}" />
+```
+
+### Sass
+
+The classes of the stylesheet, with the font served from a folder of your own, and the map of the icons for a selector of your own:
+
+```scss
+@use 'sass:map';
+@use '{{ packageName }}/icons/{{ name }}.scss' as icons with (
+  ${{ name }}-font-dir: '/fonts'
+);
+
+.my-icon::before {
+  font-family: icons.${{ name }}-font;
+  content: map.get(icons.${{ name }}-map, '{{ icon }}');
+}
+```
+
+Sass finds the file in a load path that holds `node_modules`, and so does a bundler. With the package importer of Sass, `@use 'pkg:{{ packageName }}'` loads the same file.
+{{# if repository }}
+
+## The source
+
+The package is built from the SVG files of its [repository]({{ repository }}). An icon is added or changed there, and never in the files of this package.
+{{/ if }}
+{{# if license }}
+
+## License
+
+{{ license }}
+{{/ if }}

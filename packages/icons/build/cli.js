@@ -14,14 +14,15 @@ import { lintSource } from './lint-source.js'
 import { createLogger } from './logger.js'
 import { verify } from './verify.js'
 
-const HELP = `Builds an icon set: optimized SVG files, an SVG sprite and an icon font with its
-stylesheets, from the SVG files of the source folder and the "chassis.build" block of
-package.json.
+const HELP = `Builds an icon set: optimized SVG files, an SVG sprite, an icon font with its
+stylesheets, and the manifest and the README of the package, from the SVG files of the source
+folder and the "chassis.build" block of package.json.
 
 Usage: node build/cli.js <command> [options]
 
 Commands:
-  build         Write the output: svgs/, icons/ and the registry of code points
+  build         Write the output: svgs/, icons/, the registry of code points, the README,
+                and the fields of package.json that name the files of the output
   verify        Check that the output is what the source builds, that no icon lost its
                 code point, and that the icons of the checks file are there
   lint-source   Check the files of the source folder: names, frame, color, pairs
