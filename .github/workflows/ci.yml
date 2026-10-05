@@ -108,25 +108,16 @@ jobs:
       - name: Build icons
         run: pnpm icons
 
-      - name: Verify the files of the package
-        run: |
-          for FILE in chassis-icons.css chassis-icons.min.css chassis-icons.scss chassis-icons.json chassis-icons.svg chassis-icons.woff chassis-icons.woff2; do
-            if [ ! -s "packages/icons/icons/$FILE" ]; then
-              echo "::error::packages/icons/icons/$FILE was not generated"
-              exit 1
-            fi
-          done
-
       # icons/ and svgs/ of the package are committed, and the site, Vercel and chassis-assets
       # read the committed files. A change to source/ or to the build that was committed
       # without its output shows up here as a changed, a new or a deleted file.
       - name: Verify that the committed output is what the build writes
         working-directory: packages/icons
         run: |
-          if [ -n "$(git status --porcelain -- icons svgs)" ]; then
-            git status --short -- icons svgs
-            git diff --stat -- icons svgs
-            echo "::error::icons/ and svgs/ of packages/icons differ from the output of the build. Run 'pnpm icons' and commit the result."
+          if [ -n "$(git status --porcelain -- icons svgs codepoints.json)" ]; then
+            git status --short -- icons svgs codepoints.json
+            git diff --stat -- icons svgs codepoints.json
+            echo "::error::The output of packages/icons differs from what the build writes. Run 'pnpm icons' and commit the result."
             exit 1
           fi
 

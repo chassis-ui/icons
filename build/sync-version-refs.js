@@ -3,12 +3,10 @@
 /*!
  * Version Reference Sync Script
  *
- * Copies the version of @chassis-ui/icons into the places that show it and that
- * `changeset version` does not update: the badge of README.md, `currentVersion` of
- * packages/site/config.yml, and the header of the font templates in
- * packages/icons/build/font/. When the header of packages/icons/icons/chassis-icons.css then
- * names another version, it rebuilds the output of the package with `pnpm icons`. A version
- * step that bumps nothing (only empty changesets) leaves them as they are.
+ * Copies the version of the package into the places that show it and that `changeset version`
+ * does not update: the badge of README.md and `currentVersion` of packages/site/config.yml.
+ * Then it builds the output of the package again, so that the headers of its stylesheets name
+ * the version. A version step that bumps nothing (only empty changesets) changes no file.
  *
  * Runs as part of `pnpm changeset:version`, from the root of the repository, after
  * `changeset version` has bumped packages/icons/package.json, which is the source of the
@@ -19,16 +17,16 @@
  */
 
 import { execFileSync } from 'node:child_process'
-import fs from 'node:fs/promises'
+import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const PACKAGE = 'packages/icons'
 const SEMVER = String.raw`\d+\.\d+\.\d+(?:-[0-9A-Za-z-.]+)?`
 const SEMVER_RE = new RegExp(`^${SEMVER}$`)
-const HEADER_RE = new RegExp(`Chassis Icons v(${SEMVER})`)
 
 // A file, the text around the version in it, and how the version is written there.
-const REFERENCES = [
+export const REFERENCES = [
   {
     file: 'README.md',
     pattern: new RegExp(`(\\[!\\[Version: )${SEMVER}(\\]\\()`),
@@ -44,42 +42,38 @@ const REFERENCES = [
     file: 'packages/site/config.yml',
     pattern: new RegExp(`^(currentVersion:\\s*")${SEMVER}(")`, 'm'),
     format: (version) => version
-  },
-  {
-    file: `${PACKAGE}/build/font/css.hbs`,
-    pattern: new RegExp(`(Chassis Icons v)${SEMVER}()`),
-    format: (version) => version
-  },
-  {
-    file: `${PACKAGE}/build/font/scss.hbs`,
-    pattern: new RegExp(`(Chassis Icons v)${SEMVER}()`),
-    format: (version) => version
   }
 ]
 
-async function readVersion() {
-  const pkg = JSON.parse(await fs.readFile(path.join(PACKAGE, 'package.json'), 'utf8'))
+/**
+ * Reads the version of the package
+ * @param {string} root - The root of the repository
+ * @returns {string}
+ */
+export function readVersion(root) {
+  const manifest = path.join(root, PACKAGE, 'package.json')
+  const { version } = JSON.parse(fs.readFileSync(manifest, 'utf8'))
 
-  if (!pkg.version || !SEMVER_RE.test(pkg.version)) {
-    console.error(`❌ Invalid or missing version in ${PACKAGE}/package.json: "${pkg.version}"`)
-    process.exit(1)
+  if (!version || !SEMVER_RE.test(version)) {
+    throw new Error(`Invalid or missing version in ${PACKAGE}/package.json: "${version}"`)
   }
 
-  return pkg.version
+  return version
 }
 
 /**
  * Writes the version into one reference
  * @param {(typeof REFERENCES)[number]} reference - The file and where the version is in it
  * @param {string} version - The package version
- * @returns {Promise<boolean>} True if the file was changed
+ * @param {string} root - The root of the repository
+ * @returns {boolean} True if the file was changed
  */
-async function syncReference({ file, pattern, format }, version) {
-  const original = await fs.readFile(file, 'utf8')
+export function syncReference({ file, pattern, format }, version, root) {
+  const target = path.join(root, file)
+  const original = fs.readFileSync(target, 'utf8')
 
   if (!pattern.test(original)) {
-    console.error(`❌ No version reference that matches ${pattern} in ${file}`)
-    process.exit(1)
+    throw new Error(`No version reference that matches ${pattern} in ${file}`)
   }
 
   const updated = original.replace(
@@ -91,51 +85,53 @@ async function syncReference({ file, pattern, format }, version) {
     return false
   }
 
-  await fs.writeFile(file, updated, 'utf8')
-  console.log(`📄 Updated ${file} → ${version}`)
+  fs.writeFileSync(target, updated, 'utf8')
   return true
 }
 
 /**
- * Rebuilds the output of the package when the header of its stylesheet names another version
- * @param {string} version - The package version
- * @returns {Promise<boolean>} True if the output was rebuilt
+ * Syncs every reference, then builds the output of the package
+ * @param {object} [options]
+ * @param {string} [options.root] - The root of the repository
+ * @param {() => void} [options.build] - Builds the output of the package
+ * @param {(message: string) => void} [options.log]
+ * @returns {string[]} The files that were changed
  */
-async function syncIcons(version) {
-  const stylesheet = `${PACKAGE}/icons/chassis-icons.css`
-  const match = HEADER_RE.exec(await fs.readFile(stylesheet, 'utf8'))
+export function syncVersionRefs({
+  root = process.cwd(),
+  build = () => execFileSync('pnpm', ['icons'], { cwd: root, stdio: 'inherit' }),
+  log = console.log
+} = {}) {
+  const version = readVersion(root)
+  log(`🔄 Syncing version references to v${version}`)
 
-  if (match && match[1] === version) {
-    return false
-  }
-
-  console.log(`🔨 ${stylesheet} names another version, rebuilding the output`)
-  execFileSync('pnpm', ['icons'], { stdio: 'inherit' })
-  return true
-}
-
-async function main() {
-  const version = await readVersion()
-  console.log(`🔄 Syncing version references to v${version}`)
-
-  const results = []
+  const changed = new Set()
 
   for (const reference of REFERENCES) {
-    results.push(await syncReference(reference, version))
+    if (syncReference(reference, version, root)) {
+      changed.add(reference.file)
+      log(`📄 Updated ${reference.file} → ${version}`)
+    }
   }
 
-  results.push(await syncIcons(version))
+  log('🔨 Building the output of the package, whose stylesheets name the version')
+  build()
 
-  const updatedCount = results.filter(Boolean).length
-
-  console.log(
-    updatedCount > 0
-      ? `✅ Synced ${updatedCount} of ${results.length} references`
-      : 'ℹ️  Already in sync, nothing to update'
+  log(
+    changed.size > 0
+      ? `✅ Synced ${[...changed].join(', ')}`
+      : 'ℹ️  The references were in sync already'
   )
+
+  return [...changed]
 }
 
-main().catch((error) => {
-  console.error(`❌ Unexpected error: ${error.message}`)
-  process.exit(1)
-})
+// Only when this file is what Node was started with, not when a test imports it
+if (process.argv[1] && fs.realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  try {
+    syncVersionRefs()
+  } catch (error) {
+    console.error(`❌ ${error.message}`)
+    process.exitCode = 1
+  }
+}

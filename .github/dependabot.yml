@@ -36,7 +36,8 @@ updates:
           - '@twbs/fantasticon'
           - svg-sprite
           - svgo
-          - clean-css-cli
+          - clean-css
+          - handlebars
 
   - package-ecosystem: github-actions
     directory: /

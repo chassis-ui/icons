@@ -17,8 +17,10 @@
  * Licensed under MIT
  */
 
+import { realpathSync } from 'node:fs'
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
 const PACKAGE = 'packages/icons'
 const CHANGELOG = path.join(PACKAGE, 'CHANGELOG.md')
@@ -34,7 +36,7 @@ function regExpQuote(string) {
  * @param {string} version - The version, without a leading `v`
  * @returns {string | null} The entry, trimmed, or null when there is no heading for the version
  */
-function releaseNotes(changelog, version) {
+export function releaseNotes(changelog, version) {
   const heading = new RegExp(`^## \\[?${regExpQuote(version)}\\]?(?:\\s|$)`)
   const lines = changelog.split('\n')
   const start = lines.findIndex((line) => heading.test(line))
@@ -88,7 +90,10 @@ async function main() {
   process.stdout.write(`${notes}\n`)
 }
 
-main().catch((error) => {
-  console.error(`❌ Unexpected error: ${error.message}`)
-  process.exit(1)
-})
+// Only when this file is what Node was started with, not when a test imports it
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(`❌ Unexpected error: ${error.message}`)
+    process.exit(1)
+  })
+}

@@ -2,7 +2,8 @@
 *.css
 *.scss
 /source
-packages/icons/build/font/*.hbs
+packages/icons/build/templates/*.hbs
+packages/icons/codepoints.json
 packages/icons/icons
 packages/icons/svgs
 packages/site/config.yml

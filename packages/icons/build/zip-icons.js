@@ -1,56 +1,33 @@
 #!/usr/bin/env node
 
-/*!
- * Icon Archive Creation Script
- *
- * Creates a versioned ZIP archive containing SVG icons and generated fonts.
- *
- * Copyright 2025 Ozgur Gunes
- * Licensed under MIT
+/**
+ * @file Writes `<font>-<version>.zip` into the package: the files of `icons/` and, in a
+ * folder of their own, those of `svgs/`.
  */
 
-import { exec } from 'node:child_process'
-import { promisify } from 'node:util'
-import { readFile } from 'node:fs/promises'
+import { execFileSync } from 'node:child_process'
+import fs from 'node:fs'
 import path from 'node:path'
-import picocolors from 'picocolors'
+import { PREVIEW_FILE, loadConfig } from './config.js'
+import { createLogger } from './logger.js'
 
-const execAsync = promisify(exec)
+const logger = createLogger()
+const config = loadConfig(path.resolve(import.meta.dirname, '..'))
+const folder = `${config.name}-${config.version}`
+const staging = path.join(config.packageDir, folder)
+const archive = `${folder}.zip`
 
-async function getPackageVersion() {
-  const packageJson = JSON.parse(
-    await readFile(new URL('../package.json', import.meta.url), 'utf8')
-  )
-  return packageJson.version
+fs.rmSync(staging, { recursive: true, force: true })
+fs.rmSync(path.join(config.packageDir, archive), { force: true })
+
+try {
+  fs.cpSync(config.iconsDir, staging, {
+    recursive: true,
+    filter: (source) => path.basename(source) !== PREVIEW_FILE
+  })
+  fs.cpSync(config.svgsDir, path.join(staging, 'svgs'), { recursive: true })
+  execFileSync('zip', ['-qr9', archive, folder], { cwd: config.packageDir, stdio: 'inherit' })
+  logger.success(`Created ${path.relative(process.cwd(), path.join(config.packageDir, archive))}`)
+} finally {
+  fs.rmSync(staging, { recursive: true, force: true })
 }
-
-async function main() {
-  try {
-    const basename = path.basename(import.meta.url.replace('file://', ''))
-    console.log(picocolors.cyan(`🔄 [${basename}] started`))
-
-    console.time(picocolors.cyan(`[${basename}] finished`))
-
-    const version = await getPackageVersion()
-    const baseDir = `chassis-icons-${version}`
-    const svgDir = path.join(baseDir, 'svgs')
-    const zipFile = `${baseDir}.zip`
-
-    console.log(picocolors.cyan(`📦 Creating ${zipFile}...`))
-
-    await execAsync(`rm -rf "${baseDir}" "${zipFile}"`)
-    await execAsync(`mkdir -p "${svgDir}"`)
-    await execAsync(`cp -r svgs/* "${svgDir}/"`)
-    await execAsync(`cp icons/chassis-icons.* "${baseDir}/"`)
-    await execAsync(`zip -qr9 "${zipFile}" "${baseDir}"`)
-    await execAsync(`rm -rf "${baseDir}"`)
-
-    console.log(picocolors.green(`✅ Created: ${zipFile}`))
-    console.timeEnd(picocolors.cyan(`[${basename}] finished`))
-  } catch (error) {
-    console.error(picocolors.red('❌ Error:'), error.message)
-    process.exit(1)
-  }
-}
-
-main()

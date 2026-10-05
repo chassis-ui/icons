@@ -33,14 +33,32 @@
     "!.DS_Store"
   ],
   "chassis": {
-    "defaults": {
-      "iconPrefix": "chassis-icon",
-      "iconFormat": "woff2"
-    },
-    "icons": {
-      "sprite": "chassis-icons.svg",
-      "font": "chassis-icons",
-      "preview": "preview.html"
+    "build": {
+      "name": "chassis-icons",
+      "prefix": "cx",
+      "source": "../../source",
+      "frame": 24,
+      "styles": [
+        "outline",
+        "solid",
+        "brand"
+      ],
+      "pairs": [
+        [
+          "outline",
+          "solid"
+        ]
+      ],
+      "startCodepoint": "f101",
+      "formats": [
+        "woff2",
+        "woff"
+      ],
+      "header": [
+        "Chassis Icons v{version}",
+        "Copyright 2025 Ozgur Gunes",
+        "Licensed under MIT (https://github.com/chassis-ui/icons/blob/main/LICENSE)"
+      ]
     }
   },
   "publishConfig": {
@@ -51,18 +69,18 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "build": "rm -rf icons/*.{css,scss,woff,woff2,svg} && pnpm svgs && pnpm sprite && pnpm font",
+    "build": "node build/cli.js build",
     "check": "node build/check-icons.js",
-    "font": "pnpm font-main && pnpm font-min",
-    "font-main": "node build/build-icons.js",
-    "font-min": "cleancss -O1 --format breakWith=lf --with-rebase --output icons/chassis-icons.min.css icons/chassis-icons.css",
-    "sprite": "svg-sprite --config svg-sprite.json --log=info \"svgs/*.svg\"",
-    "svgs": "node build/build-svgs.js",
+    "font": "node build/cli.js build --only font",
+    "init": "node build/cli.js init",
+    "sprite": "node build/cli.js build --only sprite",
+    "svgs": "node build/cli.js build --only svgs",
     "zip": "node build/zip-icons.js"
   },
   "devDependencies": {
     "@twbs/fantasticon": "^3.1.0",
-    "clean-css-cli": "^5.6.3",
+    "clean-css": "^5.3.3",
+    "handlebars": "^4.7.9",
     "picocolors": "^1.1.1",
     "svg-sprite": "3.0.0-rc3",
     "svgo": "^3.3.3"
