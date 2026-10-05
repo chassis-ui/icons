@@ -20,6 +20,7 @@ const NAME = /^[a-z][\da-z]*(?:-[\da-z]+)*$/
 
 const DEFAULTS = {
   source: '../../source',
+  checks: '../../chassis.checks.json',
   frame: 24,
   styles: [],
   pairs: [],
@@ -47,6 +48,7 @@ export class ConfigError extends Error {
  * @property {string} version - `version` of package.json
  * @property {string} packageDir - The folder of the package
  * @property {string} sourceDir - The SVG files a team saves. The build only reads it
+ * @property {string} checksFile - The icons that others read by name. It may not exist
  * @property {string} svgsDir - Output: the optimized SVG files
  * @property {string} iconsDir - Output: the font, its stylesheets and the sprite
  * @property {string} registryFile - The code points the set has given out
@@ -92,7 +94,7 @@ export function resolveConfig(manifest, packageDir) {
   }
 
   const settings = { ...DEFAULTS, ...block }
-  const { name, prefix, source, frame, styles, pairs, formats, header } = settings
+  const { name, prefix, source, checks, frame, styles, pairs, formats, header } = settings
 
   if (typeof name !== 'string' || !NAME.test(name)) {
     throw new ConfigError(
@@ -108,6 +110,10 @@ export function resolveConfig(manifest, packageDir) {
 
   if (typeof source !== 'string' || source === '') {
     throw new ConfigError(`"source" has to be a folder, and is ${show(source)}`)
+  }
+
+  if (typeof checks !== 'string' || checks === '') {
+    throw new ConfigError(`"checks" has to be a file, and is ${show(checks)}`)
   }
 
   if (!Number.isInteger(frame) || frame <= 0) {
@@ -173,6 +179,7 @@ export function resolveConfig(manifest, packageDir) {
     version,
     packageDir,
     sourceDir: path.resolve(packageDir, source),
+    checksFile: path.resolve(packageDir, checks),
     svgsDir: path.join(packageDir, 'svgs'),
     iconsDir: path.join(packageDir, 'icons'),
     registryFile: path.join(packageDir, 'codepoints.json'),

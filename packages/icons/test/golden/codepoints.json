@@ -1,0 +1,13 @@
+{
+  "icons": {
+    "bar-fill": "e900",
+    "bar-line": "e901",
+    "diamond-fill": "e902",
+    "diamond-line": "e903",
+    "notch-fill": "e904",
+    "notch-line": "e905",
+    "ring-fill": "e906",
+    "ring-line": "e907"
+  },
+  "retired": []
+}

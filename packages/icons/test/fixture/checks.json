@@ -1,0 +1,8 @@
+{
+  "contracts": [
+    {
+      "reader": "the toolbar of the Acme app",
+      "icons": ["bar-fill", "ring-line"]
+    }
+  ]
+}

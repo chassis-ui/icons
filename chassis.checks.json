@@ -1,0 +1,41 @@
+{
+  "contracts": [
+    {
+      "reader": "the layouts and the components of @chassis-ui/docs",
+      "icons": [
+        "bars-solid",
+        "check-solid",
+        "chevron-sort-solid",
+        "circle-half-solid",
+        "clipboard-outline",
+        "ellipsis-h-solid",
+        "figma-brand",
+        "file-outline",
+        "github-brand",
+        "hashtag-outline",
+        "lightning-solid",
+        "moon-solid",
+        "moon-stars-solid",
+        "search-solid",
+        "sun-solid",
+        "swatchbook-solid"
+      ]
+    },
+    {
+      "reader": "the default icons of Chassis React",
+      "icons": [
+        "bars-outline",
+        "check-solid",
+        "chevron-down-outline",
+        "chevron-left-outline",
+        "chevron-right-outline",
+        "chevron-up-outline",
+        "ellipsis-h-solid",
+        "pause-solid",
+        "play-solid",
+        "search-outline",
+        "xmark-outline"
+      ]
+    }
+  ]
+}

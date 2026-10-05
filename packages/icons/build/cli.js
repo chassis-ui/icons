@@ -10,7 +10,9 @@ import { fileURLToPath } from 'node:url'
 import { parseArgs } from 'node:util'
 import { STEPS, build, compareWithBuild, init } from './build.js'
 import { ConfigError, loadConfig } from './config.js'
+import { lintSource } from './lint-source.js'
 import { createLogger } from './logger.js'
+import { verify } from './verify.js'
 
 const HELP = `Builds an icon set: optimized SVG files, an SVG sprite and an icon font with its
 stylesheets, from the SVG files of the source folder and the "chassis.build" block of
@@ -20,11 +22,17 @@ Usage: node build/cli.js <command> [options]
 
 Commands:
   build         Write the output: svgs/, icons/ and the registry of code points
+  verify        Check that the output is what the source builds, that no icon lost its
+                code point, and that the icons of the checks file are there
+  lint-source   Check the files of the source folder: names, frame, color, pairs
   init          Empty the output and the registry, to start a new set
 
 Options of build:
   --only <step> Run one step: ${STEPS.join(', ')}
   --dry-run     Change no file, and list the files that a build would change
+
+Options of verify:
+  --since <ref> Compare the code points with those of a commit; the last tag by default
 
 Options of every command:
   --verbose     Say more: each file and each code point
@@ -52,6 +60,7 @@ export async function main(
       allowPositionals: true,
       options: {
         only: { type: 'string' },
+        since: { type: 'string' },
         'dry-run': { type: 'boolean', default: false },
         verbose: { type: 'boolean', default: false },
         help: { type: 'boolean', short: 'h', default: false }
@@ -103,6 +112,38 @@ export async function main(
         }
 
         await build(config, { only: values.only, logger })
+        return 0
+      }
+
+      case 'verify': {
+        const { icons, problems, notes } = await verify(config, {
+          since: values.since,
+          logger: createLogger({ quiet: true, console: out })
+        })
+
+        for (const note of notes) logger.info(note)
+        for (const problem of problems) logger.error(problem)
+
+        if (problems.length > 0) {
+          logger.error(`${problems.length} problem${problems.length === 1 ? '' : 's'}`)
+          return 1
+        }
+
+        logger.success(`The output of ${icons} icons is what the source builds`)
+        return 0
+      }
+
+      case 'lint-source': {
+        const { icons, problems } = lintSource(config)
+
+        for (const { file, message } of problems) logger.error(`${file} ${message}`)
+
+        if (problems.length > 0) {
+          logger.error(`${problems.length} problem${problems.length === 1 ? '' : 's'}`)
+          return 1
+        }
+
+        logger.success(`${icons} source files can be icons of the set`)
         return 0
       }
 

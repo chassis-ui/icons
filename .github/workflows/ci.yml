@@ -79,6 +79,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Type check of the build
+        run: pnpm icons:typecheck
+
       - name: Astro check
         run: pnpm check:astro
 
@@ -91,6 +94,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # With the tags: the code points are compared with those of the last one
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Setup pnpm
@@ -105,25 +110,28 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build icons
-        run: pnpm icons
+      # Every file of source/ can be an icon: its name, its frame, its color, its pair
+      - name: Lint the source
+        run: pnpm icons:lint:source
 
-      # icons/ and svgs/ of the package are committed, and the site, Vercel and chassis-assets
-      # read the committed files. A change to source/ or to the build that was committed
-      # without its output shows up here as a changed, a new or a deleted file.
-      - name: Verify that the committed output is what the build writes
-        working-directory: packages/icons
-        run: |
-          if [ -n "$(git status --porcelain -- icons svgs codepoints.json)" ]; then
-            git status --short -- icons svgs codepoints.json
-            git diff --stat -- icons svgs codepoints.json
-            echo "::error::The output of packages/icons differs from what the build writes. Run 'pnpm icons' and commit the result."
-            exit 1
-          fi
+      - name: Test
+        run: pnpm icons:test
 
-      # Every file of svgs/ has an entry in the font, and every entry has a file
-      - name: Check icon consistency
-        run: pnpm icons:check
+      # The output of the package is committed, and the site, Vercel and chassis-assets read
+      # the committed files. Builds into a temporary folder and fails when a committed file
+      # is not what the source builds, when an icon lost the code point it had at the last
+      # tag, or when an icon of chassis.checks.json is missing.
+      - name: Verify the output
+        run: pnpm icons:verify
+
+      # The oldest version that `engines` of the package allows
+      - name: Setup Node.js 22
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 22
+
+      - name: Test on Node.js 22
+        run: pnpm icons:test
 
   # The same build as Vercel: checks out and builds vendor/assets, then Astro and Pagefind.
   # The site reads the committed files of packages/icons.

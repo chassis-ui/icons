@@ -37,6 +37,7 @@ function sharedPlugins({ convertPathData }) {
   ]
 }
 
+/** @type {import('svgo').PluginConfig} */
 const removeColors = { name: 'removeAttrs', params: { attrs: ['clip-rule', 'fill'] } }
 
 /**

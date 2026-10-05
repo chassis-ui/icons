@@ -103,6 +103,7 @@ export function formatRegistry(registry) {
  */
 export function allocate(registry, names, start) {
   const present = new Set(names)
+  /** @type {Record<string, number>} */
   const icons = {}
   const removed = []
   const retired = new Set(registry.retired)

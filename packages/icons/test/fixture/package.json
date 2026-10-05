@@ -1,0 +1,34 @@
+{
+  "name": "@acme/glyphs",
+  "version": "2.4.0",
+  "private": true,
+  "description": "The set of another team: the fixture of the tests of the build",
+  "chassis": {
+    "build": {
+      "name": "acme-glyphs",
+      "prefix": "ag",
+      "source": "source",
+      "checks": "checks.json",
+      "frame": 16,
+      "styles": [
+        "line",
+        "fill"
+      ],
+      "pairs": [
+        [
+          "line",
+          "fill"
+        ]
+      ],
+      "startCodepoint": "e900",
+      "formats": [
+        "woff2",
+        "ttf"
+      ],
+      "header": [
+        "Acme Glyphs v{version}",
+        "Copyright Acme Works"
+      ]
+    }
+  }
+}

@@ -25,13 +25,15 @@ import { toHex } from './codepoints.js'
 export async function renderFont(config, { svgsDir, codepoints }) {
   // Without an output folder Fantasticon writes nothing and returns the files. The SVG font
   // is what every other format is made of, and what the hash is taken from.
-  const { assetsOut } = await generateFonts({
-    inputDir: svgsDir,
-    name: config.name,
-    fontTypes: /** @type {any} */ ([...config.formats, 'svg']),
-    assetTypes: [],
-    codepoints
-  })
+  const { assetsOut } = await generateFonts(
+    /** @type {any} */ ({
+      inputDir: svgsDir,
+      name: config.name,
+      fontTypes: [...config.formats, 'svg'],
+      assetTypes: [],
+      codepoints
+    })
+  )
 
   return {
     fonts: Object.fromEntries(

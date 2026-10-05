@@ -127,6 +127,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # With the tags: the code points are compared with those of the last one
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Setup pnpm
@@ -143,10 +145,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # The package is the committed files of icons/ and svgs/ in packages/icons. Fails when a
-      # file of svgs/ has no entry in the font, or the other way round
-      - name: Check icon consistency
-        run: pnpm icons:check
+      # The package is the committed files of icons/ and svgs/ in packages/icons. Fails when
+      # one of them is not what the source builds, or when an icon lost its code point
+      - name: Verify the output
+        run: pnpm icons:verify
 
       # Before publishing, so a version without a CHANGELOG entry is not published
       - name: Release notes

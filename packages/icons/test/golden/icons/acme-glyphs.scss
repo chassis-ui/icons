@@ -1,0 +1,49 @@
+/*!
+ * Acme Glyphs v2.4.0
+ * Copyright Acme Works
+ */
+
+$acme-glyphs-font: "acme-glyphs" !default;
+$acme-glyphs-font-dir: "." !default;
+$acme-glyphs-font-file: "#{$acme-glyphs-font-dir}/#{$acme-glyphs-font}" !default;
+$acme-glyphs-font-hash: "809352dcaffccec6ef50cd594df384c0" !default;
+$acme-glyphs-font-src:
+  url("#{$acme-glyphs-font-file}.woff2?#{$acme-glyphs-font-hash}") format("woff2"),
+  url("#{$acme-glyphs-font-file}.ttf?#{$acme-glyphs-font-hash}") format("truetype") !default;
+
+@font-face {
+  font-display: block;
+  font-family: $acme-glyphs-font;
+  src: $acme-glyphs-font-src;
+}
+
+@layer content {
+  [class^="ag-"]::before,
+  [class*=" ag-"]::before {
+    display: inline-block;
+    font-family: $acme-glyphs-font !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    vertical-align: -.125em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+$acme-glyphs-map: (
+  "bar-fill": "\e900",
+  "bar-line": "\e901",
+  "diamond-fill": "\e902",
+  "diamond-line": "\e903",
+  "notch-fill": "\e904",
+  "notch-line": "\e905",
+  "ring-fill": "\e906",
+  "ring-line": "\e907",
+);
+
+@each $icon, $codepoint in $acme-glyphs-map {
+  .ag-#{$icon}::before { content: $codepoint; }
+}

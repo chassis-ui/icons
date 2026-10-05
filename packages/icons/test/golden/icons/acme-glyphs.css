@@ -1,0 +1,36 @@
+/*!
+ * Acme Glyphs v2.4.0
+ * Copyright Acme Works
+ */
+
+@font-face {
+  font-family: "acme-glyphs";
+  src: url("./acme-glyphs.woff2?809352dcaffccec6ef50cd594df384c0") format("woff2"),
+url("./acme-glyphs.ttf?809352dcaffccec6ef50cd594df384c0") format("truetype");
+  font-display: block;
+}
+
+@layer content {
+  [class^="ag-"]::before,
+  [class*=" ag-"]::before {
+    display: inline-block;
+    font-family: acme-glyphs !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    line-height: 1;
+    text-transform: none;
+    vertical-align: -.125em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+.ag-bar-fill::before { content: "\e900"; }
+.ag-bar-line::before { content: "\e901"; }
+.ag-diamond-fill::before { content: "\e902"; }
+.ag-diamond-line::before { content: "\e903"; }
+.ag-notch-fill::before { content: "\e904"; }
+.ag-notch-line::before { content: "\e905"; }
+.ag-ring-fill::before { content: "\e906"; }
+.ag-ring-line::before { content: "\e907"; }

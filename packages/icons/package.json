@@ -70,19 +70,25 @@
   },
   "scripts": {
     "build": "node build/cli.js build",
-    "check": "node build/check-icons.js",
     "font": "node build/cli.js build --only font",
     "init": "node build/cli.js init",
+    "lint:source": "node build/cli.js lint-source",
     "sprite": "node build/cli.js build --only sprite",
     "svgs": "node build/cli.js build --only svgs",
+    "test": "vitest run --dir test",
+    "test:golden": "node test/update-golden.js",
+    "typecheck": "tsc -p tsconfig.json",
+    "verify": "node build/cli.js verify",
     "zip": "node build/zip-icons.js"
   },
   "devDependencies": {
     "@twbs/fantasticon": "^3.1.0",
+    "@types/node": "^22.20.4",
     "clean-css": "^5.3.3",
     "handlebars": "^4.7.9",
     "picocolors": "^1.1.1",
     "svg-sprite": "3.0.0-rc3",
-    "svgo": "^3.3.3"
+    "svgo": "^3.3.3",
+    "vitest": "^5.0.2"
   }
 }
