@@ -1,0 +1,98 @@
+---
+title: Frame and Color
+description: An icon is drawn on the frame of the set, in one color, with filled shapes only. What the build does with the file, and what the source lint refuses.
+toc: true
+---
+
+## Introduction
+
+Every icon of a set is drawn on the same frame and in one color, so that icons line up beside each other and take the color of the text around them. The frame is the setting `chassis.build.frame` of `packages/icons/package.json`. The color needs no setting: the build removes it.
+
+## The frame
+
+The frame is the square an icon is drawn on. Its side is `chassis.build.frame`, which is `24` unless the configuration says otherwise. The `viewBox` of a source file is `0 0 <frame> <frame>`, and its `width` and `height`, when the file has them, are the frame.
+
+In `chassis.build` of `packages/icons/package.json`:
+
+```json
+{
+  "chassis": {
+    "build": {
+      "frame": 24
+    }
+  }
+}
+```
+
+The frame is the frame of the whole set. The build does not resize a file, so a set with icons on two frames has one of them redrawn. The margin inside the frame is a decision of the design, and the build keeps the drawing where it is.
+
+## One color
+
+An icon is drawn in one color, and which color does not matter. The build removes every `fill` of the drawing and gives the root of the file `fill="currentcolor"`, so the icon takes the color of the text around it.
+
+A file in two colors is refused, and so is a file that one color cannot draw: a gradient, a pattern or a raster image. A part without paint is not a color: `fill="none"` is allowed.
+
+## Filled shapes
+
+An icon is made of filled shapes. The icon font draws the area of a shape and has no stroke, so a line of the design is outlined into a shape before the file is exported. The build does not outline a stroke, and the source lint refuses a file with one.
+
+The build also removes every `clip-rule` attribute with the fills, and keeps `fill-rule`. A drawing that needs `clip-rule` to look right is redrawn without it.
+
+## Exporting
+
+A design tool exports the frame of an icon as an SVG file. Outline every stroke first, and export the frame itself and not the shapes inside it, so that the `viewBox` is the frame.
+
+This is a file as a design tool exports it, for a set with a frame of `16`:
+
+```svg
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 5H14V11H2V5ZM4 7V9H12V7H4Z" fill="#000"/></svg>
+```
+
+The build writes this file to `svgs/` for it, in a set with the prefix `ag`:
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentcolor" class="ag-bar-line" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M2 5H14V11H2V5ZM4 7V9H12V7H4Z"/>
+</svg>
+```
+
+The path data is kept as it was drawn. The source file is never changed: the build only reads `source/`.
+
+## Source lint
+
+`pnpm icons:lint:source` checks each file of `source/` against the frame and the color rules, and prints one line per problem.
+
+<CxTable>
+| Message | Cause |
+| --- | --- |
+| `has no viewBox: it has to be "0 0 24 24"` | The root has no `viewBox` |
+| `has the viewBox "0 0 32 32": it has to be "0 0 24 24"` | The file is drawn on another frame |
+| `has the width "32": it has to be 24` | The `width` or the `height` of the root is not the frame |
+| `has 2 colors (#000, #f00): an icon has one` | The drawing has more than one color |
+| `has a stroke: a font draws filled shapes only, so outline it` | A shape has a `stroke` |
+| `holds a gradient: an icon has one color` | The file has a gradient |
+| `holds a raster image` | The file has an `<image>` element |
+</CxTable>
+
+Each line starts with the name of the file. [Source lint]([[docsref:/icon-design/source-lint]]) lists every check.
+
+## Best practices
+
+The build writes what the source holds. These practices cover what a file needs before it is saved into `source/`.
+
+- **Export on the frame:** a file whose `viewBox` is not `0 0 <frame> <frame>` is refused by `pnpm icons:lint:source`.
+- **Outline every stroke:** the font draws filled shapes only, and the build does not outline a stroke.
+- **Run the source lint before the build:** `pnpm icons:lint:source` names each file that cannot be an icon, and why.
+
+Avoid the habits that undo this:
+
+- **Do not fix a file in `svgs/`:** the next build writes it again from `source/`. Change the source file.
+- **Do not rely on `clip-rule`:** the build removes it with the fills.
+
+## Next steps
+
+Continue with one of these pages:
+
+- [Names and styles]([[docsref:/icon-design/names-and-styles]]): how a file is named.
+- [Source lint]([[docsref:/icon-design/source-lint]]): every check of the source, and its message.
+- [Build system]([[docsref:/getting-started/build-system]]): what the build writes from the files.

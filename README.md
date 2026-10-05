@@ -12,7 +12,7 @@ Chassis Icons holds the SVG files a designer exports, in `source/`, and a build 
 
 The repository is made to be owned and customized, as [Chassis Tokens](https://github.com/chassis-ui/tokens) and [Chassis Assets](https://github.com/chassis-ui/assets) are. A team that adopts it replaces the files of `source/` and the `chassis.build` block of `packages/icons/package.json`, and never the build. The font name, the class prefix, the frame and the styles of the icons are settings.
 
-The icons in it are the Chassis defaults: the set that the Chassis documentation sites and Figma libraries use, published as [`@chassis-ui/icons`](https://www.npmjs.com/package/@chassis-ui/icons) and shown on [chassis-ui.com/icons](https://chassis-ui.com/icons/). To use that set in a project, install the package and read [its README](packages/icons/README.md). The rest of this document is for building a set of your own, and for working on the build.
+The icons in it are the Chassis defaults: the set that the Chassis documentation sites and Figma libraries use, published as [`@chassis-ui/icons`](https://www.npmjs.com/package/@chassis-ui/icons) and shown on [chassis-ui.com/icons](https://chassis-ui.com/icons/). To use that set in a project, install the package and read [its README](packages/icons/README.md). The rest of this document is for building a set of your own, and for working on the build. The [documentation pages](https://chassis-ui.com/icons/docs/) of the site cover the same ground at more length: drawing icons for a set, and using the output in a project.
 
 ## Getting started
 
@@ -41,7 +41,7 @@ Run every command from the root of the repository. `packages/icons/icons/preview
 
 ## Build your own set
 
-These steps turn a clone into the library of your team. `packages/icons/test/journey.test.js` walks the same steps on the set of another team, in every run of the tests.
+These steps turn a clone into the library of your team. `packages/icons/test/journey.test.js` walks the same steps on the set of another team, in every run of the tests, and `packages/site/test/journey.test.js` builds the site of that set.
 
 ### 1. Keep the clone, and make it yours
 
@@ -143,14 +143,16 @@ cp -r packages/icons/icons packages/icons/svgs /path/to/your-project/static/icon
 
 ### 6. The site of your set
 
-The documentation site in `packages/site/` shows one page per icon. Write the pages of your icons, and set the title, the address and the repository of your site in `packages/site/config.yml`:
+The site in `packages/site/` shows the set of the repository. It reads the configuration and the output of the build, so it has a page per icon of your set without a file to write, and its examples show your font name, your prefix and your icons. In `packages/site/config.yml`, set the title, the address and the repository of your site, replace or remove `googleId` under `analytics`, which is the Google Analytics property of chassis-ui.com, and remove the line of `exampleIcon`, or name an icon of your set there:
 
 ```bash
-pnpm site:pages --clean
+pnpm vendor
 pnpm dev
 ```
 
-`pnpm site:pages --clean` removes the pages of `packages/site/content/icons/` and writes one per file of `packages/icons/svgs/`. Two things still tie the site to the Chassis set, and Phase 5 of [the roadmap](ref/ROADMAP.md) removes both: the site draws its own header and home page with icons of the Chassis set by name, so those are missing with another set until you change the names, and `exampleIcon` of `packages/site/config.yml` has to name an icon of your set.
+`pnpm vendor` builds the `vendor/assets` submodule once, which needs Git LFS, and `pnpm dev` serves the site at `http://localhost:4324/icons/`. Without `exampleIcon` the examples show the first icon of the set, and with an icon that the set does not have the site stops and says so.
+
+The site draws its own interface, such as its header and its search, with the Chassis set, which it installs as the package `@chassis-ui/icons`. So the interface does not depend on your icons. The pages of `packages/site/content/docs/` document the toolkit with the Chassis set as their example: keep them, rewrite them for your team, or remove them with their entries of `packages/site/data/sidebar.yml`.
 
 ## Repository layout
 
@@ -167,7 +169,7 @@ packages/icons/           -> The package of the set: @chassis-ui/icons for the d
   build/                  -> The build: cli.js, its modules and the templates
   test/                   -> The tests of the build, on the set of another team
 packages/site/            -> The documentation site, built with Astro. Never published to npm
-build/                    -> Scripts of the repository: site pages, changeset check, version references, release
+build/                    -> Scripts of the repository: changeset check, version references, release
 chassis.checks.json       -> The icons that consumers of the set read by name
 docs/architecture.md      -> How the build works, and what it promises to write
 ref/ROADMAP.md            -> The plan of this repository, its principles and decisions
@@ -216,15 +218,15 @@ A whole build removes from `packages/icons/svgs/` each file whose source is gone
 ```bash
 pnpm vendor               # Check out and build the vendor/assets submodule. Once, before pnpm dev. Needs Git LFS
 pnpm dev                  # Run the site at http://localhost:4324/icons/
-pnpm site:pages           # Write the page of each icon that has none. --clean removes the pages first
 pnpm site:build           # The submodule, the site and its search index, into _site/
+pnpm site:test            # Build the site of a copy of the repository, for the default set and for the fixture
 pnpm astro:preview        # Serve _site/ as it is deployed
 pnpm site:lint            # ESLint, Stylelint, Prettier and the Nu Html Checker over the site
 pnpm site:lint:html       # html-validate over _site/, after a build
 pnpm site:lint:vnu        # The Nu Html Checker over _site/, after a build. Skipped without Java
 pnpm site:lint:fusv       # Sass variables of the site that nothing uses
 pnpm sync-submodules      # Move vendor/assets to the latest commit of its app/docs branch
-pnpm build                # pnpm icons, pnpm site:pages and pnpm site:build
+pnpm build                # pnpm icons and pnpm site:build
 ```
 
 ### Release

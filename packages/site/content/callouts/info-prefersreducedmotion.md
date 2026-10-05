@@ -1,1 +1,0 @@
-Chassis CSS respects user accessibility preferences by automatically disabling animations when the `prefers-reduced-motion` media query is detected. See the [reduced motion guidelines in our accessibility documentation](/css/docs/core-concepts/accessibility/#reduced-motion) for implementation details.

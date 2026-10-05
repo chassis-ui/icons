@@ -13,7 +13,7 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "build": "pnpm icons && pnpm site:pages && pnpm site:build",
+    "build": "pnpm icons && pnpm site:build",
     "dev": "pnpm astro:dev",
     "release": "pnpm build && pnpm release:archives",
     "test": "pnpm icons:test",
@@ -30,7 +30,6 @@
     "icons:typecheck": "pnpm --filter ./packages/icons run typecheck",
     "icons:verify": "pnpm --filter ./packages/icons run verify",
     "site": "pnpm site:build && pnpm site:lint",
-    "site:pages": "node build/build-pages.js",
     "site:build": "pnpm vendor && pnpm astro:build && pnpm site:pagefind",
     "site:clean": "rm -rf _site && pnpm --filter ./packages/site run clean",
     "site:lint": "pnpm site:lint:eslint && pnpm site:lint:stylelint && pnpm site:lint:prettier && pnpm site:lint:vnu",
@@ -40,6 +39,7 @@
     "site:lint:stylelint": "stylelint packages/site/src/scss/ --cache --cache-location .cache/.stylelintcache",
     "site:lint:html": "pnpm --filter ./packages/site run lint:html",
     "site:lint:vnu": "pnpm --filter ./packages/site run lint:vnu",
+    "site:test": "pnpm --filter ./packages/site run test",
     "site:pagefind": "pagefind --site _site --output-subdir icons/pagefind",
     "astro:dev": "pnpm --filter ./packages/site run dev",
     "astro:build": "pnpm --filter ./packages/site run build",

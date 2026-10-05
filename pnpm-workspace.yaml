@@ -6,3 +6,9 @@ packages:
 # already requires. See the cooldown in .github/dependabot.yml, which exempts the same packages.
 minimumReleaseAgeExclude:
   - '@chassis-ui/*'
+
+# html-validate has matchers for Vitest 3 and 4, which nothing here uses. The test of the site
+# runs on the Vitest of the tests of the build.
+peerDependencyRules:
+  allowedVersions:
+    'html-validate>vitest': '5'

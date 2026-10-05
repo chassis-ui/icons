@@ -1,0 +1,10 @@
+---
+import RedirectLayout from '@chassis-ui/docs/layouts/RedirectLayout.astro'
+import { getDocsPages, getDocsPath } from '@chassis-ui/docs/site'
+
+// The first page of the documentation, or the home page for a site that has no such page
+const introduction = 'getting-started/introduction'
+const hasIntroduction = (await getDocsPages()).some((page) => page.id === introduction)
+---
+
+<RedirectLayout path={hasIntroduction ? getDocsPath(`/${introduction}/`) : '/icons/'} />

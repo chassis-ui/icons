@@ -1,0 +1,132 @@
+---
+title: Chassis React
+description: Draw the icons of a set with the Icon component of Chassis React, and point IconProvider at a sprite, a font prefix and icon names of your own.
+toc: true
+---
+
+## Introduction
+
+[Chassis React](https://chassis-ui.com/react) draws an icon with its `Icon` component: a symbol of the sprite by default, or a class of the font. It holds no icons, and `IconProvider` points it at the set of a project. This page covers what Chassis React reads of a set. The [Icon](https://chassis-ui.com/react/docs/components/icon/) page of Chassis React documents the components and their props.
+
+The examples use the Chassis set. If you build your own set, use the name of your font and your prefix in their place.
+
+## Installation
+
+An app needs Chassis React and the output of a set. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get the output: the package, the archive of a release, and the folders of a build.
+
+```bash
+npm install @chassis-ui/react @chassis-ui/icons
+```
+
+Serve the folder `icons/` of the set from the origin of the app. The examples serve it at `/static/icons/`.
+
+## Basic usage
+
+Name the sprite once with `IconProvider`, and draw an icon by its name:
+
+```jsx
+import { Icon, IconProvider } from '@chassis-ui/react'
+
+export function App() {
+  return (
+    <IconProvider sprite="/static/icons/chassis-icons.svg">
+      <Icon name="bell-outline" />
+    </IconProvider>
+  )
+}
+```
+
+`Icon` renders an `<svg>` element with a `<use>` whose address is the `sprite` and the name of the icon. Without a `sprite` it refers to a symbol of the page itself, for an app that puts the sprite into its markup.
+
+## Size and color
+
+`Icon` adds the class `icon`, so Chassis CSS sizes and colors it. Its `size` prop sets the size of one icon:
+
+```jsx
+<Icon name="bell-outline" size={32} />
+```
+
+[Chassis CSS]([[docsref:/use-in-project/chassis-css#size-and-color]]) describes the class and its utilities.
+
+## Accessibility
+
+`Icon` hides an icon from assistive technology by default, for an icon that sits beside its text. An icon that carries meaning gets a `title`:
+
+```jsx
+<Icon name="bell-outline" title="Notifications" />
+```
+
+## Customization
+
+`IconProvider` holds what Chassis React knows of a set: the sprite, the font and its prefix, and the icons that its own components draw.
+
+### The font
+
+With `font`, `Icon` renders a `<span>` with the class of the icon in place of the SVG. The class is `fontPrefix` and the name, and `fontPrefix` is `cx-` by default. The app loads the stylesheet of the font itself.
+
+```jsx
+import '@chassis-ui/icons'
+import { Icon, IconProvider } from '@chassis-ui/react'
+
+export function App() {
+  return (
+    <IconProvider font>
+      <Icon name="bell-outline" />
+    </IconProvider>
+  )
+}
+```
+
+### Icons of the components
+
+Components of Chassis React that draw an icon of their own ask for it by purpose, such as `check`, `previous`, `next` and `clear`, and each purpose has an icon of the Chassis set as its default. The `icons` prop maps a purpose to another icon:
+
+```jsx
+<IconProvider icons={{ previous: 'arrow-left-outline', next: 'arrow-right-outline' }}>
+```
+
+### A set of your own
+
+A set of your own needs three props: the address of your sprite, the prefix of your font with its `-`, and an icon of your set for each purpose whose default your set does not have.
+
+```jsx
+<IconProvider
+  sprite="/static/icons/your-icons.svg"
+  fontPrefix="yi-"
+  icons={{ check: 'tick-solid', clear: 'close-outline' }}
+>
+```
+
+The defaults of Chassis React are icons of the Chassis set, and `chassis.checks.json` of this repository lists them as a contract. A set that keeps those names needs no `icons` prop.
+
+## Best practices
+
+Chassis React reads a set through one provider. These practices keep the set of an app in that one place.
+
+- **Set the sprite once:** an `IconProvider` at the root of the app names the sprite for every `Icon` below it.
+- **Serve the sprite from the origin of the app:** a browser does not load it for a `<use>` element from another origin.
+- **Map every purpose of your set:** a purpose without an icon of your set draws nothing.
+
+Avoid the habits that undo this:
+
+- **Do not pass the prefix without its `-`:** `fontPrefix` is everything before the name, so the prefix `yi` of a set is `fontPrefix="yi-"`.
+
+## Troubleshooting
+
+Each entry gives the message or the symptom, then the cause and the fix.
+
+### Icon is not drawn
+
+An `Icon` takes its space and stays empty. The sprite is on another origin than the app, no `sprite` is set and the page holds no sprite, or the name is not an icon of the set. Set `sprite` on `IconProvider` to an address of the origin of the app.
+
+### Component has no icon
+
+A control of a component, such as the arrow of a pagination, is empty. The component asks for an icon of the Chassis set by its default name, and the sprite of the app is another set. Map the purpose with the `icons` prop of `IconProvider`.
+
+## Next steps
+
+Continue with one of these pages:
+
+- [SVG sprite]([[docsref:/use-in-project/svg-sprite]]): the file that `Icon` draws from.
+- [Chassis CSS]([[docsref:/use-in-project/chassis-css]]): the class that sizes and colors an icon.
+- [Names and styles]([[docsref:/icon-design/names-and-styles]]): the names that a contract lists.

@@ -7,11 +7,13 @@ import UsageSection from '@components/homepage/UsageSection.astro'
 import StylingSection from '@components/homepage/StylingSection.astro'
 import AccessibilitySection from '@components/homepage/AccessibilitySection.astro'
 import SVGSection from '@components/homepage/SVGSection.astro'
+import set from 'virtual:icon-set'
+import { iconsPages } from '@libs/content'
 import HomeIcons from '/static/icons/cx-sprite.svg?raw'
 import '@scss/_icons.scss'
 ---
 
-<IconsLayout frontmatter={{ title: 'Chassis Icons' }} id="icons-layout">
+<IconsLayout frontmatter={{ title: set.title }} id="icons-layout">
   <HeroSection />
   <nav
     class="container 2xl sticky-top bg-main mb-6xl"
@@ -23,7 +25,7 @@ import '@scss/_icons.scss'
         <a class="nav-link py-xs" href="#build-section">Build</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link py-xs" href="#icons-section">Sprite</a>
+        <a class="nav-link py-xs" href="#icons-section">Icons</a>
       </li>
       <li class="nav-item">
         <a class="nav-link py-xs" href="#usage-section">Usage</a>
@@ -37,7 +39,7 @@ import '@scss/_icons.scss'
     </ul>
   </nav>
   <BuildSection />
-  <ListSection />
+  <ListSection lead={`${set.package.description} The set has ${iconsPages.length} icons.`} />
   <UsageSection />
   <StylingSection />
   <AccessibilitySection />

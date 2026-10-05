@@ -3,14 +3,13 @@ import type { CollectionEntry } from 'astro:content'
 import Title from '@components/Title.astro'
 import Examples from '@components/Examples.astro'
 import Snippets from '@components/Snippets.astro'
-import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+import SetIcon from '@components/SetIcon.astro'
 
 interface Props {
   icon: CollectionEntry<'icons'>['data']
 }
 
 const { icon } = Astro.props
-const iconName = icon.title
 ---
 
 <div class="container 2xl">
@@ -23,7 +22,7 @@ const iconName = icon.title
         role="img"
         aria-label={`${icon.title} - lg preview`}
       >
-        <Icon name={iconName} class="icon-adaptive" />
+        <SetIcon name={icon.title} class="icon-adaptive" />
       </div>
       <div data-pagefind-ignore>
         <Examples icon={icon} />

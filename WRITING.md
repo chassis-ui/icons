@@ -4,7 +4,7 @@ How to write the documents of chassis-icons: the repository docs (`README.md`, `
 
 **The guide is the reference, not the existing pages.** Don't copy a convention from a document because the document does it; check it here. Migrate a document when editing it, and don't gate unrelated PRs on the migration.
 
-**The site has no documentation pages yet.** It shows one generated page per icon. Phase 5 of [ref/ROADMAP.md](ref/ROADMAP.md) writes the pages of `getting-started/`, `icon-design/` and `use-in-project/` by this guide. Until then the language and accuracy rules apply to the repository docs, and the structure rules are the plan for those pages.
+**The pages of the site are in `packages/site/content/docs/`.** They are the sections `getting-started/`, `icon-design/` and `use-in-project/`. The site also shows a page per icon, which has no file: the site makes it from the output of the build.
 
 ## How this guide is organized
 
@@ -243,7 +243,7 @@ Optional fields and their accepted values:
 
 **Titles.** Page titles are in title case. `packages/site/data/sidebar.yml` finds a page by the slug of its sidebar title: the entry `Quick Start` loads `quick-start.mdx`. A new page needs a sidebar entry whose slug is its file name.
 
-**Icon pages** have `title`, which is the name of the icon, `description`, `categories` and `tags`, and no body. They are written by a command and not by hand.
+**Icon pages** have no file. The content loader of `packages/site/src/content.config.ts` makes one from the output of the build for each icon: its `title` is the name of the icon, and its `categories` and `tags` are derived from the name.
 
 ### 10. Standard section order
 
@@ -459,8 +459,8 @@ These conventions haven't been formalized here. To propose one: write the sectio
 
 Currently unwritten:
 
-- The pages of `getting-started/`, `icon-design/` and `use-in-project/` themselves. Their section orders in [§10](#10-standard-section-order) are a plan, and the first page of each section may correct it.
-- The text of an icon page, when the pages come from the output of the build and no longer from committed files.
+- Live examples on a documentation page. The pages show code, and draw no icon: an icon that a page names is not in the set of an adopter.
+- The text of an icon page and of the home page, which are components of `packages/site/src/` and not documents.
 - Screenshot conventions for Figma: when to embed images, alt text rules, where to store source files.
 - Conventions for changeset entries beyond what [CONTRIBUTING.md](.github/CONTRIBUTING.md#changesets) says.
 
@@ -500,4 +500,4 @@ Replaced at build time in prose, link targets, code blocks, and frontmatter.
 
 ### Other components
 
-`@chassis-ui/docs` also provides `<Icon>`, which the pages of this site draw icons with, and `<Example>`, `<ResizableExample>`, `<ScssDocs>`, `<JsDocs>`, `<AddedIn>`, `<DeprecatedIn>`, and `<InFigma>`, which the Chassis CSS docs use. Their props are in Appendix A of the [chassis-css guide](https://github.com/chassis-ui/css/blob/main/WRITING.md). Propose a convention here ([What's not in this guide](#whats-not-in-this-guide-yet)) before the first use on a documentation page.
+`@chassis-ui/docs` also provides `<Icon>`, which draws an icon of the Chassis set for the interface of the site and not an icon of the set that the site shows, and `<Example>`, `<ResizableExample>`, `<ScssDocs>`, `<JsDocs>`, `<AddedIn>`, `<DeprecatedIn>`, and `<InFigma>`, which the Chassis CSS docs use. Their props are in Appendix A of the [chassis-css guide](https://github.com/chassis-ui/css/blob/main/WRITING.md). Propose a convention here ([What's not in this guide](#whats-not-in-this-guide-yet)) before the first use on a documentation page.

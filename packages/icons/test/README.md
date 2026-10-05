@@ -37,6 +37,10 @@ Never edit a golden file by hand. Prettier leaves the folder alone.
 | `cli.test.js`         | The command line: its commands, its options and its exit codes                                |
 | `scripts.test.js`     | The scripts of the root `build/` and the changelog entries of `.changeset/changelog.js`       |
 
+## The test of the site
+
+The site has a test of its own, `packages/site/test/journey.test.js`, which `pnpm site:test` runs. It copies the repository, builds the site of the copy for the set it ships with, then walks the journey of `journey.test.js` in a second copy and builds the site of the fixture. It checks that each page shows the set of the copy, that every icon a page draws is in the sprite it is drawn from, and that every link leads to a page that exists. It needs the build of `vendor/assets`, so it runs in the Site job of CI and not with these tests.
+
 ## Adding a case
 
 - A rule of a module: add an `it` to the test file of that module. Give it the smallest input that shows the rule.

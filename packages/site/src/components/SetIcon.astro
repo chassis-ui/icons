@@ -1,0 +1,48 @@
+---
+import set from 'virtual:icon-set'
+
+/**
+ * An icon of the set that the site shows, from the sprite of the set or, with `font`, as a
+ * glyph of its font. `<Icon>` of `@chassis-ui/docs` draws the interface of the site with the
+ * Chassis set, and this component draws what the site is about.
+ */
+
+interface Props {
+  /** Name of an icon of the set. */
+  name: string
+  /** Class(es) added to `icon`. */
+  class?: string
+  /** Width and height of the SVG, in pixels. The frame of the set by default. */
+  size?: number
+  /** Render the glyph of the font, with the class of the icon, and not the sprite symbol. */
+  font?: boolean
+  /** Accessible name. Without one the icon is hidden from assistive technology. */
+  title?: string
+  /** Any other attribute is passed to the element. */
+  [key: string]: unknown
+}
+
+const { name, class: className, size = set.frame, font = false, title, ...rest } = Astro.props
+---
+
+{
+  font ? (
+    <span
+      class:list={['icon', `${set.prefix}-${name}`, className]}
+      aria-hidden={title ? undefined : 'true'}
+      aria-label={title}
+      {...rest}
+    />
+  ) : (
+    <svg
+      class:list={['icon', className]}
+      width={size}
+      height={size}
+      aria-hidden={title ? undefined : 'true'}
+      {...rest}
+    >
+      {title && <title>{title}</title>}
+      <use href={`${set.path.sprite}#${name}`} />
+    </svg>
+  )
+}

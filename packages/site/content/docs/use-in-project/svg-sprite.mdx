@@ -1,0 +1,113 @@
+---
+title: SVG Sprite
+description: Draw an icon from the SVG sprite with a use element. Installation, size and color, accessibility, and a sprite inside the page.
+toc: true
+---
+
+## Introduction
+
+The sprite is one SVG file, `icons/<font>.svg`, that holds every icon of the set as a `<symbol>` whose `id` is the name of the icon. One request loads the set, and a `<use>` element draws an icon. Choose the sprite when an icon is SVG in the page: it has a title of its own, it is styled with CSS, and it needs no font.
+
+The examples use the Chassis set, whose sprite is `chassis-icons.svg`. If you build your own set, use the name of your font in its place.
+
+## Installation
+
+The sprite is in the `icons/` folder of the output. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get that folder: the package, the archive of a release, and the folders of a build. The sprite is one file and needs no other.
+
+```bash
+npm install @chassis-ui/icons
+```
+
+## Basic usage
+
+Draw an icon with an `<svg>` element that holds a `<use>`, whose `href` is the address of the sprite and the name of the icon after `#`:
+
+```html
+<svg width="24" height="24" fill="currentcolor" aria-hidden="true">
+  <use href="node_modules/@chassis-ui/icons/icons/chassis-icons.svg#bell-outline"></use>
+</svg>
+```
+
+The build writes one symbol per icon, with the frame as its `viewBox`:
+
+```svg
+<symbol class="cx-minus-outline" viewBox="0 0 24 24" id="minus-outline"><path d="M20.125 12c0 .547-.43.938-.937.938H4.813c-.547 0-.938-.391-.938-.938 0-.508.39-.937.938-.937h14.375a.95.95 0 0 1 .937.937"/></symbol>
+```
+
+## Size and color
+
+The `width` and the `height` of the `<svg>` element are the size of the icon, in the attributes or in CSS. A symbol has no color of its own, so the icon takes the `fill` of the `<svg>` element: with `fill="currentcolor"` that is the color of the text around it.
+
+```html
+<svg width="48" height="48" fill="currentcolor" style="color: rebeccapurple;" aria-hidden="true">
+  <use href="node_modules/@chassis-ui/icons/icons/chassis-icons.svg#bell-outline"></use>
+</svg>
+```
+
+An `<svg>` element without a `fill` draws the icon in black.
+
+## Accessibility
+
+An `<svg>` element is an image to a screen reader. Hide an icon that repeats the text beside it, and name one that stands alone.
+
+A decorative icon is hidden with `aria-hidden="true"`, as in the examples above. An icon that carries meaning gets a role and a title:
+
+```html
+<svg width="24" height="24" fill="currentcolor" role="img">
+  <title>Notifications</title>
+  <use href="node_modules/@chassis-ui/icons/icons/chassis-icons.svg#bell-outline"></use>
+</svg>
+```
+
+## Customization
+
+The sprite has no settings of its own. Its name follows from the configuration of the set, and a page chooses where the sprite is.
+
+### A sprite in the page
+
+A `<use>` element does not load a file from another origin. Serve the sprite from the origin of the page, or put the contents of the file into the page and refer to a symbol by its name alone:
+
+```html
+<svg width="24" height="24" fill="currentcolor" aria-hidden="true">
+  <use href="#bell-outline"></use>
+</svg>
+```
+
+Hide the sprite in the page with `style="display: none"` on its root, so that it takes no space.
+
+### A set of your own
+
+The name of the sprite is the setting `name` of `chassis.build`. With `"name": "your-icons"` the sprite is `icons/your-icons.svg`, and the `id` of a symbol is still the name of the icon.
+
+## Best practices
+
+A `<use>` element names a symbol of one file. These practices keep that address working.
+
+- **Serve the sprite from your own origin:** a browser does not load it for a `<use>` element from a CDN on another domain.
+- **Set `fill="currentcolor"`:** on the `<svg>` element or in CSS, so the icon takes the color of its text.
+- **Set the size:** an `<svg>` element without `width` and `height` has the default size of the browser, not the frame.
+
+Avoid the habits that undo this:
+
+- **Do not edit the sprite:** the build writes it from `svgs/`. Change the icon in `source/`.
+- **Do not copy a symbol out of the sprite:** its path data is rewritten in its shortest form. `svgs/<name>.svg` is the file to read and edit.
+
+## Troubleshooting
+
+Each entry gives the message or the symptom, then the cause and the fix.
+
+### Icon is not drawn
+
+The `<svg>` element takes its space and stays empty, and the browser logs no error. The sprite is on another origin than the page, or the name after `#` is not an icon of the set. Serve the sprite from the origin of the page, and find the name on the [home page](/icons/).
+
+### Icon is black
+
+The icon ignores the color of the text. The `<svg>` element has no `fill`. Add `fill="currentcolor"`, or set `fill: currentcolor` in CSS.
+
+## Next steps
+
+Continue with one of these pages:
+
+- [SVG files]([[docsref:/use-in-project/svg-files]]): one file per icon, for an image or for CSS.
+- [Chassis React]([[docsref:/use-in-project/chassis-react]]): the `Icon` component, which draws from the sprite.
+- [Icon font]([[docsref:/use-in-project/icon-font]]): the same icons with a class.

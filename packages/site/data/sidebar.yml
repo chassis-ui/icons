@@ -1,17 +1,33 @@
-# This file holds all sidebar menu's entries for Chassis Icons.
+# The entries of the sidebar of the documentation pages. An entry finds its page by the slug
+# of its title: "Quick Start" under "Getting Started" is
+# content/docs/getting-started/quick-start.mdx. The icons are of the Chassis set, which draws
+# the interface of the site.
 
-- title: Icons
-  icon: star-solid
+- title: Getting Started
+  icon: rocket-solid
   iconColor: yellow
   pages:
-    - title: Getting Started
+    - title: Introduction
+    - title: Quick Start
+    - title: Build System
 
-- title: About
-  icon: info-circle-solid
+- title: Icon Design
+  icon: pen-solid
+  iconColor: red
+  pages:
+    - title: Frame and Color
+    - title: Names and Styles
+    - title: Source Lint
+
+- title: Use in Project
+  icon: code-solid
   iconColor: indigo
   pages:
-    - title: Overview
-    - title: Brand
-    - title: License
-    - title: Translations
-    - title: Team
+    - title: Icon Font
+    - title: SVG Sprite
+    - title: SVG Files
+    - title: Sass
+    - title: Chassis CSS
+    - title: Chassis React
+    - title: iOS and Android
+    - title: Publishing

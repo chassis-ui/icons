@@ -1,0 +1,101 @@
+---
+title: Names and Styles
+description: The name of a file is the name of its icon. How names are written, what a style is, and which styles come together as a pair.
+toc: true
+---
+
+## Introduction
+
+An icon is named by its file: `source/bell-outline.svg` is the icon `bell-outline`. The build uses the name as it is, so a name is chosen once and kept. The styles of a set and its pairs are the settings `chassis.build.styles` and `chassis.build.pairs` of `packages/icons/package.json`.
+
+## Names
+
+A name is in kebab-case: lower-case letters and digits, in parts joined by `-`, starting with a letter. The build writes the name into every file of the output.
+
+<CxTable>
+| Where | Form | For the icon `bell-outline` of the Chassis set |
+| --- | --- | --- |
+| The optimized file | `svgs/<name>.svg` | `svgs/bell-outline.svg` |
+| The symbol of the sprite | `<font>.svg#<name>` | `chassis-icons.svg#bell-outline` |
+| The class of the font | `<prefix>-<name>` | `cx-bell-outline` |
+| The map of code points | The key `<name>` of `icons/<font>.json` | `"bell-outline"` |
+</CxTable>
+
+A project draws an icon by its name, so renaming or removing an icon breaks every project that uses it. A set that others read names its contract: `chassis.checks.json` lists the icons that a consumer reads by name, and `pnpm icons:verify` fails when one of them is missing.
+
+## Styles
+
+A style is the last part of a name, and says how the icon is drawn. The setting `styles` lists the styles of a set. With an empty list, which is the default, any kebab-case name is an icon.
+
+In `chassis.build` of `packages/icons/package.json`, for the Chassis set:
+
+```json
+{
+  "chassis": {
+    "build": {
+      "styles": ["outline", "solid", "brand"]
+    }
+  }
+}
+```
+
+With these styles a name ends in `-outline`, `-solid` or `-brand`, and a file named `bell.svg` is refused. The part before the style is what the icon shows: `bell-outline` and `bell-solid` are two drawings of one bell.
+
+## Pairs
+
+A pair is a group of styles that an icon comes in together. The setting `pairs` lists them, and each is a list of two or more styles of `styles`.
+
+```json
+{
+  "chassis": {
+    "build": {
+      "styles": ["outline", "solid", "brand"],
+      "pairs": [["outline", "solid"]]
+    }
+  }
+}
+```
+
+With this pair an icon that has an `outline` file has a `solid` file too, and the source lint refuses one without the other. A style that is in no pair stands alone: a `brand` icon of the Chassis set has one file.
+
+## Exporting
+
+A design tool names an exported file after its frame or its layer. Name the frame as the icon is named, in kebab-case with the style last, and the exported file needs no renaming.
+
+Save the file into `source/`, with no folder inside it: the build reads the SVG files of `source/` itself, and the source lint refuses a file there that is not an SVG file.
+
+## Source lint
+
+`pnpm icons:lint:source` checks the name of each file of `source/` against the configuration.
+
+<CxTable>
+| Message | Cause |
+| --- | --- |
+| `is not in kebab-case: lower-case letters and digits in parts joined by "-"` | The name has an upper-case letter, a space or another character |
+| `does not end in a style: -outline, -solid, -brand` | The last part of the name is not one of `styles` |
+| `has no "bell-solid" beside it: outline and solid come together` | The icon is in one style of a pair, and not in the other |
+| `is not an SVG file: the source folder holds icons only` | `source/` holds a file of another type |
+</CxTable>
+
+Each line starts with the name of the file.
+
+## Best practices
+
+A name is a promise to every project that draws the icon. These practices keep the names of a set stable.
+
+- **Name an icon after what it shows:** `arrow-right-solid`, not the place it is used in. One icon serves many places.
+- **Add the styles of a pair together:** save both files before running `pnpm icons:lint:source`.
+- **List the names that a consumer reads:** an entry of `chassis.checks.json` makes `pnpm icons:verify` fail when one of its icons is gone.
+
+Avoid the habits that undo this:
+
+- **Do not rename an icon to tidy the set:** the class, the symbol and the file of the old name are gone with the next build. A rename is a breaking change, and its changeset names the old and the new name.
+- **Do not number a duplicate:** two files with the same drawing are two icons with two code points.
+
+## Next steps
+
+Continue with one of these pages:
+
+- [Frame and color]([[docsref:/icon-design/frame-and-color]]): what the drawing of a file needs.
+- [Source lint]([[docsref:/icon-design/source-lint]]): every check of the source, and its message.
+- [Build system]([[docsref:/getting-started/build-system#code-points]]): how an icon keeps its code point.

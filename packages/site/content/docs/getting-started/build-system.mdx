@@ -1,0 +1,162 @@
+---
+title: Build System
+description: The commands of the build, its four steps, the settings of chassis.build, how code points are kept, and the checks of the output.
+toc: true
+---
+
+## Introduction
+
+The build turns the SVG files of `source/` into the output of the set, in four steps. It reads one block of configuration and names no set itself: the same build writes the Chassis set and the set of any team that adopts the repository.
+
+The output is committed, and a fresh build equals it. After a change to `source/` or to the configuration, run the build and commit the result with the change.
+
+## Prerequisites
+
+The build needs Node.js 22.12 or later, pnpm, and the packages of the repository. The [quick start]([[docsref:/getting-started/quick-start#prerequisites]]) has the setup. Run every command from the root of the repository.
+
+## Commands
+
+`pnpm icons` runs the whole build, and its options run a part of it or change nothing at all.
+
+```bash
+pnpm icons                  # The whole output: SVG files, sprite, font, stylesheets, README and manifest
+pnpm icons --dry-run        # List the files that a build would change, and change none
+pnpm icons --only font      # One step: svgs, sprite, font or package
+pnpm icons --verbose        # Each file that is written, and each code point that is given or retired
+pnpm icons:init             # Empty the output and the registry of code points, to start a new set
+```
+
+A whole build removes from `packages/icons/svgs/` each file whose source is gone, and from `packages/icons/icons/` each file that it did not write, such as the files of another font name. `node packages/icons/build/cli.js --help` prints every command and option.
+
+## Steps
+
+The build has four steps, and each reads what the step before it wrote.
+
+<CxTable>
+| Step | Reads | Writes |
+| --- | --- | --- |
+| `svgs` | `source/` | `svgs/<name>.svg`, optimized with SVGO, and removes a file whose source is gone |
+| `sprite` | `svgs/` | `icons/<font>.svg`, built with svg-sprite, and `icons/preview.html` |
+| `font` | `svgs/` and `codepoints.json` | The font in each format, built with Fantasticon, `icons/<font>.css`, `.min.css`, `.scss` and `.json`, and `codepoints.json` |
+| `package` | The configuration | The fields of `package.json` that name the files, and `README.md` |
+</CxTable>
+
+The steps after `svgs` read `packages/icons/svgs/`, so `pnpm icons --only sprite` and `pnpm icons --only font` build from the files that are there. `packages/icons/icons/preview.html` shows every icon of the sprite. Git ignores it, and it is not published.
+
+The build optimizes, and draws nothing. It does not resize or recolor an icon, and it does not outline a stroke: the [source lint]([[docsref:/icon-design/source-lint]]) refuses a file that the build cannot use.
+
+## Configuration
+
+The configuration of a set is in `packages/icons/package.json`, with the checks file at the root and the templates of the stylesheets beside the build.
+
+### chassis.build
+
+The build reads the `chassis.build` block. A setting that the block leaves out has its default, and a setting that the build does not know stops it with a message that names the setting.
+
+<CxTable>
+| Setting | Default | What it sets |
+| --- | --- | --- |
+| `name` | required | The name of the font, and of every file of `icons/` |
+| `prefix` | required | What a class starts with: `<prefix>-<name>` |
+| `source` | `"../../source"` | The folder of the SVG files, from the package |
+| `checks` | `"../../chassis.checks.json"` | The checks file, from the package. It may not exist |
+| `frame` | `24` | The width and the height of the frame an icon is drawn on |
+| `styles` | `[]` | The last part a name may have. Any kebab-case name when empty |
+| `pairs` | `[]` | The styles an icon comes in together |
+| `startCodepoint` | `"f101"` | The code point of the first icon of a new set, in the Private Use Area, `e000` to `f8ff` |
+| `formats` | `["woff2", "woff"]` | The font formats, in the order of the `src` of the font face: `woff2`, `woff`, `ttf` |
+| `header` | `[]` | The lines of the comment at the top of each stylesheet. `{version}` is the version of the package |
+</CxTable>
+
+`name` and `prefix` are kebab-case names. The Chassis set has this block:
+
+```json
+{
+  "chassis": {
+    "build": {
+      "name": "chassis-icons",
+      "prefix": "cx",
+      "source": "../../source",
+      "frame": 24,
+      "styles": ["outline", "solid", "brand"],
+      "pairs": [["outline", "solid"]],
+      "startCodepoint": "f101",
+      "formats": ["woff2", "woff"]
+    }
+  }
+}
+```
+
+### Package fields
+
+The other fields of `packages/icons/package.json` describe the package. The build writes `main`, `style`, `sass`, `files`, `exports` and `sideEffects`, which name the files of the font, and keeps an entry of `files` or `exports` that is not about `icons/` or `svgs/`. Every other field is yours: `name`, `version`, `description`, `homepage`, `repository`, `license`, `private` and `publishConfig`. [Publishing]([[docsref:/use-in-project/publishing]]) says what the release reads of them.
+
+### Checks file
+
+`chassis.checks.json` lists, under `contracts`, the icons that a consumer reads by name. Each entry has a `reader`, which the message of a failed check names, and its `icons`. The build does not read the file, `pnpm icons:verify` does, and a set without the file passes.
+
+```json
+{
+  "contracts": [{ "reader": "the toolbar of the app", "icons": ["search-solid", "xmark-outline"] }]
+}
+```
+
+### Templates
+
+`packages/icons/build/templates/css.hbs` and `scss.hbs` are the Handlebars templates of the stylesheets, and `readme.hbs` is the template of the README of the package. Change a template to change what the build writes for every icon. Never change a file of the output by hand: the next build writes it again.
+
+## Code points
+
+An icon keeps its code point for as long as it is in the set, so a stylesheet that a browser has cached draws the right icon after another is added. `packages/icons/codepoints.json` is the registry of the code points, and the build is its only writer.
+
+```json
+{
+  "icons": { "<name>": "f101" },
+  "retired": ["f243"]
+}
+```
+
+A new icon gets the first code point, from `startCodepoint`, that no icon has or had, and never moves another. The code point of a removed icon is retired: no later icon gets it. `pnpm icons --verbose` names each code point that a build gives or retires. Commit the registry with the output.
+
+`icons/<font>.json` is output for a consumer: the same code points as numbers, without the retired ones.
+
+## Checks
+
+Two commands check a set, and CI runs both. `pnpm icons:lint:source` checks the files of `source/` before a build, and `pnpm icons:verify` checks the output after it.
+
+```bash
+pnpm icons:lint:source
+pnpm icons:verify
+```
+
+`pnpm icons:verify` builds into a temporary folder and fails when a committed file is not what the source builds, when an icon lost the code point it had at the last tag, when two icons share a code point, or when an icon of the checks file is missing. `pnpm icons:verify --since <ref>` compares the code points with those of a commit, a branch or a tag, in place of the last tag.
+
+`pnpm icons:test` runs the tests of the build. They build the set of another team, with another font name, prefix, frame and styles, so a part of the build that works for one set only fails there.
+
+## Troubleshooting
+
+Each entry gives the message or the symptom, then the cause and the fix.
+
+### Unknown setting
+
+The build stops with `Unknown setting in "chassis.build": <setting>`. The block holds a key that the build does not read, such as a misspelled one. Remove it, or correct its name from the table of [chassis.build](#chassisbuild).
+
+### Output is not built
+
+`pnpm icons:verify` prints `<file>: changed. The output is not what the source builds: run the build.` A file of `source/`, the configuration or a template changed, and the committed output is older. Run `pnpm icons`, and commit the output with the change.
+
+### File is not written
+
+`pnpm icons:verify` prints `<file>: the build does not write it.` The output holds a file that no source file builds, such as the file of a removed icon. Run `pnpm icons`, which removes it.
+
+### Code points not compared
+
+`pnpm icons:verify` prints a note that starts with `The code points were not compared with an earlier state`. The repository has no tag yet, or the tag has no `icons/<font>.json`. It is a note and not a problem: the comparison starts with the first tag of the set.
+
+## Next steps
+
+Continue with one of these pages:
+
+- [Source lint]([[docsref:/icon-design/source-lint]]): what `pnpm icons:lint:source` checks, and its messages.
+- [Publishing]([[docsref:/use-in-project/publishing]]): from a built set to a package and a release.
+- The [architecture document]([[config:repo]]/blob/main/docs/architecture.md) of the repository: the modules of the build, and the contract of each file of the output.

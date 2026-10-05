@@ -1,10 +1,11 @@
 ---
-import { getConfig } from '@chassis-ui/docs/site'
-import type { SiteConfig } from '@libs/config'
+import set from 'virtual:icon-set'
 import Example from '@chassis-ui/docs/shortcodes/Example.astro'
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
+import { fontIcon, spriteIcon } from '@libs/icon'
 
-const config = getConfig<SiteConfig>()
+const name = set.exampleIcon
+const { frame } = set
 ---
 
 <section id="styling-section" class="home-section py-3xl md:py-6xl">
@@ -13,10 +14,11 @@ const config = getConfig<SiteConfig>()
       <header class="section-header col lg:col-10 xl:col-8">
         <h2 id="styling">Styling</h2>
         <p>
-          Easily style icons with <a href="https://chassis-ui.com/css">Chassis CSS</a>. Icons use <code
+          <a href="https://chassis-ui.com/css">Chassis CSS</a> styles an element with the class <code
+            >icon</code
+          >, whatever set the icon is of. It reads the size and the color from <code
             >--cx-icon-size</code
-          > and <code>--cx-icon-color</code> for their size and color. You can change those values in
-          different ways.
+          > and <code>--cx-icon-color</code>, and its utilities set both.
         </p>
       </header>
     </div>
@@ -31,10 +33,7 @@ const config = getConfig<SiteConfig>()
         </p>
       </div>
       <div class="md:col-8">
-        <Example
-          code={`<Icon name="${config.exampleIcon}" />
-          <Icon name="${config.exampleIcon}" class="icon-info icon-xl" />`}
-        />
+        <Example code={[spriteIcon(name), spriteIcon(name, 'icon-info icon-xl')]} />
       </div>
     </div>
 
@@ -51,7 +50,7 @@ const config = getConfig<SiteConfig>()
       <div class="md:col-8">
         <Example
           code={`<h2 class="fg-subtle">
-  <Icon name="${config.exampleIcon}" class="icon-adaptive icon-reset" />
+  ${spriteIcon(name, 'icon-adaptive icon-reset')}
   Heading
 </h2>`}
         />
@@ -78,13 +77,13 @@ const config = getConfig<SiteConfig>()
       <div class="md:col-8">
         <Example
           code={`<div class="context secondary p-md">
-    <Icon name="${config.exampleIcon}" />
-    <Icon name="${config.exampleIcon}" class="icon-subtle icon-md" />
+  ${spriteIcon(name)}
+  ${spriteIcon(name, 'icon-subtle icon-md')}
 
-    <Icon name="${config.exampleIcon}" class="fg-subtle icon-2xl" font />
-    <Icon name="${config.exampleIcon}" class="primary-icon-main" font />
-    <Icon name="${config.exampleIcon}" class="primary-fg-main icon-xs" font />
-  </div>`}
+  ${fontIcon(name, 'fg-subtle icon-2xl')}
+  ${fontIcon(name, 'primary-icon-main')}
+  ${fontIcon(name, 'primary-fg-main icon-xs')}
+</div>`}
         />
       </div>
     </div>
@@ -106,7 +105,7 @@ const config = getConfig<SiteConfig>()
         </p>
         <p>
           Note that, it is not possible to change color if SVG used as <code>background-image</code
-          >. Because of this, we prefer to use <code>mask-image</code> if any CSS usage needed.
+          >. A <code>mask-image</code> takes the color of <code>background-color</code>.
         </p>
       </div>
       <div class="md:col-8">
@@ -116,7 +115,7 @@ const config = getConfig<SiteConfig>()
   display: inline-block;
   content: "";
   vertical-align: -.125em;
-  background-image: url("data:image/svg+xml,<svg viewBox='0 0 24 24' fill='%23ff5b14' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z' clip-rule='evenodd'/></svg>");
+  background-image: url("data:image/svg+xml,<svg viewBox='0 0 ${frame} ${frame}' fill='%23ff5b14' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z' clip-rule='evenodd'/></svg>");
   background-repeat: no-repeat;
   background-size: 1rem 1rem;
 }`}
@@ -125,13 +124,13 @@ const config = getConfig<SiteConfig>()
           lang="css"
           code={`.icon-mask::before {
   position: absolute;
-  width: 1rem
-  height: 1rem
+  width: 1rem;
+  height: 1rem;
   margin-top: 0;
   margin-left: .5rem;
   content: "";
   background-color: #ff5b14;
-  mask-image: url("data:image/svg+xml,<svg viewBox='0 0 24 24' fill='currentColor' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z' clip-rule='evenodd'/></svg>");
+  mask-image: url("data:image/svg+xml,<svg viewBox='0 0 ${frame} ${frame}' fill='currentColor' xmlns='http://www.w3.org/2000/svg'><path fill-rule='evenodd' d='M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z' clip-rule='evenodd'/></svg>");
   mask-position: center;
   mask-size: 1rem 1rem;
 }`}

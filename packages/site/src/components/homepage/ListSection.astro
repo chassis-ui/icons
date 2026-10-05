@@ -1,19 +1,21 @@
 ---
-import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
-import { iconsPages } from '@libs/content'
+import SetIcon from '@components/SetIcon.astro'
+import { iconsPages, type IconPage } from '@libs/content'
 
 interface Props {
-  icons?: typeof iconsPages
+  icons?: IconPage[]
+  /** A paragraph under the title, such as what the set is. */
+  lead?: string
   showSearch?: boolean
   title?: string
 }
 
-const { icons = iconsPages, showSearch = true, title = 'Sprite' } = Astro.props
+const { icons = iconsPages, lead, showSearch = true, title = 'Icons' } = Astro.props
 ---
 
 <section id="icons-section" class="home-section py-xl">
   <div class="container 2xl section-content">
-    <header class="d-flex my-2xl">
+    <header class:list={['d-flex mt-2xl', lead ? 'mb-md' : 'mb-2xl']}>
       <h2 id="icons">{title}</h2>
       {
         showSearch && (
@@ -35,31 +37,28 @@ const { icons = iconsPages, showSearch = true, title = 'Sprite' } = Astro.props
         )
       }
     </header>
+    {lead && <p class="mb-2xl lg:col-8">{lead}</p>}
     <ul
       id="icons-list"
       class="row row-cols-3 gy-md sm:row-cols-4 lg:row-cols-6 xl:row-cols-8 bulletless icons-list icon-xl"
       data-pagefind-ignore
     >
       {
-        icons.map((iconPage) => {
-          const filename = iconPage.id.split('/').pop()?.replace('.mdx', '')
-          if (!filename) return null
-          return (
-            <li
-              class="col"
-              data-name={filename}
-              data-tags={iconPage.data.tags?.split(',')?.join(' ').toLowerCase()}
-              data-categories={iconPage.data.categories?.split(',')?.join(' ').toLowerCase()}
-            >
-              <a class="d-block text-decoration-none" href={`/icons/${filename}`}>
-                <div class="bg-even py-3xl text-center rounded">
-                  <Icon name={filename} />
-                </div>
-                <div class="name text-muted text-decoration-none text-center">{filename}</div>
-              </a>
-            </li>
-          )
-        })
+        icons.map(({ id: name, data }) => (
+          <li
+            class="col"
+            data-name={name}
+            data-tags={data.tags.join(' ').toLowerCase()}
+            data-categories={data.categories.join(' ').toLowerCase()}
+          >
+            <a class="d-block text-decoration-none" href={`/icons/${name}/`}>
+              <div class="bg-even py-3xl text-center rounded">
+                <SetIcon name={name} />
+              </div>
+              <div class="name text-muted text-decoration-none text-center">{name}</div>
+            </a>
+          </li>
+        ))
       }
     </ul>
   </div>

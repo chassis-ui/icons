@@ -1,0 +1,76 @@
+---
+title: Welcome to Chassis Icons
+description: Chassis Icons is an icon library creator. A team fills a repository with its SVG files and builds an icon font, an SVG sprite and optimized SVG files.
+toc: true
+sections:
+  - title: Quick Start
+    description: Use the Chassis set in a project, or turn a clone of the repository into the set of your team.
+    slug: quick-start
+  - title: Build System
+    description: The commands, the steps of the build, its configuration, the code points and the checks.
+    slug: build-system
+aliases:
+  - '[[docsref:/getting-started]]'
+---
+
+## Introduction
+
+Chassis Icons is an icon library creator: a repository that a team owns, fills with its own SVG files and builds into an icon font, an SVG sprite and optimized SVG files, with a site that shows the set. The build is file-driven. Save `<name>.svg` into `source/`, and the icon is in the output of the next build. There is no list to maintain beside the files.
+
+The repository is made to be owned and customized, as [Chassis Tokens](https://chassis-ui.com/tokens) and [Chassis Assets](https://chassis-ui.com/assets) are. A team that adopts it replaces the files of `source/` and the `chassis.build` block of `packages/icons/package.json`, and never the build. The font name, the class prefix, the frame and the styles of the icons are settings.
+
+The icons in the repository are the Chassis set: the icons that the Chassis documentation sites and Figma libraries use, published as `@chassis-ui/icons`. These pages use that set in their examples. The [quick start]([[docsref:/getting-started/quick-start]]) covers both ways to begin: installing the Chassis set, and building a set of your own.
+
+## What a set is
+
+A set is the icons of one repository: the SVG files of `source/`, and what the build writes from them. One repository builds one set.
+
+```text
+source/                   -> The SVG files you save, one per icon. The build only reads them
+packages/icons/           -> The package of the set
+  svgs/                   -> Output: one optimized SVG file per icon
+  icons/                  -> Output: the font, its stylesheets and the sprite
+  codepoints.json         -> The code point of each icon. Written by the build
+  package.json            -> The details of the package and the chassis.build configuration
+  build/                  -> The build
+packages/site/            -> The site that shows the set
+```
+
+The name of a file is the name of its icon, and that name is everything a project needs to draw the icon: it is the symbol of the sprite, the last part of the class of the font, and the name of the optimized file.
+
+## What the build writes
+
+The build writes two folders, and their shape is the same for any set. `<font>` is the font name of the configuration, `<prefix>` its class prefix, and `<name>` the name of an icon.
+
+<CxTable>
+| File | What it holds |
+| --- | --- |
+| `svgs/<name>.svg` | One icon, optimized, on the frame, with `fill="currentcolor"` |
+| `icons/<font>.svg` | The sprite: one `<symbol>` per icon, with the id `<name>` |
+| `icons/<font>.woff2` and the other formats | The icon font |
+| `icons/<font>.css`, `icons/<font>.min.css` | The font face and one class per icon, `<prefix>-<name>` |
+| `icons/<font>.scss` | The same for Sass, with the folder of the font and the map of the icons as variables |
+| `icons/<font>.json` | The code point of each icon, by name |
+</CxTable>
+
+The output is committed to the repository and published as it is, so a project installs the set without building it. The pages of [Use in Project]([[docsref:/use-in-project/icon-font]]) show how a page draws an icon from each of these files.
+
+## What reads a set
+
+Chassis CSS, Chassis React and Chassis Assets take any set that keeps this shape. None of them names the Chassis set in a way that a team cannot configure.
+
+<CxTable>
+| Consumer | What it reads | Page |
+| --- | --- | --- |
+| Chassis CSS | An SVG file by name, through `svg-icon()` | [Chassis CSS]([[docsref:/use-in-project/chassis-css]]) |
+| Chassis React | A symbol of the sprite, or a class of the font, through `Icon` | [Chassis React]([[docsref:/use-in-project/chassis-react]]) |
+| Chassis Assets | The two folders of the output, renamed for iOS and Android | [iOS and Android]([[docsref:/use-in-project/ios-and-android]]) |
+</CxTable>
+
+## Next steps
+
+Continue with one of these pages:
+
+- [Quick start]([[docsref:/getting-started/quick-start]]): install the Chassis set, or build a set of your own.
+- [Build system]([[docsref:/getting-started/build-system]]): the commands, the configuration and the checks.
+- [Frame and color]([[docsref:/icon-design/frame-and-color]]): what an SVG file needs to be an icon of a set.

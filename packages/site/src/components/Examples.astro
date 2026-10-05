@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content'
-import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+import SetIcon from '@components/SetIcon.astro'
 
 interface Props {
   icon: CollectionEntry<'icons'>['data']
@@ -12,71 +12,71 @@ const { icon } = Astro.props
 <h2 class="font-strong">Examples</h2>
 <div class="p-md md:p-lg border rounded icon-demo-examples">
   <div class="h1 align-items-center">
-    <Icon name={icon.title} class="icon-adaptive" /> Heading
+    <SetIcon name={icon.title} class="icon-adaptive" /> Heading
   </div>
   <div class="h3">
-    <Icon name={icon.title} class="icon-adaptive" /> Smaller heading
+    <SetIcon name={icon.title} class="icon-adaptive" /> Smaller heading
   </div>
   <p>
-    Inline text <Icon name={icon.title} class="icon-adaptive" />
+    Inline text <SetIcon name={icon.title} class="icon-adaptive" />
   </p>
   <p>
     <a href="#content" class="text-decoration-none">
-      Example link text <Icon name={icon.title} class="icon-adaptive" />
+      Example link text <SetIcon name={icon.title} class="icon-adaptive" />
     </a>
   </p>
   <div class="d-flex gap-sm mb-md">
     <button type="button" class="button default">
-      <Icon name={icon.title} />
+      <SetIcon name={icon.title} />
       <span>Button</span>
     </button>
     <button type="button" class="button primary">
-      <Icon name={icon.title} />
+      <SetIcon name={icon.title} />
       <span>Button</span>
     </button>
     <button type="button" class="button primary outline">
-      <Icon name={icon.title} />
+      <SetIcon name={icon.title} />
       <span>Button</span>
     </button>
     <button type="button" class="button primary smooth">
-      <Icon name={icon.title} />
+      <SetIcon name={icon.title} />
       <span>Button</span>
     </button>
   </div>
   <div class="d-flex gap-sm mb-md">
     <button type="button" class="button default icon-only">
-      <Icon name={icon.title} />
+      <SetIcon name={icon.title} />
       <span class="visually-hidden">Button</span>
     </button>
     <button type="button" class="button secondary icon-only">
-      <Icon name={icon.title} />
+      <SetIcon name={icon.title} />
       <span class="visually-hidden">Button</span>
     </button>
     <div class="button-group">
       <button type="button" class="button default icon-only">
-        <Icon name={icon.title} />
+        <SetIcon name={icon.title} />
         <span class="visually-hidden">Button</span>
       </button>
       <button type="button" class="button default icon-only">
-        <Icon name={icon.title} />
+        <SetIcon name={icon.title} />
         <span class="visually-hidden">Button</span>
       </button>
       <button type="button" class="button default icon-only">
-        <Icon name={icon.title} />
+        <SetIcon name={icon.title} />
         <span class="visually-hidden">Button</span>
       </button>
     </div>
     <div class="button-group">
       <button type="button" class="button secondary icon-only">
-        <Icon name={icon.title} />
+        <SetIcon name={icon.title} />
         <span class="visually-hidden">Button</span>
       </button>
       <button type="button" class="button secondary icon-only">
-        <Icon name={icon.title} />
+        <SetIcon name={icon.title} />
         <span class="visually-hidden">Button</span>
       </button>
       <button type="button" class="button secondary icon-only">
-        <Icon name={icon.title} />
+        <SetIcon name={icon.title} />
         <span class="visually-hidden">Button</span>
       </button>
     </div>
@@ -84,7 +84,7 @@ const { icon } = Astro.props
   <div class="mb-md">
     <div class="input-group">
       <span class="input-addon" id="basic-addon1">
-        <Icon name={icon.title} />
+        <SetIcon name={icon.title} />
       </span>
       <input
         type="text"
@@ -96,7 +96,7 @@ const { icon } = Astro.props
     </div>
   </div>
   <div class="notification success" role="alert">
-    <Icon name={icon.title} class="notification-icon" />
+    <SetIcon name={icon.title} class="notification-icon" />
     <p>An example notification with an icon!</p>
   </div>
 </div>

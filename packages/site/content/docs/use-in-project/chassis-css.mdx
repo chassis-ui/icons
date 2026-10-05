@@ -1,0 +1,119 @@
+---
+title: Chassis CSS
+description: Style the icons of a set with the icon class of Chassis CSS, and read an SVG file by the name of its icon with svg-icon() and $icon-url-prefix.
+toc: true
+---
+
+## Introduction
+
+[Chassis CSS](https://chassis-ui.com/css) holds no icons, and takes those of any set. Its class `icon` sizes and colors an icon of the sprite or of the font, and its Sass function `svg-icon()` makes the address of an SVG file from the name of an icon. This page covers what Chassis CSS reads of a set. Its own documentation covers the class and its utilities: see [Icon](https://chassis-ui.com/css/docs/helpers/icon/) and [Icons](https://chassis-ui.com/css/docs/content/icons/).
+
+The examples use the Chassis set. If you build your own set, use the name of your font and your prefix in their place.
+
+## Installation
+
+A page needs Chassis CSS and the output of a set. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get the output: the package, the archive of a release, and the folders of a build.
+
+```bash
+npm install @chassis-ui/css @chassis-ui/icons
+```
+
+## Basic usage
+
+Add the class `icon` to an icon of the sprite, or to an icon of the font beside its own class:
+
+```html
+<svg class="icon" aria-hidden="true">
+  <use href="/static/icons/chassis-icons.svg#bell-outline"></use>
+</svg>
+
+<span class="icon cx-bell-outline" aria-hidden="true"></span>
+```
+
+The addresses of the example are those of a project that serves the folder `icons/` of the set at `/static/icons/`. The font also needs its stylesheet, as [Icon font]([[docsref:/use-in-project/icon-font#basic-usage]]) describes.
+
+## Size and color
+
+Chassis CSS reads the size and the color of an element with the class `icon` from two custom properties, `--cx-icon-size` and `--cx-icon-color`. Its utility classes set them, on the icon or on an element around it:
+
+```html
+<svg class="icon icon-xl icon-primary" aria-hidden="true">
+  <use href="/static/icons/chassis-icons.svg#bell-outline"></use>
+</svg>
+```
+
+The class works for an icon of any set, since it names no icon. The [Icon](https://chassis-ui.com/css/docs/helpers/icon/) page of Chassis CSS lists the sizes and the colors.
+
+## Accessibility
+
+The class `icon` changes how an icon looks, and not what a screen reader is told. Hide a decorative icon with `aria-hidden="true"`, and name an icon that carries meaning, as [SVG sprite]([[docsref:/use-in-project/svg-sprite#accessibility]]) and [Icon font]([[docsref:/use-in-project/icon-font#accessibility]]) describe.
+
+## Customization
+
+Chassis CSS finds the SVG file of an icon by its name, at an address that two Sass variables make.
+
+### svg-icon()
+
+`svg-icon("<name>")` returns `url()` of `$icon-url-prefix`, the name and `$icon-url-suffix`. The two variables are `"/static/icons/svgs/"` and `".svg"` by default, so the function reads `svgs/<name>.svg` of a set that is served at `/static/icons/`.
+
+```scss
+@use "@chassis-ui/css/scss/functions" as *;
+
+.external-link::after {
+  mask-image: svg-icon("arrow-up-right-from-square-outline");
+}
+```
+
+Sass writes `mask-image: url("/static/icons/svgs/arrow-up-right-from-square-outline.svg")` for it.
+
+### The address of the files
+
+A project that serves the files at another address sets `$icon-url-prefix`, before it loads another module of Chassis CSS:
+
+```scss
+@use "@chassis-ui/css/scss/config/settings" with (
+  $icon-url-prefix: "/assets/icons/svgs/"
+);
+@use "@chassis-ui/css/scss/functions" as *;
+
+.external-link::after {
+  mask-image: svg-icon("arrow-up-right-from-square-outline");
+}
+```
+
+The other way is to serve the folder `svgs/` of the set at the default address, and to set nothing.
+
+### A set of your own
+
+`svg-icon()` takes the name of an icon and no font name or prefix, so it reads a set of your own as it is: serve your `svgs/` folder at the address of `$icon-url-prefix`. The class `icon` needs no change either. Only the class of the font is yours: `<prefix>-<name>`.
+
+## Best practices
+
+Chassis CSS reads a set by the names of its icons and by one address. These practices keep both in one place.
+
+- **Set the address once:** `$icon-url-prefix` is the only place that names where the files of `svgs/` are served.
+- **Keep the names of the set:** a stylesheet that calls `svg-icon("<name>")` breaks when the icon is renamed. List the names in `chassis.checks.json` of your set, and `pnpm icons:verify` fails when one is gone.
+
+Avoid the habits that undo this:
+
+- **Do not write the address of a file into a rule:** `svg-icon()` follows `$icon-url-prefix` when the files move.
+
+## Troubleshooting
+
+Each entry gives the message or the symptom, then the cause and the fix.
+
+### Module was already loaded
+
+Sass stops with `This module was already loaded, so it can't be configured using "with".` Another module of Chassis CSS was loaded before the `@use` that sets `$icon-url-prefix`. Move that `@use` of `config/settings` to the top of the file.
+
+### Icon of a rule is missing
+
+A rule with `svg-icon()` draws nothing, and the browser logs a `404` for an address under `/static/icons/svgs/`. The files of `svgs/` are not served at the address of `$icon-url-prefix`. Serve them there, or set the variable to their address.
+
+## Next steps
+
+Continue with one of these pages:
+
+- [SVG files]([[docsref:/use-in-project/svg-files]]): the files that `svg-icon()` reads.
+- [Chassis React]([[docsref:/use-in-project/chassis-react]]): the same set in React components.
+- [Names and styles]([[docsref:/icon-design/names-and-styles]]): the names that a stylesheet relies on.

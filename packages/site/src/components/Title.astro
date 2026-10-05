@@ -6,8 +6,7 @@ interface Props {
   icon: CollectionEntry<'icons'>['data']
 }
 
-const { icon } = Astro.props
-// const { title, categories, tags } = Astro.props.icon
+const { title, categories, tags } = Astro.props.icon
 ---
 
 <div class="row align-items-md-center mb-md">
@@ -15,44 +14,37 @@ const { icon } = Astro.props
     <div class="border-bottom border-subtle mb-md pt-md">
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/icons/">Icons</a></li>
-        <li class="breadcrumb-item active" aria-current="page">{icon.title}</li>
+        <li class="breadcrumb-item active" aria-current="page">{title}</li>
       </ol>
     </div>
   </nav>
-  <h1 class="cxd-title mb-0" id="title">{icon.title}</h1>
-  {
-    icon.categories && icon.tags && (
-      <div>
-        <ul class="bulletless mb-md">
-          {icon.tags && (
-            <li class="my-xs">
-              <strong>Tags:</strong>{' '}
-              {icon.tags.split(',').map((tag) => (
-                <>
-                  <a class="badge default ms-2xs" href={`/icons/tag/${getSlug(tag.trim())}/`}>
-                    {tag.trim()}
-                  </a>{' '}
-                </>
-              ))}
-            </li>
-          )}
-          {icon.categories && (
-            <li>
-              <strong>Category:</strong>{' '}
-              {icon.categories.split(',').map((category) => (
-                <>
-                  <a
-                    class="badge default ms-2xs"
-                    href={`/icons/category/${getSlug(category.trim())}/`}
-                  >
-                    {category.trim()}
-                  </a>{' '}
-                </>
-              ))}
-            </li>
-          )}
-        </ul>
-      </div>
-    )
-  }
+  <h1 class="cxd-title mb-0" id="title">{title}</h1>
+  <div>
+    <ul class="bulletless mb-md">
+      <li class="my-xs">
+        <strong>Tags:</strong>{' '}
+        {
+          tags.map((tag) => (
+            <>
+              <a class="badge default ms-2xs" href={`/icons/tag/${getSlug(tag)}/`}>
+                {tag}
+              </a>{' '}
+            </>
+          ))
+        }
+      </li>
+      <li>
+        <strong>Category:</strong>{' '}
+        {
+          categories.map((category) => (
+            <>
+              <a class="badge default ms-2xs" href={`/icons/category/${getSlug(category)}/`}>
+                {category}
+              </a>{' '}
+            </>
+          ))
+        }
+      </li>
+    </ul>
+  </div>
 </div>

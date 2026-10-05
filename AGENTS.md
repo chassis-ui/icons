@@ -23,7 +23,8 @@ packages/
     build/             # the build (JavaScript with JSDoc types) and its templates
     test/              # Vitest tests, the fixture set (fixture/) and its golden output (golden/)
   site/                # chassis-icons-site, the Astro documentation site (private)
-build/                 # repository scripts (site pages, changeset check, version references, release)
+    content/docs/      # the documentation pages; the icon pages come from the output of the build
+build/                 # repository scripts (changeset check, version references, release)
 chassis.checks.json    # the icons that consumers of the set read by name
 docs/                  # architecture.md
 ref/ROADMAP.md         # the plan, its principles, the decisions and the session log
@@ -44,15 +45,15 @@ vendor/assets          # git submodule of chassis-ui/assets
 
 Run the checks of the area you changed, and report the ones that fail.
 
-| Area changed                                   | Run                                                                                                               |
-| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `source/`                                      | `pnpm icons:lint:source`, `pnpm icons`, `pnpm site:pages`, `pnpm icons:verify`                                    |
-| `packages/icons/build/` or `test/`             | `pnpm icons:lint`, `pnpm icons:typecheck`, `pnpm icons:test`, `pnpm icons`, `pnpm icons:verify`                   |
-| The output is meant to change                  | `pnpm icons:test:golden` and `pnpm icons`, then the row above; review both diffs                                  |
-| `chassis.build` or the manifest of the package | `pnpm icons`, `pnpm icons:verify`, `pnpm icons:lint:package`                                                      |
-| `build/`, `.github/workflows/`, `.changeset/`  | `pnpm icons:lint`, `pnpm icons:test`                                                                              |
-| `packages/site/`                               | `pnpm site:lint:eslint`, `pnpm site:lint:stylelint`, `pnpm check:astro`, `pnpm site:build`, `pnpm site:lint:html` |
-| Any Markdown, JSON, YAML or configuration file | `pnpm lint:prettier`, and `pnpm spellcheck` for Markdown                                                          |
+| Area changed                                   | Run                                                                                                                                 |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `source/`                                      | `pnpm icons:lint:source`, `pnpm icons`, `pnpm icons:verify`                                                                         |
+| `packages/icons/build/` or `test/`             | `pnpm icons:lint`, `pnpm icons:typecheck`, `pnpm icons:test`, `pnpm icons`, `pnpm icons:verify`                                     |
+| The output is meant to change                  | `pnpm icons:test:golden` and `pnpm icons`, then the row above; review both diffs                                                    |
+| `chassis.build` or the manifest of the package | `pnpm icons`, `pnpm icons:verify`, `pnpm icons:lint:package`                                                                        |
+| `build/`, `.github/workflows/`, `.changeset/`  | `pnpm icons:lint`, `pnpm icons:test`                                                                                                |
+| `packages/site/`                               | `pnpm site:lint:eslint`, `pnpm site:lint:stylelint`, `pnpm check:astro`, `pnpm site:build`, `pnpm site:lint:html`, `pnpm site:test` |
+| Any Markdown, JSON, YAML or configuration file | `pnpm lint:prettier`, and `pnpm spellcheck` for Markdown                                                                            |
 
 ## Rules
 
@@ -103,6 +104,13 @@ And these:
   the font of the default set.
 - **Types are JSDoc.** The build is JavaScript checked with `checkJs`; do not convert it to
   TypeScript.
+- **The site shows the set of the repository, and draws itself with the Chassis set.** A
+  page or a component of `packages/site/src/` reads the font name, the prefix and the frame
+  from `virtual:icon-set` and the icons from the `icons` collection, and draws an icon of the
+  set with `SetIcon.astro` or the functions of `src/libs/icon.ts`. `<Icon>` of
+  `@chassis-ui/docs` and the icons of `data/sidebar.yml` are of the installed
+  `@chassis-ui/icons`, which draws the interface. `pnpm site:test` builds the site for the
+  fixture, where a name of the default set draws nothing.
 - **A root script runs a package script with `run`.** `pnpm --filter ./packages/icons run init`,
   never `pnpm --filter ./packages/icons init`, which is a command of pnpm.
 - **Add a changeset** (`pnpm changeset`, or a file in `.changeset/`) to a change in `source/`,
@@ -112,9 +120,9 @@ And these:
 ## Documentation
 
 - The repository docs are `README.md`, `.github/CONTRIBUTING.md`, `docs/architecture.md` and
-  `packages/icons/test/README.md`. The site has one generated page per icon in
-  `packages/site/content/icons/`, and no documentation pages yet: Phase 5 of the roadmap adds
-  them.
+  `packages/icons/test/README.md`. The pages of the site are the MDX files of
+  `packages/site/content/docs/`, each with an entry in `packages/site/data/sidebar.yml`. The
+  page of an icon has no file: the site makes it from the output of the build.
 - Style guide: [WRITING.md](WRITING.md). Plain sentences, no marketing words, no counts, no
   `we` or `our`. Headings are in sentence case, each followed by a sentence.
 - Every command, path, option and icon name in a document must exist as written. Run a command

@@ -1,0 +1,112 @@
+---
+title: SVG Files
+description: Use the optimized SVG file of an icon as an image, inside the markup of a page, or as a mask in CSS. Installation, size, color and accessibility.
+toc: true
+---
+
+## Introduction
+
+The build writes one optimized SVG file per icon, `svgs/<name>.svg`. Choose the files when a project needs a few icons and not the set: as an image, pasted into the markup of a page, or as a mask in CSS. The files are also what a design tool or an app for iOS or Android reads.
+
+The examples use the Chassis set. The files of a set of your own have the same shape, with your frame and your prefix.
+
+## Installation
+
+The files are in the `svgs/` folder of the output. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get the output: the package, the archive of a release, and the folders of a build.
+
+```bash
+npm install @chassis-ui/icons
+```
+
+The page of each icon on the [home page](/icons/) has a download of its file.
+
+## Basic usage
+
+Use the file of an icon as an image:
+
+```html
+<img src="node_modules/@chassis-ui/icons/svgs/bell-outline.svg" alt="" width="24" height="24" />
+```
+
+The build writes each file on the frame of the set, with `fill="currentcolor"` and the class of the icon on its root:
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentcolor" class="cx-minus-outline" viewBox="0 0 24 24">
+  <path d="M20.125 12C20.125 12.5469 19.6953 12.9375 19.1875 12.9375H4.8125C4.26562 12.9375 3.875 12.5469 3.875 12C3.875 11.4922 4.26562 11.0625 4.8125 11.0625H19.1875C19.6953 11.0625 20.125 11.4922 20.125 12Z"/>
+</svg>
+```
+
+## Size and color
+
+The size of an image is the `width` and the `height` of the `<img>` element. The color is not: a file that a page loads as an image does not know the color of the text, and its icon is black.
+
+To color an icon, put the file into the markup of the page. The root has `fill="currentcolor"`, so the icon takes the color of the text around it:
+
+```html
+<span style="color: rebeccapurple;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentcolor" class="cx-minus-outline" viewBox="0 0 24 24">
+    <path d="M20.125 12C20.125 12.5469 19.6953 12.9375 19.1875 12.9375H4.8125C4.26562 12.9375 3.875 12.5469 3.875 12C3.875 11.4922 4.26562 11.0625 4.8125 11.0625H19.1875C19.6953 11.0625 20.125 11.4922 20.125 12Z"/>
+  </svg>
+</span>
+```
+
+In CSS, use the file as a mask, and the icon has the `background-color` of its element:
+
+```css
+.external::after {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  content: "";
+  background-color: currentcolor;
+  mask: url("/static/icons/svgs/arrow-up-right-from-square-outline.svg") center / contain no-repeat;
+}
+```
+
+## Accessibility
+
+An image has its `alt` text, and an icon in the markup of a page is named as an icon of the sprite is.
+
+A decorative image has an empty `alt`, as in the example above. An image that carries meaning says it:
+
+```html
+<img src="node_modules/@chassis-ui/icons/svgs/bell-outline.svg" alt="Notifications" width="24" height="24" />
+```
+
+For an icon in the markup of the page, see [SVG sprite]([[docsref:/use-in-project/svg-sprite#accessibility]]). An icon that CSS draws as a mask or a background has no name: keep the text of its element.
+
+## Customization
+
+A file has no settings of its own. What its root holds follows from the configuration of the set.
+
+### A set of your own
+
+The frame and the prefix are the settings `frame` and `prefix` of `chassis.build`. With `"frame": 16` and `"prefix": "yi"`, the root of `svgs/<name>.svg` has `width="16"`, `height="16"`, `viewBox="0 0 16 16"` and `class="yi-<name>"`.
+
+## Best practices
+
+A file of `svgs/` is output: the build writes it again from `source/`. These practices keep a project on the files as they are built.
+
+- **Read the files by name:** `svgs/<name>.svg` is the address of an icon for as long as the icon is in the set.
+- **Use the sprite for many icons:** a page with many icons loads one file and not one per icon.
+
+Avoid the habits that undo this:
+
+- **Do not edit a file of `svgs/`:** the next build writes it again. Change the icon in `source/`.
+- **Do not expect a color from an image:** an `<img>` element and a `background-image` draw the icon in black. Use the markup, a mask, the sprite or the font for a color.
+
+## Troubleshooting
+
+Each entry gives the message or the symptom, then the cause and the fix.
+
+### Icon is black
+
+An icon in an `<img>` element or a `background-image` ignores the color of the text. An image is drawn apart from the page and has no text color. Put the file into the markup of the page, or use it as a `mask` with a `background-color`.
+
+## Next steps
+
+Continue with one of these pages:
+
+- [SVG sprite]([[docsref:/use-in-project/svg-sprite]]): every icon in one file.
+- [Chassis CSS]([[docsref:/use-in-project/chassis-css]]): `svg-icon()`, which reads a file by the name of its icon.
+- [iOS and Android]([[docsref:/use-in-project/ios-and-android]]): the files in an app.

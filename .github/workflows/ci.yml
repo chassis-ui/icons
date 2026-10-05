@@ -143,7 +143,7 @@ jobs:
         run: pnpm icons:test
 
   # The same build as Vercel: checks out and builds vendor/assets, then Astro and Pagefind.
-  # The site reads the committed files of packages/icons.
+  # The site reads the committed files of packages/icons: its configuration and its output.
   site:
     name: Site
     runs-on: ubuntu-latest
@@ -175,6 +175,13 @@ jobs:
       # Skipped, with a warning, on a runner without Java
       - name: Validate HTML with the Nu Html Checker
         run: pnpm site:lint:vnu
+
+      # A copy of the repository, built for the set it ships with and again for the fixture
+      # of the tests of the build: each page shows the set of the copy, every icon that a
+      # page draws is in its sprite, and every link leads to a page that exists. After the
+      # build, which checked out and built vendor/assets.
+      - name: Test the site
+        run: pnpm site:test
 
   # A change to source/, to the build of packages/icons or to its output needs a changeset;
   # `pnpm changeset --empty` adds one that releases nothing. A pull request is compared with

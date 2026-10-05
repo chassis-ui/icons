@@ -1,13 +1,13 @@
 title:                  "Chassis - Icons"
 baseURL:                "https://chassis-ui.com/icons"
 
-docsPath:               "/icons"
+docsPath:               "/icons/docs"
 sitePath:               "packages/site"
 
 exampleIcon:            "info-circle-solid"
 
 subtitle:               "A Toolkit for Building Custom Icon Libraries"
-description:            "An open-source toolkit for building custom icon libraries: SVG optimization, sprite generation, web fonts (WOFF/WOFF2), and a live preview site."
+description:            "A repository that a team fills with its SVG files and builds into an icon font, an SVG sprite and optimized SVG files. The icons here are the Chassis defaults."
 authors:                "Ozgur Gunes"
 
 currentVersion:         "0.4.0-next.0"

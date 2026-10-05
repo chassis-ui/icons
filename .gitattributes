@@ -14,5 +14,4 @@ packages/icons/svgs/** linguist-generated
 packages/icons/codepoints.json linguist-generated
 packages/icons/README.md linguist-generated
 packages/icons/test/golden/** linguist-generated
-packages/site/content/icons/** linguist-generated
 pnpm-lock.yaml linguist-generated

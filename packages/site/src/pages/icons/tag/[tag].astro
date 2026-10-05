@@ -1,47 +1,21 @@
 ---
 import IconsLayout from '@layouts/IconsLayout.astro'
-import { iconsPages } from '@libs/content'
+import { groupIcons } from '@libs/content'
 import ListSection from '@components/homepage/ListSection.astro'
 
 export async function getStaticPaths() {
-  // Collect all tags from icon pages
-  const tags = new Set()
-
-  iconsPages.forEach((page) => {
-    if (page.data.tags) {
-      const iconTags = Array.isArray(page.data.tags)
-        ? page.data.tags
-        : page.data.tags.split(',').map((tag) => tag.trim())
-      iconTags.forEach((tag) => tags.add(tag))
-    }
-  })
-
-  return Array.from(tags).map((tag) => {
-    const tagIcons = iconsPages.filter((page) => {
-      if (!page.data.tags) return false
-      const iconTags = Array.isArray(page.data.tags)
-        ? page.data.tags
-        : page.data.tags.split(',').map((t) => t.trim())
-      return iconTags.includes(String(tag))
-    })
-
-    return {
-      params: { tag },
-      props: {
-        tag,
-        icons: tagIcons,
-        count: tagIcons.length
-      }
-    }
-  })
+  return [...groupIcons('tags')].map(([tag, icons]) => ({
+    params: { tag },
+    props: { tag, icons }
+  }))
 }
 
-const { tag, icons, count } = Astro.props
+const { tag, icons } = Astro.props
+const count = icons.length
 
 const frontmatter = {
-  title: `${String(tag).charAt(0).toUpperCase() + String(tag).slice(1)} tag`,
-  description: `Browse ${count} icons tagged with "${tag}"`,
-  tags: [tag]
+  title: `${tag.charAt(0).toUpperCase() + tag.slice(1)} tag`,
+  description: `Browse ${count} icons tagged with "${tag}"`
 }
 ---
 
@@ -59,5 +33,5 @@ const frontmatter = {
     <h1>{frontmatter.title}</h1>
     <p class="lead">{frontmatter.description}</p>
   </div>
-  <ListSection icons={icons} title={`${count} icons with ${String(tag)} tag`} />
+  <ListSection icons={icons} title={`${count} icons with ${tag} tag`} />
 </IconsLayout>

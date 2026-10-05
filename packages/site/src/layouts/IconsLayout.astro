@@ -1,6 +1,7 @@
 ---
 import type { LayoutOverridesHTMLAttributes } from '@chassis-ui/docs'
 import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
+import set from 'virtual:icon-set'
 import '@scss/docs.scss'
 import '@scss/_icons.scss'
 
@@ -12,6 +13,10 @@ bodyProps['data-cx-target'] = '#icons-nav'
 ---
 
 <BaseLayout {...Astro.props} layout="icons" overrides={{ body: bodyProps }}>
+  <Fragment slot="styles">
+    <!-- The font of the set that the site shows, after the one of the interface -->
+    <link rel="stylesheet" href={set.path.stylesheet} />
+  </Fragment>
   <slot />
   <Fragment slot="scripts">
     <script src="@chassis-ui/docs/js/example-mode.js"></script>

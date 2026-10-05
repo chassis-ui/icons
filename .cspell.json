@@ -7,6 +7,7 @@
     "codepoints",
     "currentcolor",
     "docsref",
+    "drawables",
     "fantasticon",
     "fantasticonrc",
     "frontmatter",
@@ -33,7 +34,6 @@
     "dist/",
     "packages/icons/test/golden/",
     "packages/site/.astro/",
-    "packages/site/content/icons/",
     "packages/site/public/",
     "vendor/"
   ],

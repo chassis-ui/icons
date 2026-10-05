@@ -118,10 +118,10 @@ importers:
         version: 0.5.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)
       '@chassis-ui/docs':
         specifier: ^0.6.3
-        version: 0.6.3(@astrojs/markdown-remark@7.3.1)(@chassis-ui/css@0.5.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0))(@pagefind/component-ui@1.5.2)(@shikijs/transformers@4.3.1)(astro@7.3.5(@astrojs/markdown-remark@7.3.1)(@types/node@24.13.2)(sass@1.101.0)(yaml@2.9.0))(html-validate@11.5.5)(htmlparser2@12.0.0)(rehype-autolink-headings@7.1.0)(sass@1.101.0)(shiki@4.3.1)(vnu-jar@26.7.3)
+        version: 0.6.3(@astrojs/markdown-remark@7.3.1)(@chassis-ui/css@0.5.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0))(@pagefind/component-ui@1.5.2)(@shikijs/transformers@4.3.1)(astro@7.3.5(@astrojs/markdown-remark@7.3.1)(@types/node@24.13.2)(sass@1.101.0)(yaml@2.9.0))(html-validate@11.5.5(vitest@5.0.3(@types/node@24.13.2)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0))))(htmlparser2@12.0.0)(rehype-autolink-headings@7.1.0)(sass@1.101.0)(shiki@4.3.1)(vnu-jar@26.7.3)
       '@chassis-ui/icons':
-        specifier: workspace:*
-        version: link:../icons
+        specifier: npm:@chassis-ui/icons@^0.3.1
+        version: 0.3.1
       '@chassis-ui/tokens':
         specifier: ^0.6.0
         version: 0.6.0
@@ -145,7 +145,7 @@ importers:
         version: 10.5.2(postcss@8.5.16)
       html-validate:
         specifier: ^11.5.5
-        version: 11.5.5
+        version: 11.5.5(vitest@5.0.3(@types/node@24.13.2)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0)))
       htmlparser2:
         specifier: ^12.0.0
         version: 12.0.0
@@ -167,6 +167,9 @@ importers:
       vanilla-calendar-pro:
         specifier: ^3.1.0
         version: 3.1.0
+      vitest:
+        specifier: ^5.0.2
+        version: 5.0.3(@types/node@24.13.2)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0))
       vnu-jar:
         specifier: 26.7.3
         version: 26.7.3
@@ -477,6 +480,10 @@ packages:
         optional: true
       vnu-jar:
         optional: true
+
+  '@chassis-ui/icons@0.3.1':
+    resolution: {integrity: sha512-u940omGLvaDqQWzkLDiXXACs3UiEGgZeESbDM+7mB9Dd/L2QKkCk0XQE6sVRv3Tb4+eXDmJOLNd63scZgAKS+Q==}
+    engines: {node: '>=18.0.0', pnpm: '>=9.0.0'}
 
   '@chassis-ui/tokens@0.6.0':
     resolution: {integrity: sha512-v3AMxp4D0nvFLyx+jyUkSzOPBehYj18RoAw2k+nEHCX3GR4Bm+tlwvlI+Uwox2xG6b4eh6j1LOu1t/rMm/BpoA==}
@@ -5693,7 +5700,7 @@ snapshots:
     optionalDependencies:
       postcss-prefix-custom-properties: 0.1.0(postcss@8.5.16)
 
-  '@chassis-ui/docs@0.6.3(@astrojs/markdown-remark@7.3.1)(@chassis-ui/css@0.5.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0))(@pagefind/component-ui@1.5.2)(@shikijs/transformers@4.3.1)(astro@7.3.5(@astrojs/markdown-remark@7.3.1)(@types/node@24.13.2)(sass@1.101.0)(yaml@2.9.0))(html-validate@11.5.5)(htmlparser2@12.0.0)(rehype-autolink-headings@7.1.0)(sass@1.101.0)(shiki@4.3.1)(vnu-jar@26.7.3)':
+  '@chassis-ui/docs@0.6.3(@astrojs/markdown-remark@7.3.1)(@chassis-ui/css@0.5.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0))(@pagefind/component-ui@1.5.2)(@shikijs/transformers@4.3.1)(astro@7.3.5(@astrojs/markdown-remark@7.3.1)(@types/node@24.13.2)(sass@1.101.0)(yaml@2.9.0))(html-validate@11.5.5(vitest@5.0.3(@types/node@24.13.2)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0))))(htmlparser2@12.0.0)(rehype-autolink-headings@7.1.0)(sass@1.101.0)(shiki@4.3.1)(vnu-jar@26.7.3)':
     dependencies:
       '@astrojs/markdown-remark': 7.3.1
       '@chassis-ui/css': 0.5.2(@floating-ui/dom@1.7.6)(postcss-prefix-custom-properties@0.1.0(postcss@8.5.16))(vanilla-calendar-pro@3.1.0)
@@ -5719,10 +5726,12 @@ snapshots:
       unified: 11.0.5
       unist-util-visit: 5.1.0
     optionalDependencies:
-      html-validate: 11.5.5
+      html-validate: 11.5.5(vitest@5.0.3(@types/node@24.13.2)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0)))
       vnu-jar: 26.7.3
     transitivePeerDependencies:
       - supports-color
+
+  '@chassis-ui/icons@0.3.1': {}
 
   '@chassis-ui/tokens@0.6.0': {}
 
@@ -6858,6 +6867,15 @@ snapshots:
       magic-string: 1.4.2
     optionalDependencies:
       vite: 8.1.3(@types/node@22.20.5)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0)
+
+  '@vitest/mocker@5.0.3(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0))':
+    dependencies:
+      '@jridgewell/trace-mapping': 0.3.31
+      '@vitest/spy': 5.0.3
+      estree-walker: 3.0.3
+      magic-string: 1.4.2
+    optionalDependencies:
+      vite: 8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0)
 
   '@vitest/spy@5.0.3': {}
 
@@ -8562,7 +8580,7 @@ snapshots:
 
   html-tags@3.3.1: {}
 
-  html-validate@11.5.5:
+  html-validate@11.5.5(vitest@5.0.3(@types/node@24.13.2)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0))):
     dependencies:
       '@html-validate/stylish': 6.0.0
       '@sidvind/better-ajv-errors': 7.0.0(ajv@8.20.0)
@@ -8570,6 +8588,8 @@ snapshots:
       kleur: 4.1.5
       prompts: 2.4.2
       semver: 7.8.5
+    optionalDependencies:
+      vitest: 5.0.3(@types/node@24.13.2)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0))
 
   html-void-elements@3.0.0: {}
 
@@ -10962,6 +10982,27 @@ snapshots:
       why-is-node-running: 3.2.1
     optionalDependencies:
       '@types/node': 22.20.5
+    transitivePeerDependencies:
+      - msw
+
+  vitest@5.0.3(@types/node@24.13.2)(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0)):
+    dependencies:
+      '@types/chai': 5.2.3
+      '@vitest/mocker': 5.0.3(vite@8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0))
+      chai: 6.3.0
+      es-module-lexer: 2.3.2
+      expect-type: 1.4.0
+      magic-string: 1.4.2
+      obug: 2.2.1
+      picomatch: 4.0.7
+      std-env: 4.3.0
+      tinybench: 6.2.0
+      tinyexec: 1.3.1
+      tinyglobby: 0.2.17
+      vite: 8.1.3(@types/node@24.13.2)(esbuild@0.28.1)(sass@1.101.0)(yaml@2.9.0)
+      why-is-node-running: 3.2.1
+    optionalDependencies:
+      '@types/node': 24.13.2
     transitivePeerDependencies:
       - msw
 

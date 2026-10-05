@@ -1,0 +1,92 @@
+---
+title: Publishing
+description: Release a version of a set with Changesets, as a package on npm with a GitHub release, or as a tag and an archive without a package.
+toc: true
+---
+
+## Introduction
+
+A set is released as a version: a package on npm, and a GitHub release with an archive of the output. The release workflow of the repository names no package. It releases what `packages/icons/package.json` describes, so a set of your own is released by the same file as the Chassis set.
+
+## Prerequisites
+
+A release needs a set that is built and committed, and a repository on GitHub.
+
+- The output is what the source builds: `pnpm icons:verify` passes.
+- `name`, `version`, `description`, `repository` and `license` of `packages/icons/package.json` are those of your set.
+- The tags of the repository are your own. A clone has the tags of the Chassis set until you delete them, as the [quick start]([[docsref:/getting-started/quick-start#make-the-clone-yours]]) describes.
+- To publish to npm from the workflow, the package has a trusted publisher on npmjs.com that names your repository and the workflow file `release.yml`.
+
+## Describe a change
+
+A change to `source/`, to the build or to the output adds a changeset: a Markdown file in `.changeset/` that names the bump of the version and the text of the changelog entry.
+
+```bash
+pnpm changeset
+```
+
+Name the icons that the change adds, renames or removes. A new icon is a `minor` bump. A removed or renamed icon breaks every project that draws it, so say it in the text.
+
+## Make a version
+
+`pnpm changeset:version` turns the changesets into a version. It bumps `version` of `packages/icons/package.json`, writes the entry of `packages/icons/CHANGELOG.md`, copies the version to the places that show it, and builds the output again, so that the headers of the stylesheets name the new version.
+
+```bash
+pnpm changeset:version
+```
+
+Commit the result and push it to `develop`. CI runs on that commit.
+
+## Release
+
+A release is the commit of a version, pushed to `main`. The push runs `.github/workflows/release.yml`, which checks that CI passed on the commit, runs `pnpm icons:verify`, and then does what the manifest says.
+
+<CxTable>
+| Field of `package.json` | What the workflow does |
+| --- | --- |
+| `name`, `version` | Publishes that package to npm, unless npm has the version, and creates the GitHub release `v<version>`, unless the tag exists |
+| `"private": true` | Publishes nothing. The release is the tag, the GitHub release and its archive |
+| `publishConfig.access` | `"restricted"` for a package that only your organization installs |
+| `publishConfig.provenance` | `true` for a signed statement of the commit and the workflow that built the version |
+</CxTable>
+
+The GitHub release has the changelog entry of the version as its text, and the archive `<font>-<version>.zip` attached, with `icons/` and `svgs/` in it. `pnpm release:archives` writes the same archive to `.cache/release/` on your machine.
+
+## What is published
+
+The package holds the output and nothing of the build. The build writes the fields of `package.json` that say so, from the font name of the configuration:
+
+```json
+{
+  "main": "icons/chassis-icons.css",
+  "style": "icons/chassis-icons.css",
+  "sass": "icons/chassis-icons.scss",
+  "files": ["icons/chassis-icons.*", "svgs/*.svg"]
+}
+```
+
+`packages/icons/README.md` is published with them. The build writes it for your set, with your package name, your font and your prefix in its examples. `pnpm icons:lint:package` checks what npm would publish.
+
+## Troubleshooting
+
+Each entry gives the message or the symptom, then the cause and the fix.
+
+### Nothing is released
+
+The workflow runs and stops in its first job. npm has the version and the tag exists, so there is nothing to release. Add a changeset, run `pnpm changeset:version`, and push the commit of the new version.
+
+### Checks did not pass
+
+The workflow stops before its release job. A check of CI did not pass on the commit, or the commit was pushed to `main` before CI ended on `develop`. Wait for CI on `develop`, then run the workflow again.
+
+### Version of another set
+
+The first version of your set continues the versions of the Chassis set. `packages/icons/package.json` and `packages/icons/CHANGELOG.md` still hold them. Set `version` to your own, and replace the entries of the changelog with a first line of your own.
+
+## Next steps
+
+Continue with one of these pages:
+
+- [Icon font]([[docsref:/use-in-project/icon-font#installation]]): install a published set.
+- [iOS and Android]([[docsref:/use-in-project/ios-and-android]]): copy a version into Chassis Assets.
+- The [contributing guide]([[config:repo]]/blob/main/.github/CONTRIBUTING.md#releases) of the repository: each job of the release workflow, and prereleases.

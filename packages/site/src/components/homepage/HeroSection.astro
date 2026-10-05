@@ -1,9 +1,16 @@
 ---
-import { getConfig, getDocsPath } from '@chassis-ui/docs/site'
+import { getConfig, getDocsPages, getDocsPath } from '@chassis-ui/docs/site'
+import set from 'virtual:icon-set'
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
 
+// The name of the set, and what `config.yml` says the site is about
 const config = getConfig()
+
+// The documentation pages when the site has them, the steps of this page otherwise
+const quickStart = 'getting-started/quick-start'
+const hasDocs = (await getDocsPages()).some((page) => page.id === quickStart)
+const start = hasDocs ? getDocsPath(`${quickStart}/`) : '#build-section'
 ---
 
 <section class="home-section py-3xl md:py-6xl">
@@ -11,16 +18,10 @@ const config = getConfig()
     <div class="row justify-content-center mb-3xl md:mb-6xl">
       <div class="col xl:col-10 text-center">
         <p class="module-title fg-primary md:font-xl font-mass text-uppercase mb-xs md:mb-sm">
-          CHASSIS ICONS
+          {set.title}
         </p>
-        <h1 class="font-hero mb-sm md:mb-md lg:mb-lg">
-          <span class="font-normal">Multi-Format Icon Distribution</span>
-          <span class="d-block">for Chassis Design Systems</span>
-        </h1>
-        <p class="font-lead mb-md md:mb-lg">
-          Ship icons as SVG sprites, web fonts, or direct imports. Automated builds generate
-          optimized assets with CSS/SCSS, compatible with any platform or framework.
-        </p>
+        <h1 class="font-hero mb-sm md:mb-md lg:mb-lg">{config.subtitle}</h1>
+        <p class="font-lead mb-md md:mb-lg">{config.description}</p>
       </div>
     </div>
 
@@ -34,7 +35,7 @@ const config = getConfig()
       />
       <!-- Buttons -->
       <div class="d-grid md:d-flex gap-md md:justify-content-center flex-wrap">
-        <a href={getDocsPath('#build-section')} class="button primary lg">
+        <a href={start} class="button primary lg">
           <Icon name="book-open-outline" />
           <span>Get Started</span>
         </a>
@@ -46,11 +47,9 @@ const config = getConfig()
 
       <!-- Version info -->
       <p class="fg-subtle mb-0 text-center font-md">
-        Currently <strong>v{config.currentVersion}</strong>
+        Currently <strong>v{set.package.version}</strong>
         <span class="px-2xs">&middot;</span>
-        <a href={config.repo + '/blob/main/CHANGELOG.md'} class="link-secondary text-nowrap"
-          >Changes</a
-        >
+        <a href={`${config.repo}/releases`} class="link-secondary text-nowrap">Releases</a>
       </p>
     </div>
   </div>

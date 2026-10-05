@@ -1,0 +1,112 @@
+---
+title: Source Lint
+description: The source lint checks whether each SVG file of the source folder can be an icon of the set. Every check, its message and the fix.
+toc: true
+---
+
+## Introduction
+
+The source lint is the command `pnpm icons:lint:source`. It checks each file of `source/` against the configuration of the set, and names each file that cannot be an icon. The build writes whatever it is given, so a file that the lint refuses would become a wrong class, a wrong glyph or a wrong symbol.
+
+## Running the lint
+
+The lint reads `source/` and the `chassis.build` block, and changes no file. Run it from the root of the repository, before the build:
+
+```bash
+pnpm icons:lint:source
+```
+
+It prints one line per problem, each with the file and what is wrong with it, then the number of problems, and ends with an error. For a set with a frame of `16`, the styles `line` and `fill`, and a pair of the two:
+
+```text
+✗ notes.txt is not an SVG file: the source folder holds icons only
+✗ Star_Filled.svg is not in kebab-case: lower-case letters and digits in parts joined by "-"
+✗ Star_Filled.svg has the viewBox "0 0 24 24": it has to be "0 0 16 16"
+✗ Star_Filled.svg has a stroke: a font draws filled shapes only, so outline it
+✗ plain.svg does not end in a style: -line, -fill
+✗ lonely-line.svg has no "lonely-fill" beside it: line and fill come together
+```
+
+A source without a problem ends with one line, which says that the source files can be icons of the set. CI runs the lint in its Build job.
+
+## What it checks
+
+The lint has three kinds of checks: the files of the folder, the name of each file, and the drawing of each file.
+
+### The folder
+
+`source/` holds SVG files only, one per icon. A file of another type is refused, and a hidden file is skipped.
+
+<CxTable>
+| Message | Fix |
+| --- | --- |
+| `is not an SVG file: the source folder holds icons only` | Remove the file from `source/` |
+| `does not exist` | Create the folder, or correct `chassis.build.source` |
+</CxTable>
+
+### The name
+
+The name of a file is checked against `chassis.build.styles` and `chassis.build.pairs`. [Names and styles]([[docsref:/icon-design/names-and-styles]]) describes both settings.
+
+<CxTable>
+| Message | Fix |
+| --- | --- |
+| `is not in kebab-case: lower-case letters and digits in parts joined by "-"` | Rename the file |
+| `does not end in a style: <styles>` | End the name in a style of the set, or add the style to `styles` |
+| `has no "<name>" beside it: <pair> come together` | Add the file of the other style of the pair |
+</CxTable>
+
+### The drawing
+
+The drawing of a file is checked against `chassis.build.frame` and the rules of [frame and color]([[docsref:/icon-design/frame-and-color]]).
+
+<CxTable>
+| Message | Fix |
+| --- | --- |
+| `has no <svg> root` | Export the file again as SVG |
+| `is not an SVG file that SVGO reads: <reason>` | Export the file again: its markup is broken |
+| `has no viewBox: it has to be "0 0 <frame> <frame>"` | Export the frame of the icon, not its shapes |
+| `has the viewBox "<viewBox>": it has to be "0 0 <frame> <frame>"` | Draw the icon on the frame of the set |
+| `has the width "<width>": it has to be <frame>` | Export at the size of the frame. The same goes for the height |
+| `has <count> colors (<colors>): an icon has one` | Draw the icon in one color |
+| `has a stroke: a font draws filled shapes only, so outline it` | Outline the stroke in the design tool |
+| `holds a gradient: an icon has one color` | Replace the gradient with one color |
+| `holds a pattern: an icon has one color` | Replace the pattern with filled shapes |
+| `holds a raster image` | Redraw the image as shapes |
+| `holds a script` | Remove the `<script>` element |
+| `holds content that is not SVG` | Remove the `<foreignObject>` element |
+| `has the event handler "<attribute>"` | Remove the attribute |
+</CxTable>
+
+## Lint and verify
+
+The source lint checks the files that go into the build, and `pnpm icons:verify` checks what came out of it. A change to `source/` runs both: the lint, the build, then the verification.
+
+```bash
+pnpm icons:lint:source
+pnpm icons
+pnpm icons:verify
+```
+
+[Build system]([[docsref:/getting-started/build-system#checks]]) describes what `pnpm icons:verify` compares.
+
+## Best practices
+
+The lint is the only place where a file is refused: the build after it writes every file it finds. These practices keep a wrong file out of the output.
+
+- **Lint before every build:** a file that breaks a rule is found before it becomes a class and a glyph.
+- **Fix the file in the design tool:** a frame, a stroke or a second color is a property of the drawing. Export the file again, and keep the design file and `source/` the same.
+- **Change the configuration for a rule of the set:** a set on another frame sets `chassis.build.frame`, and a set with other styles sets `chassis.build.styles`.
+
+Avoid the habits that undo this:
+
+- **Do not edit the build to accept a file:** the checks of `packages/icons/build/lint-source.js` are those of every set that the build writes.
+- **Do not keep other files in `source/`:** notes, design files and exports in other formats are refused.
+
+## Next steps
+
+Continue with one of these pages:
+
+- [Frame and color]([[docsref:/icon-design/frame-and-color]]): the rules of the drawing.
+- [Names and styles]([[docsref:/icon-design/names-and-styles]]): the rules of the name.
+- [Build system]([[docsref:/getting-started/build-system]]): the build that follows the lint.

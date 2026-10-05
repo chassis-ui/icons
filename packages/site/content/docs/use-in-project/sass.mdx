@@ -1,0 +1,118 @@
+---
+title: Sass
+description: Load the icon font with Sass, serve the font from a folder of your own, and read the code point of an icon from the map of the set.
+toc: true
+---
+
+## Introduction
+
+`icons/<font>.scss` is the stylesheet of the icon font for Sass. It writes the same font face and the same classes as the CSS, and its values are variables: the folder of the font, the hash of the font, and the map of the icons. Choose it over the CSS when the font is served from another folder than the stylesheet, or when a selector of your own draws an icon.
+
+The examples use the Chassis set, whose variables start with `$chassis-icons-`. If you build your own set, the variables start with the name of your font.
+
+## Installation
+
+The Sass file is in the `icons/` folder of the output. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get that folder: the package, the archive of a release, and the folders of a build.
+
+```bash
+npm install @chassis-ui/icons
+```
+
+## Basic usage
+
+Load the file with `@use`. It writes the font face and one class per icon:
+
+```scss
+@use '@chassis-ui/icons/icons/chassis-icons.scss';
+```
+
+Sass finds the file in a load path that holds `node_modules`, and so does a bundler. With the package importer of Sass, `@use 'pkg:@chassis-ui/icons'` loads the same file.
+
+## Size and color
+
+The classes of the Sass file are those of the CSS, so an icon takes the `font-size` and the `color` of its element. [Icon font]([[docsref:/use-in-project/icon-font#size-and-color]]) has the examples.
+
+## Accessibility
+
+The Sass file changes how the stylesheet is built, and not the markup of an icon. [Icon font]([[docsref:/use-in-project/icon-font#accessibility]]) describes a decorative icon and an icon that carries meaning.
+
+## Customization
+
+The variables of the file are `!default` values, so a project sets them where it loads the file.
+
+<CxTable>
+| Variable | What it holds |
+| --- | --- |
+| `$<font>-font` | The family name of the font |
+| `$<font>-font-dir` | The folder the font is loaded from, `"."` by default |
+| `$<font>-font-file` | The address of the font without its extension |
+| `$<font>-font-hash` | The hash of the font, which ends each address |
+| `$<font>-font-src` | The `src` of the font face |
+| `$<font>-map` | The code point of each icon, by name |
+</CxTable>
+
+### The folder of the font
+
+By default the stylesheet loads the font from its own folder. Set `$<font>-font-dir` to serve the font from another one:
+
+```scss
+@use '@chassis-ui/icons/icons/chassis-icons.scss' with (
+  $chassis-icons-font-dir: '/fonts'
+);
+```
+
+The font face then asks for `/fonts/chassis-icons.woff2`, with the hash of the font after it.
+
+### The map of the icons
+
+`$<font>-map` maps the name of each icon to its code point. Read it to draw an icon with a selector of your own:
+
+```scss
+@use 'sass:map';
+@use '@chassis-ui/icons/icons/chassis-icons.scss' as icons;
+
+.my-icon::before {
+  font-family: icons.$chassis-icons-font;
+  content: map.get(icons.$chassis-icons-map, 'bell-outline');
+}
+```
+
+### A set of your own
+
+The variables are named after the setting `name` of `chassis.build`. With `"name": "your-icons"` the file is `icons/your-icons.scss`, and its variables are `$your-icons-font-dir`, `$your-icons-map` and so on.
+
+## Best practices
+
+The Sass file is output, and its variables are its interface. These practices keep a project on that interface.
+
+- **Set a variable with `with`:** `@use ... with (...)` changes a value for the whole stylesheet.
+- **Read the map by name:** `map.get` with the name of an icon follows the icon when the set is built again.
+
+Avoid the habits that undo this:
+
+- **Do not copy a code point out of the map:** the map is the place that holds it.
+- **Do not edit the Sass file:** the build writes it again. A change for every icon belongs in `packages/icons/build/templates/scss.hbs` of your repository.
+
+## Troubleshooting
+
+Each entry gives the message or the symptom, then the cause and the fix.
+
+### File is not found
+
+Sass stops with `Can't find stylesheet to import.` No load path holds `node_modules`. Add the folder to the load paths of Sass, or use the package importer and `@use 'pkg:@chassis-ui/icons'`.
+
+### Path is ambiguous
+
+The package importer of Sass refuses `pkg:@chassis-ui/icons/icons/chassis-icons`. The folder holds a `.css` and a `.scss` file of that name. Use `pkg:@chassis-ui/icons`, or the path with `.scss`.
+
+### Icon shows as a square
+
+The page shows an empty square in place of the icon, and the browser logs a `404` for the `.woff2` file. `$<font>-font-dir` names a folder that does not hold the font. Copy the font files of `icons/` into it.
+
+## Next steps
+
+Continue with one of these pages:
+
+- [Icon font]([[docsref:/use-in-project/icon-font]]): the classes that the file writes.
+- [Chassis CSS]([[docsref:/use-in-project/chassis-css]]): Sass settings of Chassis CSS for icons.
+- [Build system]([[docsref:/getting-started/build-system#templates]]): the template of the Sass file.

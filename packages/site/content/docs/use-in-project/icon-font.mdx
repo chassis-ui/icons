@@ -1,0 +1,134 @@
+---
+title: Icon Font
+description: Load the stylesheet of the icon font and draw an icon with a class. Installation, size and color, accessibility and the folder of the font.
+toc: true
+---
+
+## Introduction
+
+The icon font draws an icon with a class on an empty element. One stylesheet loads the font and holds a class per icon, so a page needs no markup beyond that element. Choose the font for icons inside text and controls, where an icon is sized and colored as a letter is. Choose the [sprite]([[docsref:/use-in-project/svg-sprite]]) when an icon needs the features of SVG, such as a title of its own.
+
+The examples use the Chassis set, whose font is `chassis-icons` and whose prefix is `cx`. If you build your own set, use the name of your font and your prefix in their place.
+
+## Installation
+
+The files of the font are in the `icons/` folder of the output. There are three ways to get that folder.
+
+### The package
+
+The Chassis set is on npm, and the package holds `icons/` and `svgs/` as the build wrote them:
+
+```bash
+npm install @chassis-ui/icons
+```
+
+### The archive of a release
+
+Each release on GitHub has an archive, `<font>-<version>.zip`, with the two folders in it. Download it from the [releases]([[config:repo]]/releases) of the repository, and unpack it into the folder that your project serves static files from.
+
+### The folders of a build
+
+A set of your own is in `packages/icons/` of your repository after `pnpm icons`. Copy the two folders as they are:
+
+```bash
+cp -r packages/icons/icons packages/icons/svgs /path/to/your-project/static/icons/
+```
+
+The stylesheet loads the font from its own folder, so keep the files of `icons/` together.
+
+## Basic usage
+
+Load the stylesheet, and put the class of an icon, `<prefix>-<name>`, on an empty element:
+
+```html
+<link rel="stylesheet" href="node_modules/@chassis-ui/icons/icons/chassis-icons.min.css" />
+
+<i class="cx-bell-outline"></i>
+```
+
+`icons/<font>.css` and `icons/<font>.min.css` hold the same rules. With a bundler, import the package, which loads the same stylesheet and its font:
+
+```js
+import '@chassis-ui/icons'
+```
+
+The stylesheet has one rule per icon, `.<prefix>-<name>::before`, whose `content` is the character of the icon in the font. The element itself stays empty.
+
+## Size and color
+
+An icon of the font is a character, so it takes the `font-size` and the `color` of its element:
+
+```html
+<i class="cx-bell-outline" style="font-size: 2rem; color: rebeccapurple;"></i>
+```
+
+Inside a heading, a link or a button the icon needs neither: it has the size and the color of the text around it. The stylesheet sets `line-height: 1` and a `vertical-align` on the `::before` of the element, so that an icon sits on the line of the text.
+
+## Accessibility
+
+A screen reader does not know what the character of an icon means. Hide an icon that repeats the text beside it, and name one that stands alone.
+
+A decorative icon is hidden:
+
+```html
+<button type="button"><i class="cx-bell-outline" aria-hidden="true"></i> Notifications</button>
+```
+
+An icon that carries meaning gets a role and a label:
+
+```html
+<i class="cx-bell-outline" role="img" aria-label="Notifications"></i>
+```
+
+## Customization
+
+The stylesheet has no settings of its own. What it holds follows from the configuration of the set, and Sass sets where the font is loaded from.
+
+### The folder of the font
+
+The CSS loads the font from the folder it is in. To serve the font from another folder, use the Sass file and set the folder there, as [Sass]([[docsref:/use-in-project/sass#the-folder-of-the-font]]) describes.
+
+### The formats
+
+The font is written in each format of `chassis.build.formats`: `woff2`, `woff` and `ttf`. The stylesheet lists them in the order of that setting, and a browser takes the first it can read.
+
+### A set of your own
+
+The font name and the prefix are the settings `name` and `prefix` of `chassis.build`. With `"name": "your-icons"` and `"prefix": "yi"` the stylesheet is `icons/your-icons.css`, and the class of an icon is `yi-<name>`.
+
+## Best practices
+
+The class of an icon is its name with the prefix, and the font is found beside the stylesheet. These practices keep both true in a project.
+
+- **Copy the whole `icons/` folder:** the stylesheet asks for `./<font>.woff2` beside itself.
+- **Hide a decorative icon:** add `aria-hidden="true"` to an icon that sits beside its text.
+- **Take the name from the set:** the page of each icon on the [home page](/icons/) has its class.
+
+Avoid the habits that undo this:
+
+- **Do not start a class of your own with the prefix:** the stylesheet sets the font on the `::before` of every element whose class starts with `<prefix>-`.
+- **Do not write a code point into a page:** `icons/<font>.json` and the Sass map hold the code points, and a class or the map reads them by name.
+
+## Troubleshooting
+
+Each entry gives the message or the symptom, then the cause and the fix.
+
+### Icon shows as a square
+
+The page shows an empty square in place of the icon, and the browser logs a `404` for the `.woff2` file. The stylesheet loads the font from its own folder, and the font was not copied with it. Copy the whole `icons/` folder, or set `$<font>-font-dir` in Sass.
+
+### Nothing is shown
+
+The element is empty and the browser logs no error. The class is not a class of the stylesheet: the name is misspelled, or the icon is not in the version of the set that the page loads. Find the name on the [home page](/icons/).
+
+### Old icon after an update
+
+A browser shows the icons of the earlier version. The address of the font ends in a hash of the font, so a changed font is asked for again, but the stylesheet itself is cached. Serve the stylesheet under a new address, or with a cache that revalidates.
+
+## Next steps
+
+Continue with one of these pages:
+
+- [SVG sprite]([[docsref:/use-in-project/svg-sprite]]): draw the same icons as SVG.
+- [Sass]([[docsref:/use-in-project/sass]]): the folder of the font, and the map of the icons.
+- [Chassis CSS]([[docsref:/use-in-project/chassis-css]]): the class `icon` and its utilities.

@@ -19,8 +19,8 @@ See [CONTRIBUTING.md](https://github.com/chassis-ui/icons/blob/develop/.github/C
 for the details behind each of these.
 
 - [ ] The pull request targets `develop`
-- [ ] **`packages/icons/` rebuilt** with `pnpm icons` and committed, and the pages of the new
-      icons written with `pnpm site:pages`, if `source/`, the build or its templates changed
+- [ ] **`packages/icons/` rebuilt** with `pnpm icons` and committed, if `source/`, the build or
+      its templates changed
 - [ ] `pnpm icons:lint:source`, `pnpm icons:verify` and `pnpm icons:test` pass
 - [ ] `pnpm icons:lint`, `pnpm icons:typecheck` and `pnpm icons:lint:package` pass, and the
       golden files were written again with `pnpm icons:test:golden` if the output is meant to
@@ -29,6 +29,6 @@ for the details behind each of these.
       `packages/icons/` changed, naming the icons that are added, renamed or removed; an empty
       one (`pnpm changeset --empty`) if it changed but nothing is released.
       `pnpm changeset:check develop` passes
-- [ ] `pnpm site:lint:eslint`, `pnpm site:lint:stylelint`, `pnpm check:astro` and
-      `pnpm site:build` pass, if the site changed
+- [ ] `pnpm site:lint:eslint`, `pnpm site:lint:stylelint`, `pnpm check:astro`,
+      `pnpm site:build` and `pnpm site:test` pass, if the site changed
 - [ ] `pnpm lint:prettier` passes, and `pnpm spellcheck` if a Markdown file changed

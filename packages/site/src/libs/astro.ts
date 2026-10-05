@@ -9,7 +9,8 @@ import {
   getChassisCSSFsPath,
   getChassisIconsFsPath
 } from '@chassis-ui/docs'
-import type { ChassisConfig } from '@chassis-ui/docs/schema'
+import type { SiteConfig } from './config'
+import { copyIconSet, getSetFiles, loadIconSet, type IconSet } from './set'
 
 // Static file paths that will be aliased (copied) to a different destination path.
 const staticFileAliases = {
@@ -23,14 +24,15 @@ const sitemapExcludes = ['/404', '/docs']
 /**
  * Returns the site's own Astro integrations, added after `chassisDocs()` of `@chassis-ui/docs`.
  *
- * Includes the `chassis-integration` (static file copying), MDX support, the sitemap
- * generator, and a post-process integration that lists the sitemap under the site's path.
+ * Includes the `chassis-integration` (static file copying, and the icon set of the repository
+ * as `virtual:icon-set`), MDX support, the sitemap generator, and a post-process integration
+ * that lists the sitemap under the site's path.
  */
 export function chassis({
   config,
   root
 }: {
-  config: ChassisConfig
+  config: SiteConfig
   root: string
 }): AstroIntegration[] {
   const sitemapExcludedUrls = sitemapExcludes.map((url) => `${config.baseURL}${url}/`)
@@ -45,11 +47,22 @@ export function chassis({
     {
       name: 'chassis-integration',
       hooks: {
-        'astro:config:setup': ({ addWatchFile, command, config: astroConfig }) => {
+        'astro:config:setup': ({ addWatchFile, command, config: astroConfig, updateConfig }) => {
           cmd = command
           outDir = fileURLToPath(astroConfig.outDir)
           // Reload the config when the integration is modified.
           addWatchFile(path.join(root, 'src/libs/astro.ts'))
+          addWatchFile(path.join(root, 'src/libs/set.ts'))
+
+          // The pages show the set that the build of the repository wrote. Reload when the
+          // configuration of the set or its output changes: `pnpm icons` writes both.
+          const set = loadIconSet(root, config.exampleIcon)
+
+          for (const file of getSetFiles(root)) {
+            addWatchFile(file)
+          }
+
+          updateConfig({ vite: { plugins: [virtualIconSet(set)] } })
         },
         'astro:config:done': () => {
           if (cmd === 'sync') return
@@ -58,6 +71,7 @@ export function chassis({
           copyChassisAssets(root, publicDir)
           copyChassisCSS(root, publicDir)
           copyChassisIcons(root, publicDir)
+          copyIconSet(root, publicDir)
           aliasStatic(root, publicDir)
           copyPagefindIndex(outDir, publicDir)
         }
@@ -81,6 +95,24 @@ export function chassis({
       }
     }
   ]
+}
+
+/**
+ * Gives the icon set of the repository to the pages, as the default export of
+ * `virtual:icon-set`. The pages are bundled, and cannot read the files of the set themselves.
+ */
+function virtualIconSet(set: IconSet) {
+  const id = 'virtual:icon-set'
+
+  return {
+    name: 'chassis-icons:virtual',
+    resolveId(source: string) {
+      return source === id ? `\0${id}` : undefined
+    },
+    load(resolved: string) {
+      return resolved === `\0${id}` ? `export default ${JSON.stringify(set)}` : undefined
+    }
+  }
 }
 
 /**
@@ -185,18 +217,17 @@ function copyChassisCSS(root: string, publicDir: string) {
 }
 
 /**
- * Copies the `svgs/` and `icons/` folders of `@chassis-ui/icons` into `public/static/icons/`
- * so icons are served from `/static/icons/`. The site depends on the package of this
- * workspace, `packages/icons`, so it shows the icons of the repository itself and not of a
- * published version.
+ * Copies the `icons/` folder of the installed `@chassis-ui/icons` into `public/static/icons/`
+ * so icons are served from `/static/icons/`. The layouts and the components of
+ * `@chassis-ui/docs` draw the interface of the site with them, as on every Chassis site. They
+ * are not the set that the site shows: `copyIconSet()` serves that one from a path of its own.
  */
 function copyChassisIcons(root: string, publicDir: string) {
-  const source = getChassisIconsFsPath({ root })
+  const source = path.join(getChassisIconsFsPath({ root }), 'icons')
   const destination = path.join(publicDir, 'static', 'icons')
 
   fs.mkdirSync(destination, { recursive: true })
-  fs.cpSync(path.join(source, 'svgs'), destination, { recursive: true })
-  fs.cpSync(path.join(source, 'icons'), destination, { recursive: true })
+  fs.cpSync(source, destination, { recursive: true })
 }
 
 /**

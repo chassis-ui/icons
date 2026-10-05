@@ -1,0 +1,71 @@
+---
+title: iOS and Android
+description: The icons of a set reach an iOS or Android app through Chassis Assets, which copies the output and renames the SVG files for each platform.
+toc: true
+---
+
+## Introduction
+
+The build of Chassis Icons writes files for the web. An app for iOS or Android gets the icons through [Chassis Assets](https://chassis-ui.com/assets), which holds a copy of the output of a set and gives each platform the files it can use, under the names it expects. This page covers the copy. The [Icon Assets](https://chassis-ui.com/assets/docs/asset-types/icons/) page of Chassis Assets documents its build and its output.
+
+## Installation
+
+Chassis Assets reads the two folders of the output as they are. Build your set first, so that `packages/icons/icons/` and `packages/icons/svgs/` are what the source builds:
+
+```bash
+pnpm icons
+pnpm icons:verify
+```
+
+## Basic usage
+
+Copy the two folders into the `icons/` folder of an app of a brand, in your copy of the Chassis Assets repository, and build there. Run this from the root of that repository, with the path of your icons repository in place of the first part of each address:
+
+```bash
+rm -rf source/<brand>/<app>/icons/icons source/<brand>/<app>/icons/svgs
+cp -r /path/to/your-icons/packages/icons/icons source/<brand>/<app>/icons/icons
+cp -r /path/to/your-icons/packages/icons/svgs source/<brand>/<app>/icons/svgs
+pnpm assets
+```
+
+The build of Chassis Assets copies every file to the web output, and the SVG files to the output of iOS and Android. The icon font and its stylesheets are for the web only.
+
+## Names per platform
+
+Chassis Assets renames each file for its platform, and the name of the icon stays readable in every form.
+
+<CxTable>
+| Platform | Form of a name | For the icon `arrow-right-solid` |
+| --- | --- | --- |
+| Web | kebab-case, as the build wrote it | `arrow-right-solid.svg` |
+| iOS | snake_case | `arrow_right_solid.svg` |
+| Android | snake_case with the prefix `ic_` | `ic_arrow_right_solid.svg` |
+</CxTable>
+
+The pages of Chassis Assets for [iOS](https://chassis-ui.com/assets/docs/use-in-project/ios-applications/) and [Android](https://chassis-ui.com/assets/docs/use-in-project/android-applications/) describe how an app reads these files, and how an Android build gets vector drawables.
+
+## A set of your own
+
+A brand with icons of its own builds its set with Chassis Icons and copies the output under the same two folder names. Chassis Assets reads the folders and names no font, so a set with another font name and prefix is copied the same way.
+
+An app refers to an icon by its name, so a brand that keeps the names of the default brand needs no change in the app.
+
+## Best practices
+
+The files in Chassis Assets are a copy of the output of one build. These practices keep the copy whole.
+
+- **Copy both folders together:** `icons/` and `svgs/` come from one build. A font of one version and SVG files of another disagree on the icons they hold.
+- **Copy after `pnpm icons:verify` passes:** the committed output is then what the source builds.
+- **Keep the names across brands:** an app that shows `arrow-right-solid` gets the drawing of the brand it is built for.
+
+Avoid the habits that undo this:
+
+- **Do not edit the copy:** change the icon in `source/` of the icons repository, build, and copy again.
+
+## Next steps
+
+Continue with one of these pages:
+
+- [SVG files]([[docsref:/use-in-project/svg-files]]): the files that the apps get.
+- [Names and styles]([[docsref:/icon-design/names-and-styles]]): the names that an app refers to.
+- [Publishing]([[docsref:/use-in-project/publishing]]): a version of the set to copy from.

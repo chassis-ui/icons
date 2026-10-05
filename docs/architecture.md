@@ -55,7 +55,7 @@ Each module of `build/` does one thing, and takes what it needs as arguments.
 | `logger.js`      | The one logger. A module never writes to the console itself                                                |
 | `templates/`     | `css.hbs` and `scss.hbs`, the stylesheets of the font, and `readme.hbs`, the README of the package         |
 
-The scripts of the root `build/` belong to the repository and not to the build of a set: `build-pages.js` writes the pages of the site, `check-changeset.js` asks for a changeset, `sync-version-refs.js` copies the version, and `release-notes.js` and `release-archives.js` make the notes and the archive of a release.
+The scripts of the root `build/` belong to the repository and not to the build of a set: `check-changeset.js` asks for a changeset, `sync-version-refs.js` copies the version, and `release-notes.js` and `release-archives.js` make the notes and the archive of a release.
 
 ## Design decisions
 
@@ -176,20 +176,46 @@ The default set, `@chassis-ui/icons`, promises more than its shape, because its 
 
 While the version is `0.x`, a change to one of these is a minor bump whose changeset starts with `**Breaking.**`.
 
+## The site
+
+`packages/site/` shows the set of the repository, and it names no set either. It reads the same two things as a consumer: the configuration and the output.
+
+```text
+packages/icons/package.json ──┐  chassis.build, and the name and the version of the package
+packages/icons/icons/ ────────┤  the stylesheets, the sprite, the font, <font>.json
+packages/icons/svgs/ ─────────┘  one file per icon
+        │
+        ▼
+src/libs/set.ts          reads the set with config.js and names.js of the build
+        │
+        ├─▶ src/content.config.ts   the `icons` collection: one entry per file of svgs/, with
+        │                           its SVG markup and its code point
+        ├─▶ src/libs/astro.ts       `virtual:icon-set`: the font name, the prefix, the frame,
+        │                           the package and the addresses of the set
+        └─▶ public/icons/static/set/   the two folders, as the package holds them
+```
+
+A page of an icon is an entry of the collection, so the site has a page for each icon of the output and no file per icon. A page or a component reads the set from `virtual:icon-set`, since it is bundled and cannot read the files itself, and draws an icon of the set with `SetIcon.astro`. `exampleIcon` of `config.yml` names the icon of the examples, the first icon of the set when it is left out, and the site does not build with a name that the set does not have.
+
+The interface of the site is drawn by `@chassis-ui/docs` with the Chassis set, as on every Chassis site: `/static/icons/` holds `icons/` of the installed `@chassis-ui/icons`. The package of the workspace has the same name, so the site asks for the published one with an npm alias. The set of the repository is served from a path of its own, `/icons/static/set/`, under the path that chassis-ui.com routes to this site. For the default set the two are versions of one set, and for the set of an adopter they are two sets.
+
+The documentation pages are the MDX files of `content/docs/`, in the `docs` collection of every Chassis site, under `/icons/docs/`.
+
 ## Checks
 
 Each check has a command, and CI runs all of them.
 
-| Command                   | Checks                                                                                                                                              |
-| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm icons:lint:source`  | `source/`: only SVG files, kebab-case names that end in a style, the frame, one color, no stroke, no raster, gradient, pattern or script, the pairs |
-| `pnpm icons:verify`       | A fresh build equals the committed output; no icon moved from the code point it had at the last tag; no two icons share one; the contract icons     |
-| `pnpm icons:test`         | Vitest, on the fixture: the golden output, the steps, the code points, the configuration, the manifest, what npm packs, the journey of an adopter   |
-| `pnpm icons:lint:package` | publint on what npm would publish                                                                                                                   |
-| `pnpm icons:lint`         | ESLint on `build/`, `test/` and the root `build/`, with no warning allowed                                                                          |
-| `pnpm icons:typecheck`    | TypeScript `checkJs` on `build/`                                                                                                                    |
-| `pnpm changeset:check`    | The commits since a base come with a changeset when they change `source/`, `build/`, `icons/` or `svgs/`                                            |
-| `pnpm icons:test:golden`  | Not a check: writes `test/golden/` again from a build of the fixture                                                                                |
+| Command                   | Checks                                                                                                                                               |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm icons:lint:source`  | `source/`: only SVG files, kebab-case names that end in a style, the frame, one color, no stroke, no raster, gradient, pattern or script, the pairs  |
+| `pnpm icons:verify`       | A fresh build equals the committed output; no icon moved from the code point it had at the last tag; no two icons share one; the contract icons      |
+| `pnpm icons:test`         | Vitest, on the fixture: the golden output, the steps, the code points, the configuration, the manifest, what npm packs, the journey of an adopter    |
+| `pnpm icons:lint:package` | publint on what npm would publish                                                                                                                    |
+| `pnpm icons:lint`         | ESLint on `build/`, `test/` and the root `build/`, with no warning allowed                                                                           |
+| `pnpm icons:typecheck`    | TypeScript `checkJs` on `build/`                                                                                                                     |
+| `pnpm changeset:check`    | The commits since a base come with a changeset when they change `source/`, `build/`, `icons/` or `svgs/`                                             |
+| `pnpm site:test`          | Vitest, on a copy of the repository: the site of the default set and of the fixture, the icons that each page draws, and the links between the pages |
+| `pnpm icons:test:golden`  | Not a check: writes `test/golden/` again from a build of the fixture                                                                                 |
 
 `verify` reads the code points of the last tag from `icons/<font>.json` at that tag. A repository without a tag, or a tag without that file, is reported as a note and not as a problem. [`test/README.md`](../packages/icons/test/README.md) describes the tests, the fixture and the golden output.
 
@@ -212,7 +238,9 @@ Kept on purpose, or until a phase of the roadmap removes them. Do not fix one wi
 - **`main` is a stylesheet.** `main`, `style` and `sass` are kept beside `exports` for tools that read them. Node.js cannot import the package, and nothing in it is JavaScript.
 - **The package importer of Sass refuses the path without an extension.** `icons/` holds a `.css` and a `.scss` of the font name, so `pkg:<package>/icons/<font>` is ambiguous. `pkg:<package>` and the path with `.scss` are not.
 - **The default set starts with two retired code points.** `f243` and `f245` were the code points of two duplicates that 0.4.0 removes.
-- **The site is not yet a site for any set.** It holds one committed page per icon, written by `build/build-pages.js`, and draws its own interface with icons of the Chassis set. Phase 5 of the roadmap changes both.
+- **The site of the default set loads its font twice.** The interface loads the stylesheet of the installed package, and the pages of the set load the one of the repository. Both name the family and the classes of one set, and the second wins.
+- **The categories and the tags of an icon page are derived.** The category is the first word of the name, and the tags are `icon`, the style and `svg`, until the set has curated metadata.
+- **The test of the site copies the repository into `.cache/`.** Astro reads a file of a linked package by its path only when that path and the site have a folder in common, which the temporary folder of a machine does not have with the repository.
 
 ## History
 

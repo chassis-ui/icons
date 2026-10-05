@@ -1,9 +1,9 @@
 ---
-import { getConfig } from '@chassis-ui/docs/site'
-import type { SiteConfig } from '@libs/config'
+import set from 'virtual:icon-set'
 import Example from '@chassis-ui/docs/shortcodes/Example.astro'
+import { fontIcon, spriteIcon, svgPath } from '@libs/icon'
 
-const config = getConfig<SiteConfig>()
+const name = set.exampleIcon
 ---
 
 <section id="accessibility-section" class="home-section py-3xl md:py-6xl">
@@ -31,7 +31,7 @@ const config = getConfig<SiteConfig>()
       </div>
       <div class="md:col-8">
         <Example
-          code={`<img src="/static/icons/${config.exampleIcon}.svg" alt="Chassis" width="24" height="24">`}
+          code={`<img src="${svgPath(name)}" alt="Example icon" width="${set.frame}" height="${set.frame}">`}
           customMarkup={`<!-- alt="..." on <img> element -->
 <img ... alt="Example icon" />
 `}
@@ -50,10 +50,12 @@ const config = getConfig<SiteConfig>()
       </div>
       <div class="md:col-8">
         <Example
-          code={`<span class="icon cx-${config.exampleIcon}" role="img" aria-label="Example Icon"></span>
-<span class="icon icon-tools" role="img" style="font-size: 2em" aria-label="Tools"></span>`}
-          customMarkup={`<svg class="icon" ... role="img" aria-label="Example Icon">
-  <use xlink:href="chassis-icons.svg#${config.exampleIcon}"/>
+          code={fontIcon(name).replace(
+            'aria-hidden="true"',
+            'role="img" aria-label="Example icon"'
+          )}
+          customMarkup={`<svg class="icon" ... role="img" aria-label="Example icon">
+  <use href="${set.name}.svg#${name}"></use>
 </svg>`}
         />
       </div>
@@ -71,7 +73,7 @@ const config = getConfig<SiteConfig>()
       <div class="md:col-8">
         <Example
           code={`<button type="button" class="button default icon-only" aria-label="Example">
-          <Icon name="${config.exampleIcon}" />
+  ${spriteIcon(name)}
 </button>`}
           customMarkup={`<!-- aria-label="..." on the control -->
 <button ... aria-label="Example">
