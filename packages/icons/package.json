@@ -96,9 +96,9 @@
     "verify": "node build/cli.js verify"
   },
   "devDependencies": {
-    "@twbs/fantasticon": "^3.1.0",
     "@types/node": "^26.6.4",
     "clean-css": "^5.3.3",
+    "fantasticon": "^4.1.0",
     "handlebars": "^4.7.9",
     "picocolors": "^1.1.1",
     "publint": "^0.3.25",

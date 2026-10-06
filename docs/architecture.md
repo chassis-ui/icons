@@ -237,6 +237,7 @@ Kept on purpose, or until a phase of the roadmap removes them. Do not fix one wi
 - **`clip-rule` is removed with `fill`.** A drawing that needs `clip-rule` to look right has to be redrawn without it.
 - **`main` is a stylesheet.** `main`, `style` and `sass` are kept beside `exports` for tools that read them. Node.js cannot import the package, and nothing in it is JavaScript.
 - **The package importer of Sass refuses the path without an extension.** `icons/` holds a `.css` and a `.scss` of the font name, so `pkg:<package>/icons/<font>` is ambiguous. `pkg:<package>` and the path with `.scss` are not.
+- **The font holds its glyphs in the order in which Fantasticon finds the files**, which is the reverse of the order of the names. The order is in the bytes of the font and in nothing that it draws: a class finds its glyph by its code point.
 - **The default set starts with two retired code points.** `f243` and `f245` were the code points of two duplicates that 0.4.0 removes.
 - **The site of the default set loads its font twice.** The interface loads the stylesheet of the installed package, and the pages of the set load the one of the repository. Both name the family and the classes of one set, and the second wins.
 - **The categories and the tags of an icon page are derived.** The category is the first word of the name, and the tags are `icon`, the style and `svg`, until the set has curated metadata.

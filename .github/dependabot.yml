@@ -33,7 +33,7 @@ updates:
         dependency-type: development
         update-types: [minor, patch]
         exclude-patterns:
-          - '@twbs/fantasticon'
+          - fantasticon
           - svg-sprite
           - svgo
           - clean-css

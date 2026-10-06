@@ -6,7 +6,7 @@
 $acme-glyphs-font: "acme-glyphs" !default;
 $acme-glyphs-font-dir: "." !default;
 $acme-glyphs-font-file: "#{$acme-glyphs-font-dir}/#{$acme-glyphs-font}" !default;
-$acme-glyphs-font-hash: "809352dcaffccec6ef50cd594df384c0" !default;
+$acme-glyphs-font-hash: "aa43795381e42b41330f76182eea0eca" !default;
 $acme-glyphs-font-src:
   url("#{$acme-glyphs-font-file}.woff2?#{$acme-glyphs-font-hash}") format("woff2"),
   url("#{$acme-glyphs-font-file}.ttf?#{$acme-glyphs-font-hash}") format("truetype") !default;
