@@ -193,6 +193,7 @@ One session. No layout change; what is broken or false is fixed where it is.
 ### Left for the maintainer
 
 - `ref/bootstrap-to-chassis-css.md` (moved from `refs/`): move it to `chassis-css` or delete it.
+  The maintainer deleted it on 2026-10-06.
 - The stale branches of F18, local and on `origin`.
 
 ### Exit criteria
