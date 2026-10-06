@@ -35,15 +35,14 @@ const { icons = iconsPages, lead, showSearch = true, title = 'Icons' } = Astro.p
         </form>
       )}
     </header>
-    {lead && <p class="mb-2xl lg:col-8">{lead}</p>}
+    {lead && <p class="mb-2xl lg:w-8/12">{lead}</p>}
     <ul
       id="icons-list"
-      class="row row-cols-3 gy-md sm:row-cols-4 lg:row-cols-6 xl:row-cols-8 bulletless icons-list icon-xl"
+      class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 column-gap-xl row-gap-md bulletless icons-list icon-xl"
       data-pagefind-ignore
     >
       {icons.map(({ id: name, data }) => (
         <li
-          class="col"
           data-name={name}
           data-tags={data.tags.join(' ').toLowerCase()}
           data-categories={data.categories.join(' ').toLowerCase()}

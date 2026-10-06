@@ -14,8 +14,8 @@ const { icon } = Astro.props
 
 <div class="container 2xl">
   <Title icon={icon} />
-  <div class="row mb-xl">
-    <div class="md:col-8">
+  <div class="grid row-gap-0 mb-xl">
+    <div class="col-span-full md:col-span-8">
       <div
         class="icon-demo border rounded d-flex align-items-center justify-content-center"
         style="font-size: 10rem;"
@@ -28,7 +28,7 @@ const { icon } = Astro.props
         <Examples icon={icon} />
       </div>
     </div>
-    <aside class="md:col-4">
+    <aside class="col-span-full md:col-span-4">
       <Snippets icon={icon} />
     </aside>
   </div>

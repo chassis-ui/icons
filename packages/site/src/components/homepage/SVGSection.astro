@@ -4,8 +4,8 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 
 <section id="svg-section" class="home-section py-3xl md:py-6xl">
   <div class="container 2xl section-content">
-    <div class="row mb-3xl md:mb-6xl">
-      <header class="section-header col lg:col-10 xl:col-8">
+    <div class="grid mb-3xl md:mb-6xl">
+      <header class="section-header col-span-full lg:col-span-10 xl:col-span-8">
         <h2 id="svg">Working with SVGs</h2>
 
         <p>
@@ -15,8 +15,8 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
       </header>
     </div>
 
-    <div class="row row-cols-1 md:row-cols-2 lg:row-cols-3 g-md md:g-xl">
-      <div class="col">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md md:gap-xl">
+      <div>
         <FeatureCard icon="cx-shapes">
           <Fragment slot="title">Focus in Legacy Browsers</Fragment>
           <Fragment slot="body">
@@ -36,7 +36,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
         </FeatureCard>
       </div>
 
-      <div class="col">
+      <div>
         <FeatureCard icon="cx-megaphone">
           <Fragment slot="title">Screen Reader Announcements</Fragment>
           <Fragment slot="body">
@@ -57,7 +57,7 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
         </FeatureCard>
       </div>
 
-      <div class="col">
+      <div>
         <FeatureCard icon="cx-thumbs-up">
           <Fragment slot="title">External Sprite Support (IE)</Fragment>
           <Fragment slot="body">

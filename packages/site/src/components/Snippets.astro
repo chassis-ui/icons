@@ -13,7 +13,7 @@ interface Props {
 const { title: name, svg, codepoint } = Astro.props.icon
 ---
 
-<div class="col-lg-4 mb-lg">
+<div class="mb-lg">
   <h3 class="mb-0">Download</h3>
   <p>Download the SVG to use or edit.</p>
   <a href={svgPath(name)} class="button lg primary" download>
@@ -47,24 +47,24 @@ const { title: name, svg, codepoint } = Astro.props.icon
   <h3 class="mb-0">Code point</h3>
   <p>Paste the code point into your project.</p>
   <div class="mb-md">
-    <dl class="row">
-      <dt class="sm:col-3">Unicode:</dt>
-      <dd class="sm:col-9">
+    <dl class="grid grid-cols-4 column-gap-xl row-gap-0">
+      <dt class="col-span-full sm:col-span-1">Unicode:</dt>
+      <dd class="col-span-full sm:col-span-3">
         <code>U+{codepoint}</code>
       </dd>
 
-      <dt class="sm:col-3">CSS:</dt>
-      <dd class="sm:col-9">
+      <dt class="col-span-full sm:col-span-1">CSS:</dt>
+      <dd class="col-span-full sm:col-span-3">
         <code>\{codepoint}</code>
       </dd>
 
-      <dt class="sm:col-3">JS:</dt>
-      <dd class="sm:col-9">
+      <dt class="col-span-full sm:col-span-1">JS:</dt>
+      <dd class="col-span-full sm:col-span-3">
         <code>\u{codepoint}</code>
       </dd>
 
-      <dt class="sm:col-3">HTML:</dt>
-      <dd class="sm:col-9">
+      <dt class="col-span-full sm:col-span-1">HTML:</dt>
+      <dd class="col-span-full sm:col-span-3">
         <code>&amp;#x{codepoint};</code>
       </dd>
     </dl>

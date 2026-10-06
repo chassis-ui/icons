@@ -8,8 +8,8 @@ const name = set.exampleIcon
 
 <section id="usage-section" class="home-section py-3xl md:py-6xl">
   <div class="container 2xl section-content">
-    <div class="row mb-3xl md:mb-6xl">
-      <header class="section-header col lg:col-10 xl:col-8">
+    <div class="grid mb-3xl md:mb-6xl">
+      <header class="section-header col-span-full lg:col-span-10 xl:col-span-8">
         <h2 id="usage">Usage</h2>
         <p>
           The build writes the set in three forms: an SVG sprite, one SVG file per icon and an icon
@@ -20,8 +20,8 @@ const name = set.exampleIcon
       </header>
     </div>
 
-    <div class="row my-lg mt-4xl">
-      <div class="md:col-4">
+    <div class="grid row-gap-0 my-lg mt-4xl">
+      <div class="col-span-full md:col-span-4">
         <h3>Sprite</h3>
         <p>
           The sprite holds every icon as a <code>&lt;symbol&gt;</code> whose <code>id</code> is the
@@ -33,28 +33,28 @@ const name = set.exampleIcon
           sprite from the origin of the page.
         </p>
       </div>
-      <div class="md:col-8">
+      <div class="col-span-full md:col-span-8">
         <Example code={spriteIcon(name)} />
       </div>
     </div>
 
-    <div class="row my-lg">
-      <div class="md:col-4">
+    <div class="grid row-gap-0 my-lg">
+      <div class="col-span-full md:col-span-4">
         <h3>External image</h3>
         <p>
           The SVG file of an icon is an image for the <code>&lt;img&gt;</code> element. An image
           does not take the color of the text: the icon is black.
         </p>
       </div>
-      <div class="md:col-8">
+      <div class="col-span-full md:col-span-8">
         <Example
           code={`<img src="${svgPath(name)}" alt="" width="${set.frame}" height="${set.frame}">`}
         />
       </div>
     </div>
 
-    <div class="row my-lg">
-      <div class="md:col-4">
+    <div class="grid row-gap-0 my-lg">
+      <div class="col-span-full md:col-span-4">
         <h3>Icon font</h3>
         <p>
           The stylesheet of the font has one class per icon, <code>{set.prefix}-&lt;name&gt;</code>.
@@ -65,7 +65,7 @@ const name = set.exampleIcon
           icon.
         </p>
       </div>
-      <div class="md:col-8">
+      <div class="col-span-full md:col-span-8">
         <Example code={fontIcon(name)} />
       </div>
     </div>

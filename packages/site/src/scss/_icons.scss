@@ -78,10 +78,8 @@ html {
 
   &:empty::before {
     display: block;
-    width: 100%;
+    grid-column: 1 / -1;
     padding: 100px 2rem;
-    margin-right: 15px;
-    margin-left: 15px;
     color: var(--cx-fg-subtle);
     text-align: center;
     content: "Nothing found, try searching again.";
@@ -96,15 +94,6 @@ html {
 
 .name {
   font-size: .8125rem;
-}
-
-@media (min-width: 1200px) {
-  .row-cols-xl-8 {
-    > * {
-      flex: 0 0 12.5%;
-      max-width: 12.5%;
-    }
-  }
 }
 
 .icon-demo {

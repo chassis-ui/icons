@@ -15,8 +15,8 @@ const start = hasDocs ? getDocsPath(`${quickStart}/`) : '#build-section'
 
 <section class="home-section py-3xl md:py-6xl">
   <div class="container 2xl section-content py-3xl md:py-6xl">
-    <div class="row justify-content-center mb-3xl md:mb-6xl">
-      <div class="col xl:col-10 text-center">
+    <div class="grid mb-3xl md:mb-6xl">
+      <div class="col-span-full xl:col-span-10 xl:col-start-2 text-center">
         <p class="module-title fg-primary md:font-xl font-mass text-uppercase mb-xs md:mb-sm">
           {set.title}
         </p>
@@ -25,7 +25,7 @@ const start = hasDocs ? getDocsPath(`${quickStart}/`) : '#build-section'
       </div>
     </div>
 
-    <div class="d-flex flex-column gap-md mb-md md:mb-lg col lg:col-6 lg:offset-3">
+    <div class="d-flex flex-column gap-md mb-md md:mb-lg lg:w-6/12 mx-auto">
       <!-- Code snippet -->
       <Code
         noToolbar

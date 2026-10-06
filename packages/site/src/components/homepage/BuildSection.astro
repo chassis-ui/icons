@@ -16,8 +16,8 @@ const stylesheet = set.package.private
 
 <section id="build-section" class="home-section py-3xl md:py-6xl">
   <div class="container 2xl section-content">
-    <div class="row mb-3xl md:mb-6xl">
-      <header class="section-header col lg:col-10 xl:col-8">
+    <div class="grid mb-3xl md:mb-6xl">
+      <header class="section-header col-span-full lg:col-span-10 xl:col-span-8">
         <h2 id="build">Build</h2>
         <p>
           {set.title} is built from one folder of SVG files. Save a file per icon, run the build,
@@ -27,8 +27,8 @@ const stylesheet = set.package.private
       </header>
     </div>
 
-    <div class="row row-cols-1 md:row-cols-3 g-md md:g-xl">
-      <div class="col">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-md md:gap-xl">
+      <div>
         <FeatureCard icon="cx-folders">
           <Fragment slot="title">Save Files</Fragment>
           <Fragment slot="body">
@@ -40,7 +40,7 @@ const stylesheet = set.package.private
           </div>
         </FeatureCard>
       </div>
-      <div class="col">
+      <div>
         <FeatureCard icon="cx-check-circle">
           <Fragment slot="title">Build Icons</Fragment>
           <Fragment slot="body">
@@ -59,7 +59,7 @@ pnpm icons`}
           </div>
         </FeatureCard>
       </div>
-      <div class="col">
+      <div>
         <FeatureCard icon="cx-figma">
           <Fragment slot="title">Import Files</Fragment>
           <Fragment slot="body">Load the stylesheet of the icon font in a page or in CSS.</Fragment>
