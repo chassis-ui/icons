@@ -27,8 +27,7 @@ function sharedPlugins({ convertPathData }) {
           removeUnknownsAndDefaults: {
             keepDataAttrs: false, // remove all `data` attributes
             keepRoleAttr: true // keep the `role` attribute
-          },
-          removeViewBox: false // keep the `viewBox` attribute
+          }
         }
       }
     },
