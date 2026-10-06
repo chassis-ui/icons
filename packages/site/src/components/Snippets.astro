@@ -16,10 +16,14 @@ const { title: name, svg, codepoint } = Astro.props.icon
 <div class="col-lg-4 mb-lg">
   <h3 class="mb-0">Download</h3>
   <p>Download the SVG to use or edit.</p>
-  <a href={svgPath(name)} class="button lg primary" download>Download SVG</a>
+  <a href={svgPath(name)} class="button lg primary" download>
+    Download SVG
+  </a>
 
   <h3 class="mb-0">SVG sprite</h3>
-  <p>Draw the symbol of the sprite with a <code>&lt;use&gt;</code> element.</p>
+  <p>
+    Draw the symbol of the sprite with a <code>&lt;use&gt;</code> element.
+  </p>
   <div>
     <Code
       noToolbar
@@ -45,16 +49,24 @@ const { title: name, svg, codepoint } = Astro.props.icon
   <div class="mb-md">
     <dl class="row">
       <dt class="sm:col-3">Unicode:</dt>
-      <dd class="sm:col-9"><code>U+{codepoint}</code></dd>
+      <dd class="sm:col-9">
+        <code>U+{codepoint}</code>
+      </dd>
 
       <dt class="sm:col-3">CSS:</dt>
-      <dd class="sm:col-9"><code>\{codepoint}</code></dd>
+      <dd class="sm:col-9">
+        <code>\{codepoint}</code>
+      </dd>
 
       <dt class="sm:col-3">JS:</dt>
-      <dd class="sm:col-9"><code>\u{codepoint}</code></dd>
+      <dd class="sm:col-9">
+        <code>\u{codepoint}</code>
+      </dd>
 
       <dt class="sm:col-3">HTML:</dt>
-      <dd class="sm:col-9"><code>&amp;#x{codepoint};</code></dd>
+      <dd class="sm:col-9">
+        <code>&amp;#x{codepoint};</code>
+      </dd>
     </dl>
   </div>
 </div>

@@ -22,8 +22,12 @@ const frontmatter = {
     <nav aria-label="breadcrumb" class="pt-md">
       <div class="border-bottom border-subtle mb-md">
         <ol class="breadcrumb">
-          <li class="breadcrumb-page"><a href="/icons/">Icons</a></li>
-          <li class="breadcrumb-page"><a href="/icons/browse/">Browse</a></li>
+          <li class="breadcrumb-page">
+            <a href="/icons/">Icons</a>
+          </li>
+          <li class="breadcrumb-page">
+            <a href="/icons/browse/">Browse</a>
+          </li>
         </ol>
       </div>
     </nav>
@@ -37,14 +41,12 @@ const frontmatter = {
         <h2>Categories</h2>
         <p class="text-muted">Icons grouped by primary function or theme</p>
         <div class="d-flex flex-wrap gap-md mb-4">
-          {
-            sortedCategories.map(([category, count]) => (
-              <a href={`/icons/category/${category}/`} class="button default sm">
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-                <span class="badge primary smooth ms-2xs">{count}</span>
-              </a>
-            ))
-          }
+          {sortedCategories.map(([category, count]) => (
+            <a href={`/icons/category/${category}/`} class="button default sm">
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+              <span class="badge primary smooth ms-2xs">{count}</span>
+            </a>
+          ))}
         </div>
       </div>
 
@@ -52,14 +54,12 @@ const frontmatter = {
         <h2>Tags</h2>
         <p class="text-muted">Icons labeled by style, type, or characteristics</p>
         <div class="d-flex flex-wrap gap-md mb-4">
-          {
-            sortedTags.map(([tag, count]) => (
-              <a href={`/icons/tag/${tag}/`} class="button default sm">
-                {tag}
-                <span class="badge primary smooth ms-2xs">{count}</span>
-              </a>
-            ))
-          }
+          {sortedTags.map(([tag, count]) => (
+            <a href={`/icons/tag/${tag}/`} class="button default sm">
+              {tag}
+              <span class="badge primary smooth ms-2xs">{count}</span>
+            </a>
+          ))}
         </div>
       </div>
     </div>
@@ -81,5 +81,5 @@ const frontmatter = {
         </div>
       </div>
     </section>
-  </div></IconsLayout
->
+  </div>
+</IconsLayout>

@@ -17,25 +17,23 @@ const { icons = iconsPages, lead, showSearch = true, title = 'Icons' } = Astro.p
   <div class="container 2xl section-content">
     <header class:list={['d-flex mt-2xl', lead ? 'mb-md' : 'mb-2xl']}>
       <h2 id="icons">{title}</h2>
-      {
-        showSearch && (
-          <form class="flex-nowrap ms-auto" onsubmit="return false">
-            <label for="search" class="visually-hidden">
-              Search for icons
-            </label>
-            <input
-              class="form-input search mb-0"
-              id="search"
-              type="search"
-              placeholder="Start typing to filter..."
-              autocomplete="off"
-            />
-            <button type="submit" hidden>
-              Search
-            </button>
-          </form>
-        )
-      }
+      {showSearch && (
+        <form class="flex-nowrap ms-auto" onsubmit="return false">
+          <label for="search" class="visually-hidden">
+            Search for icons
+          </label>
+          <input
+            class="form-input search mb-0"
+            id="search"
+            type="search"
+            placeholder="Start typing to filter..."
+            autocomplete="off"
+          />
+          <button type="submit" hidden>
+            Search
+          </button>
+        </form>
+      )}
     </header>
     {lead && <p class="mb-2xl lg:col-8">{lead}</p>}
     <ul
@@ -43,23 +41,21 @@ const { icons = iconsPages, lead, showSearch = true, title = 'Icons' } = Astro.p
       class="row row-cols-3 gy-md sm:row-cols-4 lg:row-cols-6 xl:row-cols-8 bulletless icons-list icon-xl"
       data-pagefind-ignore
     >
-      {
-        icons.map(({ id: name, data }) => (
-          <li
-            class="col"
-            data-name={name}
-            data-tags={data.tags.join(' ').toLowerCase()}
-            data-categories={data.categories.join(' ').toLowerCase()}
-          >
-            <a class="d-block text-decoration-none" href={`/icons/${name}/`}>
-              <div class="bg-even py-3xl text-center rounded">
-                <SetIcon name={name} />
-              </div>
-              <div class="name text-muted text-decoration-none text-center">{name}</div>
-            </a>
-          </li>
-        ))
-      }
+      {icons.map(({ id: name, data }) => (
+        <li
+          class="col"
+          data-name={name}
+          data-tags={data.tags.join(' ').toLowerCase()}
+          data-categories={data.categories.join(' ').toLowerCase()}
+        >
+          <a class="d-block text-decoration-none" href={`/icons/${name}/`}>
+            <div class="bg-even py-3xl text-center rounded">
+              <SetIcon name={name} />
+            </div>
+            <div class="name text-muted text-decoration-none text-center">{name}</div>
+          </a>
+        </li>
+      ))}
     </ul>
   </div>
 </section>

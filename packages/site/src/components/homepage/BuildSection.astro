@@ -20,9 +20,9 @@ const stylesheet = set.package.private
       <header class="section-header col lg:col-10 xl:col-8">
         <h2 id="build">Build</h2>
         <p>
-          {set.title} is built from one folder of SVG files. Save a file per icon, run the build, and
-          load the stylesheet or the sprite that it writes. A team that owns the repository builds a set
-          of its own the same way: with its files, its font name and its class prefix.
+          {set.title} is built from one folder of SVG files. Save a file per icon, run the build,
+          and load the stylesheet or the sprite that it writes. A team that owns the repository
+          builds a set of its own the same way: with its files, its font name and its class prefix.
         </p>
       </header>
     </div>
@@ -31,10 +31,10 @@ const stylesheet = set.package.private
       <div class="col">
         <FeatureCard icon="cx-folders">
           <Fragment slot="title">Save Files</Fragment>
-          <Fragment slot="body"
-            >Save one SVG file per icon into the source folder. The name of the file is the name of
-            the icon.</Fragment
-          >
+          <Fragment slot="body">
+            Save one SVG file per icon into the source folder. The name of the file is the name of
+            the icon.
+          </Fragment>
           <div class="border-top border-subtle pt-md">
             <Code noToolbar lang="text" code={['source/', ...files, '└── ...'].join('\n')} />
           </div>
@@ -43,9 +43,9 @@ const stylesheet = set.package.private
       <div class="col">
         <FeatureCard icon="cx-check-circle">
           <Fragment slot="title">Build Icons</Fragment>
-          <Fragment slot="body"
-            >The build optimizes the files and writes the sprite, the icon font and its stylesheets.</Fragment
-          >
+          <Fragment slot="body">
+            The build optimizes the files and writes the sprite, the icon font and its stylesheets.
+          </Fragment>
           <div class="border-top border-subtle pt-md">
             <Code
               noToolbar
