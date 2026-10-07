@@ -1,8 +1,6 @@
 @use "@chassis-ui/css/scss/mixins" as *;
 @use "docs" as *;
-// .cxd-gutter {
-//   --cx-gutter-x: #{$cxd-gutter-x};
-// }
+
 html {
   scroll-padding-top: 129px; /* height of sticky header */
 }
