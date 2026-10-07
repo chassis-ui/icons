@@ -1,3 +1,4 @@
+@use "@chassis-ui/css/scss/mixins" as *;
 @use "docs" as *;
 // .cxd-gutter {
 //   --cx-gutter-x: #{$cxd-gutter-x};
@@ -114,4 +115,12 @@ aside h3 {
 }
 aside h3:not(:first-child) {
   margin-top: 1.5rem;
+}
+
+// Below `md` a code block of the docs runs to the edges of the screen, by a margin as wide
+// as the padding of their container. The container of an icon page pads less.
+aside .cxd-code-snippet {
+  @include media-breakpoint-down(md) {
+    margin-inline: calc(var(--cx-container-padding) * -1);
+  }
 }

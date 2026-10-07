@@ -25,7 +25,7 @@ const { icon } = Astro.props
       Example link text <SetIcon name={icon.title} class="icon-adaptive" />
     </a>
   </p>
-  <div class="d-flex gap-sm mb-md">
+  <div class="d-flex flex-wrap md:flex-nowrap gap-sm mb-md">
     <button type="button" class="button default">
       <SetIcon name={icon.title} />
       <span>Button</span>
@@ -43,7 +43,7 @@ const { icon } = Astro.props
       <span>Button</span>
     </button>
   </div>
-  <div class="d-flex gap-sm mb-md">
+  <div class="d-flex flex-wrap gap-sm mb-md">
     <button type="button" class="button default icon-only">
       <SetIcon name={icon.title} />
       <span class="visually-hidden">Button</span>
