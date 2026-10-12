@@ -54,8 +54,8 @@
     "changeset:version": "changeset version && node build/sync-version-refs.js",
     "release:archives": "node build/release-archives.js",
     "release:notes": "node build/release-notes.js",
-    "sync-submodules": "pnpm --filter ./packages/site exec chassis-docs sync-submodules",
-    "vendor": "pnpm --filter ./packages/site exec chassis-docs vendor"
+    "sync-submodules": "pnpm --filter ./packages/site exec chassis-docs sync-submodules --subset latin --subset latin-ext --subset symbols2 --split",
+    "vendor": "pnpm --filter ./packages/site exec chassis-docs vendor --subset latin --subset latin-ext --subset symbols2 --split"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
