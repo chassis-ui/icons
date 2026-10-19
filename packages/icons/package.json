@@ -96,7 +96,7 @@
     "verify": "node build/cli.js verify"
   },
   "devDependencies": {
-    "@types/node": "^26.6.4",
+    "@types/node": "^26.6.5",
     "clean-css": "^5.3.3",
     "fantasticon": "^4.1.0",
     "handlebars": "^4.7.9",
@@ -104,6 +104,6 @@
     "publint": "^0.3.25",
     "svg-sprite": "3.0.0-rc3",
     "svgo": "^4.1.0",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.5"
   }
 }
