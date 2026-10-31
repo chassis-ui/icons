@@ -192,7 +192,9 @@ function expectSiteOfSet(dir, out) {
     const html = read(page)
 
     for (const [, href] of html.matchAll(/<use[^>]*\shref="([^"]*)"/g)) {
-      const [file, id] = href.split('#')
+      // A shared sprite is linked with `?v=` and a hash of the file
+      const [address, id] = href.split('#')
+      const file = address.split('?')[0]
 
       if (file === '') {
         // A symbol of the page itself
