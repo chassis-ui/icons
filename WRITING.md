@@ -1,6 +1,6 @@
 # Documentation Style Guide
 
-How to write the documents of chassis-icons: the repository docs (`README.md`, `.github/CONTRIBUTING.md`, `docs/`), the changeset entries, and the pages of the docs site. It follows the language and voice of the [chassis-tokens guide](https://github.com/chassis-ui/tokens/blob/main/WRITING.md) and of the [chassis-assets guide](https://github.com/chassis-ui/assets/blob/main/WRITING.md), adapted to an icon library creator.
+How to write the documents of this repository: the repository docs (`README.md`, `.github/CONTRIBUTING.md`, `docs/`), the changeset entries, and the pages of the docs site. It follows the language and voice of the [chassis-ui/tokens guide](https://github.com/chassis-ui/tokens/blob/main/WRITING.md) and of the [chassis-ui/assets guide](https://github.com/chassis-ui/assets/blob/main/WRITING.md), adapted to an icon library creator.
 
 **The guide is the reference, not the existing pages.** Don't copy a convention from a document because the document does it; check it here. Migrate a document when editing it, and don't gate unrelated PRs on the migration.
 
@@ -500,4 +500,4 @@ Replaced at build time in prose, link targets, code blocks, and frontmatter.
 
 ### Other components
 
-`@chassis-ui/docs` also provides `<Icon>`, which draws an icon of the Chassis set for the interface of the site and not an icon of the set that the site shows, and `<Example>`, `<ResizableExample>`, `<ScssDocs>`, `<JsDocs>`, `<AddedIn>`, `<DeprecatedIn>`, and `<InFigma>`, which the Chassis CSS docs use. Their props are in Appendix A of the [chassis-css guide](https://github.com/chassis-ui/css/blob/main/WRITING.md). Propose a convention here ([What's not in this guide](#whats-not-in-this-guide-yet)) before the first use on a documentation page.
+`@chassis-ui/docs` also provides `<Icon>`, which draws an icon of the Chassis set for the interface of the site and not an icon of the set that the site shows, and `<Example>`, `<ResizableExample>`, `<ScssDocs>`, `<JsDocs>`, `<AddedIn>`, `<DeprecatedIn>`, and `<InFigma>`, which the Chassis CSS docs use. Their props are in Appendix A of the [chassis-ui/css guide](https://github.com/chassis-ui/css/blob/main/WRITING.md). Propose a convention here ([What's not in this guide](#whats-not-in-this-guide-yet)) before the first use on a documentation page.

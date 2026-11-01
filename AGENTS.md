@@ -81,7 +81,7 @@ The first nine are the principles of [ref/ROADMAP.md](ref/ROADMAP.md#principles)
 - **Rewrite the scripts, keep the tools.** SVGO, svg-sprite and Fantasticon stay. Replacing or
   upgrading one is a task of its own, with a comparison of the output.
 - **Match the siblings in tooling, not in product.** The layout, the tests, CI, Changesets and
-  the docs site follow `chassis-tokens` and `chassis-assets`.
+  the docs site follow `chassis-ui/tokens` and `chassis-ui/assets`.
 - **Never edit generated files by hand.** `packages/icons/svgs/`, `packages/icons/icons/`,
   `packages/icons/codepoints.json`, `packages/icons/README.md`, `packages/icons/test/golden/`,
   the fields `main`, `style`, `sass`, `files`, `exports` and `sideEffects` of the package
@@ -127,6 +127,8 @@ And these:
   `we` or `our`. Headings are in sentence case, each followed by a sentence.
 - Every command, path, option and icon name in a document must exist as written. Run a command
   before writing it down, and copy output from a build; do not retype it.
+- Name a sibling by its GitHub repository, as `chassis-ui/css`, never by a local folder name or
+  a relative path. These differ per contributor.
 - `packages/icons/README.md` is written from `packages/icons/build/templates/readme.hbs`. Change
   the template, never the README.
 - Run `pnpm lint:prettier` and `pnpm spellcheck` after editing a Markdown file.

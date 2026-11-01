@@ -14,8 +14,8 @@ in `packageManager` of `package.json`; `corepack enable` picks it up), Git and
 [Git LFS](https://git-lfs.com).
 
 ```bash
-git clone https://github.com/chassis-ui/icons.git chassis-icons
-cd chassis-icons
+git clone https://github.com/chassis-ui/icons.git
+cd icons
 pnpm install
 ```
 
@@ -44,7 +44,7 @@ and the source of the icons at the root.
 - [`docs/architecture.md`](../docs/architecture.md) explains the build, and
   [`ref/ROADMAP.md`](../ref/ROADMAP.md) holds the plan of the repository, its principles and
   its decisions.
-- [`vendor/assets`](../vendor/) is the chassis-assets submodule, with the fonts and images of
+- [`vendor/assets`](../vendor/) is the `chassis-ui/assets` submodule, with the fonts and images of
   the site. `pnpm site:build` checks it out at the pinned commit and builds it, which needs
   Git LFS. `pnpm sync-submodules` moves the pin to the latest `app/docs`.
 
