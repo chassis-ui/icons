@@ -10,8 +10,7 @@ it under [Taking a newer build into your copy](#taking-a-newer-build-into-your-c
 ## Dev setup
 
 You need Node.js 22.12 or later (`.nvmrc` names the version that CI uses, 24), pnpm (the version
-in `packageManager` of `package.json`; `corepack enable` picks it up), Git and
-[Git LFS](https://git-lfs.com).
+in `packageManager` of `package.json`; `corepack enable` picks it up) and Git.
 
 ```bash
 git clone https://github.com/chassis-ui/icons.git
@@ -44,12 +43,12 @@ and the source of the icons at the root.
 - [`docs/architecture.md`](../docs/architecture.md) explains the build, and
   [`ref/ROADMAP.md`](../ref/ROADMAP.md) holds the plan of the repository, its principles and
   its decisions.
-- [`vendor/assets`](../vendor/) is the `chassis-ui/assets` submodule, with the fonts and images of
-  the site. `pnpm site:build` checks it out at the pinned commit and builds it, which needs
-  Git LFS. `pnpm sync-submodules` moves the pin to the latest `app/docs`.
+- [`vendor/assets.json`](../vendor/assets.json) pins the release of chassis-ui/website-assets
+  with the fonts and images of the site. `pnpm site:build` unpacks its archive into
+  `vendor/assets`, which is not committed. `pnpm sync-assets` moves the pin to the latest release.
 
 Run every command from the root. `pnpm dev` starts the site on port 4324; run `pnpm vendor`
-once before it, so that the submodule is built.
+once before it, so that the assets are unpacked.
 
 ## Branch and commit conventions
 
@@ -134,14 +133,14 @@ the repository.
 copy for the set it ships with and for the fixture of the tests of the build, and checks
 that each page shows the set of the copy, that every icon a page draws is in the sprite it
 is drawn from, and that every link leads to a page and a heading that exist. It needs the
-build of `vendor/assets`, so run `pnpm site:build` or `pnpm vendor` once before it.
+files of `vendor/assets`, so run `pnpm site:build` or `pnpm vendor` once before it.
 
 ```bash
 pnpm site:lint:eslint      # ESLint
 pnpm site:lint:stylelint   # Stylelint
 pnpm lint:prettier         # Prettier, on the whole repository
 pnpm check:astro           # Types
-pnpm site:build            # The same build as Vercel: vendor/assets, Astro and Pagefind
+pnpm site:build            # The same build as Vercel: the assets, Astro and Pagefind
 pnpm site:test             # The site of a copy of the repository, for two sets
 pnpm site:lint:html        # html-validate, on the built site
 pnpm site:lint:vnu         # The Nu Html Checker, on the built site. Needs Java

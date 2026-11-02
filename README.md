@@ -20,7 +20,6 @@ You need:
 
 - **Node.js** 22.12 or later, see `engines` in `package.json`. The repository pins 24 in `.nvmrc`.
 - **pnpm**, the version named by `packageManager` in `package.json`. Run `corepack enable` once and pnpm is used at that version.
-- **Git LFS**, from [git-lfs.com](https://git-lfs.com), for the documentation site only: its fonts and images are in the `vendor/assets` submodule. The build of the icons needs neither.
 
 Clone the repository and install its packages:
 
@@ -150,7 +149,7 @@ pnpm vendor
 pnpm dev
 ```
 
-`pnpm vendor` builds the `vendor/assets` submodule once, which needs Git LFS, and `pnpm dev` serves the site at `http://localhost:4324/icons/`. Without `exampleIcon` the examples show the first icon of the set, and with an icon that the set does not have the site stops and says so.
+`pnpm vendor` unpacks the fonts and images of the site once, from the release of chassis-ui/website-assets that `vendor/assets.json` pins, and `pnpm dev` serves the site at `http://localhost:4324/icons/`. Without `exampleIcon` the examples show the first icon of the set, and with an icon that the set does not have the site stops and says so.
 
 The site draws its own interface, such as its header and its search, with the Chassis set, which it installs as the package `@chassis-ui/icons`. So the interface does not depend on your icons. The pages of `packages/site/content/docs/` document the toolkit with the Chassis set as their example: keep them, rewrite them for your team, or remove them with their entries of `packages/site/data/sidebar.yml`.
 
@@ -174,7 +173,7 @@ chassis.checks.json       -> The icons that consumers of the set read by name
 docs/architecture.md      -> How the build works, and what it promises to write
 ref/ROADMAP.md            -> The plan of this repository, its principles and decisions
 .changeset/               -> The changesets of the next version
-vendor/assets             -> Git submodule of chassis-ui/assets: the fonts and images of the site
+vendor/assets.json        -> The release of chassis-ui/website-assets that has the fonts and images of the site
 ```
 
 ## Commands
@@ -216,16 +215,16 @@ A whole build removes from `packages/icons/svgs/` each file whose source is gone
 ### Documentation site
 
 ```bash
-pnpm vendor               # Check out and build the vendor/assets submodule. Once, before pnpm dev. Needs Git LFS
+pnpm vendor               # Unpack the assets that vendor/assets.json pins into vendor/assets. Once, before pnpm dev
 pnpm dev                  # Run the site at http://localhost:4324/icons/
-pnpm site:build           # The submodule, the site and its search index, into _site/
+pnpm site:build           # The assets, the site and its search index, into _site/
 pnpm site:test            # Build the site of a copy of the repository, for the default set and for the fixture
 pnpm astro:preview        # Serve _site/ as it is deployed
 pnpm site:lint            # ESLint, Stylelint, Prettier and the Nu Html Checker over the site
 pnpm site:lint:html       # html-validate over _site/, after a build
 pnpm site:lint:vnu        # The Nu Html Checker over _site/, after a build. Skipped without Java
 pnpm site:lint:fusv       # Sass variables of the site that nothing uses
-pnpm sync-submodules      # Move vendor/assets to the latest commit of its app/docs branch
+pnpm sync-assets          # Move vendor/assets.json to the latest release of chassis-ui/website-assets
 pnpm build                # pnpm icons and pnpm site:build
 ```
 

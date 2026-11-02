@@ -39,7 +39,7 @@ Never edit a golden file by hand. Prettier leaves the folder alone.
 
 ## The test of the site
 
-The site has a test of its own, `packages/site/test/journey.test.js`, which `pnpm site:test` runs. It copies the repository, builds the site of the copy for the set it ships with, then walks the journey of `journey.test.js` in a second copy and builds the site of the fixture. It checks that each page shows the set of the copy, that every icon a page draws is in the sprite it is drawn from, and that every link leads to a page that exists. It needs the build of `vendor/assets`, so it runs in the Site job of CI and not with these tests.
+The site has a test of its own, `packages/site/test/journey.test.js`, which `pnpm site:test` runs. It copies the repository, builds the site of the copy for the set it ships with, then walks the journey of `journey.test.js` in a second copy and builds the site of the fixture. It checks that each page shows the set of the copy, that every icon a page draws is in the sprite it is drawn from, and that every link leads to a page that exists. It needs the files of `vendor/assets`, so it runs in the Site job of CI and not with these tests.
 
 ## Adding a case
 

@@ -9,6 +9,7 @@ import {
   getChassisCSSFsPath,
   getChassisIconsFsPath
 } from '@chassis-ui/docs'
+import { writeBrandCSS } from '@chassis-ui/docs/integration'
 import type { SiteConfig } from './config'
 import { copyIconSet, getSetFiles, loadIconSet, type IconSet } from './set'
 
@@ -70,6 +71,7 @@ export function chassis({
           copyStatic(path.join(root, 'static'), publicDir)
           copyChassisAssets(root, publicDir)
           copyChassisCSS(root, publicDir)
+          writeBrandCSS({ root, destination: path.join(publicDir, 'static') })
           copyChassisIcons(root, publicDir)
           copyIconSet(root, publicDir)
           aliasStatic(root, publicDir)

@@ -142,7 +142,8 @@ jobs:
       - name: Test on Node.js 22
         run: pnpm icons:test
 
-  # The same build as Vercel: checks out and builds vendor/assets, then Astro and Pagefind.
+  # The same build as Vercel: unpacks the assets that vendor/assets.json pins, then Astro and
+  # Pagefind.
   # The site reads the committed files of packages/icons: its configuration and its output.
   site:
     name: Site
@@ -179,7 +180,7 @@ jobs:
       # A copy of the repository, built for the set it ships with and again for the fixture
       # of the tests of the build: each page shows the set of the copy, every icon that a
       # page draws is in its sprite, and every link leads to a page that exists. After the
-      # build, which checked out and built vendor/assets.
+      # build, which unpacked vendor/assets.
       - name: Test the site
         run: pnpm site:test
 

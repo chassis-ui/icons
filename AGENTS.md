@@ -28,7 +28,7 @@ build/                 # repository scripts (changeset check, version references
 chassis.checks.json    # the icons that consumers of the set read by name
 docs/                  # architecture.md
 ref/ROADMAP.md         # the plan, its principles, the decisions and the session log
-vendor/assets          # git submodule of chassis-ui/assets
+vendor/assets.json     # the pin of the release of chassis-ui/website-assets; vendor/assets is not committed
 ```
 
 ## Setup and commands
@@ -39,7 +39,8 @@ vendor/assets          # git submodule of chassis-ui/assets
   `--dry-run` lists the files that a build would change. `node packages/icons/build/cli.js --help`
   prints every command and option.
 - `pnpm dev` runs the site at `http://localhost:4324/icons/`, after one `pnpm vendor`, which
-  needs Git LFS. The build of the icons and its tests need neither.
+  unpacks the assets that `vendor/assets.json` pins. The build of the icons and its tests do
+  not need them.
 
 ## Before a task is done
 
@@ -144,8 +145,8 @@ And these:
 - A change to [ref/ROADMAP.md](ref/ROADMAP.md) goes into the commit of the work it records, not
   into a commit of its own. Add a line to its session log at the end of a session.
 - Do not edit generated or fetched files: `_site/`, `.cache/`, `node_modules/`,
-  `packages/site/public/`, and `vendor/assets` (a submodule; changes belong in
-  `chassis-ui/assets`).
+  `packages/site/public/`, `vendor/assets` (unpacked from a release; changes belong in
+  `chassis-ui/website-assets`) and `vendor/assets.json` (written by `pnpm sync-assets`).
 - The sibling repositories are read, never edited. Work for one goes to "Tasks for the
   siblings" of the roadmap. Report a bug of `@chassis-ui/docs` there; do not work around it
   here.

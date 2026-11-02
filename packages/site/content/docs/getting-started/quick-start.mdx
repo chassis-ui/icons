@@ -32,7 +32,6 @@ Building a set needs the repository and its tools:
 
 - **Node.js** 22.12 or later.
 - **pnpm**, the version named by `packageManager` in `package.json`. Run `corepack enable` once and pnpm is used at that version.
-- **Git LFS**, from [git-lfs.com](https://git-lfs.com), for the site only: its fonts and images are in the `vendor/assets` submodule. The build of the icons does not need it.
 
 Clone the repository and install its packages:
 
@@ -133,7 +132,7 @@ pnpm vendor
 pnpm dev
 ```
 
-`pnpm vendor` builds the `vendor/assets` submodule once, and `pnpm dev` serves the site at `http://localhost:4324/icons/`. The header and the search of the site are drawn with the Chassis set, which the site installs as a package, so they do not depend on your icons. The pages of `packages/site/content/docs/` are these pages: keep them, rewrite them for your team, or remove them with their entries of `packages/site/data/sidebar.yml`.
+`pnpm vendor` unpacks the fonts and images of the site once, from the release of chassis-ui/website-assets that `vendor/assets.json` pins, and `pnpm dev` serves the site at `http://localhost:4324/icons/`. The header and the search of the site are drawn with the Chassis set, which the site installs as a package, so they do not depend on your icons. The pages of `packages/site/content/docs/` are these pages: keep them, rewrite them for your team, or remove them with their entries of `packages/site/data/sidebar.yml`.
 
 ## Troubleshooting
 

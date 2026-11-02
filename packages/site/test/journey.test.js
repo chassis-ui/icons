@@ -4,7 +4,7 @@
  * to show the set of the copy, whatever its font, its prefix and its icons are, to draw its
  * own interface with icons that exist, and to hold no link to a page that it does not have.
  *
- * Needs the build of `vendor/assets`, which `pnpm vendor` writes: `pnpm site:build` runs it.
+ * Needs the files of `vendor/assets`, which `pnpm vendor` writes: `pnpm site:build` runs it.
  */
 
 import { execFileSync } from 'node:child_process'

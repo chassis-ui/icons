@@ -2,6 +2,7 @@
 preview.html
 
 # Site
+/vendor/assets
 /_site/
 .astro
 /packages/site/dist
