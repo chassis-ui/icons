@@ -3,18 +3,18 @@ import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { build } from '../build/build.js'
-import { loadConfig, resolveConfig } from '../build/config.js'
-import { silentLogger as logger } from '../build/logger.js'
+import { build } from '../lib/build.js'
+import { loadConfig, resolveConfig } from '../lib/config.js'
+import { silentLogger as logger } from '../lib/logger.js'
 import {
   applyManifestFields,
   manifestFields,
   renderManifest,
   renderReadme,
   repositoryUrl
-} from '../build/manifest.js'
-import { listIcons } from '../build/names.js'
-import { copyFixture, fixtureDir, packageDir, temporaryDir } from './helpers.js'
+} from '../lib/manifest.js'
+import { listIcons } from '../lib/names.js'
+import { copyFixture, fixtureDir, listFiles, packageDir, temporaryDir } from './helpers.js'
 
 const read = (/** @type {string} */ dir) =>
   JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'))
@@ -201,8 +201,10 @@ describe('the README of the package', () => {
     expect(readme).toContain('# marks\n\nThe set has 1 icon. It is drawn on a frame of 24 by 24')
     expect(readme).toContain('\n\nThe examples below show `dot`.\n\n## Use\n')
     expect(readme).not.toContain('style of the icon')
-    expect(readme).not.toContain('## The source')
-    expect(readme.endsWith("`@use 'pkg:marks'` loads the same file.\n")).toBe(true)
+    expect(readme).toContain('built from the SVG files of `source/` with')
+    expect(readme).not.toContain('[repository]')
+    expect(readme).not.toContain('`npm run build` writes')
+    expect(readme.endsWith('never in the files of `icons/` and `svgs/`.\n')).toBe(true)
     expect(readme).not.toMatch(/\n{3}/)
   })
 })
@@ -218,12 +220,18 @@ describe('the package', () => {
     expect(expectedOutput(dir)).toContain('icons/acme-glyphs.ttf')
   }, 30_000)
 
-  it('of the repository holds the output of its own set', () => {
-    const always = fs
+  it('of the build holds the command, its templates and its documents, and nothing else', () => {
+    const documents = fs
       .readdirSync(packageDir)
-      .filter((file) => /^(?:package\.json|readme|licen[cs]e)(?:\.|$)/i.test(file))
+      .filter((file) => /^(?:package\.json|readme|changelog|licen[cs]e)(?:\.|$)/i.test(file))
+    const folder = (/** @type {string} */ name) =>
+      listFiles(path.join(packageDir, name)).map((file) => `${name}/${file}`)
 
-    expect(packedFiles(packageDir)).toEqual([...expectedOutput(packageDir), ...always].sort())
+    expect(packedFiles(packageDir)).toEqual(
+      [...folder('lib'), ...folder('templates'), ...documents].sort()
+    )
+    expect(packedFiles(packageDir)).toContain('lib/cli.js')
+    expect(packedFiles(packageDir)).toContain('templates/workflows/release.yml')
   }, 30_000)
 
   it('resolves its stylesheet, its files and its manifest by name, and nothing else', async () => {

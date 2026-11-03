@@ -15,7 +15,7 @@ The examples use the Chassis set. If you build your own set, use the name of you
 An app needs Chassis React and the output of a set. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get the output: the package, the archive of a release, and the folders of a build.
 
 ```bash
-npm install @chassis-ui/react @chassis-ui/icons
+npm install @chassis-ui/react @chassis-ui/website-icons
 ```
 
 Serve the folder `icons/` of the set from the origin of the app. The examples serve it at `/static/icons/`.
@@ -65,7 +65,7 @@ export function App() {
 With `font`, `Icon` renders a `<span>` with the class of the icon in place of the SVG. The class is `fontPrefix` and the name, and `fontPrefix` is `cx-` by default. The app loads the stylesheet of the font itself.
 
 ```jsx
-import '@chassis-ui/icons'
+import '@chassis-ui/website-icons'
 import { Icon, IconProvider } from '@chassis-ui/react'
 
 export function App() {
@@ -91,13 +91,13 @@ A set of your own needs three props: the address of your sprite, the prefix of y
 
 ```jsx
 <IconProvider
-  sprite="/static/icons/your-icons.svg"
-  fontPrefix="yi-"
+  sprite="/static/icons/acme-icons.svg"
+  fontPrefix="ai-"
   icons={{ check: 'tick-solid', clear: 'close-outline' }}
 >
 ```
 
-The defaults of Chassis React are icons of the Chassis set, and `chassis.checks.json` of this repository lists them as a contract. A set that keeps those names needs no `icons` prop.
+The defaults of Chassis React are icons of the Chassis set, and `chassis.checks.json` of its repository, chassis-ui/website-icons, lists them as a contract. A set that keeps those names needs no `icons` prop.
 
 ## Best practices
 
@@ -109,7 +109,7 @@ Chassis React reads a set through one provider. These practices keep the set of 
 
 Avoid the habits that undo this:
 
-- **Do not pass the prefix without its `-`:** `fontPrefix` is everything before the name, so the prefix `yi` of a set is `fontPrefix="yi-"`.
+- **Do not pass the prefix without its `-`:** `fontPrefix` is everything before the name, so the prefix `ai` of a set is `fontPrefix="ai-"`.
 
 ## Troubleshooting
 

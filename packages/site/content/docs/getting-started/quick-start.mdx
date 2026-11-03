@@ -1,138 +1,109 @@
 ---
 title: Quick Start
-description: Install the Chassis set in a project, or turn a clone of the repository into the set of your team, in six steps.
+description: Make a repository of icons with chassis-icons init, save your SVG files into it, build the set, and release it as a package or an archive.
 toc: true
 ---
 
 ## Introduction
 
-There are two ways to begin. To use the icons that Chassis ships, install the package: nothing is built. To have a set of your own, clone the repository, replace its source and its configuration, and build.
+This guide takes you from an empty folder to a repository of icons, a first build, and a release. The repository is yours: `chassis-icons init` writes its files once, you save your SVG files into `source/`, and the `chassis-icons` command builds them. The examples make `acme-icons`, the repository of the team Acme: the package `@acme/icons`, the font `acme-icons` and the class prefix `ai`.
 
-## Use the Chassis set
-
-The Chassis set is published as `@chassis-ui/icons`. The package holds the output of the build as it is: the folders `icons/` and `svgs/`.
-
-```bash
-npm install @chassis-ui/icons
-```
-
-Load the stylesheet of the icon font, and put the class of an icon on an empty element:
-
-```html
-<link rel="stylesheet" href="node_modules/@chassis-ui/icons/icons/chassis-icons.min.css" />
-
-<i class="cx-alarm-clock-outline"></i>
-```
-
-The pages of [Use in Project]([[docsref:/use-in-project/icon-font]]) describe the font, the sprite, the SVG files and Sass. The [home page of this site](/icons/) shows every icon of the set with its name.
+To use the Chassis set in a project, nothing is built: install `@chassis-ui/website-icons`, and the pages of [Use in Project]([[docsref:/use-in-project/icon-font]]) show how a page draws an icon from it. The [home page of this site](/icons/) shows every icon of that set with its name.
 
 ## Prerequisites
 
-Building a set needs the repository and its tools:
+The repository needs Git, Node.js 22.12 or later, and npm or pnpm. `init` writes the workflows and the instructions for the package manager that `--pm` names, npm unless you say otherwise.
 
-- **Node.js** 22.12 or later.
-- **pnpm**, the version named by `packageManager` in `package.json`. Run `corepack enable` once and pnpm is used at that version.
+## Create the repository
 
-Clone the repository and install its packages:
+`chassis-icons init` writes a repository of icons into a new folder. `--name` is the name of the package, `--font` the name of the font, and `--repository` the repository on GitHub, which the README of the set links:
 
 ```bash
-git clone [[config:repo]].git
-cd icons
-pnpm install
+npx @chassis-ui/icons init acme-icons --name @acme/icons --font acme-icons --repository acme/acme-icons
+cd acme-icons
+git init
+npm install
 ```
 
-Run every command from the root of the repository.
+With pnpm, run `pnpm dlx @chassis-ui/icons init acme-icons --pm pnpm` with the same options, then `pnpm install`.
 
-## Build your own set
+The class prefix is the first letter of each part of the font name, `ai`, unless `--prefix` names another. The folder now holds `package.json` with the `chassis.build` block, the scripts and the dependency on the builder, `.gitignore` and `.nvmrc`, a changelog, the instructions for AI coding agents in `AGENTS.md` and `CLAUDE.md`, and the workflows of CI and of a release. `@chassis-ui/icons` is a development dependency, and every command runs from the repository. There is no README yet: the build writes it.
 
-These six steps, in this order, turn the clone into the set of your team. The tests of the repository walk the same steps on the set of another team, in every run.
+## Save the icons
 
-### Make the clone yours
-
-Keep the Git repository of the clone, so that a newer build can be taken into it later. Point it at your own remote, and delete the tags, which are the releases of the Chassis set:
+Make `source/` and save your SVG files into it, one file per icon, with no folder inside it:
 
 ```bash
-git remote rename origin upstream
-git remote add origin https://github.com/your-org/your-icons.git
-git tag -l | xargs git tag -d
-```
-
-`pnpm icons:verify` compares the code points of your icons with those of your last tag, so the tags of the clone have to be your own. The changesets of the clone describe the next version of the Chassis set, so delete them too:
-
-```bash
-find .changeset -name '*.md' ! -name README.md -delete
-rm -rf .changeset/pre .changeset/pre.json
-```
-
-### Replace the source
-
-Remove the SVG files of the Chassis set from `source/`, and save your own there, one file per icon:
-
-```bash
-rm source/*.svg
+mkdir source
 cp /path/to/your/icons/*.svg source/
 ```
 
-The name of a file is the name of its icon. The pages of [Icon Design]([[docsref:/icon-design/frame-and-color]]) say what a file needs to be an icon. The build only reads `source/`, and never changes a file there.
+The name of a file is the name of its icon: `arrow-right-solid.svg` is the icon `arrow-right-solid`. The pages of [Icon Design]([[docsref:/icon-design/frame-and-color]]) say what a file needs to be an icon: a name in kebab-case, the frame of the set, one color and filled shapes only. The build only reads `source/`, and never changes a file there.
 
-### Describe your set
+Check the files before the first build:
 
-Everything that is particular to your set is in `packages/icons/package.json`: the details of the package, and the `chassis.build` block that the build reads.
+```bash
+npm run lint
+```
+
+The lint names each file that cannot be an icon, and why, and ends with one line when every file can.
+
+## Describe the set
+
+Everything that is particular to the set is in `package.json`: the details of the package, and the `chassis.build` block that the build reads. `init` wrote this block for the font `acme-icons`, with `header`, the lines of the comment at the top of each stylesheet, left out here:
 
 ```json
 {
-  "name": "@your-org/your-icons",
-  "version": "1.0.0",
-  "description": "The icons of Your Design System.",
   "chassis": {
     "build": {
-      "name": "your-icons",
-      "prefix": "yi",
+      "name": "acme-icons",
+      "prefix": "ai",
       "frame": 24,
-      "styles": ["outline", "solid"],
-      "pairs": [["outline", "solid"]]
+      "styles": [],
+      "pairs": [],
+      "startCodepoint": "f101",
+      "formats": ["woff2", "woff"]
     }
   }
 }
 ```
 
-With this block the font is `your-icons`, its files are `your-icons.css`, `your-icons.woff2` and so on, and the class of an icon is `yi-<name>`. [Configuration]([[docsref:/getting-started/build-system#configuration]]) describes each setting. Leave the fields `main`, `style`, `sass`, `files`, `exports` and `sideEffects` as they are: the build writes them for your font name.
+With this block the font is `acme-icons`, its files are `icons/acme-icons.css`, `icons/acme-icons.woff2` and so on, and the class of an icon is `ai-<name>`. The set has no styles yet: with `"styles": ["outline", "solid"]` a name ends in one of them, and with `"pairs": [["outline", "solid"]]` an icon comes in both. [Configuration]([[docsref:/getting-started/build-system#configuration]]) describes each setting.
 
-`chassis.checks.json`, at the root, lists the icons that the Chassis sites and Chassis React read by name. Empty its `contracts` list, or fill it with the icons that your own projects read by name.
+When a project reads icons of the set by name, list them in `chassis.checks.json` beside `package.json`, and `npm run verify` fails when one of them is gone:
 
-### Start and build
-
-`pnpm icons:init` empties the output and the registry of the code points, so that your first icon gets the first code point. Run it once, before the first build of your set. Then check the source, build, and check the output:
-
-```bash
-pnpm icons:init
-pnpm icons:lint:source
-pnpm icons
-pnpm icons:verify
+```json
+{
+  "contracts": [{ "reader": "the toolbar of the app", "icons": ["search-solid", "xmark-outline"] }]
+}
 ```
 
-`pnpm icons` writes `packages/icons/svgs/`, `packages/icons/icons/`, `packages/icons/codepoints.json` and `packages/icons/README.md`. Commit all of them with `source/`: the output is committed, and `pnpm icons:verify` fails when a committed file is not what the source builds.
+## Build and verify
 
-### Use the output
+Build the set, and check that the committed output is what the source builds:
+
+```bash
+npm run build
+npm run verify
+```
+
+The build writes `svgs/`, one optimized file per icon; `icons/`, the font `acme-icons` in each format with its stylesheets, the sprite and the code points by name; `codepoints.json`, the registry of the code points; `README.md`, with the code for your font name and your prefix; and the fields of `package.json` that name the files. Commit all of them with `source/` and the lockfile of the install, which the workflows install from: the output is committed, and `verify` fails when a committed file is not what the source builds. `icons/preview.html`, which Git ignores, shows every icon of the sprite.
+
+## Use the output
 
 The output is in two folders, which a project takes as they are:
 
 ```bash
-cp -r packages/icons/icons packages/icons/svgs /path/to/your-project/static/icons/
+cp -r icons svgs /path/to/your-project/static/icons/
 ```
 
-`packages/icons/README.md`, which the build writes for your set, shows the code for your font name and your prefix. [Publishing]([[docsref:/use-in-project/publishing]]) covers a package on npm and an archive on GitHub.
+`README.md`, which the build wrote for the set, shows the font class, the sprite, an SVG file and Sass with your font name and your prefix, and the pages of [Use in Project]([[docsref:/use-in-project/icon-font]]) describe each way at length.
 
-### The site of your set
+## Release a version
 
-The site in `packages/site/` shows the set of the repository: it reads the configuration and the output, and has one page per icon without a file to write. In `packages/site/config.yml`, set the title, the address and the repository of your site, replace or remove `googleId` under `analytics`, which is the Google Analytics property of chassis-ui.com, and remove the line of `exampleIcon`, or name an icon of your set there:
+A release is a push to `main` with a new version in `package.json` and its entry in `CHANGELOG.md`. The workflow that `init` wrote lints the source, verifies the output, publishes the package to npm, and creates the tag `v<version>` and its GitHub release, with the changelog entry as its text and the archive `acme-icons-<version>.zip` of `icons/` and `svgs/` attached. A push whose version npm has and whose tag exists releases nothing.
 
-```bash
-pnpm vendor
-pnpm dev
-```
-
-`pnpm vendor` unpacks the fonts and images of the site once, from the release of chassis-ui/website-assets that `vendor/assets.json` pins, and `pnpm dev` serves the site at `http://localhost:4324/icons/`. The header and the search of the site are drawn with the Chassis set, which the site installs as a package, so they do not depend on your icons. The pages of `packages/site/content/docs/` are these pages: keep them, rewrite them for your team, or remove them with their entries of `packages/site/data/sidebar.yml`.
+The workflow publishes with npm trusted publishing, so it needs no token: on npmjs.com, the package trusts the repository `acme/acme-icons` and the workflow file `release.yml`. For a set that is not published, set `"private": true` in `package.json`: the release is then the tag, the GitHub release and its archive. [Publishing]([[docsref:/use-in-project/publishing]]) covers what the workflow reads of `package.json`.
 
 ## Troubleshooting
 
@@ -140,19 +111,15 @@ Each entry gives the message or the symptom, then the cause and the fix.
 
 ### File is refused
 
-`pnpm icons:lint:source` prints a line such as `<file> has the viewBox "0 0 32 32": it has to be "0 0 24 24"`. The file is not drawn on the frame of the configuration. Export it on the frame, or set `chassis.build.frame` to the frame of your icons. [Source lint]([[docsref:/icon-design/source-lint]]) lists every message.
+`npm run lint` prints a line such as `<file> has the viewBox "0 0 32 32": it has to be "0 0 24 24"`. The file is not drawn on the frame of the configuration. Export it on the frame, or set `chassis.build.frame` to the frame of your icons. [Source lint]([[docsref:/icon-design/source-lint]]) lists every message.
+
+### Output is not built
+
+`npm run verify` prints `<file>: changed. The output is not what the source builds: run the build.` A file of `source/` or the configuration changed after the last build. Run `npm run build`, and commit the output with the change.
 
 ### Contract icon is missing
 
-`pnpm icons:verify` prints `"<name>" is missing, and <reader> reads it by name`. `chassis.checks.json` still lists the icons that the consumers of the Chassis set read. Empty its `contracts` list, or list the icons that your own projects read.
-
-### Code points start late
-
-The first icon of your set has a code point far after `startCodepoint`. The registry still held the code points of the Chassis set, and the build retired them. Run `pnpm icons:init`, then `pnpm icons` again.
-
-### Example icon is missing
-
-`pnpm dev` or `pnpm site:build` stops with ``` `exampleIcon` of config.yml is "<name>", and the icon set has no icon of that name ```. `packages/site/config.yml` names an icon of the Chassis set. Name an icon of your set, or remove the key to show the first one.
+`npm run verify` prints `"<name>" is missing, and <reader> reads it by name`. `chassis.checks.json` lists an icon that `source/` does not have. Restore the file, or remove the name from the list when no project reads it any more.
 
 ## Next steps
 

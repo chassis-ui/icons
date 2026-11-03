@@ -4,10 +4,9 @@
  * Changeset Check Script
  *
  * Fails when the commits since a base change what a release is made of and add no changeset:
- * the source folder of the icons, the build of packages/icons, or its output in `icons/` and
- * `svgs/`. `changeset status` cannot do this alone: the source folder is at the root of the
- * repository, outside the package that carries the version, so Changesets counts a change to
- * it for no package.
+ * the build in `packages/icons/lib/`, or the templates of `init` in `packages/icons/templates/`.
+ * `changeset status` reads the changesets of the working tree, and this script the commits of
+ * a range, so a pull request is checked as a whole.
  *
  * A release commit passes: `pnpm changeset:version` removes the changesets and bumps the
  * version, so a changed version stands for them.
@@ -25,26 +24,14 @@
 
 import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
-import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const PACKAGE = 'packages/icons'
 const MANIFEST = `${PACKAGE}/package.json`
-const DEFAULT_SOURCE = '../../source'
 const CHANGESET_RE = /^\.changeset\/(?!README\.md$)[^/]+\.md$/
 
-/**
- * The folders whose files a release is made of, from the root of the repository
- * @param {Record<string, any>} manifest - The contents of the package.json of the package
- * @returns {string[]} Each with a `/` at its end
- */
-export function releasedPaths(manifest) {
-  const source = path.posix.normalize(
-    path.posix.join(PACKAGE, manifest.chassis?.build?.source ?? DEFAULT_SOURCE)
-  )
-
-  return [`${source}/`, `${PACKAGE}/build/`, `${PACKAGE}/icons/`, `${PACKAGE}/svgs/`]
-}
+/** The folders whose files a release is made of, from the root of the repository */
+export const RELEASED_PATHS = [`${PACKAGE}/lib/`, `${PACKAGE}/templates/`]
 
 /**
  * Decides whether a range of commits needs a changeset that it does not have
@@ -115,7 +102,7 @@ function main() {
       const [status, file] = line.split('\t')
       return { status, file }
     })
-  const released = releasedPaths(JSON.parse(fs.readFileSync(MANIFEST, 'utf8')))
+  const released = RELEASED_PATHS
   const { ok, message, files } = checkChangeset({
     changes,
     released,

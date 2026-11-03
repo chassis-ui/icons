@@ -71,7 +71,7 @@ Sass finds the file in a load path that holds `node_modules`, and so does a bund
 
 ## The source
 
-The package is built from the SVG files of its [repository](https://git.acme.example/design/glyphs). An icon is added or changed there, and never in the files of this package.
+The package is built from the SVG files of its [repository](https://git.acme.example/design/glyphs) with [`@chassis-ui/icons`](https://www.npmjs.com/package/@chassis-ui/icons). An icon is added or changed there, and never in the files of `icons/` and `svgs/`.
 
 ## License
 

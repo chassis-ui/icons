@@ -10,7 +10,7 @@ import {
   parseRegistry,
   readRegistry,
   toHex
-} from '../build/codepoints.js'
+} from '../lib/codepoints.js'
 import { temporaryDir } from './helpers.js'
 
 const START = 0xe900

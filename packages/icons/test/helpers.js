@@ -7,7 +7,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach } from 'vitest'
-import { PREVIEW_FILE } from '../build/config.js'
+import { PREVIEW_FILE } from '../lib/config.js'
 
 export const packageDir = path.resolve(import.meta.dirname, '..')
 export const fixtureDir = path.join(import.meta.dirname, 'fixture')

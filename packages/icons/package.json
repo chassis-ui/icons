@@ -2,7 +2,7 @@
   "name": "@chassis-ui/icons",
   "version": "0.4.0-next.0",
   "type": "module",
-  "description": "The icons of the Chassis Design System, in outline, solid and brand styles, as an icon font, an SVG sprite and optimized SVG files.",
+  "description": "The builder of icon sets for the Chassis Design System: the chassis-icons command, which builds a repository of SVG files into optimized SVG files, an SVG sprite and an icon font with its stylesheets",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chassis-ui/icons.git",
@@ -24,55 +24,18 @@
     "fantasticon",
     "icon generator"
   ],
-  "main": "icons/chassis-icons.css",
-  "style": "icons/chassis-icons.css",
-  "sass": "icons/chassis-icons.scss",
+  "bin": {
+    "chassis-icons": "lib/cli.js"
+  },
   "files": [
-    "icons/chassis-icons.*",
-    "svgs/*.svg"
+    "lib",
+    "templates",
+    "README.md",
+    "CHANGELOG.md"
   ],
   "exports": {
-    ".": {
-      "sass": "./icons/chassis-icons.scss",
-      "style": "./icons/chassis-icons.css",
-      "default": "./icons/chassis-icons.css"
-    },
-    "./icons/*": "./icons/*",
-    "./svgs/*": "./svgs/*",
+    "./lib/*": "./lib/*",
     "./package.json": "./package.json"
-  },
-  "sideEffects": [
-    "*.css",
-    "*.scss"
-  ],
-  "chassis": {
-    "build": {
-      "name": "chassis-icons",
-      "prefix": "cx",
-      "source": "../../source",
-      "frame": 24,
-      "styles": [
-        "outline",
-        "solid",
-        "brand"
-      ],
-      "pairs": [
-        [
-          "outline",
-          "solid"
-        ]
-      ],
-      "startCodepoint": "f101",
-      "formats": [
-        "woff2",
-        "woff"
-      ],
-      "header": [
-        "Chassis Icons v{version}",
-        "Copyright 2025 Ozgur Gunes",
-        "Licensed under MIT (https://github.com/chassis-ui/icons/blob/main/LICENSE)"
-      ]
-    }
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
@@ -83,27 +46,22 @@
     "node": ">=22.12.0"
   },
   "scripts": {
-    "build": "node build/cli.js build",
-    "font": "node build/cli.js build --only font",
-    "init": "node build/cli.js init",
     "lint:package": "publint --strict",
-    "lint:source": "node build/cli.js lint-source",
-    "sprite": "node build/cli.js build --only sprite",
-    "svgs": "node build/cli.js build --only svgs",
     "test": "vitest run --dir test",
     "test:golden": "node test/update-golden.js",
-    "typecheck": "tsc -p tsconfig.json",
-    "verify": "node build/cli.js verify"
+    "typecheck": "tsc -p tsconfig.json"
   },
-  "devDependencies": {
-    "@types/node": "^26.6.5",
+  "dependencies": {
     "clean-css": "^5.3.3",
     "fantasticon": "^4.1.0",
     "handlebars": "^4.7.10",
     "picocolors": "^1.1.1",
-    "publint": "^0.3.25",
     "svg-sprite": "3.0.0-rc3",
-    "svgo": "^4.1.0",
+    "svgo": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "publint": "^0.3.25",
     "vitest": "^5.0.5"
   }
 }

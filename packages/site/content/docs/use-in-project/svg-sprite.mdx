@@ -15,7 +15,7 @@ The examples use the Chassis set, whose sprite is `chassis-icons.svg`. If you bu
 The sprite is in the `icons/` folder of the output. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get that folder: the package, the archive of a release, and the folders of a build. The sprite is one file and needs no other.
 
 ```bash
-npm install @chassis-ui/icons
+npm install @chassis-ui/website-icons
 ```
 
 ## Basic usage
@@ -24,7 +24,7 @@ Draw an icon with an `<svg>` element that holds a `<use>`, whose `href` is the a
 
 ```html
 <svg width="24" height="24" fill="currentcolor" aria-hidden="true">
-  <use href="node_modules/@chassis-ui/icons/icons/chassis-icons.svg#bell-outline"></use>
+  <use href="node_modules/@chassis-ui/website-icons/icons/chassis-icons.svg#bell-outline"></use>
 </svg>
 ```
 
@@ -40,7 +40,7 @@ The `width` and the `height` of the `<svg>` element are the size of the icon, in
 
 ```html
 <svg width="48" height="48" fill="currentcolor" style="color: rebeccapurple;" aria-hidden="true">
-  <use href="node_modules/@chassis-ui/icons/icons/chassis-icons.svg#bell-outline"></use>
+  <use href="node_modules/@chassis-ui/website-icons/icons/chassis-icons.svg#bell-outline"></use>
 </svg>
 ```
 
@@ -55,7 +55,7 @@ A decorative icon is hidden with `aria-hidden="true"`, as in the examples above.
 ```html
 <svg width="24" height="24" fill="currentcolor" role="img">
   <title>Notifications</title>
-  <use href="node_modules/@chassis-ui/icons/icons/chassis-icons.svg#bell-outline"></use>
+  <use href="node_modules/@chassis-ui/website-icons/icons/chassis-icons.svg#bell-outline"></use>
 </svg>
 ```
 
@@ -77,7 +77,7 @@ Hide the sprite in the page with `style="display: none"` on its root, so that it
 
 ### A set of your own
 
-The name of the sprite is the setting `name` of `chassis.build`. With `"name": "your-icons"` the sprite is `icons/your-icons.svg`, and the `id` of a symbol is still the name of the icon.
+The name of the sprite is the setting `name` of `chassis.build`. With `"name": "acme-icons"` the sprite is `icons/acme-icons.svg`, and the `id` of a symbol is still the name of the icon.
 
 ## Best practices
 

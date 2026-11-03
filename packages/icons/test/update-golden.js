@@ -9,9 +9,9 @@
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { build } from '../build/build.js'
-import { PREVIEW_FILE, loadConfig } from '../build/config.js'
-import { silentLogger } from '../build/logger.js'
+import { build } from '../lib/build.js'
+import { PREVIEW_FILE, loadConfig } from '../lib/config.js'
+import { silentLogger } from '../lib/logger.js'
 
 const fixtureDir = path.join(import.meta.dirname, 'fixture')
 const goldenDir = path.join(import.meta.dirname, 'golden')

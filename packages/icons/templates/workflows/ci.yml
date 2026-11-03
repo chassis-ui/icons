@@ -1,0 +1,46 @@
+name: CI
+
+# On a push and on a pull request: the changelog, the source lint and a fresh build against
+# the committed output, with the commands of @chassis-ui/icons. Written by `chassis-icons init`.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  icons:
+    name: Icons
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # With the tags: verify compares the code points with those of the last one
+          fetch-depth: 0
+          persist-credentials: false
+
+      # __PNPM_SETUP__
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: __PM__
+
+      - name: Install
+        run: __INSTALL_CI__
+
+      # Fails when the version of package.json has no entry in CHANGELOG.md
+      - name: Check the changelog
+        run: __RUN__ release-notes
+
+      - name: Lint the source
+        run: __RUN__ lint
+
+      # Fails when the committed output differs from a fresh build of source/, an icon lost
+      # its code point, or an icon of chassis.checks.json is missing
+      - name: Verify the output
+        run: __RUN__ verify

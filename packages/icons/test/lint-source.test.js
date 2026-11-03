@@ -1,8 +1,8 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { loadConfig } from '../build/config.js'
-import { lintPairs, lintSource, lintSvg } from '../build/lint-source.js'
+import { loadConfig } from '../lib/config.js'
+import { lintPairs, lintSource, lintSvg } from '../lib/lint-source.js'
 import { copyFixture, fixtureDir } from './helpers.js'
 
 const svg = (inner, attributes = 'width="16" height="16" viewBox="0 0 16 16"') =>

@@ -6,7 +6,7 @@ toc: true
 
 ## Introduction
 
-An icon is named by its file: `source/bell-outline.svg` is the icon `bell-outline`. The build uses the name as it is, so a name is chosen once and kept. The styles of a set and its pairs are the settings `chassis.build.styles` and `chassis.build.pairs` of `packages/icons/package.json`.
+An icon is named by its file: `source/bell-outline.svg` is the icon `bell-outline`. The build uses the name as it is, so a name is chosen once and kept. The styles of a set and its pairs are the settings `chassis.build.styles` and `chassis.build.pairs` of the `package.json` of the repository of icons.
 
 ## Names
 
@@ -21,13 +21,13 @@ A name is in kebab-case: lower-case letters and digits, in parts joined by `-`, 
 | The map of code points | The key `<name>` of `icons/<font>.json` | `"bell-outline"` |
 </CxTable>
 
-A project draws an icon by its name, so renaming or removing an icon breaks every project that uses it. A set that others read names its contract: `chassis.checks.json` lists the icons that a consumer reads by name, and `pnpm icons:verify` fails when one of them is missing.
+A project draws an icon by its name, so renaming or removing an icon breaks every project that uses it. A set that others read names its contract: `chassis.checks.json` lists the icons that a consumer reads by name, and `npm run verify` fails when one of them is missing.
 
 ## Styles
 
 A style is the last part of a name, and says how the icon is drawn. The setting `styles` lists the styles of a set. With an empty list, which is the default, any kebab-case name is an icon.
 
-In `chassis.build` of `packages/icons/package.json`, for the Chassis set:
+In `chassis.build` of `package.json`, for the Chassis set:
 
 ```json
 {
@@ -66,7 +66,7 @@ Save the file into `source/`, with no folder inside it: the build reads the SVG 
 
 ## Source lint
 
-`pnpm icons:lint:source` checks the name of each file of `source/` against the configuration.
+`npm run lint`, the source lint, checks the name of each file of `source/` against the configuration.
 
 <CxTable>
 | Message | Cause |
@@ -84,12 +84,12 @@ Each line starts with the name of the file.
 A name is a promise to every project that draws the icon. These practices keep the names of a set stable.
 
 - **Name an icon after what it shows:** `arrow-right-solid`, not the place it is used in. One icon serves many places.
-- **Add the styles of a pair together:** save both files before running `pnpm icons:lint:source`.
-- **List the names that a consumer reads:** an entry of `chassis.checks.json` makes `pnpm icons:verify` fail when one of its icons is gone.
+- **Add the styles of a pair together:** save both files before running `npm run lint`.
+- **List the names that a consumer reads:** an entry of `chassis.checks.json` makes `npm run verify` fail when one of its icons is gone.
 
 Avoid the habits that undo this:
 
-- **Do not rename an icon to tidy the set:** the class, the symbol and the file of the old name are gone with the next build. A rename is a breaking change, and its changeset names the old and the new name.
+- **Do not rename an icon to tidy the set:** the class, the symbol and the file of the old name are gone with the next build. A rename is a breaking change, and the changelog entry of the version names the old and the new name.
 - **Do not number a duplicate:** two files with the same drawing are two icons with two code points.
 
 ## Next steps

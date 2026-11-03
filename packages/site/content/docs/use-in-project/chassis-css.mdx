@@ -15,7 +15,7 @@ The examples use the Chassis set. If you build your own set, use the name of you
 A page needs Chassis CSS and the output of a set. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get the output: the package, the archive of a release, and the folders of a build.
 
 ```bash
-npm install @chassis-ui/css @chassis-ui/icons
+npm install @chassis-ui/css @chassis-ui/website-icons
 ```
 
 ## Basic usage
@@ -92,7 +92,7 @@ The other way is to serve the folder `svgs/` of the set at the default address, 
 Chassis CSS reads a set by the names of its icons and by one address. These practices keep both in one place.
 
 - **Set the address once:** `$icon-url-prefix` is the only place that names where the files of `svgs/` are served.
-- **Keep the names of the set:** a stylesheet that calls `svg-icon("<name>")` breaks when the icon is renamed. List the names in `chassis.checks.json` of your set, and `pnpm icons:verify` fails when one is gone.
+- **Keep the names of the set:** a stylesheet that calls `svg-icon("<name>")` breaks when the icon is renamed. List the names in `chassis.checks.json` of your repository of icons, and `npm run verify` fails there when one is gone.
 
 Avoid the habits that undo this:
 

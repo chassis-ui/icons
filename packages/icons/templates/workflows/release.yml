@@ -1,0 +1,189 @@
+name: Release
+
+# On a push to main, releases the version in package.json when it is new: publishes the
+# package when its registry does not have the version, and creates the tag v<version> and its
+# GitHub release, whose body is the entry of the version in CHANGELOG.md, with the archive
+# <font>-<version>.zip of the output attached, when the tag does not exist. A push that does
+# not change the version releases nothing, and a release that fails makes no tag, so the next
+# push tries again. Written by `chassis-icons init`.
+#
+# What is released is read from package.json: `name` and `version`; `private`, which leaves
+# the registry out, so that the release is the tag and the archive; and `publishConfig`, whose
+# `access` and `provenance` npm reads when it publishes.
+#
+# npm trusted publishing: the package on npmjs.com trusts this workflow file of this
+# repository, so no npm token is needed. Renaming this file breaks publishing until the
+# trusted publisher on npmjs.com is updated to match.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Never cancel a run that may be publishing
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  detect:
+    name: Detect Version
+    # A manual run on another branch stops here
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      name: ${{ steps.package.outputs.name }}
+      version: ${{ steps.package.outputs.version }}
+      dist-tag: ${{ steps.package.outputs.dist-tag }}
+      prerelease: ${{ steps.package.outputs.prerelease }}
+      publish: ${{ steps.registry.outputs.publish }}
+      release: ${{ steps.tag.outputs.release }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # A prerelease such as 0.2.0-next.0 goes to the dist-tag `next`, and a version without a
+      # prerelease part to `latest`. A numeric prerelease such as 0.2.0-0 goes to `next`,
+      # because npm rejects a dist-tag that is a version range.
+      - name: Read the package
+        id: package
+        run: |
+          field() { node -p "const p = require('./package.json'); $1"; }
+
+          NAME=$(field 'p.name')
+          VERSION=$(field 'p.version')
+          PRIVATE=$(field 'p.private === true')
+          PRERELEASE=${VERSION#*-}
+
+          if [ "$PRERELEASE" = "$VERSION" ]; then
+            DIST_TAG=latest
+          else
+            DIST_TAG=${PRERELEASE%%.*}
+            case "$DIST_TAG" in
+              '' | *[!0-9A-Za-z-]* | [0-9]*) DIST_TAG=next ;;
+            esac
+          fi
+
+          {
+            echo "name=$NAME"
+            echo "version=$VERSION"
+            echo "private=$PRIVATE"
+            echo "dist-tag=$DIST_TAG"
+            echo "prerelease=$([ "$DIST_TAG" = latest ] && echo false || echo true)"
+          } >> "$GITHUB_OUTPUT"
+          echo "$NAME $VERSION, dist-tag $DIST_TAG, private $PRIVATE"
+
+      - name: Check whether the registry has the version
+        id: registry
+        env:
+          NAME: ${{ steps.package.outputs.name }}
+          VERSION: ${{ steps.package.outputs.version }}
+          PRIVATE: ${{ steps.package.outputs.private }}
+        run: |
+          if [ "$PRIVATE" = true ]; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "The package is private. Nothing is published to a registry."
+          elif npm view "$NAME@$VERSION" version 2>/dev/null | grep -qx "$VERSION"; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "npm has $NAME $VERSION. Nothing to publish."
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "npm does not have $NAME $VERSION. It will be published."
+          fi
+
+      # Asked apart from the registry, so that a run that published and then failed can be
+      # run again for the GitHub release alone
+      - name: Check whether the version has a tag
+        id: tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.package.outputs.version }}
+        run: |
+          if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/v$VERSION" --silent 2>/dev/null; then
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            echo "The tag v$VERSION exists. No GitHub release to create."
+          else
+            echo "release=true" >> "$GITHUB_OUTPUT"
+            echo "The tag v$VERSION does not exist. Its GitHub release will be created."
+          fi
+
+  release:
+    name: Release
+    needs: detect
+    if: needs.detect.outputs.publish == 'true' || needs.detect.outputs.release == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write # to create the GitHub release and its tag
+      id-token: write # for npm trusted publishing and provenance
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # With the tags: the code points are compared with those of the last one
+          fetch-depth: 0
+          persist-credentials: false
+
+      # __PNPM_SETUP__
+      # .nvmrc holds Node.js 24, whose npm 11 trusted publishing needs (11.5.1 or later)
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          registry-url: 'https://registry.npmjs.org'
+          package-manager-cache: false
+
+      - name: Install
+        run: __INSTALL_CI__
+
+      # Before anything else, so a version without a changelog entry is not released. The
+      # command and not its script: a package manager prints a line of its own before a script
+      - name: Release notes
+        run: node_modules/.bin/chassis-icons release-notes > "$RUNNER_TEMP/release-notes.md"
+
+      - name: Lint the source
+        run: __RUN__ lint
+
+      # Fails when the committed output differs from a fresh build of source/, an icon lost
+      # its code point, or an icon of chassis.checks.json is missing
+      - name: Verify the output
+        run: __RUN__ verify
+
+      # Before publishing too: <font>-<version>.zip, with icons/ and svgs/ in it
+      - name: Archive the output
+        run: __RUN__ archive
+
+      # npm reads `access` and `provenance` from `publishConfig` of the package
+      - name: Publish to npm
+        if: needs.detect.outputs.publish == 'true'
+        env:
+          DIST_TAG: ${{ needs.detect.outputs.dist-tag }}
+        run: npm publish --tag "$DIST_TAG"
+
+      # Runs only when no step before it failed. The tag is created with the release, on
+      # this commit. A prerelease is marked as one and does not become the latest release
+      - name: Create the GitHub release
+        if: needs.detect.outputs.release == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NAME: ${{ needs.detect.outputs.name }}
+          VERSION: ${{ needs.detect.outputs.version }}
+          PRERELEASE: ${{ needs.detect.outputs.prerelease }}
+        run: |
+          if [ "$PRERELEASE" = true ]; then
+            FLAGS=(--prerelease --latest=false)
+          else
+            FLAGS=(--latest)
+          fi
+
+          gh release create "v$VERSION" \
+            archives/*.zip \
+            --target "$GITHUB_SHA" \
+            --title "$NAME v$VERSION" \
+            --notes-file "$RUNNER_TEMP/release-notes.md" \
+            "${FLAGS[@]}"

@@ -1,12 +1,12 @@
 # Tests of the build
 
-`pnpm icons:test` runs these with [Vitest](https://vitest.dev). They use no mocks: a test that builds copies a set to a temporary folder and runs the real build there.
+`pnpm icons:test` runs these with [Vitest](https://vitest.dev). They use no mocks: a test that builds copies a repository of icons to a temporary folder and runs the real build there.
 
 ## The fixture
 
-`fixture/` is the set of another team, and nothing in it is like the set that the repository ships with: eight icons on a frame of 16, the font `acme-glyphs`, the prefix `ag`, the styles `line` and `fill`, code points from `e900`, the formats `woff2` and `ttf`, and a `checks.json` of its own. Its `package.json` holds the `chassis.build` block and the site, the repository and the license of that team, and `fixture/source/` the SVG files as a design tool exports them. The manifest has none of the fields that the build writes, so that a test sees the build write them.
+`fixture/` is the repository of icons of another team, and nothing in it is like the Chassis set: icons on a frame of 16, the font `acme-glyphs`, the prefix `ag`, the styles `line` and `fill`, code points from `e900`, the formats `woff2` and `ttf`, and a `checks.json` of its own. Its `package.json` holds the `chassis.build` block, with `source` and `checks` set explicitly, and the site, the repository and the license of that team, and `fixture/source/` the SVG files as a design tool exports them. The manifest has none of the fields that the build writes, so that a test sees the build write them.
 
-The tests build the fixture, not the default set, so that a part of the build that works for one set only fails here.
+The tests build the fixture, not the Chassis set, so that a part of the build that works for one set only fails here. `pnpm icons:test` needs no submodule.
 
 ## The golden output
 
@@ -23,28 +23,32 @@ Never edit a golden file by hand. Prettier leaves the folder alone.
 
 ## The test files
 
-| File                  | What it covers                                                                                |
-| --------------------- | --------------------------------------------------------------------------------------------- |
-| `names.test.js`       | The names of the icons: kebab-case, the styles, the order                                     |
-| `config.test.js`      | The `chassis.build` block: its defaults, and every setting that is refused                    |
-| `codepoints.test.js`  | The registry: an icon keeps its code point, a removed one is retired, the checks              |
-| `templates.test.js`   | The templates of the stylesheets, and the minified CSS                                        |
-| `lint-source.test.js` | The check of the source: frame, color, strokes, scripts, names, pairs                         |
-| `golden.test.js`      | The build of the fixture against the golden output, its steps, and a set that changes         |
-| `verify.test.js`      | `verify`: an output that is not built again, a moved code point, a missing icon of a contract |
-| `manifest.test.js`    | The fields of `package.json` and the README; what npm packs, and what resolves by name        |
-| `journey.test.js`     | A team that adopts the repository: its set has nothing left of the one it replaced            |
-| `cli.test.js`         | The command line: its commands, its options and its exit codes                                |
-| `scripts.test.js`     | The scripts of the root `build/` and the changelog entries of `.changeset/changelog.js`       |
+| File                    | What it covers                                                                                                                                                  |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `names.test.js`         | The names of the icons: kebab-case, the styles, the order                                                                                                       |
+| `config.test.js`        | The `chassis.build` block: its defaults, the folders it resolves, and every setting that is refused                                                             |
+| `codepoints.test.js`    | The registry: an icon keeps its code point, a removed one is retired, the checks                                                                                |
+| `templates.test.js`     | The templates of the stylesheets, and the minified CSS                                                                                                          |
+| `lint-source.test.js`   | The check of the source: frame, color, strokes, scripts, names, pairs                                                                                           |
+| `golden.test.js`        | The build of the fixture against the golden output, its steps, and a set that changes                                                                           |
+| `verify.test.js`        | `verify`: an output that is not built again, a moved code point, a missing icon of a contract                                                                   |
+| `manifest.test.js`      | The fields of `package.json` and the README of a set; what npm packs of a set and of the builder, and what resolves by name                                     |
+| `archive.test.js`       | `archive`: the archive of the output, where it is written, and an output that is not built                                                                      |
+| `release-notes.test.js` | `release-notes`: the entry of a version in either style of changelog, and a version without one                                                                 |
+| `init.test.js`          | `init`: the files it plans and writes, its options and their defaults, `--only`, `--check` and a dry run                                                        |
+| `journey.test.js`       | A team that writes a repository with `init`, saves its SVG files, builds, verifies, archives, and passes `init --check`                                         |
+| `cli.test.js`           | The command line: its commands, its options, where it finds the repository, and its exit codes                                                                  |
+| `scripts.test.js`       | The scripts of the root: delegation with `run` and `--cwd vendor/icons`; the changelog entry of a changeset; `checkChangeset` and `syncVersionRefs` of `build/` |
 
 ## The test of the site
 
-The site has a test of its own, `packages/site/test/journey.test.js`, which `pnpm site:test` runs. It copies the repository, builds the site of the copy for the set it ships with, then walks the journey of `journey.test.js` in a second copy and builds the site of the fixture. It checks that each page shows the set of the copy, that every icon a page draws is in the sprite it is drawn from, and that every link leads to a page that exists. It needs the files of `vendor/assets`, so it runs in the Site job of CI and not with these tests.
+The site has a test of its own, `packages/site/test/journey.test.js`, which `pnpm site:test` runs. It copies the build, `packages/icons/lib` and its `package.json`, the site and `vendor/icons` into `.cache/`, links the installed packages of the site and `vendor/assets`, and builds the site of the copy for the set of `vendor/icons`. Then it builds the fixture in place of `vendor/icons` in a second copy, and builds the site of that set. It checks that each page shows the set of the copy, that every icon a page draws is in the sprite it is drawn from, and that every link leads to a page that exists. It needs the set of `vendor/icons` and the files of `vendor/assets`, which `pnpm vendor` writes, so it runs in the Site job of CI and not with these tests.
 
 ## Adding a case
 
 - A rule of a module: add an `it` to the test file of that module. Give it the smallest input that shows the rule.
 - Something a set can hold, such as a new kind of drawing: add an SVG file to `fixture/source/`, in both styles, and write the golden files again.
 - A setting: add it to `fixture/package.json` with a value that is not the default, a row to the refused settings of `config.test.js`, and write the golden files again.
+- A file of `init`: add it to `templates/`, to the plan in `init.js`, and to the files that `journey.test.js` expects in the repository it writes.
 
-`helpers.js` has `copyFixture()`, which gives a test a copy of the fixture that it may build and change. The copy is removed after the test.
+`helpers.js` has `copyFixture()`, which gives a test a copy of the fixture that it may build and change, and `temporaryDir()`, an empty folder for a repository that `init` writes. Both are removed after the test.

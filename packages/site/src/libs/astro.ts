@@ -55,8 +55,8 @@ export function chassis({
           addWatchFile(path.join(root, 'src/libs/astro.ts'))
           addWatchFile(path.join(root, 'src/libs/set.ts'))
 
-          // The pages show the set that the build of the repository wrote. Reload when the
-          // configuration of the set or its output changes: `pnpm icons` writes both.
+          // The pages show the set of `vendor/icons`. Reload when the configuration of the set
+          // or its output changes: `pnpm icons` writes the output, `pnpm vendor` both.
           const set = loadIconSet(root, config.exampleIcon)
 
           for (const file of getSetFiles(root)) {

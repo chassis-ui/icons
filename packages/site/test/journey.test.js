@@ -1,30 +1,35 @@
 /**
- * @file The site of a set. A copy of the repository is built as it is, and again after a
- * team replaced the set with its own: the fixture of the tests of the build. The site has
- * to show the set of the copy, whatever its font, its prefix and its icons are, to draw its
- * own interface with icons that exist, and to hold no link to a page that it does not have.
+ * @file The site of a set. A copy of the repository is built as it is, with the set of
+ * `vendor/icons`, and again after that set was replaced with the one of another team: the
+ * fixture of the tests of the build. The site has to show the set of the copy, whatever its
+ * font, its prefix and its icons are, to draw its own interface with icons that exist, and
+ * to hold no link to a page that it does not have.
  *
- * Needs the files of `vendor/assets`, which `pnpm vendor` writes: `pnpm site:build` runs it.
+ * Needs the set in `vendor/icons` and the files of `vendor/assets`, which `pnpm vendor`
+ * writes: `pnpm site:build` runs it.
  */
 
 import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { afterEach, describe, expect, it } from 'vitest'
-import { main } from '../../icons/build/cli.js'
-import { loadConfig } from '../../icons/build/config.js'
-import { listIcons } from '../../icons/build/names.js'
+import { main } from '../../icons/lib/cli.js'
+import { loadConfig } from '../../icons/lib/config.js'
+import { listIcons } from '../../icons/lib/names.js'
 import { fixtureDir, recordingConsole } from '../../icons/test/helpers.js'
 
 const siteDir = path.resolve(import.meta.dirname, '..')
 const repositoryDir = path.resolve(siteDir, '../..')
-const packageDir = path.join(repositoryDir, 'packages/icons')
+/** The repository of the set, from the root of a repository */
+const SET = 'vendor/icons'
 
 // What a copy of the site is built with, and is not a part of: the installed packages and
 // the assets of the interface. They are linked, not copied.
-const LINKED = ['packages/site/node_modules', 'vendor']
+const LINKED = ['packages/site/node_modules', 'vendor/assets']
 // What Astro writes into the folder of the site
 const WRITTEN = ['node_modules', 'public', '.astro', 'dist']
+// What a repository of icons holds that the site does not read
+const NOT_READ = ['node_modules', '.git', 'archives']
 
 const BUILD_TIMEOUT = 300_000
 
@@ -32,15 +37,16 @@ const copies = []
 
 afterEach(() => {
   for (const dir of copies.splice(0)) {
-    fs.rmSync(dir, { recursive: true, force: true })
+    // With retries: a folder that a file sync is still reading is not empty at the first try
+    fs.rmSync(dir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 })
   }
 })
 
 /**
- * A copy of what a team gets when it clones the repository: the package of the set with its
- * build and its output, the source, and the site. It is made in the cache folder of the
- * repository and not in the temporary folder of the machine: Astro reads a file of a linked
- * package by its path only when that path and the site have a folder in common.
+ * A copy of the repository: the build, the site and the set of `vendor/icons`. It is made
+ * in the cache folder of the repository and not in the temporary folder of the machine:
+ * Astro reads a file of a linked package by its path only when that path and the site have
+ * a folder in common.
  * @returns {string} The folder of the copy, removed after the test
  */
 function cloneRepository() {
@@ -58,16 +64,21 @@ function cloneRepository() {
       ...options
     })
 
-  for (const file of ['build', 'svgs', 'icons', 'codepoints.json', 'package.json']) {
-    copy(path.join('packages/icons', file))
-  }
-
-  copy(path.relative(repositoryDir, loadConfig(packageDir).sourceDir))
+  copy('packages/icons/lib')
+  copy('packages/icons/package.json')
   copy('pnpm-workspace.yaml')
   copy('packages/site', {
     filter: (source) =>
       !WRITTEN.includes(path.relative(siteDir, source).split(path.sep)[0]) &&
       path.basename(source) !== '.DS_Store'
+  })
+  // The set may be a link to a checkout while the submodule is not registered
+  copy(SET, {
+    dereference: true,
+    filter: (source) =>
+      !NOT_READ.includes(
+        path.relative(fs.realpathSync(path.join(repositoryDir, SET)), source).split(path.sep)[0]
+      ) && path.basename(source) !== '.DS_Store'
   })
 
   for (const file of LINKED) {
@@ -145,7 +156,7 @@ function symbolsOf(file) {
  * @param {string} out - The folder of the built site
  */
 function expectSiteOfSet(dir, out) {
-  const config = loadConfig(path.join(dir, 'packages/icons'))
+  const config = loadConfig(path.join(dir, SET))
   const names = listIcons(config.svgsDir)
   const setPath = 'icons/static/set'
   const sprite = `/${setPath}/icons/${config.name}.svg`
@@ -287,37 +298,24 @@ describe('the site of a set', () => {
   )
 
   it(
-    'shows the set of a team that replaced the source and the configuration',
+    'shows the set of another team, with the fixture in place of the set of vendor/icons',
     async () => {
       const dir = cloneRepository()
-      const adopted = path.join(dir, 'packages/icons')
-      const shipped = loadConfig(adopted)
+      const set = path.join(dir, SET)
+      const shipped = loadConfig(set)
       const shippedNames = listIcons(shipped.svgsDir)
       const out = recordingConsole()
 
-      // The team saves its own SVG files in place of those the repository ships with,
-      fs.rmSync(shipped.sourceDir, { recursive: true })
-      fs.cpSync(path.join(fixtureDir, 'source'), shipped.sourceDir, { recursive: true })
+      // The repository of the set is the one of another team, with its own source and
+      // configuration,
+      fs.rmSync(set, { recursive: true })
+      fs.cpSync(fixtureDir, set, { recursive: true })
 
-      // describes its set in the configuration,
-      const manifestFile = path.join(adopted, 'package.json')
-      const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'))
-      const team = JSON.parse(fs.readFileSync(path.join(fixtureDir, 'package.json'), 'utf8'))
-      const { source } = manifest.chassis.build
-
-      for (const key of ['name', 'version', 'private', 'description', 'homepage', 'repository']) {
-        manifest[key] = team[key]
-      }
-
-      manifest.chassis.build = { ...team.chassis.build, source, checks: undefined }
-      fs.writeFileSync(manifestFile, JSON.stringify(manifest))
-
-      // starts a new set, and builds it,
-      expect(await main(['init'], { packageDir: adopted, console: out })).toBe(0)
-      expect(await main(['build'], { packageDir: adopted, console: out })).toBe(0)
+      // built with the build of the repository,
+      expect(await main(['build'], { cwd: set, console: out })).toBe(0)
       expect(out.lines.error).toEqual([])
 
-      // and takes the example icon of the other set out of the configuration of the site
+      // and the example icon of the other set is taken out of the configuration of the site
       const configFile = path.join(dir, 'packages/site/config.yml')
       const siteConfig = fs.readFileSync(configFile, 'utf8')
 
@@ -327,11 +325,11 @@ describe('the site of a set', () => {
       const site = buildSite(dir)
       const teamNames = listIcons(path.join(fixtureDir, 'source'))
 
-      expect(listIcons(loadConfig(adopted).svgsDir)).toEqual(teamNames)
+      expect(listIcons(loadConfig(set).svgsDir)).toEqual(teamNames)
       expectSiteOfSet(dir, site)
 
-      // Nothing of the set that the repository ships with is left: not a page of an icon,
-      // not a file of the set, not its font or its prefix in the code of a page
+      // Nothing of the set of vendor/icons is left: not a page of an icon, not a file of the
+      // set, not its font or its prefix in the code of a page
       for (const name of shippedNames) {
         expect(fs.existsSync(path.join(site, 'icons', name))).toBe(false)
       }

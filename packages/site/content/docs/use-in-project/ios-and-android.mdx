@@ -10,21 +10,23 @@ The build of Chassis Icons writes files for the web. An app for iOS or Android g
 
 ## Installation
 
-Chassis Assets reads the two folders of the output as they are. Build your set first, so that `packages/icons/icons/` and `packages/icons/svgs/` are what the source builds:
+Chassis Assets reads the two folders of the output as they are. Build your set first, in your repository of icons, so that its `icons/` and `svgs/` folders are what the source builds:
 
 ```bash
-pnpm icons
-pnpm icons:verify
+npm run build
+npm run verify
 ```
+
+In a repository made with `--pm pnpm`, run `pnpm build` and `pnpm verify`. A published set has the same two folders: for the Chassis set, `icons/` and `svgs/` of the package `@chassis-ui/website-icons`.
 
 ## Basic usage
 
-Copy the two folders into the `icons/` folder of an app of a brand, in your copy of the Chassis Assets repository, and build there. Run this from the root of that repository, with the path of your icons repository in place of the first part of each address:
+Copy the two folders into the `icons/` folder of an app of a brand, in your copy of the Chassis Assets repository, and build there. Run this from the root of that repository, with the path of your repository of icons in place of the first part of each address:
 
 ```bash
 rm -rf source/<brand>/<app>/icons/icons source/<brand>/<app>/icons/svgs
-cp -r /path/to/your-icons/packages/icons/icons source/<brand>/<app>/icons/icons
-cp -r /path/to/your-icons/packages/icons/svgs source/<brand>/<app>/icons/svgs
+cp -r /path/to/acme-icons/icons source/<brand>/<app>/icons/icons
+cp -r /path/to/acme-icons/svgs source/<brand>/<app>/icons/svgs
 pnpm assets
 ```
 
@@ -55,12 +57,12 @@ An app refers to an icon by its name, so a brand that keeps the names of the def
 The files in Chassis Assets are a copy of the output of one build. These practices keep the copy whole.
 
 - **Copy both folders together:** `icons/` and `svgs/` come from one build. A font of one version and SVG files of another disagree on the icons they hold.
-- **Copy after `pnpm icons:verify` passes:** the committed output is then what the source builds.
+- **Copy after `npm run verify` passes:** the committed output is then what the source builds.
 - **Keep the names across brands:** an app that shows `arrow-right-solid` gets the drawing of the brand it is built for.
 
 Avoid the habits that undo this:
 
-- **Do not edit the copy:** change the icon in `source/` of the icons repository, build, and copy again.
+- **Do not edit the copy:** change the icon in `source/` of your repository of icons, build, and copy again.
 
 ## Next steps
 

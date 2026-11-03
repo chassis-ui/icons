@@ -1,9 +1,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { build, compareWithBuild } from '../build/build.js'
-import { PREVIEW_FILE, loadConfig } from '../build/config.js'
-import { silentLogger as logger } from '../build/logger.js'
+import { build, compareWithBuild } from '../lib/build.js'
+import { PREVIEW_FILE, loadConfig } from '../lib/config.js'
+import { silentLogger as logger } from '../lib/logger.js'
 import { copyFixture, goldenDir, readOutput } from './helpers.js'
 
 describe('the build of the fixture set', () => {

@@ -4,8 +4,17 @@ import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 import { iconsPages } from '@libs/content'
 
-// The first files of the set, as an example of the source folder
-const files = iconsPages.slice(0, 3).map((page) => `├── ${page.id}.svg`)
+// The first files of the set, as an example of the source folder of a repository of icons
+const files = iconsPages.slice(0, 3).map((page) => `│   ├── ${page.id}.svg`)
+const tree = [
+  '├── source/',
+  ...files,
+  '│   └── ...',
+  '├── package.json',
+  '├── svgs/',
+  '├── icons/',
+  '└── codepoints.json'
+].join('\n')
 
 // A published package is on a CDN. The stylesheet of a private one is served by its project.
 const { name: packageName, version } = set.package
@@ -20,9 +29,10 @@ const stylesheet = set.package.private
       <header class="section-header col-span-full lg:col-span-10 xl:col-span-8">
         <h2 id="build">Build</h2>
         <p>
-          {set.title} is built from one folder of SVG files. Save a file per icon, run the build,
-          and load the stylesheet or the sprite that it writes. A team that owns the repository
-          builds a set of its own the same way: with its files, its font name and its class prefix.
+          {set.title} is a repository of icons, built with the builder @chassis-ui/icons from one
+          folder of SVG files. Save a file per icon, run the build, and load the stylesheet or the
+          sprite that it writes. A team builds a set of its own the same way: chassis-icons init
+          writes its repository, with its font name and its class prefix.
         </p>
       </header>
     </div>
@@ -32,11 +42,11 @@ const stylesheet = set.package.private
         <FeatureCard icon="cx-folders">
           <Fragment slot="title">Save Files</Fragment>
           <Fragment slot="body">
-            Save one SVG file per icon into the source folder. The name of the file is the name of
-            the icon.
+            Save one SVG file per icon into the source folder of the repository. The name of the
+            file is the name of the icon.
           </Fragment>
           <div class="border-top border-subtle pt-md">
-            <Code noToolbar lang="text" code={['source/', ...files, '└── ...'].join('\n')} />
+            <Code noToolbar lang="text" code={tree} />
           </div>
         </FeatureCard>
       </div>
@@ -51,10 +61,10 @@ const stylesheet = set.package.private
               noToolbar
               lang="shell"
               code={`# Check the files
-pnpm icons:lint:source
+npm run lint
 
 # Build the set
-pnpm icons`}
+npm run build`}
             />
           </div>
         </FeatureCard>

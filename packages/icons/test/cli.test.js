@@ -1,8 +1,15 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { main } from '../build/cli.js'
-import { copyFixture, goldenDir, readOutput, recordingConsole, temporaryDir } from './helpers.js'
+import { main } from '../lib/cli.js'
+import {
+  copyFixture,
+  goldenDir,
+  packageDir,
+  readOutput,
+  recordingConsole,
+  temporaryDir
+} from './helpers.js'
 
 /**
  * @param {string[]} args
@@ -10,7 +17,7 @@ import { copyFixture, goldenDir, readOutput, recordingConsole, temporaryDir } fr
  */
 async function run(args, dir = copyFixture()) {
   const out = recordingConsole()
-  const code = await main(args, { packageDir: dir, console: out })
+  const code = await main(args, { cwd: dir, console: out })
 
   return { code, dir, log: out.lines.log.join('\n'), error: out.lines.error.join('\n') }
 }
@@ -25,10 +32,14 @@ describe('the command line', () => {
       'build',
       'verify',
       'lint-source',
+      'archive',
+      'release-notes',
       'init',
+      '--cwd',
       '--only',
       '--dry-run',
-      '--since'
+      '--since',
+      '--to'
     ]) {
       expect(log).toContain(word)
     }
@@ -107,14 +118,77 @@ describe('the command line', () => {
     expect(error).toContain('bar-line.svg has no "bar-fill" beside it')
   })
 
-  it('empties the output and the registry with init', async () => {
-    const { dir } = await run(['build'])
-    const { code } = await run(['init'], dir)
+  it('finds the repository upward from the working directory, or takes --cwd', async () => {
+    const dir = copyFixture()
+    const inside = path.join(dir, 'source')
+    const { code, log } = await run(['build', '--dry-run'], inside)
 
     expect(code).toBe(0)
-    expect(fs.readdirSync(path.join(dir, 'svgs'))).toEqual([])
-    expect(fs.readdirSync(path.join(dir, 'icons'))).toEqual([])
-    expect(fs.existsSync(path.join(dir, 'codepoints.json'))).toBe(false)
-    expect(fs.readdirSync(path.join(dir, 'source'))).toHaveLength(8)
+    expect(log).toContain('A build would change 18 files')
+
+    const elsewhere = temporaryDir()
+    const withCwd = await main(['build', '--dry-run', '--cwd', dir], {
+      cwd: elsewhere,
+      console: recordingConsole()
+    })
+
+    expect(withCwd).toBe(0)
+  })
+
+  it('prints the version of the build with --version', async () => {
+    const { code, log } = await run(['--version'])
+
+    expect(code).toBe(0)
+    expect(log.trim()).toBe(
+      JSON.parse(fs.readFileSync(path.join(packageDir, 'package.json'), 'utf8')).version
+    )
+  })
+
+  it('writes the archive of the output with archive', async () => {
+    const { dir } = await run(['build'])
+    const to = path.join(dir, 'out')
+    const { code, log } = await run(['archive', '--to', 'out'], dir)
+
+    expect(code).toBe(0)
+    expect(log).toContain('acme-glyphs-2.4.0.zip: 15 files')
+    expect(fs.readdirSync(to)).toEqual(['acme-glyphs-2.4.0.zip'])
+  })
+
+  it('prints the changelog entry of the version with release-notes, and fails without one', async () => {
+    const dir = copyFixture()
+
+    fs.writeFileSync(
+      path.join(dir, 'CHANGELOG.md'),
+      '# Changelog\n\n## [2.4.0]\n\n### Added\n\n- Two icons\n\n## [2.3.0]\n\n- One icon\n'
+    )
+
+    const { code, log } = await run(['release-notes'], dir)
+
+    expect(code).toBe(0)
+    expect(log).toBe('### Added\n\n- Two icons')
+    expect((await run(['release-notes', 'v2.3.0'], dir)).log).toBe('- One icon')
+
+    const missing = await run(['release-notes', '2.5.0'], dir)
+
+    expect(missing.code).toBe(1)
+    expect(missing.error).toContain('no entry for 2.5.0')
+  })
+
+  it('writes the files of a new repository with init', async () => {
+    const dir = temporaryDir()
+    const { code, log } = await run(['init', 'glyphs', '--pm', 'pnpm'], dir)
+
+    expect(code).toBe(0)
+    expect(log).toContain('package.json')
+    expect(log).toContain('pnpm install')
+    expect(fs.readdirSync(path.join(dir, 'glyphs')).sort()).toEqual([
+      '.github',
+      '.gitignore',
+      '.nvmrc',
+      'AGENTS.md',
+      'CHANGELOG.md',
+      'CLAUDE.md',
+      'package.json'
+    ])
   })
 })

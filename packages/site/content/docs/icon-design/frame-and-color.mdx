@@ -6,13 +6,13 @@ toc: true
 
 ## Introduction
 
-Every icon of a set is drawn on the same frame and in one color, so that icons line up beside each other and take the color of the text around them. The frame is the setting `chassis.build.frame` of `packages/icons/package.json`. The color needs no setting: the build removes it.
+Every icon of a set is drawn on the same frame and in one color, so that icons line up beside each other and take the color of the text around them. The frame is the setting `chassis.build.frame` of the `package.json` of the repository of icons. The color needs no setting: the build removes it.
 
 ## The frame
 
 The frame is the square an icon is drawn on. Its side is `chassis.build.frame`, which is `24` unless the configuration says otherwise. The `viewBox` of a source file is `0 0 <frame> <frame>`, and its `width` and `height`, when the file has them, are the frame.
 
-In `chassis.build` of `packages/icons/package.json`:
+In `chassis.build` of `package.json`:
 
 ```json
 {
@@ -60,7 +60,7 @@ The path data is kept as it was drawn. The source file is never changed: the bui
 
 ## Source lint
 
-`pnpm icons:lint:source` checks each file of `source/` against the frame and the color rules, and prints one line per problem.
+`npm run lint`, the source lint, checks each file of `source/` against the frame and the color rules, and prints one line per problem.
 
 <CxTable>
 | Message | Cause |
@@ -80,9 +80,9 @@ Each line starts with the name of the file. [Source lint]([[docsref:/icon-design
 
 The build writes what the source holds. These practices cover what a file needs before it is saved into `source/`.
 
-- **Export on the frame:** a file whose `viewBox` is not `0 0 <frame> <frame>` is refused by `pnpm icons:lint:source`.
+- **Export on the frame:** a file whose `viewBox` is not `0 0 <frame> <frame>` is refused by `npm run lint`.
 - **Outline every stroke:** the font draws filled shapes only, and the build does not outline a stroke.
-- **Run the source lint before the build:** `pnpm icons:lint:source` names each file that cannot be an icon, and why.
+- **Run the source lint before the build:** `npm run lint` names each file that cannot be an icon, and why.
 
 Avoid the habits that undo this:
 

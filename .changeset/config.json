@@ -6,7 +6,7 @@
   "linked": [],
   "access": "public",
   "baseBranch": "develop",
-  "changedFilePatterns": ["build/**", "icons/**", "svgs/**"],
+  "changedFilePatterns": ["lib/**", "templates/**"],
   "updateInternalDependencies": "patch",
   "ignore": ["chassis-icons-site"]
 }

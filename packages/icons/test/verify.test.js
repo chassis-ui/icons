@@ -2,16 +2,16 @@ import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { build } from '../build/build.js'
-import { loadConfig } from '../build/config.js'
-import { silentLogger as logger } from '../build/logger.js'
-import { checkContracts, verify } from '../build/verify.js'
+import { build } from '../lib/build.js'
+import { loadConfig } from '../lib/config.js'
+import { silentLogger as logger } from '../lib/logger.js'
+import { checkContracts, verify } from '../lib/verify.js'
 import { copyFixture, goldenDir } from './helpers.js'
 
 const goldenCodepoints = () =>
   JSON.parse(fs.readFileSync(path.join(goldenDir, 'icons/acme-glyphs.json'), 'utf8'))
 
-/** @returns {Promise<{ dir: string, config: import('../build/config.js').Config }>} */
+/** @returns {Promise<{ dir: string, config: import('../lib/config.js').Config }>} */
 async function builtFixture() {
   const dir = copyFixture()
   const config = loadConfig(dir)
@@ -24,7 +24,7 @@ async function builtFixture() {
  * Gives two icons each other's code point, as an edit of the registry by hand would, and
  * builds the output of that registry.
  * @param {string} dir
- * @param {import('../build/config.js').Config} config
+ * @param {import('../lib/config.js').Config} config
  */
 async function swapCodepoints(dir, config) {
   const file = path.join(dir, 'codepoints.json')

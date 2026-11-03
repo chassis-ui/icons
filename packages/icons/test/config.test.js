@@ -1,6 +1,6 @@
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { ConfigError, loadConfig, resolveConfig } from '../build/config.js'
+import { ConfigError, loadConfig, resolveConfig } from '../lib/config.js'
 import { fixtureDir, temporaryDir } from './helpers.js'
 
 const manifest = (build) => ({ name: '@acme/glyphs', version: '1.2.3', chassis: { build } })
@@ -28,6 +28,13 @@ describe('resolveConfig', () => {
     const config = resolveConfig(manifest({ ...minimal, source: 'art' }), path.resolve('/set'))
 
     expect(config.sourceDir).toBe(path.resolve('/set/art'))
+    expect(resolveConfig(manifest(minimal), path.resolve('/set')).sourceDir).toBe(
+      path.resolve('/set/source')
+    )
+    expect(resolveConfig(manifest(minimal), path.resolve('/set')).checksFile).toBe(
+      path.resolve('/set/chassis.checks.json')
+    )
+    expect(config.checksFile).toBe(path.resolve('/set/chassis.checks.json'))
     expect(config.svgsDir).toBe(path.resolve('/set/svgs'))
     expect(config.iconsDir).toBe(path.resolve('/set/icons'))
     expect(config.registryFile).toBe(path.resolve('/set/codepoints.json'))

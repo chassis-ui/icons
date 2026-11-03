@@ -1,77 +1,75 @@
 # @chassis-ui/icons
 
-The icons of the Chassis Design System, in outline, solid and brand styles, as an icon font, an SVG sprite and optimized SVG files.
+The builder of icon sets of the Chassis Design System, and of any team that wants a library
+of its own: the `chassis-icons` command builds a repository of SVG files into one optimized
+SVG file per icon, an SVG sprite and an icon font with its CSS and SCSS, and writes the
+manifest and the README of the package that holds them. The build is file-driven: save
+`<name>.svg` into `source/` and the icon is in the next build. The font name, the class
+prefix, the frame and the styles are settings.
 
-The set has 501 icons. Each is drawn on a frame of 24 by 24 in one color, and takes the color of the text around it.
+The icons of the Chassis Design System are a repository of icons built with it:
+[`@chassis-ui/website-icons`](https://www.npmjs.com/package/@chassis-ui/website-icons).
+
+## A repository of icons
 
 ```bash
-npm install @chassis-ui/icons
+npx @chassis-ui/icons init acme-icons --pm pnpm
+cd acme-icons
+git init
+pnpm install
 ```
 
-## What the package holds
+`init` writes `package.json` with the `chassis.build` block, the scripts and the dependency
+on this package, `.gitignore`, `.nvmrc`, `CHANGELOG.md`, `AGENTS.md`, `CLAUDE.md`, a CI
+workflow and a release workflow. Save the SVG files of your icons into `source/`, one per
+icon, and build:
 
-- `icons/chassis-icons.css` and `icons/chassis-icons.min.css`: the stylesheet of the icon font, with one class per icon
-- `icons/chassis-icons.scss`: the same stylesheet for Sass, with the folder of the font and the map of the icons as variables
-- `icons/chassis-icons.woff2`, `icons/chassis-icons.woff`: the icon font, which the stylesheets load from their own folder
-- `icons/chassis-icons.svg`: the SVG sprite, one `<symbol>` per icon with the name of the icon as its `id`
-- `icons/chassis-icons.json`: the code point of each icon in the font, by name
-- `svgs/<name>.svg`: one optimized file per icon
-
-The last part of a name is the style of the icon: `<name>-outline`, `<name>-solid` or `<name>-brand`. The examples below show `alarm-clock-outline`.
-
-Browse the icons and their names on the [site of the set](https://chassis-ui.com/icons/).
-
-## Use
-
-### The icon font
-
-One class per icon, `cx-<name>`, on an empty element:
-
-```html
-<link rel="stylesheet" href="node_modules/@chassis-ui/icons/icons/chassis-icons.min.css" />
-
-<i class="cx-alarm-clock-outline"></i>
+```bash
+pnpm lint      # chassis-icons lint-source: each file that cannot be an icon, and why
+pnpm build     # chassis-icons build: svgs/, icons/, codepoints.json, README.md, package.json
+pnpm verify    # chassis-icons verify: the output is what the source builds
 ```
 
-With a bundler, `import '@chassis-ui/icons'` loads the same stylesheet and its font.
+Commit `source/` and the output together. `pnpm build` writes `svgs/<name>.svg`,
+`icons/<font>.{css,min.css,scss,json,svg,woff,woff2}`, `codepoints.json`, the registry of
+the code points, and `README.md`, which shows the four ways to use an icon of your set: the
+font class, the sprite, the SVG file and Sass.
 
-### The SVG sprite
+## Commands
 
-One file for the whole set, and one `<use>` per icon:
+| Command                       | What it does                                                                                                                  |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `chassis-icons build`         | Writes the output. `--only svgs\|sprite\|font\|package` runs one step, `--dry-run` lists the files that would change          |
+| `chassis-icons verify`        | Fails when the output differs from a fresh build, an icon lost its code point, or an icon of `chassis.checks.json` is missing |
+| `chassis-icons lint-source`   | Checks the files of `source/`: names, frame, one color, no stroke, the pairs of the styles                                    |
+| `chassis-icons archive`       | Writes `archives/<font>-<version>.zip`, with `icons/` and `svgs/` in it, for a release                                        |
+| `chassis-icons release-notes` | Prints the `CHANGELOG.md` entry of the version, and fails without one                                                         |
+| `chassis-icons init [dir]`    | Writes the files of a new repository of icons                                                                                 |
 
-```html
-<svg width="24" height="24" fill="currentcolor" aria-hidden="true">
-  <use href="node_modules/@chassis-ui/icons/icons/chassis-icons.svg#alarm-clock-outline"></use>
-</svg>
-```
+Every command but `init` works on one repository of icons: `--cwd <dir>`, by default the
+nearest folder upward from the working directory whose `package.json` has a `chassis` block.
+`chassis-icons --help` prints every option.
 
-### A single SVG file
+## Configuration
 
-```html
-<img src="node_modules/@chassis-ui/icons/svgs/alarm-clock-outline.svg" alt="" width="24" height="24" />
-```
+The `chassis.build` block of `package.json`:
 
-### Sass
+| Setting          | Default                 | What it sets                                                                                      |
+| ---------------- | ----------------------- | ------------------------------------------------------------------------------------------------- |
+| `name`           | required                | The name of the font, and of every file of `icons/`                                               |
+| `prefix`         | required                | What a class starts with: `<prefix>-<icon>`                                                       |
+| `source`         | `"source"`              | The folder of your SVG files                                                                      |
+| `checks`         | `"chassis.checks.json"` | The file of the icons that others read by name. It may not exist                                  |
+| `frame`          | `24`                    | The width and the height of the frame an icon is drawn on                                         |
+| `styles`         | `[]`                    | The last part a name may have, such as `["outline", "solid"]`. Any kebab-case name when empty     |
+| `pairs`          | `[]`                    | The styles an icon comes in together, such as `[["outline", "solid"]]`                            |
+| `startCodepoint` | `"f101"`                | The code point of the first icon of a new set, in the Private Use Area                            |
+| `formats`        | `["woff2", "woff"]`     | The font formats, in the order of the `src` of the font face: `woff2`, `woff`, `ttf`              |
+| `header`         | `[]`                    | The lines of the comment at the top of each stylesheet. `{version}` is the version of the package |
 
-The classes of the stylesheet, with the font served from a folder of your own, and the map of the icons for a selector of your own:
-
-```scss
-@use 'sass:map';
-@use '@chassis-ui/icons/icons/chassis-icons.scss' as icons with (
-  $chassis-icons-font-dir: '/fonts'
-);
-
-.my-icon::before {
-  font-family: icons.$chassis-icons-font;
-  content: map.get(icons.$chassis-icons-map, 'alarm-clock-outline');
-}
-```
-
-Sass finds the file in a load path that holds `node_modules`, and so does a bundler. With the package importer of Sass, `@use 'pkg:@chassis-ui/icons'` loads the same file.
-
-## The source
-
-The package is built from the SVG files of its [repository](https://github.com/chassis-ui/icons). An icon is added or changed there, and never in the files of this package.
+The [documentation](https://chassis-ui.com/icons/docs/) describes the build, drawing icons
+for a set and using the output in a project. The [repository](https://github.com/chassis-ui/icons)
+holds the build and its site.
 
 ## License
 

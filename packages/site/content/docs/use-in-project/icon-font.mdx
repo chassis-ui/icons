@@ -16,22 +16,22 @@ The files of the font are in the `icons/` folder of the output. There are three 
 
 ### The package
 
-The Chassis set is on npm, and the package holds `icons/` and `svgs/` as the build wrote them:
+The Chassis set is on npm as `@chassis-ui/website-icons`, and the package holds `icons/` and `svgs/` as the build wrote them:
 
 ```bash
-npm install @chassis-ui/icons
+npm install @chassis-ui/website-icons
 ```
 
 ### The archive of a release
 
-Each release on GitHub has an archive, `<font>-<version>.zip`, with the two folders in it. Download it from the [releases]([[config:repo]]/releases) of the repository, and unpack it into the folder that your project serves static files from.
+Each release of a repository of icons on GitHub has an archive, `<font>-<version>.zip`, with the two folders in it. Download it from the releases of the repository of the set, the [releases of chassis-ui/website-icons](https://github.com/chassis-ui/website-icons/releases) for the Chassis set, and unpack it into the folder that your project serves static files from.
 
 ### The folders of a build
 
-A set of your own is in `packages/icons/` of your repository after `pnpm icons`. Copy the two folders as they are:
+A set of your own is the output of your repository of icons after `npm run build`: the folders `icons/` and `svgs/` at its root. Copy the two folders as they are, from that root:
 
 ```bash
-cp -r packages/icons/icons packages/icons/svgs /path/to/your-project/static/icons/
+cp -r icons svgs /path/to/your-project/static/icons/
 ```
 
 The stylesheet loads the font from its own folder, so keep the files of `icons/` together.
@@ -41,7 +41,7 @@ The stylesheet loads the font from its own folder, so keep the files of `icons/`
 Load the stylesheet, and put the class of an icon, `<prefix>-<name>`, on an empty element:
 
 ```html
-<link rel="stylesheet" href="node_modules/@chassis-ui/icons/icons/chassis-icons.min.css" />
+<link rel="stylesheet" href="node_modules/@chassis-ui/website-icons/icons/chassis-icons.min.css" />
 
 <i class="cx-bell-outline"></i>
 ```
@@ -49,7 +49,7 @@ Load the stylesheet, and put the class of an icon, `<prefix>-<name>`, on an empt
 `icons/<font>.css` and `icons/<font>.min.css` hold the same rules. With a bundler, import the package, which loads the same stylesheet and its font:
 
 ```js
-import '@chassis-ui/icons'
+import '@chassis-ui/website-icons'
 ```
 
 The stylesheet has one rule per icon, `.<prefix>-<name>::before`, whose `content` is the character of the icon in the font. The element itself stays empty.
@@ -94,7 +94,7 @@ The font is written in each format of `chassis.build.formats`: `woff2`, `woff` a
 
 ### A set of your own
 
-The font name and the prefix are the settings `name` and `prefix` of `chassis.build`. With `"name": "your-icons"` and `"prefix": "yi"` the stylesheet is `icons/your-icons.css`, and the class of an icon is `yi-<name>`.
+The font name and the prefix are the settings `name` and `prefix` of `chassis.build`. With `"name": "acme-icons"` and `"prefix": "ai"` the stylesheet is `icons/acme-icons.css`, and the class of an icon is `ai-<name>`.
 
 ## Best practices
 

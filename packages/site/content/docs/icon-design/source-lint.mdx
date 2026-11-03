@@ -6,14 +6,14 @@ toc: true
 
 ## Introduction
 
-The source lint is the command `pnpm icons:lint:source`. It checks each file of `source/` against the configuration of the set, and names each file that cannot be an icon. The build writes whatever it is given, so a file that the lint refuses would become a wrong class, a wrong glyph or a wrong symbol.
+The source lint is `chassis-icons lint-source`, which `npm run lint` runs in a repository of icons. It checks each file of `source/` against the configuration of the set, and names each file that cannot be an icon. The build writes whatever it is given, so a file that the lint refuses would become a wrong class, a wrong glyph or a wrong symbol.
 
 ## Running the lint
 
-The lint reads `source/` and the `chassis.build` block, and changes no file. Run it from the root of the repository, before the build:
+The lint reads `source/` and the `chassis.build` block of `package.json`, and changes no file. Run it in the repository of icons, before the build:
 
 ```bash
-pnpm icons:lint:source
+npm run lint
 ```
 
 It prints one line per problem, each with the file and what is wrong with it, then the number of problems, and ends with an error. For a set with a frame of `16`, the styles `line` and `fill`, and a pair of the two:
@@ -27,7 +27,7 @@ It prints one line per problem, each with the file and what is wrong with it, th
 ✗ lonely-line.svg has no "lonely-fill" beside it: line and fill come together
 ```
 
-A source without a problem ends with one line, which says that the source files can be icons of the set. CI runs the lint in its Build job.
+A source without a problem ends with one line, which says that the source files can be icons of the set. The CI workflow that `chassis-icons init` wrote runs the lint on every push and pull request.
 
 ## What it checks
 
@@ -80,15 +80,15 @@ The drawing of a file is checked against `chassis.build.frame` and the rules of 
 
 ## Lint and verify
 
-The source lint checks the files that go into the build, and `pnpm icons:verify` checks what came out of it. A change to `source/` runs both: the lint, the build, then the verification.
+The source lint checks the files that go into the build, and `npm run verify` checks what came out of it. A change to `source/` runs both: the lint, the build, then the verification.
 
 ```bash
-pnpm icons:lint:source
-pnpm icons
-pnpm icons:verify
+npm run lint
+npm run build
+npm run verify
 ```
 
-[Build system]([[docsref:/getting-started/build-system#checks]]) describes what `pnpm icons:verify` compares.
+[Build system]([[docsref:/getting-started/build-system#checks]]) describes what `npm run verify` compares.
 
 ## Best practices
 
@@ -100,7 +100,7 @@ The lint is the only place where a file is refused: the build after it writes ev
 
 Avoid the habits that undo this:
 
-- **Do not edit the build to accept a file:** the checks of `packages/icons/build/lint-source.js` are those of every set that the build writes.
+- **Do not edit the build to accept a file:** the checks of the source lint are those of the builder, `@chassis-ui/icons`, for every set that it writes.
 - **Do not keep other files in `source/`:** notes, design files and exports in other formats are refused.
 
 ## Next steps

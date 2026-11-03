@@ -1,36 +1,69 @@
 ---
 title: Build System
-description: The commands of the build, its four steps, the settings of chassis.build, how code points are kept, and the checks of the output.
+description: The chassis-icons command and its steps, the settings of chassis.build, how code points are kept, the checks, and taking a newer build into a set.
 toc: true
 ---
 
 ## Introduction
 
-The build turns the SVG files of `source/` into the output of the set, in four steps. It reads one block of configuration and names no set itself: the same build writes the Chassis set and the set of any team that adopts the repository.
+The build is the `chassis-icons` command of `@chassis-ui/icons`, a development dependency of a repository of icons. It turns the SVG files of `source/` into the output of the set, step by step, and reads one block of configuration: the same build writes the Chassis set and the set of any team, and names no set itself.
 
-The output is committed, and a fresh build equals it. After a change to `source/` or to the configuration, run the build and commit the result with the change.
+The output is committed in the repository of icons, and a fresh build equals it. After a change to `source/` or to the configuration, run the build and commit the result with the change.
 
 ## Prerequisites
 
-The build needs Node.js 22.12 or later, pnpm, and the packages of the repository. The [quick start]([[docsref:/getting-started/quick-start#prerequisites]]) has the setup. Run every command from the root of the repository.
+The build needs a repository of icons, which `chassis-icons init` writes, with Node.js 22.12 or later and npm or pnpm. The [quick start]([[docsref:/getting-started/quick-start]]) makes one. The scripts of its `package.json` run the command: `npm run build` is `chassis-icons build`, `npm run lint` is `chassis-icons lint-source`, and `verify`, `archive` and `release-notes` are the commands of the same name. This page names the command itself, which `npx` runs from the installed package; when a script runs it, an option goes after `--`, as in `npm run build -- --only font`.
 
 ## Commands
 
-`pnpm icons` runs the whole build, and its options run a part of it or change nothing at all.
+`chassis-icons build` writes the whole output, and the other commands check a set, package it and start one.
+
+<CxTable>
+| Command | What it does |
+| --- | --- |
+| `build` | Writes `svgs/`, `icons/`, `codepoints.json`, `README.md` and the fields of `package.json` that name the files of the output |
+| `build --only <step>` | One step: `svgs`, `sprite`, `font` or `package` |
+| `build --dry-run` | Lists the files that a build would change, and changes none |
+| `verify` | Checks that the output is what the source builds, that no icon lost its code point, and that the icons of the checks file are there |
+| `verify --since <ref>` | Compares the code points with those of a commit, a branch or a tag, in place of the last tag |
+| `lint-source` | Checks the files of `source/`: names, frame, color, pairs |
+| `archive` | Writes `archives/<font>-<version>.zip`, with `icons/` and `svgs/` in it; `--to <dir>` writes it to another folder |
+| `release-notes [version]` | Prints the entry of a version in `CHANGELOG.md`, that of `package.json` by default, and fails without one |
+| `init [dir]` | Writes the files of a new repository of icons |
+</CxTable>
+
+Every command but `init` works on one repository of icons: `--cwd <dir>` names it, and by default it is the nearest folder upward from the working directory whose `package.json` has a `chassis` block, so the command runs from any folder of the repository. `--verbose` names each file that is written and each code point that is given or retired, and `--help` prints every command and option:
 
 ```bash
-pnpm icons                  # The whole output: SVG files, sprite, font, stylesheets, README and manifest
-pnpm icons --dry-run        # List the files that a build would change, and change none
-pnpm icons --only font      # One step: svgs, sprite, font or package
-pnpm icons --verbose        # Each file that is written, and each code point that is given or retired
-pnpm icons:init             # Empty the output and the registry of code points, to start a new set
+npx chassis-icons --help
+npx chassis-icons init --help
 ```
 
-A whole build removes from `packages/icons/svgs/` each file whose source is gone, and from `packages/icons/icons/` each file that it did not write, such as the files of another font name. `node packages/icons/build/cli.js --help` prints every command and option.
+### init
+
+`chassis-icons init [dir]` writes into a folder, the working directory by default, `package.json` with the `chassis.build` block, the scripts and the dependency on the builder, `.gitignore`, `.nvmrc`, `CHANGELOG.md`, `AGENTS.md`, `CLAUDE.md`, and the workflows `.github/workflows/ci.yml` and `.github/workflows/release.yml`. It writes nothing into `source/` and no README: the build writes the README. A file that exists is kept, and `package.json` and `CHANGELOG.md` are never written over.
+
+<CxTable>
+| Option | Default | What it sets |
+| --- | --- | --- |
+| `--name <name>` | The name of the folder | The name of the package |
+| `--font <name>` | The name of the folder, in kebab-case | The name of the font, `chassis.build.name` |
+| `--prefix <name>` | The first letter of each part of the font name | The class prefix, `chassis.build.prefix` |
+| `--pm <npm\|pnpm>` | `npm` | The package manager that the workflows and the instructions name |
+| `--repository <repo>` | The `origin` remote of the folder, or left out | The repository, as `owner/name` or an address |
+| `--license <license>` | `MIT` | The license |
+| `--author <author>` | `user.name` of Git, or left out | The author |
+| `--only <file…>` | Every file | Writes these files only, for a repository made earlier; one that exists needs `--force` |
+| `--check` | | Reports where the repository differs from what this version writes, and exits with `1` when it does. Writes nothing |
+| `--force` | | Writes over the files that exist, but never `package.json` or `CHANGELOG.md` |
+| `--dry-run` | | Prints the files, and writes nothing |
+</CxTable>
+
+`--check` reads the package manager from the lockfile of the repository, so before the first install, give `--pm` with it.
 
 ## Steps
 
-The build has four steps, and each reads what the step before it wrote.
+The build has these steps, and each reads what the step before it wrote.
 
 <CxTable>
 | Step | Reads | Writes |
@@ -41,13 +74,13 @@ The build has four steps, and each reads what the step before it wrote.
 | `package` | The configuration | The fields of `package.json` that name the files, and `README.md` |
 </CxTable>
 
-The steps after `svgs` read `packages/icons/svgs/`, so `pnpm icons --only sprite` and `pnpm icons --only font` build from the files that are there. `packages/icons/icons/preview.html` shows every icon of the sprite. Git ignores it, and it is not published.
+A whole build removes from `svgs/` each file whose source is gone, and from `icons/` each file that it did not write, such as the files of another font name. The steps after `svgs` read `svgs/`, so `build --only sprite` and `build --only font` build from the files that are there. `icons/preview.html` shows every icon of the sprite. The `.gitignore` that `init` wrote ignores it, and it is not published.
 
 The build optimizes, and draws nothing. It does not resize or recolor an icon, and it does not outline a stroke: the [source lint]([[docsref:/icon-design/source-lint]]) refuses a file that the build cannot use.
 
 ## Configuration
 
-The configuration of a set is in `packages/icons/package.json`, with the checks file at the root and the templates of the stylesheets beside the build.
+The configuration of a set is the `chassis.build` block of the `package.json` at the root of its repository, with the checks file beside it.
 
 ### chassis.build
 
@@ -58,8 +91,8 @@ The build reads the `chassis.build` block. A setting that the block leaves out h
 | --- | --- | --- |
 | `name` | required | The name of the font, and of every file of `icons/` |
 | `prefix` | required | What a class starts with: `<prefix>-<name>` |
-| `source` | `"../../source"` | The folder of the SVG files, from the package |
-| `checks` | `"../../chassis.checks.json"` | The checks file, from the package. It may not exist |
+| `source` | `"source"` | The folder of the SVG files, from the root of the repository |
+| `checks` | `"chassis.checks.json"` | The checks file, from the root of the repository. It may not exist |
 | `frame` | `24` | The width and the height of the frame an icon is drawn on |
 | `styles` | `[]` | The last part a name may have. Any kebab-case name when empty |
 | `pairs` | `[]` | The styles an icon comes in together |
@@ -68,32 +101,46 @@ The build reads the `chassis.build` block. A setting that the block leaves out h
 | `header` | `[]` | The lines of the comment at the top of each stylesheet. `{version}` is the version of the package |
 </CxTable>
 
-`name` and `prefix` are kebab-case names. The Chassis set has this block:
+`name` and `prefix` are kebab-case names. `init` writes the block with every setting, so that the defaults are in view. For the font `acme-icons` and the author Acme:
 
 ```json
 {
   "chassis": {
     "build": {
-      "name": "chassis-icons",
-      "prefix": "cx",
-      "source": "../../source",
+      "name": "acme-icons",
+      "prefix": "ai",
       "frame": 24,
-      "styles": ["outline", "solid", "brand"],
-      "pairs": [["outline", "solid"]],
+      "styles": [],
+      "pairs": [],
       "startCodepoint": "f101",
-      "formats": ["woff2", "woff"]
+      "formats": ["woff2", "woff"],
+      "header": ["Acme Icons v{version}", "Copyright Acme", "Licensed under MIT"]
     }
   }
 }
 ```
 
+The Chassis set has the styles `outline`, `solid` and `brand`, and the pair of `outline` and `solid`: a name of that set ends in a style, and an icon that has an `outline` file has a `solid` file too. [Names and styles]([[docsref:/icon-design/names-and-styles]]) describes both settings.
+
 ### Package fields
 
-The other fields of `packages/icons/package.json` describe the package. The build writes `main`, `style`, `sass`, `files`, `exports` and `sideEffects`, which name the files of the font, and keeps an entry of `files` or `exports` that is not about `icons/` or `svgs/`. Every other field is yours: `name`, `version`, `description`, `homepage`, `repository`, `license`, `private` and `publishConfig`. [Publishing]([[docsref:/use-in-project/publishing]]) says what the release reads of them.
+The other fields of `package.json` describe the package. `init` writes `name`, `version`, `description`, `repository`, `license`, `author`, `publishConfig`, the scripts and the dependency on the builder, and from then on they are yours, `private` and `homepage` among them. The build writes `main`, `style`, `sass`, `files`, `exports` and `sideEffects`, which name the files of the font, and keeps an entry of `files` or `exports` that is not about `icons/` or `svgs/`, such as the `CHANGELOG.md` that `init` lists. For the font `acme-icons`, with `exports` left out here:
+
+```json
+{
+  "main": "icons/acme-icons.css",
+  "style": "icons/acme-icons.css",
+  "sass": "icons/acme-icons.scss",
+  "files": ["icons/acme-icons.*", "svgs/*.svg", "CHANGELOG.md"],
+  "sideEffects": ["*.css", "*.scss"]
+}
+```
+
+[Publishing]([[docsref:/use-in-project/publishing]]) says what the release workflow reads of the fields that are yours.
 
 ### Checks file
 
-`chassis.checks.json` lists, under `contracts`, the icons that a consumer reads by name. Each entry has a `reader`, which the message of a failed check names, and its `icons`. The build does not read the file, `pnpm icons:verify` does, and a set without the file passes.
+`chassis.checks.json` lists, under `contracts`, the icons that a consumer reads by name. Each entry has a `reader`, which the message of a failed check names, and its `icons`. The build does not read the file, `verify` does, and a set without the file passes.
 
 ```json
 {
@@ -101,13 +148,17 @@ The other fields of `packages/icons/package.json` describe the package. The buil
 }
 ```
 
+### The README
+
+The build writes `README.md` at the root of the repository, for someone who installs the set: the package and what it holds, the code of the font class, the sprite, an SVG file and Sass with the font name and the prefix of the set, and a section on the source, which names `npm run build`, `npm run lint` and `npm run verify` when `package.json` has the scripts of `init`, and the `pnpm` commands when `pnpm-lock.yaml` is beside it. `description`, `homepage`, `repository` and `license` of `package.json` are shown in it. Never change the file by hand: the next build writes it again.
+
 ### Templates
 
-`packages/icons/build/templates/css.hbs` and `scss.hbs` are the Handlebars templates of the stylesheets, and `readme.hbs` is the template of the README of the package. Change a template to change what the build writes for every icon. Never change a file of the output by hand: the next build writes it again.
+The stylesheets and the README are written from the Handlebars templates of the builder, `css.hbs`, `scss.hbs` and `readme.hbs` in `node_modules/@chassis-ui/icons/lib/templates/`. They are the same for every set, so a change to what the build writes for every icon is a change to the builder, proposed in [its repository]([[config:repo]]) and taken into a set with a newer version.
 
 ## Code points
 
-An icon keeps its code point for as long as it is in the set, so a stylesheet that a browser has cached draws the right icon after another is added. `packages/icons/codepoints.json` is the registry of the code points, and the build is its only writer.
+An icon keeps its code point for as long as it is in the set, so a stylesheet that a browser has cached draws the right icon after another is added. `codepoints.json`, at the root of the repository, is the registry of the code points, and the build is its only writer.
 
 ```json
 {
@@ -116,22 +167,39 @@ An icon keeps its code point for as long as it is in the set, so a stylesheet th
 }
 ```
 
-A new icon gets the first code point, from `startCodepoint`, that no icon has or had, and never moves another. The code point of a removed icon is retired: no later icon gets it. `pnpm icons --verbose` names each code point that a build gives or retires. Commit the registry with the output.
+A new icon gets the first code point, from `startCodepoint`, that no icon has or had, and never moves another. The code point of a removed icon is retired: no later icon gets it. `build --verbose` names each code point that a build gives or retires. Commit the registry with the output.
 
 `icons/<font>.json` is output for a consumer: the same code points as numbers, without the retired ones.
 
 ## Checks
 
-Two commands check a set, and CI runs both. `pnpm icons:lint:source` checks the files of `source/` before a build, and `pnpm icons:verify` checks the output after it.
+Two commands check a set. `lint-source` checks the files of `source/` before a build, and `verify` checks the output after it. The CI workflow that `init` wrote runs `release-notes`, `lint-source` and `verify` on every push and pull request.
 
 ```bash
-pnpm icons:lint:source
-pnpm icons:verify
+npx chassis-icons lint-source
+npx chassis-icons verify
 ```
 
-`pnpm icons:verify` builds into a temporary folder and fails when a committed file is not what the source builds, when an icon lost the code point it had at the last tag, when two icons share a code point, or when an icon of the checks file is missing. `pnpm icons:verify --since <ref>` compares the code points with those of a commit, a branch or a tag, in place of the last tag.
+`verify` builds into a temporary folder and fails when a committed file is not what the source builds, when an icon lost the code point it had at the last tag, when two icons share a code point, or when an icon of the checks file is missing. `verify --since <ref>` compares the code points with those of a commit, a branch or a tag, in place of the last tag.
 
-`pnpm icons:test` runs the tests of the build. They build the set of another team, with another font name, prefix, frame and styles, so a part of the build that works for one set only fails there.
+## Taking a newer build
+
+A new version of the builder reaches a repository of icons through its development dependency, and the files that `init` wrote are the repository's from then on. Raise the version of `@chassis-ui/icons` in `devDependencies` of `package.json`, install, build, and read the diff of the output: a newer build can write other files for the same source, and a change to the output is a change to the package of the set, which the changelog entry of its next version says.
+
+```bash
+npm install
+npm run build
+git diff --stat
+```
+
+A newer version of `init` may write other workflows or instructions. `init --check` reports which of its files differ from what the installed version writes, and `init --only <file…> --force` writes them again; a repository may differ on purpose, so read the diff before you commit:
+
+```bash
+npx chassis-icons init --check
+npx chassis-icons init --only .github/workflows/ci.yml .github/workflows/release.yml --force
+```
+
+The [changelog of the builder]([[config:repo]]/blob/main/packages/icons/CHANGELOG.md) names what each version changes in the output and in the files of `init`.
 
 ## Troubleshooting
 
@@ -141,22 +209,30 @@ Each entry gives the message or the symptom, then the cause and the fix.
 
 The build stops with `Unknown setting in "chassis.build": <setting>`. The block holds a key that the build does not read, such as a misspelled one. Remove it, or correct its name from the table of [chassis.build](#chassisbuild).
 
+### No package.json
+
+The command stops with `There is no package.json in <dir>`. No folder upward from the working directory has a `package.json` with a `chassis` block, so the command took the working directory. Run it inside the repository of icons, or name the repository with `--cwd <dir>`.
+
 ### Output is not built
 
-`pnpm icons:verify` prints `<file>: changed. The output is not what the source builds: run the build.` A file of `source/`, the configuration or a template changed, and the committed output is older. Run `pnpm icons`, and commit the output with the change.
+`verify` prints `<file>: changed. The output is not what the source builds: run the build.` A file of `source/`, the configuration or the builder changed, and the committed output is older. Run `build`, and commit the output with the change.
 
 ### File is not written
 
-`pnpm icons:verify` prints `<file>: the build does not write it.` The output holds a file that no source file builds, such as the file of a removed icon. Run `pnpm icons`, which removes it.
+`verify` prints `<file>: the build does not write it.` The output holds a file that no source file builds, such as the file of a removed icon. Run `build`, which removes it.
 
 ### Code points not compared
 
-`pnpm icons:verify` prints a note that starts with `The code points were not compared with an earlier state`. The repository has no tag yet, or the tag has no `icons/<font>.json`. It is a note and not a problem: the comparison starts with the first tag of the set.
+`verify` prints a note that starts with `The code points were not compared with an earlier state`. The repository has no tag yet, or the tag has no `icons/<font>.json`. It is a note and not a problem: the comparison starts with the first release of the set.
+
+### Repository differs
+
+`init --check` prints `<file>: differs` and exits with `1`. The file was changed in the repository, or the installed version of `init` writes it differently. Read the diff: keep the file when the repository differs on purpose, or write it again with `init --only <file> --force`.
 
 ## Next steps
 
 Continue with one of these pages:
 
-- [Source lint]([[docsref:/icon-design/source-lint]]): what `pnpm icons:lint:source` checks, and its messages.
+- [Source lint]([[docsref:/icon-design/source-lint]]): what `lint-source` checks, and its messages.
 - [Publishing]([[docsref:/use-in-project/publishing]]): from a built set to a package and a release.
-- The [architecture document]([[config:repo]]/blob/main/docs/architecture.md) of the repository: the modules of the build, and the contract of each file of the output.
+- The [architecture document]([[config:repo]]/blob/main/docs/architecture.md) of the builder: the modules of the build, and the contract of each file of the output.

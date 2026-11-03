@@ -1,16 +1,10 @@
-import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import changelog from '../../../.changeset/changelog.js'
-import { checkChangeset, releasedPaths } from '../../../build/check-changeset.js'
-import { releaseArchive } from '../../../build/release-archives.js'
-import { releaseNotes } from '../../../build/release-notes.js'
+import { checkChangeset, RELEASED_PATHS } from '../../../build/check-changeset.js'
 import { readVersion, syncVersionRefs } from '../../../build/sync-version-refs.js'
-import { build } from '../build/build.js'
-import { loadConfig } from '../build/config.js'
-import { silentLogger as logger } from '../build/logger.js'
-import { copyFixture, listFiles, packageDir, temporaryDir } from './helpers.js'
+import { packageDir, temporaryDir } from './helpers.js'
 
 describe('the scripts of the root', () => {
   const repositoryDir = path.resolve(packageDir, '../..')
@@ -37,6 +31,22 @@ describe('the scripts of the root', () => {
       }
     }
   })
+
+  // The set of the repository is the submodule, and the command of this checkout builds it
+  it('run the command of this checkout on vendor/icons', () => {
+    const commands = Object.entries(scripts('.')).filter(([, command]) =>
+      command.startsWith('node packages/icons/lib/cli.js')
+    )
+
+    expect(commands.map(([name]) => name)).toEqual(
+      expect.arrayContaining(['icons', 'icons:verify', 'icons:lint:source'])
+    )
+
+    for (const [name, command] of commands) {
+      if (name === 'release:notes') continue
+      expect(command, name).toContain('--cwd vendor/icons')
+    }
+  })
 })
 
 describe('the changelog entry of a changeset', () => {
@@ -51,26 +61,16 @@ describe('the changelog entry of a changeset', () => {
 })
 
 describe('checkChangeset', () => {
-  const released = releasedPaths({ chassis: { build: {} } })
   const check = (/** @type {[string, string][]} */ changes, versionAfter = '0.4.0') =>
     checkChangeset({
       changes: changes.map(([status, file]) => ({ status, file })),
-      released,
+      released: RELEASED_PATHS,
       versionBefore: '0.4.0',
       versionAfter
     })
 
-  it('knows the folders a release is made of, with the source where the set has it', () => {
-    expect(released).toEqual([
-      'source/',
-      'packages/icons/build/',
-      'packages/icons/icons/',
-      'packages/icons/svgs/'
-    ])
-    expect(releasedPaths({ chassis: { build: { source: 'artwork' } } })[0]).toBe(
-      'packages/icons/artwork/'
-    )
-    expect(releasedPaths({})[0]).toBe('source/')
+  it('knows the folders a release is made of', () => {
+    expect(RELEASED_PATHS).toEqual(['packages/icons/lib/', 'packages/icons/templates/'])
   })
 
   it('asks for nothing when no released file changed', () => {
@@ -78,16 +78,16 @@ describe('checkChangeset', () => {
       ['M', 'README.md'],
       ['M', 'packages/site/config.yml'],
       ['M', 'packages/icons/test/names.test.js'],
-      ['M', 'sources.md']
+      ['M', 'packages/icons/test/golden/README.md']
     ])
 
     expect(result).toMatchObject({ ok: true, files: [] })
   })
 
-  it('passes a change to the source or to the build that comes with a changeset', () => {
+  it('passes a change to the build that comes with a changeset', () => {
     const result = check([
-      ['A', 'source/anvil-fill.svg'],
-      ['M', 'packages/icons/build/font.js'],
+      ['M', 'packages/icons/lib/font.js'],
+      ['M', 'packages/icons/templates/AGENTS.md'],
       ['A', '.changeset/anvil.md']
     ])
 
@@ -95,12 +95,11 @@ describe('checkChangeset', () => {
     expect(result.message).toBe('2 released files changed, with 1 changeset')
   })
 
-  it('fails a change to the source, the build or the output without a changeset', () => {
+  it('fails a change to the build or its templates without a changeset', () => {
     for (const file of [
-      'source/anvil-fill.svg',
-      'packages/icons/build/templates/css.hbs',
-      'packages/icons/icons/acme-glyphs.woff2',
-      'packages/icons/svgs/anvil-fill.svg'
+      'packages/icons/lib/templates/css.hbs',
+      'packages/icons/lib/cli.js',
+      'packages/icons/templates/workflows/release.yml'
     ]) {
       const result = check([['M', file]])
 
@@ -111,7 +110,7 @@ describe('checkChangeset', () => {
 
   it('does not take the README of the folder, or a changed changeset, for a new one', () => {
     const changes = /** @type {[string, string][]} */ ([
-      ['D', 'source/bar-fill.svg'],
+      ['M', 'packages/icons/lib/build.js'],
       ['A', '.changeset/README.md'],
       ['M', '.changeset/older.md'],
       ['A', '.changeset/config.json'],
@@ -124,7 +123,7 @@ describe('checkChangeset', () => {
   it('passes the commit of a version, which consumes the changesets', () => {
     const result = check(
       [
-        ['M', 'packages/icons/icons/acme-glyphs.css'],
+        ['M', 'packages/icons/lib/build.js'],
         ['D', '.changeset/anvil.md']
       ],
       '0.5.0'
@@ -132,87 +131,6 @@ describe('checkChangeset', () => {
 
     expect(result.ok).toBe(true)
     expect(result.message).toContain('in the release of 0.5.0')
-  })
-})
-
-describe('releaseArchive', () => {
-  const entries = (/** @type {string} */ file) =>
-    execFileSync('unzip', ['-Z1', file], { encoding: 'utf8' }).trim().split('\n').sort()
-
-  it('writes the output of the package into an archive of the font name', async () => {
-    const dir = copyFixture()
-    const to = path.join(temporaryDir(), 'release')
-
-    await build(loadConfig(dir), { logger })
-    fs.mkdirSync(to)
-    fs.writeFileSync(path.join(to, 'acme-glyphs-2.3.0.zip'), '')
-    fs.writeFileSync(path.join(to, 'other-1.0.0.zip'), '')
-
-    const { file } = releaseArchive({ packageDir: dir, to })
-
-    expect(path.relative(to, file)).toBe('acme-glyphs-2.4.0.zip')
-    // The older archive of the font is gone, and nothing else
-    expect(fs.readdirSync(to).sort()).toEqual(['acme-glyphs-2.4.0.zip', 'other-1.0.0.zip'])
-    // The two folders as the package has them, without the preview page
-    expect(entries(file)).toEqual(
-      [
-        ...listFiles(path.join(dir, 'icons')).map((name) => `icons/${name}`),
-        ...listFiles(path.join(dir, 'svgs')).map((name) => `svgs/${name}`)
-      ].sort()
-    )
-    expect(entries(file)).toHaveLength(15)
-  })
-
-  it('fails when the output is not built', () => {
-    expect(() => releaseArchive({ packageDir: copyFixture(), to: temporaryDir() })).toThrow(
-      'Run the build first'
-    )
-  })
-})
-
-describe('releaseNotes', () => {
-  const changelog = [
-    '# @acme/glyphs',
-    '',
-    '## 0.4.0',
-    '',
-    '### Minor Changes',
-    '',
-    '- A change, with a heading in its code:',
-    '',
-    '  ```md',
-    '  ## Not a version',
-    '  ```',
-    '',
-    '## [0.3.1] - 2026-07-04',
-    '',
-    '### Added',
-    '',
-    '- Two icons',
-    '',
-    '## 0.3.0',
-    ''
-  ].join('\n')
-
-  it('returns the entry of a version in the style of Changesets', () => {
-    const notes = releaseNotes(changelog, '0.4.0')
-
-    expect(notes.startsWith('### Minor Changes')).toBe(true)
-    expect(notes).toContain('## Not a version')
-    expect(notes).not.toContain('0.3.1')
-  })
-
-  it('returns the entry of a version in the older style', () => {
-    expect(releaseNotes(changelog, '0.3.1')).toBe('### Added\n\n- Two icons')
-  })
-
-  it('does not take a version for another that starts with it', () => {
-    expect(releaseNotes(changelog, '0.3')).toBeNull()
-  })
-
-  it('returns null without an entry, and nothing for an empty one', () => {
-    expect(releaseNotes(changelog, '9.9.9')).toBeNull()
-    expect(releaseNotes(changelog, '0.3.0')).toBe('')
   })
 })
 
@@ -241,13 +159,11 @@ describe('syncVersionRefs', () => {
   const read = (/** @type {string} */ root, /** @type {string} */ file) =>
     fs.readFileSync(path.join(root, file), 'utf8')
 
-  it('copies the version to the badge and to the site, then builds', () => {
+  it('copies the version to the badge and to the site', () => {
     const root = repository('0.4.0-next.0')
-    let builds = 0
-    const changed = syncVersionRefs({ root, build: () => builds++, log: () => {} })
+    const changed = syncVersionRefs({ root, log: () => {} })
 
     expect(changed).toEqual(['README.md', 'packages/site/config.yml'])
-    expect(builds).toBe(1)
     expect(read(root, 'packages/site/config.yml')).toContain(
       'currentVersion:         "0.4.0-next.0"'
     )
@@ -259,7 +175,7 @@ describe('syncVersionRefs', () => {
   it('changes no file when the references are in sync', () => {
     const root = repository('0.1.0')
 
-    expect(syncVersionRefs({ root, build: () => {}, log: () => {} })).toEqual([])
+    expect(syncVersionRefs({ root, log: () => {} })).toEqual([])
   })
 
   it('fails when a file does not show the version where it is expected', () => {
@@ -267,9 +183,7 @@ describe('syncVersionRefs', () => {
 
     fs.writeFileSync(path.join(root, 'packages/site/config.yml'), 'title: "Acme"\n')
 
-    expect(() => syncVersionRefs({ root, build: () => {}, log: () => {} })).toThrow(
-      'No version reference'
-    )
+    expect(() => syncVersionRefs({ root, log: () => {} })).toThrow('No version reference')
   })
 
   it('refuses a version that is not one', () => {

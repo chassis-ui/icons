@@ -5,14 +5,14 @@ body:
   - type: markdown
     attributes:
       value: |
-        This repository holds the icons of the Chassis Design System and the build that turns the SVG files of any set into optimized SVG files, an SVG sprite and an icon font. A problem with a token, a style or a component belongs in [that project's repository](https://github.com/chassis-ui).
+        This repository holds the builder that turns the SVG files of any set into optimized SVG files, an SVG sprite and an icon font. A problem with an icon of the Chassis set belongs in [chassis-ui/website-icons](https://github.com/chassis-ui/website-icons/issues). A problem with a token, a style or a component belongs in [that project's repository](https://github.com/chassis-ui).
   - type: dropdown
     id: area
     attributes:
       label: Where
       options:
-        - An icon, in source/ or packages/icons/svgs/
-        - The sprite, the icon font or its CSS and SCSS, in packages/icons/icons/
+        - The build: chassis-icons build, verify, lint-source, archive, release-notes or init
+        - The output of a set: an SVG file, the sprite, the icon font or its CSS and SCSS
         - The package, its manifest or an import that does not resolve
         - The build, pnpm icons
         - A check, such as pnpm icons:lint:source or pnpm icons:verify
@@ -38,7 +38,7 @@ body:
     id: reproduction
     attributes:
       label: How to reproduce it
-      description: The name of the icon and how you use it (SVG file, sprite, font or Sass), or the command you ran. For a set of your own, add the `chassis.build` block of `packages/icons/package.json`. `pnpm icons --verbose` says more.
+      description: The name of the icon and how you use it (SVG file, sprite, font or Sass), or the command you ran. For a set of your own, add the `chassis.build` block of its `package.json`. `chassis-icons build --verbose` says more. An icon of the Chassis set is reported at chassis-ui/website-icons.
       placeholder: <i class="cx-search-outline"></i>
     validations:
       required: true

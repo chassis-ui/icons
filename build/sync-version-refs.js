@@ -5,8 +5,7 @@
  *
  * Copies the version of the package into the places that show it and that `changeset version`
  * does not update: the badge of README.md and `currentVersion` of packages/site/config.yml.
- * Then it builds the output of the package again, so that the headers of its stylesheets name
- * the version. A version step that bumps nothing (only empty changesets) changes no file.
+ * A version step that bumps nothing (only empty changesets) changes no file.
  *
  * Runs as part of `pnpm changeset:version`, from the root of the repository, after
  * `changeset version` has bumped packages/icons/package.json, which is the source of the
@@ -16,7 +15,6 @@
  * Licensed under MIT
  */
 
-import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -90,18 +88,13 @@ export function syncReference({ file, pattern, format }, version, root) {
 }
 
 /**
- * Syncs every reference, then builds the output of the package
+ * Syncs every reference
  * @param {object} [options]
  * @param {string} [options.root] - The root of the repository
- * @param {() => void} [options.build] - Builds the output of the package
  * @param {(message: string) => void} [options.log]
  * @returns {string[]} The files that were changed
  */
-export function syncVersionRefs({
-  root = process.cwd(),
-  build = () => execFileSync('pnpm', ['icons'], { cwd: root, stdio: 'inherit' }),
-  log = console.log
-} = {}) {
+export function syncVersionRefs({ root = process.cwd(), log = console.log } = {}) {
   const version = readVersion(root)
   log(`🔄 Syncing version references to v${version}`)
 
@@ -113,9 +106,6 @@ export function syncVersionRefs({
       log(`📄 Updated ${reference.file} → ${version}`)
     }
   }
-
-  log('🔨 Building the output of the package, whose stylesheets name the version')
-  build()
 
   log(
     changed.size > 0

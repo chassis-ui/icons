@@ -15,7 +15,7 @@ The examples use the Chassis set. The files of a set of your own have the same s
 The files are in the `svgs/` folder of the output. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get the output: the package, the archive of a release, and the folders of a build.
 
 ```bash
-npm install @chassis-ui/icons
+npm install @chassis-ui/website-icons
 ```
 
 The page of each icon on the [home page](/icons/) has a download of its file.
@@ -25,7 +25,7 @@ The page of each icon on the [home page](/icons/) has a download of its file.
 Use the file of an icon as an image:
 
 ```html
-<img src="node_modules/@chassis-ui/icons/svgs/bell-outline.svg" alt="" width="24" height="24" />
+<img src="node_modules/@chassis-ui/website-icons/svgs/bell-outline.svg" alt="" width="24" height="24" />
 ```
 
 The build writes each file on the frame of the set, with `fill="currentcolor"` and the class of the icon on its root:
@@ -70,7 +70,7 @@ An image has its `alt` text, and an icon in the markup of a page is named as an 
 A decorative image has an empty `alt`, as in the example above. An image that carries meaning says it:
 
 ```html
-<img src="node_modules/@chassis-ui/icons/svgs/bell-outline.svg" alt="Notifications" width="24" height="24" />
+<img src="node_modules/@chassis-ui/website-icons/svgs/bell-outline.svg" alt="Notifications" width="24" height="24" />
 ```
 
 For an icon in the markup of the page, see [SVG sprite]([[docsref:/use-in-project/svg-sprite#accessibility]]). An icon that CSS draws as a mask or a background has no name: keep the text of its element.
@@ -81,7 +81,7 @@ A file has no settings of its own. What its root holds follows from the configur
 
 ### A set of your own
 
-The frame and the prefix are the settings `frame` and `prefix` of `chassis.build`. With `"frame": 16` and `"prefix": "yi"`, the root of `svgs/<name>.svg` has `width="16"`, `height="16"`, `viewBox="0 0 16 16"` and `class="yi-<name>"`.
+The frame and the prefix are the settings `frame` and `prefix` of `chassis.build`. With `"frame": 16` and `"prefix": "ai"`, the root of `svgs/<name>.svg` has `width="16"`, `height="16"`, `viewBox="0 0 16 16"` and `class="ai-<name>"`.
 
 ## Best practices
 

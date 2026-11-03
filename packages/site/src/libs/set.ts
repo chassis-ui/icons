@@ -1,5 +1,6 @@
-// The icon set of the repository, read from the configuration and the output of the build in
-// `packages/icons`. The site shows this set, whatever its font, its prefix and its icons are.
+// The icon set that the site shows, read from the configuration and the output of the
+// repository of icons in `vendor/icons`: the Chassis set, as a submodule. The site shows that
+// set, whatever its font, its prefix and its icons are.
 //
 // Only code that runs while Astro loads its configuration and its content imports this file:
 // `astro.config.ts`, the integration and the content loader. Pages and components are
@@ -7,8 +8,8 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
-import { loadConfig } from '../../../icons/build/config.js'
-import { listIcons, parseName } from '../../../icons/build/names.js'
+import { loadConfig } from '../../../icons/lib/config.js'
+import { listIcons, parseName } from '../../../icons/lib/names.js'
 
 /**
  * URL path that the set of the repository is served from, in the folders of the package:
@@ -50,9 +51,9 @@ export interface SetIcon {
   svg: string
 }
 
-/** Folder of the package of the set, from the root of the site. */
+/** Folder of the repository of the set, from the root of the site: `vendor/icons`. */
 export function getSetDir(siteRoot: string): string {
-  return path.resolve(siteRoot, '../icons')
+  return path.resolve(siteRoot, '../../vendor/icons')
 }
 
 /** The files of the set that the site reads. A change to one of them reloads the site. */
@@ -74,7 +75,7 @@ export function toTitle(name: string): string {
 function readCodepoints(file: string): Record<string, number> {
   if (!fs.existsSync(file)) {
     throw new Error(
-      `The output of the icon set is missing: ${file} does not exist. Run \`pnpm icons\` first.`
+      `The output of the icon set is missing: ${file} does not exist. Run \`pnpm vendor\` first, and \`pnpm icons\` after a change to the set.`
     )
   }
 
@@ -96,7 +97,7 @@ export function loadIconSet(siteRoot: string, exampleIcon?: string): IconSet {
 
   if (names.length === 0) {
     throw new Error(
-      `The icon set has no icons: ${config.svgsDir} holds no SVG file. Run \`pnpm icons\` first.`
+      `The icon set has no icons: ${config.svgsDir} holds no SVG file. Run \`pnpm vendor\` first.`
     )
   }
 
@@ -137,7 +138,7 @@ export function loadIcons(siteRoot: string): SetIcon[] {
 
     if (codepoint === undefined) {
       throw new Error(
-        `The icon "${name}" has no code point in ${config.name}.json. Run \`pnpm icons\` to build the font again.`
+        `The icon "${name}" has no code point in ${config.name}.json. Run \`pnpm icons\` to build the set again.`
       )
     }
 

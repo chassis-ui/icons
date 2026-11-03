@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { compareNames, listIcons, parseName } from '../build/names.js'
+import { compareNames, listIcons, parseName } from '../lib/names.js'
 import { temporaryDir } from './helpers.js'
 
 describe('parseName', () => {

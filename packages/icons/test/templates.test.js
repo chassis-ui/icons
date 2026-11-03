@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { resolveConfig } from '../build/config.js'
-import { minifyCss, renderStylesheets } from '../build/font.js'
+import { resolveConfig } from '../lib/config.js'
+import { minifyCss, renderStylesheets } from '../lib/font.js'
 
 const config = resolveConfig(
   {

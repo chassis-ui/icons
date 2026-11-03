@@ -48,7 +48,7 @@ The right prose voice depends on the doc category. There are two conventions, an
 
 ---
 
-**Tutorial voice** allows second-person "you"/"your". They read naturally in a step-by-step guide where the reader clones the repository, replaces the source, or adds a stylesheet to a page. Reference sections inside a guide (a table of settings, a list of checks) still read better without a pronoun.
+**Tutorial voice** allows second-person "you"/"your". They read naturally in a step-by-step guide where the reader writes a repository with `init`, saves the source, or adds a stylesheet to a page. Reference sections inside a guide (a table of settings, a list of checks) still read better without a pronoun.
 
 **Good:** "If you build your own set, use the name of your font in place of this one."
 
@@ -118,29 +118,29 @@ Prefer active voice, with the actor named: the build, the step, the source lint,
 
 The project has one word for each concept. Using a synonym makes the reader wonder whether it's a second concept.
 
-| Use             | For                                                                                        | Not                                           |
-| --------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------- |
-| set             | The icons of one repository: the files of `source/` and what the build writes from them    | library (for the files), collection, pack     |
-| default set     | The set this repository ships with, published as `@chassis-ui/icons`                       | the icons (as if there were no other set)     |
-| icon            | One file of `source/`, and everything the build writes for it                              | glyph (except inside the font), asset, image  |
-| name            | The name of an icon: its file name without `.svg`                                          | id, key, slug                                 |
-| style           | The last part of a name, one of `chassis.build.styles`: `outline`, `solid`, `brand`        | variant, type, weight                         |
-| pair            | The styles an icon comes in together, an entry of `chassis.build.pairs`                    | group, family                                 |
-| frame           | The square an icon is drawn on, `chassis.build.frame`                                      | canvas, artboard, grid, size                  |
-| source          | The files under `source/`                                                                  | input, originals, raw icons                   |
-| output          | What the build writes: `svgs/`, `icons/`, the registry, the README and the manifest fields | dist, distribution, generated assets          |
-| sprite          | `icons/<font>.svg`, one `<symbol>` per icon                                                | spritesheet, symbol file                      |
-| font, icon font | `icons/<font>.woff2` and the other formats                                                 | webfont, typeface                             |
-| prefix          | What a class of the font starts with, `chassis.build.prefix`                               | namespace, class name                         |
-| code point      | The character of an icon in the font, in the Private Use Area                              | unicode, codepoint (in prose), character code |
-| registry        | `packages/icons/codepoints.json`                                                           | map, manifest, lock file                      |
-| retired         | A code point of a removed icon, which no later icon gets                                   | deleted, freed, reserved                      |
-| step            | One part of the build: `svgs`, `sprite`, `font`, `package`                                 | stage, phase, task                            |
-| the build       | The build in `packages/icons/build/`, `pnpm icons`                                         | the pipeline, the generator, the script       |
-| source lint     | `pnpm icons:lint:source`                                                                   | validation, the linter                        |
-| consumer        | A site, a package or an app that reads the output                                          | client, user                                  |
-| contract        | The icons a consumer reads by name, in `chassis.checks.json`; also the shape of the output | requirements, dependencies                    |
-| adopt, adopter  | A team that builds its own set from a clone, and that team                                 | fork (as a verb for this), customer           |
+| Use             | For                                                                                         | Not                                           |
+| --------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| set             | The icons of one repository: the files of `source/` and what the build writes from them     | library (for the files), collection, pack     |
+| default set     | The Chassis set, in `chassis-ui/website-icons` and published as `@chassis-ui/website-icons` | the icons (as if there were no other set)     |
+| icon            | One file of `source/`, and everything the build writes for it                               | glyph (except inside the font), asset, image  |
+| name            | The name of an icon: its file name without `.svg`                                           | id, key, slug                                 |
+| style           | The last part of a name, one of `chassis.build.styles`: `outline`, `solid`, `brand`         | variant, type, weight                         |
+| pair            | The styles an icon comes in together, an entry of `chassis.build.pairs`                     | group, family                                 |
+| frame           | The square an icon is drawn on, `chassis.build.frame`                                       | canvas, artboard, grid, size                  |
+| source          | The files under `source/`                                                                   | input, originals, raw icons                   |
+| output          | What the build writes: `svgs/`, `icons/`, the registry, the README and the manifest fields  | dist, distribution, generated assets          |
+| sprite          | `icons/<font>.svg`, one `<symbol>` per icon                                                 | spritesheet, symbol file                      |
+| font, icon font | `icons/<font>.woff2` and the other formats                                                  | webfont, typeface                             |
+| prefix          | What a class of the font starts with, `chassis.build.prefix`                                | namespace, class name                         |
+| code point      | The character of an icon in the font, in the Private Use Area                               | unicode, codepoint (in prose), character code |
+| registry        | `packages/icons/codepoints.json`                                                            | map, manifest, lock file                      |
+| retired         | A code point of a removed icon, which no later icon gets                                    | deleted, freed, reserved                      |
+| step            | One part of the build: `svgs`, `sprite`, `font`, `package`                                  | stage, phase, task                            |
+| the build       | The build in `packages/icons/lib/`, `pnpm icons`                                            | the pipeline, the generator, the script       |
+| source lint     | `pnpm icons:lint:source`                                                                    | validation, the linter                        |
+| consumer        | A site, a package or an app that reads the output                                           | client, user                                  |
+| contract        | The icons a consumer reads by name, in `chassis.checks.json`; also the shape of the output  | requirements, dependencies                    |
+| adopt, adopter  | A team that builds its own set with the builder, in a repository of icons, and that team    | fork (as a verb for this), customer           |
 
 **The build optimizes, and draws nothing.** It optimizes the SVG files, builds the sprite and the font, and writes stylesheets. It does not draw, resize or recolor an icon, and it does not outline a stroke: the source lint refuses a file it cannot use.
 
@@ -166,12 +166,12 @@ Backtick every code reference. An icon has one name and several forms in the out
 | A group of icons         | A pattern with `*`                     | `` `bell-*` ``, `` `*-brand` ``                               |
 | A code point             | Four hexadecimal digits, as in the CSS | `` `f101` ``, `` `"\f101"` ``                                 |
 | A file of the font name  | With `<font>` for any set              | `` `icons/<font>.css` ``, `` `icons/chassis-icons.css` ``     |
-| A folder                 | With a trailing slash                  | `` `source/` ``, `` `packages/icons/icons/` ``                |
+| A folder                 | With a trailing slash                  | `` `source/` ``, `` `packages/icons/lib/` ``                  |
 | A setting                | As a path from `chassis`               | `` `chassis.build.prefix` ``                                  |
 
 **Placeholders** go in angle brackets, lowercase: `` `svgs/<name>.svg` ``, `` `<prefix>-<name>` ``, `` `icons/<font>.woff2` ``. Don't use square brackets or braces for placeholders. A document about any set uses the placeholders; an example may use the names of the default set and say so.
 
-**Other references:** file paths relative to the repository root (`` `packages/icons/build/cli.js` ``), or to the installed package when the reader has only that (`` `node_modules/@chassis-ui/icons/icons/` ``); commands in full (`` `pnpm icons --only font` ``); units and values in code (`` `24` ``, `` `currentcolor` ``). Interface labels of Figma are bold, not code: **Export → SVG**.
+**Other references:** file paths relative to the repository root (`` `packages/icons/lib/cli.js` ``), or to the installed package when the reader has only that (`` `node_modules/@chassis-ui/website-icons/icons/` ``); commands in full (`` `pnpm icons --only font` ``); units and values in code (`` `24` ``, `` `currentcolor` ``). Interface labels of Figma are bold, not code: **Export → SVG**.
 
 ---
 
@@ -184,7 +184,7 @@ Chassis Icons is a toolkit that its adopters own and customize. The layout of th
 **Names must exist.** Every path, file name, command, option, setting and icon name in a doc must exist in the repository, in the output of a build, or in the build as written. Don't write a name from memory, and don't invent a flag: a reader will run it. Before adding a name, find it:
 
 ```bash
-node packages/icons/build/cli.js --help
+node packages/icons/lib/cli.js --help
 pnpm icons --dry-run
 ls source | grep bell
 ```
@@ -209,7 +209,7 @@ A doc that states a number makes a promise the next commit can break. Don't coun
 
 **Versions.** Write "Node.js 22.12 or later", not "the latest Node.js", and "the version named by `packageManager`" for pnpm. For the version of the set, use the `[[config:currentVersion]]` token ([§16](#16-cross-references)) on a site page instead of a number typed by hand. The badge of `README.md` is written by `pnpm changeset:version`.
 
-**Configuration.** The font name, the prefix, the frame, the styles and the pairs in `chassis.build` of `packages/icons/package.json` are the committed configuration, not the system. Name them as such ("the default set has the styles `outline`, `solid` and `brand`"), and use them in examples, not in definitions, so an adopter with another configuration can follow. The same goes for `chassis.checks.json`: its contracts are those of the Chassis sites and Chassis React.
+**Configuration.** The font name, the prefix, the frame, the styles and the pairs in `chassis.build` of the `package.json` of a repository of icons are the committed configuration, not the system. Name them as such ("the default set has the styles `outline`, `solid` and `brand`"), and use them in examples, not in definitions, so an adopter with another configuration can follow. The same goes for `chassis.checks.json`: its contracts are those of the Chassis sites and Chassis React.
 
 **Planned features.** A feature the build does not have is named as planned, in one place, and nowhere described as if the build had it. The optional features are Phase 6 of [ref/ROADMAP.md](ref/ROADMAP.md).
 
@@ -298,7 +298,7 @@ Don't skip levels. `##` → `###` → `####`, never `##` → `####`. Use `####` 
 
 Tables on a site page are Markdown tables wrapped in `<CxTable>`, which makes them scroll on narrow viewports. A repository doc uses a plain Markdown table. A table that maps one thing to another, such as settings to what they set or consumers to what they read, names its columns after what it maps.
 
-**Setting and option tables** have the setting or the option in the first column, in backticks, its default in the second, and what it does in the last, as a phrase without a trailing period. Copy the options from `node packages/icons/build/cli.js --help` and the defaults from `packages/icons/build/config.js`.
+**Setting and option tables** have the setting or the option in the first column, in backticks, its default in the second, and what it does in the last, as a phrase without a trailing period. Copy the options from `node packages/icons/lib/cli.js --help` and the defaults from `packages/icons/lib/config.js`.
 
 **Columns that say the same in every row** move into the intro sentence of the table.
 
@@ -404,7 +404,7 @@ A doc shows two kinds of blocks, and the reader must be able to tell them apart.
 
 - **Output** is a file or a part of a file that the build wrote, copied as it is ([§7](#7-names-are-facts-icons-are-examples)). It can be partial: show the lines under discussion.
 - **Usage code** is standalone: a reader copying it into a page with the files in place should see the icon. Use the paths of the package, or say where the files were copied to.
-- **Configuration** shows the key inside its parent, and the intro sentence names the file: "In `chassis.build` of `packages/icons/package.json`:".
+- **Configuration** shows the key inside its parent, and the intro sentence names the file: "In `chassis.build` of `package.json`:".
 - **Commands** are run before they are written. A comment after a command says what it does, not what it should do.
 
 When a setting changes the output, show the setting, then the output, in that order. Commands run from the repository root unless the sentence before them says otherwise. Prefer working code over comment-only placeholders.
