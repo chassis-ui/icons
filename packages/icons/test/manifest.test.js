@@ -43,7 +43,7 @@ function expectedOutput(dir) {
   const config = loadConfig(dir)
 
   return [
-    ...['css', 'json', 'min.css', 'scss', 'svg', ...config.formats].map(
+    ...['css', 'html', 'json', 'min.css', 'scss', 'svg', ...config.formats].map(
       (extension) => `icons/${config.name}.${extension}`
     ),
     ...listIcons(config.sourceDir).map((name) => `svgs/${name}.svg`)
@@ -215,7 +215,7 @@ describe('the package', () => {
 
     await build(loadConfig(dir), { logger })
 
-    // Not the source, the registry, the checks file or the preview page
+    // Not the source, the registry or the checks file
     expect(packedFiles(dir)).toEqual([...expectedOutput(dir), 'README.md', 'package.json'].sort())
     expect(expectedOutput(dir)).toContain('icons/acme-glyphs.ttf')
   }, 30_000)

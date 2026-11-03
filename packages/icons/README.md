@@ -31,9 +31,11 @@ pnpm verify    # chassis-icons verify: the output is what the source builds
 ```
 
 Commit `source/` and the output together. `pnpm build` writes `svgs/<name>.svg`,
-`icons/<font>.{css,min.css,scss,json,svg,woff,woff2}`, `codepoints.json`, the registry of
-the code points, and `README.md`, which shows the four ways to use an icon of your set: the
-font class, the sprite, the SVG file and Sass.
+`icons/<font>.{css,min.css,scss,json,svg,html,woff,woff2}`, `codepoints.json`, the registry
+of the code points, and `README.md`, which shows the four ways to use an icon of your set: the
+font class, the sprite, the SVG file and Sass. `icons/<font>.html` is the page of the set: open
+it in a browser to see every icon with its name, and click one for its class, its code point
+and the code that draws it.
 
 ## Commands
 

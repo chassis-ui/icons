@@ -73,7 +73,7 @@ describe('the command line', () => {
     expect(log).toContain('svgs/bar-fill.svg: missing')
     expect(log).toContain('README.md: missing')
     expect(log).toContain('package.json: changed')
-    expect(log).toContain('A build would change 18 files')
+    expect(log).toContain('A build would change 19 files')
     expect(fs.readdirSync(dir).sort()).toEqual(['checks.json', 'package.json', 'source'])
   })
 
@@ -124,7 +124,7 @@ describe('the command line', () => {
     const { code, log } = await run(['build', '--dry-run'], inside)
 
     expect(code).toBe(0)
-    expect(log).toContain('A build would change 18 files')
+    expect(log).toContain('A build would change 19 files')
 
     const elsewhere = temporaryDir()
     const withCwd = await main(['build', '--dry-run', '--cwd', dir], {
@@ -150,7 +150,7 @@ describe('the command line', () => {
     const { code, log } = await run(['archive', '--to', 'out'], dir)
 
     expect(code).toBe(0)
-    expect(log).toContain('acme-glyphs-2.4.0.zip: 15 files')
+    expect(log).toContain('acme-glyphs-2.4.0.zip: 16 files')
     expect(fs.readdirSync(to)).toEqual(['acme-glyphs-2.4.0.zip'])
   })
 

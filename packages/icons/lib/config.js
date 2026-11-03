@@ -13,9 +13,6 @@ export const PRIVATE_USE_AREA = { first: 0xe000, last: 0xf8ff }
 /** The font formats the build writes, with the name of each in a `src` descriptor. */
 export const FONT_FORMATS = { woff2: 'woff2', woff: 'woff', ttf: 'truetype' }
 
-/** The page of the sprite, for a look at the set. It is not a part of the published output. */
-export const PREVIEW_FILE = 'preview.html'
-
 const NAME = /^[a-z][\da-z]*(?:-[\da-z]+)*$/
 
 const DEFAULTS = {
@@ -52,7 +49,8 @@ export class ConfigError extends Error {
  * @property {string} svgsDir - Output: the optimized SVG files
  * @property {string} iconsDir - Output: the font, its stylesheets and the sprite
  * @property {string} registryFile - The code points the set has given out
- * @property {string} templatesDir - The templates of the stylesheets, beside this file
+ * @property {string} templatesDir - The templates of the stylesheets, the page and the README,
+ *   beside this file
  */
 
 /**

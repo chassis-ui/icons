@@ -1,19 +1,20 @@
 /**
  * @file The build of a set: the optimized SVG files, the sprite, the font with its
- * stylesheets, and the manifest and the README of the package, written from the source folder
- * and the configuration. It can write to the folders of the package or to any others, which
- * is how `--dry-run` and `verify` build without changing a file of the package.
+ * stylesheets and the page of the set, and the manifest and the README of the package, written
+ * from the source folder and the configuration. It can write to the folders of the package or
+ * to any others, which is how `--dry-run` and `verify` build without changing a file of the
+ * package.
  */
 
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
-import { PREVIEW_FILE } from './config.js'
 import { allocate, formatRegistry, readRegistry, toHex } from './codepoints.js'
 import { renderFontFiles } from './font.js'
 import { renderPackageFiles } from './manifest.js'
 import { listIcons } from './names.js'
 import { buildSvgs } from './optimize.js'
+import { renderPreview } from './preview.js'
 import { renderSprite } from './sprite.js'
 
 /** The steps of the build, in their order. `--only` runs one of them. */
@@ -111,6 +112,13 @@ export async function build(
     logger.success(
       `The font of ${count(names.length, 'glyph')} as ${config.formats.join(', ')}: ${added.length} new, ${removed.length} retired`
     )
+
+    // The page shows the code points, so it is written with them
+    files[`${config.name}.html`] = await renderPreview(config, {
+      names,
+      codepoints: registry.icons
+    })
+    logger.success(`The page of ${count(names.length, 'icon')}`)
   }
 
   await fs.mkdir(iconsDir, { recursive: true })
@@ -207,9 +215,7 @@ export async function compareWithBuild(config, { logger }) {
  */
 async function compareFolders(committedDir, builtDir, packageDir) {
   const list = async (/** @type {string} */ dir) =>
-    (await fs.readdir(dir).catch(() => [])).filter(
-      (name) => name !== PREVIEW_FILE && !name.startsWith('.')
-    )
+    (await fs.readdir(dir).catch(() => [])).filter((name) => !name.startsWith('.'))
   const committed = await list(committedDir)
   const built = await list(builtDir)
   const differences = []

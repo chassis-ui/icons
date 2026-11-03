@@ -74,7 +74,7 @@ The first nine are the principles of [ref/ROADMAP.md](ref/ROADMAP.md#principles)
 - **The build stays file-driven.** A designer saves `<name>.svg` into `source/` of a
   repository of icons and the build does the rest. Do not add a manifest or a list that has
   to be maintained beside the files.
-- **The shape of the output is the contract, for any set.** `icons/<font>.{css,min.css,scss,json,svg,woff,woff2}`
+- **The shape of the output is the contract, for any set.** `icons/<font>.{css,min.css,scss,json,svg,html,woff,woff2}`
   and `svgs/<name>.svg`, the sprite symbol `<name>`, the class `<prefix>-<name>`, an SVG root
   with the frame and `fill="currentcolor"`. [docs/architecture.md](docs/architecture.md#output-contract)
   has the contract of each file. A change to it is a minor bump whose changeset starts with

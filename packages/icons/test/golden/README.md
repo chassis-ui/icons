@@ -15,6 +15,7 @@ npm install @acme/glyphs
 - `icons/acme-glyphs.woff2`, `icons/acme-glyphs.ttf`: the icon font, which the stylesheets load from their own folder
 - `icons/acme-glyphs.svg`: the SVG sprite, one `<symbol>` per icon with the name of the icon as its `id`
 - `icons/acme-glyphs.json`: the code point of each icon in the font, by name
+- `icons/acme-glyphs.html`: the page of the set, to open in a browser: every icon with its name, and on a click its class, its code point and the code that draws it
 - `svgs/<name>.svg`: one optimized file per icon
 
 The last part of a name is the style of the icon: `<name>-line` or `<name>-fill`. The examples below show `bar-fill`.

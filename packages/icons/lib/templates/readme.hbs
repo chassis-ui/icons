@@ -17,6 +17,7 @@ npm install {{ packageName }}
 - {{# each formats }}`icons/{{ ../name }}.{{ this }}`{{# unless @last }}, {{/ unless }}{{/ each }}: the icon font, which the stylesheets load from their own folder
 - `icons/{{ name }}.svg`: the SVG sprite, one `<symbol>` per icon with the name of the icon as its `id`
 - `icons/{{ name }}.json`: the code point of each icon in the font, by name
+- `icons/{{ name }}.html`: the page of the set, to open in a browser: every icon with its name, and on a click its class, its code point and the code that draws it
 - `svgs/<name>.svg`: one optimized file per icon
 
 {{# if styles }}

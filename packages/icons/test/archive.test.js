@@ -27,14 +27,14 @@ describe('writeArchive', () => {
     expect(path.relative(to, file)).toBe('acme-glyphs-2.4.0.zip')
     // The older archive of the font is gone, and nothing else
     expect(fs.readdirSync(to).sort()).toEqual(['acme-glyphs-2.4.0.zip', 'other-1.0.0.zip'])
-    // The two folders as the package has them, without the preview page
+    // The two folders as the package has them
     expect(entries(file)).toEqual(
       [
         ...listFiles(path.join(dir, 'icons')).map((name) => `icons/${name}`),
         ...listFiles(path.join(dir, 'svgs')).map((name) => `svgs/${name}`)
       ].sort()
     )
-    expect(entries(file)).toHaveLength(15)
+    expect(entries(file)).toHaveLength(16)
   })
 
   it('writes to archives/ of the repository by default', async () => {

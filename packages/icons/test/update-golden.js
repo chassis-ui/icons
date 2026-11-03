@@ -10,7 +10,7 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { build } from '../lib/build.js'
-import { PREVIEW_FILE, loadConfig } from '../lib/config.js'
+import { loadConfig } from '../lib/config.js'
 import { silentLogger } from '../lib/logger.js'
 
 const fixtureDir = path.join(import.meta.dirname, 'fixture')
@@ -20,7 +20,6 @@ const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'icons-golden-'))
 try {
   fs.cpSync(fixtureDir, dir, { recursive: true })
   await build(loadConfig(dir), { logger: silentLogger })
-  fs.rmSync(path.join(dir, 'icons', PREVIEW_FILE))
 
   fs.rmSync(goldenDir, { recursive: true, force: true })
   fs.mkdirSync(goldenDir, { recursive: true })

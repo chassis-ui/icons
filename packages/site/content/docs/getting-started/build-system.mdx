@@ -69,12 +69,12 @@ The build has these steps, and each reads what the step before it wrote.
 | Step | Reads | Writes |
 | --- | --- | --- |
 | `svgs` | `source/` | `svgs/<name>.svg`, optimized with SVGO, and removes a file whose source is gone |
-| `sprite` | `svgs/` | `icons/<font>.svg`, built with svg-sprite, and `icons/preview.html` |
-| `font` | `svgs/` and `codepoints.json` | The font in each format, built with Fantasticon, `icons/<font>.css`, `.min.css`, `.scss` and `.json`, and `codepoints.json` |
+| `sprite` | `svgs/` | `icons/<font>.svg`, built with svg-sprite |
+| `font` | `svgs/` and `codepoints.json` | The font in each format, built with Fantasticon, `icons/<font>.css`, `.min.css`, `.scss` and `.json`, `icons/<font>.html`, the page of the set, and `codepoints.json` |
 | `package` | The configuration | The fields of `package.json` that name the files, and `README.md` |
 </CxTable>
 
-A whole build removes from `svgs/` each file whose source is gone, and from `icons/` each file that it did not write, such as the files of another font name. The steps after `svgs` read `svgs/`, so `build --only sprite` and `build --only font` build from the files that are there. `icons/preview.html` shows every icon of the sprite. The `.gitignore` that `init` wrote ignores it, and it is not published.
+A whole build removes from `svgs/` each file whose source is gone, and from `icons/` each file that it did not write, such as the files of another font name. The steps after `svgs` read `svgs/`, so `build --only sprite` and `build --only font` build from the files that are there. `icons/<font>.html` is the page of the set: every icon drawn from the sprite with its name, a search box that filters them by name, and on a click the class, the code point, the `<use>` of the sprite symbol and the path of the SVG file. It links the stylesheet and the sprite beside it with relative paths and loads nothing else, so it opens from the file system, from a static host, and from `node_modules` of a project that installed the package.
 
 The build optimizes, and draws nothing. It does not resize or recolor an icon, and it does not outline a stroke: the [source lint]([[docsref:/icon-design/source-lint]]) refuses a file that the build cannot use.
 

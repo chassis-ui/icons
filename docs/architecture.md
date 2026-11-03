@@ -24,13 +24,15 @@ optimize.js          SVGO: one file per icon, with the root attributes of the se
         │
         ▼ step sprite                          (reads svgs/)
 sprite.js            svg-sprite: one <symbol> per file
-                     → icons/<font>.svg, icons/preview.html
+                     → icons/<font>.svg
         │
         ▼ step font                            (reads svgs/ and codepoints.json)
 codepoints.js        keeps, gives and retires code points → codepoints.json
 font.js              Fantasticon: the font in each format; Handlebars: the stylesheets;
                      clean-css: the minified CSS
                      → icons/<font>.{woff2,woff,ttf}, .css, .min.css, .scss, .json
+preview.js           Handlebars: the page of the set, every icon with its name and its code point
+                     → icons/<font>.html
         │
         ▼ step package
 manifest.js          the fields of package.json that name the files, and the README
@@ -50,9 +52,10 @@ Each module of `lib/` does one thing, and takes what it needs as arguments.
 | `config.js`        | Reads `chassis.build`, fills in the defaults, refuses a setting it does not know, and resolves the folders     |
 | `names.js`         | Lists the icons of a folder in a fixed order, and splits a name into what it shows and its style               |
 | `optimize.js`      | The one SVGO configuration, in two forms: a file of `svgs/`, and a symbol of the sprite. Writes `svgs/`        |
-| `sprite.js`        | Builds the sprite and the preview page with svg-sprite                                                         |
+| `sprite.js`        | Builds the sprite with svg-sprite                                                                              |
 | `codepoints.js`    | The registry: reads it, brings it up to date with the icons of the set, and checks it                          |
 | `font.js`          | Draws the font with Fantasticon, renders the stylesheets from the templates, minifies the CSS                  |
+| `preview.js`       | Renders the page of the set from its template: every icon drawn from the sprite, a search box and a panel      |
 | `manifest.js`      | The fields of `package.json` that follow from the configuration, and the README of the package                 |
 | `build.js`         | Runs the steps, in the folders of the repository or in any others; `compareWithBuild`                          |
 | `lint-source.js`   | Checks whether each file of the source folder can be an icon of the set                                        |
@@ -61,7 +64,7 @@ Each module of `lib/` does one thing, and takes what it needs as arguments.
 | `release-notes.js` | The entry of a version in `CHANGELOG.md`, without its heading, for the body of a release                       |
 | `init.js`          | Writes the files of a new repository of icons from `templates/`, and checks a repository against them          |
 | `logger.js`        | The one logger. A module never writes to the console itself                                                    |
-| `lib/templates/`   | `css.hbs` and `scss.hbs`, the stylesheets of the font, and `readme.hbs`, the README of the package of a set    |
+| `lib/templates/`   | `css.hbs` and `scss.hbs`, the stylesheets, `preview.hbs`, the page of the set, and `readme.hbs`, the README    |
 
 `templates/` of the package holds what `init` writes into a repository: `AGENTS.md`, `CHANGELOG.md`, `CLAUDE.md`, `gitignore` and the workflows `workflows/ci.yml` and `workflows/release.yml`. `init` fills in the name of the package, the font, the prefix and the package manager, and writes `package.json`, `.gitignore` and `.nvmrc` from values of its own.
 
@@ -120,7 +123,7 @@ A page that shows an icon by its code point, and a stylesheet that a browser has
 
 The files of `icons/` are named after the font, so the fields of `package.json` that point at them depend on the configuration. The `package` step writes `main`, `style`, `sass`, `files`, `exports` and `sideEffects`, and keeps an entry of `files` or `exports` that is not about `icons/` or `svgs/`, such as the `CHANGELOG.md` that `init` lists. It writes `package.json` only when one of these fields changes, and then with an indentation of two spaces.
 
-The README of the package is written from `lib/templates/readme.hbs` for the same reason: its examples name the package, the font, the prefix and an icon of the set. Its last section says that the package is built with `@chassis-ui/icons`, and names the commands of the repository when `package.json` has the scripts `build`, `lint` and `verify` that `init` writes. The template names nothing else.
+The README of the package is written from `lib/templates/readme.hbs` for the same reason: its examples name the package, the font, the prefix and an icon of the set. Its last section says that the package is built with `@chassis-ui/icons`, and names the commands of the repository when `package.json` has the scripts `build`, `lint` and `verify` that `init` writes. The template names nothing else, and neither does `preview.hbs`, the page of the set: it takes the font name, the prefix, the frame and the styles from the configuration, and the icons with their code points from the build.
 
 ### Tools are called through their APIs
 
@@ -165,6 +168,12 @@ The same stylesheet for Sass. `$<font>-font`, `$<font>-font-dir`, `$<font>-font-
 
 One entry per icon, the name and its code point as a number, in the order of the registry.
 
+### `icons/<font>.html`
+
+The page of the set, for a browser. It links `<font>.css` and `<font>.svg` beside it with relative paths, carries its own styles and script, and loads nothing else, so it opens from the file system, from any static host, and from `node_modules/<package>/icons/` of a project that installed the package. It shows every icon drawn from the sprite with its name, in the order of the names, with a search box that keeps the icons whose name holds every word typed. A click on an icon opens a panel with the class `<prefix>-<name>`, drawn with the font beside it, the code point, the style when the set has styles, the `<use>` of the sprite symbol and the path of the SVG file, and puts the name in the address as `#<name>`, which opens the panel again when the page is loaded with it.
+
+The page carries the icons as JSON, in `<script id="set" type="application/json">`: `name`, `prefix`, `frame` and `styles` of the configuration, and `icons`, one entry per icon with `name`, `codepoint` as four hexadecimal digits, and `style` when the set has styles. The page is written by the `font` step, with the code points of the registry, and is a file of the font name like the others: committed, compared by `verify`, published by `files` and held by the archive.
+
 ### `codepoints.json`
 
 The registry, at the root of the repository: `icons`, the code point of each icon as four hexadecimal digits, in the order the icons were added, and `retired`, ascending. It is committed and not published.
@@ -174,10 +183,6 @@ The registry, at the root of the repository: `icons`, the code point of each ico
 `main` and `style` are `icons/<font>.css`, `sass` is `icons/<font>.scss`, and `files` is `icons/<font>.*` and `svgs/*.svg`, followed by the entries of the team. `exports` has `"."`, which is the SCSS under the condition `sass` and the CSS under `style` and `default`, then `"./icons/*"`, `"./svgs/*"` and `"./package.json"`, followed by the keys of the team. `sideEffects` is `*.css` and `*.scss`.
 
 The README, at the root of the repository, is `lib/templates/readme.hbs` with the values of the manifest and the configuration: what the package holds, the four ways to use an icon, and the source. The section of the source says that the package is built from the files of the repository with `@chassis-ui/icons`, and, when `package.json` has the scripts `build`, `lint` and `verify` that `init` writes, names them as the commands of the repository: with `pnpm` when a `pnpm-lock.yaml` is beside `package.json`, and with `npm run` otherwise.
-
-### `icons/preview.html`
-
-The page that svg-sprite writes for the sprite. It is not a part of the contract: Git ignores it, `verify`, `archive` and the tests skip it, and `files` leaves it out of the package.
 
 ## Contracts with the siblings
 
@@ -192,7 +197,7 @@ How the siblings take a set, found in their sources. A set that keeps the output
 
 The Chassis set, `@chassis-ui/website-icons`, promises more than its shape, because its consumers name it. They move to it from `@chassis-ui/icons`, which held the set before it became the builder, and find the files at the same paths:
 
-- The package root holds `icons/` and `svgs/`, and `icons/` holds `chassis-icons.{css,min.css,scss,json,svg,woff,woff2}`.
+- The package root holds `icons/` and `svgs/`, and `icons/` holds `chassis-icons.{css,min.css,scss,json,svg,html,woff,woff2}`.
 - The class prefix is `cx-`, and the font family `chassis-icons`.
 - The names of its icons. `@chassis-ui/docs` draws its own interface with some of them, Chassis React has others as its defaults, and the Figma libraries use the set by name. The `chassis.checks.json` of its repository lists the names that the two packages read, and `verify` fails when one is missing.
 
@@ -227,18 +232,18 @@ The documentation pages are the MDX files of `content/docs/`, in the `docs` coll
 
 Each check has a command, and CI runs all of them. The `icons:*` scripts that run the command do so with the build of this checkout, on `vendor/icons`.
 
-| Command                       | Checks                                                                                                                                                                                                                                                           |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm icons:lint:source`      | `vendor/icons/source/`: only SVG files, kebab-case names that end in a style, the frame, one color, no stroke, no raster, gradient, pattern or script, the pairs                                                                                                 |
-| `pnpm icons:verify`           | A fresh build of `vendor/icons` equals its committed output; no icon moved from the code point it had at the last tag of that repository; no two icons share one; the contract icons                                                                             |
-| `pnpm icons:test`             | Vitest, on the fixture: the golden output, the steps, the code points, the configuration, the manifest, what npm packs of a set and of the builder, the archive, the release notes, `init`, the journey of a team, the command line, and the scripts of the root |
-| `pnpm icons:lint:package`     | publint on what npm would publish of the builder                                                                                                                                                                                                                 |
-| `pnpm icons:lint`             | ESLint on `lib/`, `test/` and the root `build/`, with no warning allowed                                                                                                                                                                                         |
-| `pnpm icons:typecheck`        | TypeScript `checkJs` on `lib/`                                                                                                                                                                                                                                   |
-| `pnpm changeset:check <base>` | The commits since a base come with a changeset when they change `lib/` or `templates/`; the commit of a version passes                                                                                                                                           |
-| `pnpm site:test`              | Vitest, on a copy of the build, the site and `vendor/icons`: the site of the Chassis set and of the fixture, the icons that each page draws, and the links between the pages                                                                                     |
-| `pnpm icons:test:golden`      | Not a check: writes `test/golden/` again from a build of the fixture                                                                                                                                                                                             |
-| `pnpm icons:archive`          | Not a check: writes the archive of `vendor/icons` into `.cache/archives/`, which Git ignores                                                                                                                                                                     |
+| Command                       | Checks                                                                                                                                                                                                                                                                                |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm icons:lint:source`      | `vendor/icons/source/`: only SVG files, kebab-case names that end in a style, the frame, one color, no stroke, no raster, gradient, pattern or script, the pairs                                                                                                                      |
+| `pnpm icons:verify`           | A fresh build of `vendor/icons` equals its committed output; no icon moved from the code point it had at the last tag of that repository; no two icons share one; the contract icons                                                                                                  |
+| `pnpm icons:test`             | Vitest, on the fixture: the golden output, the steps, the code points, the configuration, the page of the set, the manifest, what npm packs of a set and of the builder, the archive, the release notes, `init`, the journey of a team, the command line, and the scripts of the root |
+| `pnpm icons:lint:package`     | publint on what npm would publish of the builder                                                                                                                                                                                                                                      |
+| `pnpm icons:lint`             | ESLint on `lib/`, `test/` and the root `build/`, with no warning allowed                                                                                                                                                                                                              |
+| `pnpm icons:typecheck`        | TypeScript `checkJs` on `lib/`                                                                                                                                                                                                                                                        |
+| `pnpm changeset:check <base>` | The commits since a base come with a changeset when they change `lib/` or `templates/`; the commit of a version passes                                                                                                                                                                |
+| `pnpm site:test`              | Vitest, on a copy of the build, the site and `vendor/icons`: the site of the Chassis set and of the fixture, the icons that each page draws, and the links between the pages                                                                                                          |
+| `pnpm icons:test:golden`      | Not a check: writes `test/golden/` again from a build of the fixture                                                                                                                                                                                                                  |
+| `pnpm icons:archive`          | Not a check: writes the archive of `vendor/icons` into `.cache/archives/`, which Git ignores                                                                                                                                                                                          |
 
 `verify` reads the code points of the last tag from `icons/<font>.json` at that tag, in the repository of the set. A repository without a tag, or a tag without that file, is reported as a note and not as a problem. [`test/README.md`](../packages/icons/test/README.md) describes the tests, the fixture and the golden output.
 
@@ -264,6 +269,7 @@ Kept on purpose, or until a phase of the roadmap removes them. Do not fix one wi
 - **The package importer of Sass refuses the path without an extension.** `icons/` holds a `.css` and a `.scss` of the font name, so `pkg:<package>/icons/<font>` is ambiguous. `pkg:<package>` and the path with `.scss` are not.
 - **The font holds its glyphs in the order in which Fantasticon finds the files**, which is the reverse of the order of the names. The order is in the bytes of the font and in nothing that it draws: a class finds its glyph by its code point.
 - **The Chassis set starts with two retired code points.** `f243` and `f245` were the code points of two duplicates, removed before the set moved to `chassis-ui/website-icons`, whose registry moved as it was.
+- **Chrome draws the page of a set with the font when it opens from the file system.** Chrome treats each `file:` URL as an origin of its own and does not load the sprite that the page links, so no tile is drawn at `load`. The page sees that, gives each tile the class of its icon, which the font that Chrome does load draws, and says so above the list. From a static host, and in a browser that loads the sprite from the file system, the tiles are the symbols of the sprite.
 - **The site loads the font of the Chassis set twice.** The interface loads the stylesheet of the installed package, and the pages of the set load the one of `vendor/icons`. Both name the family and the classes of one set, and the second wins.
 - **The categories and the tags of an icon page are derived.** The category is the first word of the name, and the tags are `icon`, the style and `svg`, until the set has curated metadata.
 - **The test of the site copies the build, the site and `vendor/icons` into `.cache/`.** Astro reads a file of a linked package by its path only when that path and the site have a folder in common, which the temporary folder of a machine does not have with the repository.

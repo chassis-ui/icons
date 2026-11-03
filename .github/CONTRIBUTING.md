@@ -84,7 +84,7 @@ renamed or removed there, never in `vendor/icons/`, which is a checkout of that 
 2. Run `pnpm build` there. It writes `svgs/`, `icons/`, `codepoints.json` and `README.md`. A
    new icon gets a code point of its own, the code points of the other icons stay as they
    are, and the code point of a removed icon is retired. Look at the result in
-   `icons/preview.html`.
+   `icons/chassis-icons.html`, the page of the set, in a browser.
 3. Run `pnpm verify` there. It fails when a committed file is not what the source builds, when
    an icon lost its code point, or when an icon of `chassis.checks.json` is missing. Renaming
    or removing an icon breaks every project that uses it: it is the maintainer's decision, and

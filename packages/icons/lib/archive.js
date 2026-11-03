@@ -7,7 +7,6 @@
 import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
-import { PREVIEW_FILE } from './config.js'
 
 /** Where the archives are written, from the root of the repository, unless `--to` says. */
 export const ARCHIVES_DIR = 'archives'
@@ -24,7 +23,7 @@ export const ARCHIVES_DIR = 'archives'
 export function writeArchive(config, { to = path.join(config.packageDir, ARCHIVES_DIR) } = {}) {
   const entries = [config.iconsDir, config.svgsDir].flatMap((dir) =>
     (fs.existsSync(dir) ? fs.readdirSync(dir) : [])
-      .filter((name) => name !== PREVIEW_FILE && !name.startsWith('.'))
+      .filter((name) => !name.startsWith('.'))
       .sort()
       .map((name) => `${path.basename(dir)}/${name}`)
   )

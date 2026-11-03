@@ -7,8 +7,8 @@ breaks without being told; the README explains the rest.
 
 __NAME__ holds an icon set: one SVG file per icon in `source/`, built with
 [`@chassis-ui/icons`](https://www.npmjs.com/package/@chassis-ui/icons) into `svgs/`, one
-optimized file per icon, and `icons/`, the icon font `__FONT__` with its stylesheets and the SVG
-sprite. `chassis.build` in `package.json` names the font, the class prefix `__PREFIX__-`, the
+optimized file per icon, and `icons/`, the icon font `__FONT__` with its stylesheets, the SVG
+sprite and the page of the set. `chassis.build` in `package.json` names the font, the class prefix `__PREFIX__-`, the
 frame and the styles. The build is file-driven: a file saved into `source/` is an icon of the
 next build, and there is no list to maintain.
 

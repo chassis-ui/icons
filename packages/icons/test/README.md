@@ -29,6 +29,7 @@ Never edit a golden file by hand. Prettier leaves the folder alone.
 | `config.test.js`        | The `chassis.build` block: its defaults, the folders it resolves, and every setting that is refused                                                             |
 | `codepoints.test.js`    | The registry: an icon keeps its code point, a removed one is retired, the checks                                                                                |
 | `templates.test.js`     | The templates of the stylesheets, and the minified CSS                                                                                                          |
+| `preview.test.js`       | The page of the set: what it links and draws, the JSON of the icons it carries, and the step that writes it                                                     |
 | `lint-source.test.js`   | The check of the source: frame, color, strokes, scripts, names, pairs                                                                                           |
 | `golden.test.js`        | The build of the fixture against the golden output, its steps, and a set that changes                                                                           |
 | `verify.test.js`        | `verify`: an output that is not built again, a moved code point, a missing icon of a contract                                                                   |

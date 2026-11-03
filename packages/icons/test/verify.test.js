@@ -60,6 +60,7 @@ describe('verify', () => {
     expect(problems).toContainEqual(expect.stringContaining('svgs/ring-fill.svg: changed'))
     expect(problems).toContainEqual(expect.stringContaining('svgs/anvil-fill.svg: missing'))
     expect(problems).toContainEqual(expect.stringContaining('icons/acme-glyphs.woff2: changed'))
+    expect(problems).toContainEqual(expect.stringContaining('icons/acme-glyphs.html: changed'))
     expect(problems).toContainEqual(expect.stringContaining('codepoints.json: changed'))
     expect(problems.every((problem) => problem.includes('run the build'))).toBe(true)
   })

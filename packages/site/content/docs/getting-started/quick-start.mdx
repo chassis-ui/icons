@@ -87,7 +87,7 @@ npm run build
 npm run verify
 ```
 
-The build writes `svgs/`, one optimized file per icon; `icons/`, the font `acme-icons` in each format with its stylesheets, the sprite and the code points by name; `codepoints.json`, the registry of the code points; `README.md`, with the code for your font name and your prefix; and the fields of `package.json` that name the files. Commit all of them with `source/` and the lockfile of the install, which the workflows install from: the output is committed, and `verify` fails when a committed file is not what the source builds. `icons/preview.html`, which Git ignores, shows every icon of the sprite.
+The build writes `svgs/`, one optimized file per icon; `icons/`, the font `acme-icons` in each format with its stylesheets, the sprite and the code points by name; `codepoints.json`, the registry of the code points; `README.md`, with the code for your font name and your prefix; and the fields of `package.json` that name the files. Commit all of them with `source/` and the lockfile of the install, which the workflows install from: the output is committed, and `verify` fails when a committed file is not what the source builds. `icons/acme-icons.html` is the page of the set: open it in a browser to see every icon with its name, and click one for its class, its code point and the code that draws it.
 
 ## Use the output
 

@@ -28,7 +28,7 @@ export function manifestFields(config) {
     main: css,
     style: css,
     sass: scss,
-    // Every file of the font name, and so not the preview page
+    // Every file of the font name: the font, the stylesheets, the sprite and the page
     files: [`icons/${config.name}.*`, 'svgs/*.svg'],
     exports: {
       '.': { sass: `./${scss}`, style: `./${css}`, default: `./${css}` },

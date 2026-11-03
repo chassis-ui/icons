@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { build, compareWithBuild } from '../lib/build.js'
-import { PREVIEW_FILE, loadConfig } from '../lib/config.js'
+import { loadConfig } from '../lib/config.js'
 import { silentLogger as logger } from '../lib/logger.js'
 import { copyFixture, goldenDir, readOutput } from './helpers.js'
 
@@ -48,13 +48,6 @@ describe('the build of the fixture set', () => {
     await build(loadConfig(dir), { logger })
     expect(read()).toEqual(before)
   })
-
-  it('writes a page that shows the sprite', async () => {
-    const dir = copyFixture()
-
-    await build(loadConfig(dir), { logger })
-    expect(fs.readFileSync(path.join(dir, 'icons', PREVIEW_FILE), 'utf8')).toContain('bar-fill')
-  })
 })
 
 describe('the steps of the build', () => {
@@ -67,12 +60,10 @@ describe('the steps of the build', () => {
     expect(fs.existsSync(path.join(dir, 'icons', 'acme-glyphs.svg'))).toBe(false)
 
     await build(config, { only: 'sprite', logger })
-    expect(fs.readdirSync(path.join(dir, 'icons')).sort()).toEqual([
-      'acme-glyphs.svg',
-      PREVIEW_FILE
-    ])
+    expect(fs.readdirSync(path.join(dir, 'icons'))).toEqual(['acme-glyphs.svg'])
 
     await build(config, { only: 'font', logger })
+    expect(fs.existsSync(path.join(dir, 'icons', 'acme-glyphs.html'))).toBe(true)
     expect(fs.existsSync(path.join(dir, 'README.md'))).toBe(false)
 
     await build(config, { only: 'package', logger })

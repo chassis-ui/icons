@@ -93,7 +93,7 @@ describe('the journey of a team that makes a repository of icons', () => {
         'codepoints.json',
         'package.json',
         'pnpm-lock.yaml',
-        ...['css', 'json', 'min.css', 'scss', 'svg', 'ttf', 'woff2'].map(
+        ...['css', 'html', 'json', 'min.css', 'scss', 'svg', 'ttf', 'woff2'].map(
           (extension) => `icons/acme-glyphs.${extension}`
         ),
         ...teamNames.map((name) => `source/${name}.svg`),

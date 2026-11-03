@@ -148,7 +148,7 @@ pnpm build
 pnpm verify
 ```
 
-`pnpm lint` names each file that cannot be an icon, and why. `pnpm build` writes `svgs/`, `icons/`, `codepoints.json` and `README.md`, and the fields of `package.json` that name the files of the output. Commit all of them with `source/` and the lockfile: the output is committed, and `pnpm verify` fails in CI when a committed file is not what the source builds. `icons/preview.html`, which the build writes and `.gitignore` leaves out, shows every icon of the sprite.
+`pnpm lint` names each file that cannot be an icon, and why. `pnpm build` writes `svgs/`, `icons/`, `codepoints.json` and `README.md`, and the fields of `package.json` that name the files of the output. Commit all of them with `source/` and the lockfile: the output is committed, and `pnpm verify` fails in CI when a committed file is not what the source builds. `icons/acme-icons.html` is the page of the set: open it in a browser to see every icon with its name, and click one for its class, its code point and the code that draws it.
 
 The `README.md` that the build writes for your set shows the four ways to use an icon: the font class, the sprite, the SVG file and Sass. A project takes the two folders as they are:
 
@@ -229,8 +229,8 @@ pnpm icons --dry-run        # List the files that a build would change, and chan
 pnpm icons --only font      # One step: svgs, sprite, font or package
 pnpm icons --verbose        # Each file that is written, and each code point that is given or retired
 pnpm icons:svgs             # The step svgs: source/ optimized into svgs/
-pnpm icons:sprite           # The step sprite: the SVG sprite and the preview page
-pnpm icons:font             # The step font: the font, its stylesheets and the code points
+pnpm icons:sprite           # The step sprite: the SVG sprite
+pnpm icons:font             # The step font: the font, its stylesheets, the code points and the page of the set
 pnpm icons:archive          # The archive of vendor/icons, into .cache/archives/
 ```
 
@@ -356,7 +356,7 @@ The other fields of the `package.json` of a repository of icons describe the pac
 | `icons/<font>.css`, `icons/<font>.min.css` | The font face and one class per icon, `<prefix>-<name>`. They load the font from their own folder      |
 | `icons/<font>.scss`                        | The same for Sass, with the folder of the font, the hash and the map of the icons as `!default` values |
 | `icons/<font>.json`                        | The code point of each icon, by name, as a number                                                      |
-| `icons/preview.html`                       | A page of the sprite, for a look at the set. Not committed, and not published                          |
+| `icons/<font>.html`                        | The page of the set: every icon with its name, a search box, and on a click the code that draws it     |
 
 Beside them, at the root of the repository, `codepoints.json`, `README.md`, and the fields of `package.json` that name the files. [docs/architecture.md](docs/architecture.md#output-contract) has the contract of each file.
 

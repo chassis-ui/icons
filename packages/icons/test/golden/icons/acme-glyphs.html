@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>@acme/glyphs</title>
+<link rel="stylesheet" href="acme-glyphs.css">
+<style>
+:root {
+  --background: #fff;
+  --text: #1f2328;
+  --muted: #59636e;
+  --line: #d1d9e0;
+  --tile: #f6f8fa;
+  --accent: #0969da;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0d1117;
+    --text: #f0f6fc;
+    --muted: #9198a1;
+    --line: #3d444d;
+    --tile: #151b23;
+    --accent: #4493f8;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font: 16px/1.5 system-ui, sans-serif;
+  color: var(--text);
+  background: var(--background);
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem 1.5rem;
+  align-items: baseline;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--background);
+}
+h1 { margin: 0; font-size: 1.25rem; }
+header p { margin: 0; color: var(--muted); }
+header input {
+  flex: 1 1 16rem;
+  padding: .5rem .75rem;
+  font: inherit;
+  color: inherit;
+  background: var(--tile);
+  border: 1px solid var(--line);
+  border-radius: .375rem;
+}
+main { padding: 1.5rem; }
+#list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: .75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#list li[hidden] { display: none; }
+#list button {
+  display: flex;
+  flex-direction: column;
+  gap: .75rem;
+  align-items: center;
+  width: 100%;
+  padding: 1rem .5rem;
+  font: inherit;
+  font-size: .75rem;
+  color: inherit;
+  text-align: center;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  background: var(--tile);
+  border: 1px solid transparent;
+  border-radius: .5rem;
+}
+#list button:hover, #list li.selected button { border-color: var(--accent); }
+#list svg, #panel > svg { width: 2rem; height: 2rem; }
+#list i { font-size: 2rem; line-height: 1; }
+#notice, #empty { color: var(--muted); }
+#panel {
+  position: fixed;
+  z-index: 2;
+  inset: 0 0 0 auto;
+  width: min(24rem, 100%);
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 1.5rem;
+  overflow: auto;
+  font-size: .875rem;
+  color: inherit;
+  background: var(--background);
+  border: 0;
+  border-left: 1px solid var(--line);
+  box-shadow: 0 0 2rem rgb(0 0 0 / 15%);
+}
+#panel form { float: right; }
+#panel-name { margin: 1rem 0; font-size: 1.125rem; font-weight: 600; overflow-wrap: anywhere; }
+#panel dl { margin: 0; }
+#panel dt { margin-top: 1rem; color: var(--muted); }
+#panel dd { margin: .25rem 0 0; }
+#panel i { margin-left: .75rem; font-size: 1.5rem; vertical-align: middle; }
+#panel pre { margin: 0; padding: .75rem; overflow: auto; background: var(--tile); border-radius: .375rem; }
+#panel code { font-size: .8125rem; }
+#panel button, #panel a { color: var(--accent); }
+#panel form button { padding: 0; font: inherit; background: none; border: 0; cursor: pointer; }
+</style>
+</head>
+<body>
+<header>
+<h1>@acme/glyphs 2.4.0</h1>
+<p>8 icons on a frame of 16 by 16, as the classes <code>ag-&lt;name&gt;</code> of the font <code>acme-glyphs</code> and the symbols of <code>acme-glyphs.svg</code></p>
+<input id="search" type="search" placeholder="Filter by name" aria-label="Filter by name" autocomplete="off">
+<p id="notice" hidden>Drawn with the font: this browser does not load the sprite from the file system.</p>
+</header>
+<main>
+<ul id="list">
+<li data-name="bar-fill"><button type="button"><svg width="16" height="16" fill="currentcolor" aria-hidden="true"><use href="acme-glyphs.svg#bar-fill"></use></svg><span>bar-fill</span></button></li>
+<li data-name="bar-line"><button type="button"><svg width="16" height="16" fill="currentcolor" aria-hidden="true"><use href="acme-glyphs.svg#bar-line"></use></svg><span>bar-line</span></button></li>
+<li data-name="diamond-fill"><button type="button"><svg width="16" height="16" fill="currentcolor" aria-hidden="true"><use href="acme-glyphs.svg#diamond-fill"></use></svg><span>diamond-fill</span></button></li>
+<li data-name="diamond-line"><button type="button"><svg width="16" height="16" fill="currentcolor" aria-hidden="true"><use href="acme-glyphs.svg#diamond-line"></use></svg><span>diamond-line</span></button></li>
+<li data-name="notch-fill"><button type="button"><svg width="16" height="16" fill="currentcolor" aria-hidden="true"><use href="acme-glyphs.svg#notch-fill"></use></svg><span>notch-fill</span></button></li>
+<li data-name="notch-line"><button type="button"><svg width="16" height="16" fill="currentcolor" aria-hidden="true"><use href="acme-glyphs.svg#notch-line"></use></svg><span>notch-line</span></button></li>
+<li data-name="ring-fill"><button type="button"><svg width="16" height="16" fill="currentcolor" aria-hidden="true"><use href="acme-glyphs.svg#ring-fill"></use></svg><span>ring-fill</span></button></li>
+<li data-name="ring-line"><button type="button"><svg width="16" height="16" fill="currentcolor" aria-hidden="true"><use href="acme-glyphs.svg#ring-line"></use></svg><span>ring-line</span></button></li>
+</ul>
+<p id="empty" hidden>No icon has that name.</p>
+</main>
+<dialog id="panel" aria-labelledby="panel-name">
+<form method="dialog"><button type="submit">Close</button></form>
+<svg id="panel-icon" width="16" height="16" fill="currentcolor" aria-hidden="true"><use id="panel-use"></use></svg>
+<p id="panel-name"></p>
+<dl>
+<dt>Font class</dt>
+<dd><code id="panel-class"></code><i id="panel-font" aria-hidden="true"></i></dd>
+<dt>Code point</dt>
+<dd><code id="panel-codepoint"></code></dd>
+<dt>Style</dt>
+<dd id="panel-style"></dd>
+<dt>Sprite symbol</dt>
+<dd><pre><code id="panel-sprite"></code></pre></dd>
+<dt>SVG file</dt>
+<dd><code id="panel-file"></code> <a id="panel-link">Open the file</a></dd>
+</dl>
+</dialog>
+<script id="set" type="application/json">
+{
+  "name": "acme-glyphs",
+  "prefix": "ag",
+  "frame": 16,
+  "styles": ["line", "fill"],
+  "icons": [
+    { "name": "bar-fill", "codepoint": "e900", "style": "fill" },
+    { "name": "bar-line", "codepoint": "e901", "style": "line" },
+    { "name": "diamond-fill", "codepoint": "e902", "style": "fill" },
+    { "name": "diamond-line", "codepoint": "e903", "style": "line" },
+    { "name": "notch-fill", "codepoint": "e904", "style": "fill" },
+    { "name": "notch-line", "codepoint": "e905", "style": "line" },
+    { "name": "ring-fill", "codepoint": "e906", "style": "fill" },
+    { "name": "ring-line", "codepoint": "e907", "style": "line" }
+  ]
+}
+</script>
+<script>
+(() => {
+  const set = JSON.parse(document.getElementById('set').textContent)
+  const icons = new Map(set.icons.map((icon) => [icon.name, icon]))
+  const tiles = [...document.querySelectorAll('#list li')]
+  const search = document.getElementById('search')
+  const empty = document.getElementById('empty')
+  const panel = document.getElementById('panel')
+  const field = (id) => document.getElementById('panel-' + id)
+  const sprite = set.name + '.svg'
+
+  function filter() {
+    const words = search.value.toLowerCase().split(/\s+/).filter(Boolean)
+    let shown = 0
+
+    for (const tile of tiles) {
+      tile.hidden = !words.every((word) => tile.dataset.name.includes(word))
+      shown += tile.hidden ? 0 : 1
+    }
+
+    empty.hidden = shown > 0
+  }
+
+  function show(name) {
+    const icon = icons.get(name)
+
+    if (!icon) return
+
+    for (const tile of tiles) tile.classList.toggle('selected', tile.dataset.name === name)
+
+    field('use').setAttribute('href', sprite + '#' + name)
+    field('name').textContent = name
+    field('class').textContent = set.prefix + '-' + name
+    field('font').className = set.prefix + '-' + name
+    field('codepoint').textContent = icon.codepoint
+    if (field('style')) field('style').textContent = icon.style || ''
+    field('sprite').textContent =
+      '<svg width="' + set.frame + '" height="' + set.frame + '" fill="currentcolor" aria-hidden="true">\n' +
+      '  <use href=' + JSON.stringify(sprite + '#' + name) + '></use>\n' +
+      '</svg>'
+    field('file').textContent = 'svgs/' + name + '.svg'
+    field('link').href = '../svgs/' + name + '.svg'
+    if (!panel.open) panel.show()
+    location.replace('#' + name)
+  }
+
+  search.addEventListener('input', filter)
+  document.getElementById('list').addEventListener('click', (event) => {
+    const tile = event.target.closest('li[data-name]')
+
+    if (tile) show(tile.dataset.name)
+  })
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && panel.open) panel.close()
+  })
+  panel.addEventListener('close', () => {
+    for (const tile of tiles) tile.classList.remove('selected')
+    location.replace('#')
+  })
+  if (location.hash.length > 1) show(decodeURIComponent(location.hash.slice(1)))
+
+  // Chrome does not load a sprite from the file system, and draws nothing in the tiles. The
+  // font loads, so the tiles get the class of each icon instead.
+  window.addEventListener('load', () => {
+    const box = document.querySelector('#list use').getBBox()
+
+    if (box.width > 0 || box.height > 0) return
+
+    for (const tile of tiles) {
+      const glyph = document.createElement('i')
+
+      glyph.className = set.prefix + '-' + tile.dataset.name
+      tile.querySelector('svg').replaceWith(glyph)
+    }
+
+    field('icon').hidden = true
+    document.getElementById('notice').hidden = false
+  })
+})()
+</script>
+</body>
+</html>

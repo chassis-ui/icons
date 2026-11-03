@@ -169,7 +169,7 @@ function expectSiteOfSet(dir, out) {
     names.map((name) => `${name}.svg`)
   )
   expect(fs.readdirSync(path.join(out, setPath, 'icons')).sort()).toEqual(
-    ['css', 'json', 'min.css', 'scss', 'svg', ...config.formats]
+    ['css', 'html', 'json', 'min.css', 'scss', 'svg', ...config.formats]
       .map((extension) => `${config.name}.${extension}`)
       .sort()
   )
@@ -203,11 +203,11 @@ function expectSiteOfSet(dir, out) {
     const html = read(page)
 
     for (const [, href] of html.matchAll(/<use[^>]*\shref="([^"]*)"/g)) {
-      // A shared sprite is linked with `?v=` and a hash of the file
+      // A shared sprite is linked with `?v=` and a hash of the file, and the page of the set
+      // links its sprite with a relative path
       const [address, id] = href.split('#')
-      const file = address.split('?')[0]
 
-      if (file === '') {
+      if (address === '') {
         // A symbol of the page itself
         if (!html.includes(`id="${id}"`)) {
           missing.push(`${page}: ${href}`)
@@ -215,6 +215,8 @@ function expectSiteOfSet(dir, out) {
 
         continue
       }
+
+      const file = path.posix.resolve('/', path.posix.dirname(`/${page}`), address.split('?')[0])
 
       if (!sprites.has(file)) {
         const spriteFile = path.join(out, file)

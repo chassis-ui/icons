@@ -10,7 +10,7 @@
 
 <!--
 The quickest way for a reviewer to see it: the icons to look at in
-`packages/icons/icons/preview.html` or on the site, or the check that fails without the change.
+`vendor/icons/icons/chassis-icons.html` or on the site, or the check that fails without the change.
 -->
 
 ---

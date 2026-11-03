@@ -7,7 +7,6 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import { afterEach } from 'vitest'
-import { PREVIEW_FILE } from '../lib/config.js'
 
 export const packageDir = path.resolve(import.meta.dirname, '..')
 export const fixtureDir = path.join(import.meta.dirname, 'fixture')
@@ -42,14 +41,14 @@ export function copyFixture() {
 }
 
 /**
- * The files of a folder and of its folders, without the preview page and hidden files.
+ * The files of a folder and of its folders, without hidden files.
  * @param {string} dir
  * @returns {string[]} Their paths from `dir`, with `/`, sorted
  */
 export function listFiles(dir) {
   return fs
     .readdirSync(dir, { recursive: true, withFileTypes: true })
-    .filter((entry) => entry.isFile() && entry.name !== PREVIEW_FILE && !entry.name.startsWith('.'))
+    .filter((entry) => entry.isFile() && !entry.name.startsWith('.'))
     .map((entry) =>
       path.relative(dir, path.join(entry.parentPath, entry.name)).split(path.sep).join('/')
     )

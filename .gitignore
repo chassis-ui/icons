@@ -1,6 +1,3 @@
-# The page of the sprite, which the build writes for a look at a set
-preview.html
-
 # The archives of the set, from pnpm icons:archive
 /.cache/archives
 
