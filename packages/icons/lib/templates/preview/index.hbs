@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<link rel="stylesheet" href="{{ chassis.stylesheet.url }}" integrity="{{ chassis.stylesheet.integrity }}" crossorigin="anonymous">
+<link rel="stylesheet" href="{{ name }}.css">
+<link rel="stylesheet" href="preview.css">
+</head>
+<body>
+<header class="border-bottom border-subtle bg-main sticky-top z-3">
+  <div class="container xl d-flex flex-wrap align-items-center gap-md py-md">
+    <div class="me-auto">
+      <h1 class="font-title mb-0">{{ title }}{{# if version }} <span class="badge neutral smooth sm align-middle">{{ version }}</span>{{/ if }}</h1>
+      <p class="fg-subtle font-body-sm mb-0">{{ count }} {{# if single }}icon{{ else }}icons{{/ if }} on a frame of {{ frame }} by {{ frame }}, in the font <code>{{ name }}</code> with the classes <code>{{ prefix }}-&lt;name&gt;</code></p>
+    </div>
+    <div class="nav nav-segments sm" role="group" aria-label="Theme">
+      <button type="button" class="nav-link active" data-page-theme="auto" aria-pressed="true">Auto</button>
+      <button type="button" class="nav-link" data-page-theme="light" aria-pressed="false">Light</button>
+      <button type="button" class="nav-link" data-page-theme="dark" aria-pressed="false">Dark</button>
+    </div>
+  </div>
+  <div class="container xl d-flex flex-wrap align-items-center gap-sm pb-md">
+    <div class="form-input flex-grow-1">
+      <span class="input-adorn"><svg class="icon" width="16" height="16" viewBox="0 0 16 16" fill="currentcolor" aria-hidden="true"><path d="M6.5 1a5.5 5.5 0 0 1 4.38 8.82l3.65 3.65-1.06 1.06-3.65-3.65A5.5 5.5 0 1 1 6.5 1m0 1.5a4 4 0 1 0 0 8 4 4 0 0 0 0-8"/></svg></span>
+      <input type="search" class="ghost-input" id="page_search" placeholder="Search {{ count }} {{# if single }}icon{{ else }}icons{{/ if }}" aria-label="Search the icons by name" autocomplete="off">
+    </div>
+{{# if styles }}
+    <div class="nav nav-segments" role="group" aria-label="Style">
+      <button type="button" class="nav-link active" data-page-style="" aria-pressed="true">All</button>
+{{# each styles }}
+      <button type="button" class="nav-link" data-page-style="{{ this }}" aria-pressed="false">{{ this }}</button>
+{{/ each }}
+    </div>
+{{/ if }}
+  </div>
+</header>
+<main class="container xl py-lg">
+  <div class="notification warning mb-lg" id="page_font_note" role="status" hidden>
+    <p>The icons are drawn with the font: the browser did not read the sprite, as from the file system. Serve the folder, as <code>chassis-icons preview --serve</code> does, to draw them with the sprite and to copy the SVG of an icon.</p>
+  </div>
+  <p class="fg-subtle font-body-sm" id="page_count" aria-live="polite"></p>
+  <ul class="page_grid bulletless m-0 p-0" id="page_list">
+{{# each icons }}
+    <li data-name="{{ name }}"{{# if style }} data-style="{{ style }}"{{/ if }}><button type="button" class="page_tile font-label-sm" data-cx-toggle="drawer" data-cx-target="#page_drawer" aria-controls="page_drawer"><svg class="icon" width="{{ ../frame }}" height="{{ ../frame }}" aria-hidden="true"><use href="#{{ name }}"></use></svg><span>{{ name }}</span></button></li>
+{{/ each }}
+  </ul>
+  <p class="fg-subtle" id="page_empty" hidden>No icon has a name with those words.</p>
+</main>
+<footer class="container xl py-lg border-top border-subtle fg-subtle font-body-sm">
+  <p class="mb-0">Written by <code>chassis-icons preview</code> of <a href="https://www.npmjs.com/package/@chassis-ui/icons">@chassis-ui/icons</a> from the output of the set, and drawn with <a href="https://chassis-ui.com/css/">Chassis CSS</a>. Served from a folder, it draws the icons with the sprite <code>{{ name }}.svg</code>; opened from the file system, where a browser does not read the sprite, with the font.</p>
+</footer>
+<dialog class="drawer drawer-end page_drawer" id="page_drawer" aria-labelledby="page_name" tabindex="-1">
+  <div class="drawer-header">
+    <h2 class="drawer-title text-break" id="page_name">{{ first }}</h2>
+    <button type="button" class="close-button" data-cx-dismiss="drawer" aria-label="Close"></button>
+  </div>
+  <div class="drawer-body">
+    <div class="page_preview border border-subtle rounded d-flex align-items-center justify-content-center mb-md" role="img" id="page_preview">
+      <svg class="icon icon-adaptive" aria-hidden="true"><use data-page-icon></use></svg>
+    </div>
+    <div class="d-flex flex-wrap gap-xs mb-xl" id="page_badges"></div>
+
+    <h3 class="font-h5" id="page_examples">Examples</h3>
+    <div class="page_examples border border-subtle rounded p-md mb-xl">
+      <div class="font-h2"><svg class="icon icon-adaptive" aria-hidden="true"><use data-page-icon></use></svg> Heading</div>
+      <div class="font-h4"><svg class="icon icon-adaptive" aria-hidden="true"><use data-page-icon></use></svg> Smaller heading</div>
+      <p class="mb-0">Inline text <svg class="icon icon-adaptive" aria-hidden="true"><use data-page-icon></use></svg></p>
+      <p class="mb-0"><a href="#page_examples" class="text-decoration-none">Example link text <svg class="icon icon-adaptive" aria-hidden="true"><use data-page-icon></use></svg></a></p>
+      <div class="d-flex flex-wrap gap-sm">
+        <button type="button" class="button default"><svg class="icon" aria-hidden="true"><use data-page-icon></use></svg><span>Button</span></button>
+        <button type="button" class="button primary"><svg class="icon" aria-hidden="true"><use data-page-icon></use></svg><span>Button</span></button>
+        <button type="button" class="button primary outline"><svg class="icon" aria-hidden="true"><use data-page-icon></use></svg><span>Button</span></button>
+        <button type="button" class="button primary smooth"><svg class="icon" aria-hidden="true"><use data-page-icon></use></svg><span>Button</span></button>
+      </div>
+      <div class="d-flex flex-wrap gap-sm">
+        <button type="button" class="button default icon-only"><svg class="icon" aria-hidden="true"><use data-page-icon></use></svg><span class="visually-hidden">Button</span></button>
+        <button type="button" class="button secondary icon-only"><svg class="icon" aria-hidden="true"><use data-page-icon></use></svg><span class="visually-hidden">Button</span></button>
+        <div class="button-group" role="group" aria-label="Button group">
+          <button type="button" class="button default icon-only"><svg class="icon" aria-hidden="true"><use data-page-icon></use></svg><span class="visually-hidden">Button</span></button>
+          <button type="button" class="button default icon-only"><svg class="icon" aria-hidden="true"><use data-page-icon></use></svg><span class="visually-hidden">Button</span></button>
+          <button type="button" class="button default icon-only"><svg class="icon" aria-hidden="true"><use data-page-icon></use></svg><span class="visually-hidden">Button</span></button>
+        </div>
+      </div>
+      <div class="input-group">
+        <span class="input-addon"><svg class="icon" aria-hidden="true"><use data-page-icon></use></svg></span>
+        <input type="text" class="form-input" placeholder="Input group example" aria-label="Input group example">
+      </div>
+      <div class="notification success" role="status">
+        <svg class="icon notification-icon" aria-hidden="true"><use data-page-icon></use></svg>
+        <p>An example notification with an icon.</p>
+      </div>
+    </div>
+
+    <h3 class="font-h5 mb-2xs">Download</h3>
+    <p>Download the SVG file of the icon, to use or to edit.</p>
+    <a class="button primary mb-xl" id="page_download" href="svgs/{{ first }}.svg" download>Download SVG</a>
+
+    <h3 class="font-h5 mb-2xs">SVG sprite</h3>
+    <p>Draw the symbol of the sprite with a <code>&lt;use&gt;</code> element.</p>
+    <div class="page_snippet mb-xl"><pre><code data-page-snippet="sprite"></code></pre><button type="button" class="button sm default" data-page-copy="sprite">Copy</button></div>
+
+    <h3 class="font-h5 mb-2xs">Icon font</h3>
+    <p>Put the class of the icon on an empty element, with the stylesheet of the font on the page.</p>
+    <div class="page_snippet mb-xl"><pre><code data-page-snippet="font"></code></pre><button type="button" class="button sm default" data-page-copy="font">Copy</button></div>
+
+    <h3 class="font-h5 mb-2xs">Embedded</h3>
+    <p>Paste the SVG into the code of a page. It is the drawing of the sprite, which may write the same path shorter than the file.</p>
+    <div class="page_snippet mb-xl"><pre><code data-page-snippet="embedded"></code></pre><button type="button" class="button sm default" data-page-copy="embedded">Copy</button></div>
+
+    <h3 class="font-h5 mb-2xs">Code point</h3>
+    <p>The character of the icon in the font, for CSS, JavaScript or HTML.</p>
+    <dl class="page_codepoints mb-0">
+      <dt>Unicode</dt><dd><code data-page-codepoint="unicode"></code></dd>
+      <dt>CSS</dt><dd><code data-page-codepoint="css"></code></dd>
+      <dt>JS</dt><dd><code data-page-codepoint="js"></code></dd>
+      <dt>HTML</dt><dd><code data-page-codepoint="html"></code></dd>
+    </dl>
+  </div>
+</dialog>
+<script id="page_set" type="application/json">
+{{{ set }}}
+</script>
+<script type="module" src="{{ chassis.script.url }}" integrity="{{ chassis.script.integrity }}" crossorigin="anonymous" onerror="this.dataset.failed = ''" id="page_chassis"></script>
+<script src="preview.js" defer></script>
+</body>
+</html>

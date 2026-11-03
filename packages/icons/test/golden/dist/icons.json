@@ -1,0 +1,17 @@
+{
+  "name": "acme-glyphs",
+  "prefix": "ag",
+  "frame": 16,
+  "styles": ["line","fill"],
+  "pairs": [["line","fill"]],
+  "icons": [
+    {"name":"bar-fill","codepoint":"e900","base":"bar","style":"fill"},
+    {"name":"bar-line","codepoint":"e901","base":"bar","style":"line"},
+    {"name":"diamond-fill","codepoint":"e902","base":"diamond","style":"fill"},
+    {"name":"diamond-line","codepoint":"e903","base":"diamond","style":"line"},
+    {"name":"notch-fill","codepoint":"e904","base":"notch","style":"fill"},
+    {"name":"notch-line","codepoint":"e905","base":"notch","style":"line"},
+    {"name":"ring-fill","codepoint":"e906","base":"ring","style":"fill"},
+    {"name":"ring-line","codepoint":"e907","base":"ring","style":"line"}
+  ]
+}

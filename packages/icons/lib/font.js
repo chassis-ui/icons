@@ -1,7 +1,8 @@
 /**
- * @file The third step of the build: the icon font of the files of `svgs/`, its stylesheets
- * and the map of its code points. Fantasticon draws the font, the templates of
- * `lib/templates/` write the stylesheets, and clean-css minifies the CSS.
+ * @file The third step of the build: the icon font of the files of `dist/svgs/`, its
+ * stylesheets and its glyph map, the code point of each icon by name. Fantasticon draws the
+ * font, the templates of `lib/templates/` write the stylesheets, and clean-css minifies the
+ * CSS.
  */
 
 import crypto from 'node:crypto'

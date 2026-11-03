@@ -6,13 +6,13 @@ toc: true
 
 ## Introduction
 
-The build writes one optimized SVG file per icon, `svgs/<name>.svg`. Choose the files when a project needs a few icons and not the set: as an image, pasted into the markup of a page, or as a mask in CSS. The files are also what a design tool or an app for iOS or Android reads.
+The build writes one optimized SVG file per icon, `dist/svgs/<name>.svg`. Choose the files when a project needs a few icons and not the set: as an image, pasted into the markup of a page, or as a mask in CSS. The files are also what a design tool or an app for iOS or Android reads.
 
 The examples use the Chassis set. The files of a set of your own have the same shape, with your frame and your prefix.
 
 ## Installation
 
-The files are in the `svgs/` folder of the output. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get the output: the package, the archive of a release, and the folders of a build.
+The files are in the `dist/svgs/` folder of the output. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get the output: the package, the archive of a release, and the folders of a build.
 
 ```bash
 npm install @chassis-ui/website-icons
@@ -25,7 +25,7 @@ The page of each icon on the [home page](/icons/) has a download of its file.
 Use the file of an icon as an image:
 
 ```html
-<img src="node_modules/@chassis-ui/website-icons/svgs/bell-outline.svg" alt="" width="24" height="24" />
+<img src="node_modules/@chassis-ui/website-icons/dist/svgs/bell-outline.svg" alt="" width="24" height="24" />
 ```
 
 The build writes each file on the frame of the set, with `fill="currentcolor"` and the class of the icon on its root:
@@ -70,7 +70,7 @@ An image has its `alt` text, and an icon in the markup of a page is named as an 
 A decorative image has an empty `alt`, as in the example above. An image that carries meaning says it:
 
 ```html
-<img src="node_modules/@chassis-ui/website-icons/svgs/bell-outline.svg" alt="Notifications" width="24" height="24" />
+<img src="node_modules/@chassis-ui/website-icons/dist/svgs/bell-outline.svg" alt="Notifications" width="24" height="24" />
 ```
 
 For an icon in the markup of the page, see [SVG sprite]([[docsref:/use-in-project/svg-sprite#accessibility]]). An icon that CSS draws as a mask or a background has no name: keep the text of its element.
@@ -81,18 +81,18 @@ A file has no settings of its own. What its root holds follows from the configur
 
 ### A set of your own
 
-The frame and the prefix are the settings `frame` and `prefix` of `chassis.build`. With `"frame": 16` and `"prefix": "ai"`, the root of `svgs/<name>.svg` has `width="16"`, `height="16"`, `viewBox="0 0 16 16"` and `class="ai-<name>"`.
+The frame and the prefix are the settings `frame` and `prefix` of `chassis.build`. With `"frame": 16` and `"prefix": "ai"`, the root of `dist/svgs/<name>.svg` has `width="16"`, `height="16"`, `viewBox="0 0 16 16"` and `class="ai-<name>"`.
 
 ## Best practices
 
-A file of `svgs/` is output: the build writes it again from `source/`. These practices keep a project on the files as they are built.
+A file of `dist/svgs/` is output: the build writes it again from `source/`. These practices keep a project on the files as they are built.
 
-- **Read the files by name:** `svgs/<name>.svg` is the address of an icon for as long as the icon is in the set.
+- **Read the files by name:** `dist/svgs/<name>.svg` is the address of an icon for as long as the icon is in the set.
 - **Use the sprite for many icons:** a page with many icons loads one file and not one per icon.
 
 Avoid the habits that undo this:
 
-- **Do not edit a file of `svgs/`:** the next build writes it again. Change the icon in `source/`.
+- **Do not edit a file of `dist/svgs/`:** the next build writes it again. Change the icon in `source/`.
 - **Do not expect a color from an image:** an `<img>` element and a `background-image` draw the icon in black. Use the markup, a mask, the sprite or the font for a color.
 
 ## Troubleshooting

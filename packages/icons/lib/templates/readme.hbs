@@ -12,13 +12,13 @@ npm install {{ packageName }}
 
 ## What the package holds
 
-- `icons/{{ name }}.css` and `icons/{{ name }}.min.css`: the stylesheet of the icon font, with one class per icon
-- `icons/{{ name }}.scss`: the same stylesheet for Sass, with the folder of the font and the map of the icons as variables
-- {{# each formats }}`icons/{{ ../name }}.{{ this }}`{{# unless @last }}, {{/ unless }}{{/ each }}: the icon font, which the stylesheets load from their own folder
-- `icons/{{ name }}.svg`: the SVG sprite, one `<symbol>` per icon with the name of the icon as its `id`
-- `icons/{{ name }}.json`: the code point of each icon in the font, by name
-- `icons/{{ name }}.html`: the page of the set, to open in a browser: every icon with its name, and on a click its class, its code point and the code that draws it
-- `svgs/<name>.svg`: one optimized file per icon
+- `dist/svgs/<name>.svg`: one optimized file per icon
+- `dist/web/{{ name }}.css` and `dist/web/{{ name }}.min.css`: the stylesheet of the icon font, with one class per icon
+- `dist/web/{{ name }}.scss`: the same stylesheet for Sass, with the folder of the font and the map of the icons as variables
+- {{# each formats }}`dist/web/{{ ../name }}.{{ this }}`{{# unless @last }}, {{/ unless }}{{/ each }}: the icon font, which the stylesheets load from their own folder
+- `dist/web/{{ name }}.svg`: the SVG sprite, one `<symbol>` per icon with the name of the icon as its `id`
+- `dist/web/{{ name }}.json`: the code point of each icon in the font, by name
+- `dist/icons.json`: the index of the set: its font name, class prefix, frame and styles, and each icon with its code point and its style
 
 {{# if styles }}
 The last part of a name is the style of the icon: {{# each styles }}{{# if @first }}{{ else if @last }} or {{ else }}, {{/ if }}`<name>-{{ this }}`{{/ each }}. The examples below show `{{ icon }}`.
@@ -37,7 +37,7 @@ Browse the icons and their names on the [site of the set]({{ homepage }}).
 One class per icon, `{{ prefix }}-<name>`, on an empty element:
 
 ```html
-<link rel="stylesheet" href="node_modules/{{ packageName }}/icons/{{ name }}.min.css" />
+<link rel="stylesheet" href="node_modules/{{ packageName }}/dist/web/{{ name }}.min.css" />
 
 <i class="{{ prefix }}-{{ icon }}"></i>
 ```
@@ -50,14 +50,14 @@ One file for the whole set, and one `<use>` per icon:
 
 ```html
 <svg width="{{ frame }}" height="{{ frame }}" fill="currentcolor" aria-hidden="true">
-  <use href="node_modules/{{ packageName }}/icons/{{ name }}.svg#{{ icon }}"></use>
+  <use href="node_modules/{{ packageName }}/dist/web/{{ name }}.svg#{{ icon }}"></use>
 </svg>
 ```
 
 ### A single SVG file
 
 ```html
-<img src="node_modules/{{ packageName }}/svgs/{{ icon }}.svg" alt="" width="{{ frame }}" height="{{ frame }}" />
+<img src="node_modules/{{ packageName }}/dist/svgs/{{ icon }}.svg" alt="" width="{{ frame }}" height="{{ frame }}" />
 ```
 
 ### Sass
@@ -66,7 +66,7 @@ The classes of the stylesheet, with the font served from a folder of your own, a
 
 ```scss
 @use 'sass:map';
-@use '{{ packageName }}/icons/{{ name }}.scss' as icons with (
+@use '{{ packageName }}/dist/web/{{ name }}.scss' as icons with (
   ${{ name }}-font-dir: '/fonts'
 );
 
@@ -80,7 +80,7 @@ Sass finds the file in a load path that holds `node_modules`, and so does a bund
 
 ## The source
 
-The package is built from the SVG files of {{# if repository }}its [repository]({{ repository }}){{ else }}`source/`{{/ if }} with [`@chassis-ui/icons`](https://www.npmjs.com/package/@chassis-ui/icons). An icon is added or changed there, and never in the files of `icons/` and `svgs/`.{{# if commands }} `{{ run }} build` writes the output again, `{{ run }} lint` checks the files of the source, and `{{ run }} verify` checks that the output is what the source builds.{{/ if }}
+The package is built from the SVG files of {{# if repository }}its [repository]({{ repository }}){{ else }}`source/`{{/ if }} with [`@chassis-ui/icons`](https://www.npmjs.com/package/@chassis-ui/icons). An icon is added or changed there, and never in the files of `dist/`.{{# if commands }} `{{ run }} build` writes the output again, `{{ run }} lint` checks the files of the source, and `{{ run }} verify` checks that the output is what the source builds.{{/ if }}{{# if preview }} `{{ run }} preview` writes the page of the set into `preview/` and serves it, to browse the icons, their classes, their code points and the code that draws them.{{/ if }}
 {{# if license }}
 
 ## License

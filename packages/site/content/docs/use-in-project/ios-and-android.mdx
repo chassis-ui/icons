@@ -10,23 +10,23 @@ The build of Chassis Icons writes files for the web. An app for iOS or Android g
 
 ## Installation
 
-Chassis Assets reads the two folders of the output as they are. Build your set first, in your repository of icons, so that its `icons/` and `svgs/` folders are what the source builds:
+Chassis Assets reads the two folders of `dist/` as they are: `dist/web/`, the font, its stylesheets and the sprite, and `dist/svgs/`, the SVG files. Build your set first, in your repository of icons, so that the two folders are what the source builds:
 
 ```bash
 npm run build
 npm run verify
 ```
 
-In a repository made with `--pm pnpm`, run `pnpm build` and `pnpm verify`. A published set has the same two folders: for the Chassis set, `icons/` and `svgs/` of the package `@chassis-ui/website-icons`.
+In a repository made with `--pm pnpm`, run `pnpm build` and `pnpm verify`. A published set has the same two folders: for the Chassis set, `dist/web/` and `dist/svgs/` of the package `@chassis-ui/website-icons`. The archive of a release, `<font>-web-<version>.zip`, holds them as `web/` and `svgs/`, beside the index `icons.json` and the page of the set, `preview/`.
 
 ## Basic usage
 
-Copy the two folders into the `icons/` folder of an app of a brand, in your copy of the Chassis Assets repository, and build there. Run this from the root of that repository, with the path of your repository of icons in place of the first part of each address:
+Copy the two folders into the `icons/` folder of an app of a brand, in your copy of the Chassis Assets repository, and build there. Chassis Assets names the folder of the font `icons/`, so `dist/web/` is copied under that name. Run this from the root of that repository, with the path of your repository of icons in place of the first part of each address:
 
 ```bash
 rm -rf source/<brand>/<app>/icons/icons source/<brand>/<app>/icons/svgs
-cp -r /path/to/acme-icons/icons source/<brand>/<app>/icons/icons
-cp -r /path/to/acme-icons/svgs source/<brand>/<app>/icons/svgs
+cp -r /path/to/acme-icons/dist/web source/<brand>/<app>/icons/icons
+cp -r /path/to/acme-icons/dist/svgs source/<brand>/<app>/icons/svgs
 pnpm assets
 ```
 
@@ -48,7 +48,7 @@ The pages of Chassis Assets for [iOS](https://chassis-ui.com/assets/docs/use-in-
 
 ## A set of your own
 
-A brand with icons of its own builds its set with Chassis Icons and copies the output under the same two folder names. Chassis Assets reads the folders and names no font, so a set with another font name and prefix is copied the same way.
+A brand with icons of its own builds its set with Chassis Icons and copies the two folders of its `dist/` under the same names. Chassis Assets reads the folders and names no font, so a set with another font name and prefix is copied the same way.
 
 An app refers to an icon by its name, so a brand that keeps the names of the default brand needs no change in the app.
 
@@ -56,7 +56,7 @@ An app refers to an icon by its name, so a brand that keeps the names of the def
 
 The files in Chassis Assets are a copy of the output of one build. These practices keep the copy whole.
 
-- **Copy both folders together:** `icons/` and `svgs/` come from one build. A font of one version and SVG files of another disagree on the icons they hold.
+- **Copy both folders together:** `dist/web/` and `dist/svgs/` come from one build. A font of one version and SVG files of another disagree on the icons they hold.
 - **Copy after `npm run verify` passes:** the committed output is then what the source builds.
 - **Keep the names across brands:** an app that shows `arrow-right-solid` gets the drawing of the brand it is built for.
 

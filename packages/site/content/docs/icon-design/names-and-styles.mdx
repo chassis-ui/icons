@@ -15,10 +15,11 @@ A name is in kebab-case: lower-case letters and digits, in parts joined by `-`, 
 <CxTable>
 | Where | Form | For the icon `bell-outline` of the Chassis set |
 | --- | --- | --- |
-| The optimized file | `svgs/<name>.svg` | `svgs/bell-outline.svg` |
+| The optimized file | `dist/svgs/<name>.svg` | `dist/svgs/bell-outline.svg` |
 | The symbol of the sprite | `<font>.svg#<name>` | `chassis-icons.svg#bell-outline` |
 | The class of the font | `<prefix>-<name>` | `cx-bell-outline` |
-| The map of code points | The key `<name>` of `icons/<font>.json` | `"bell-outline"` |
+| The map of code points | The key `<name>` of `dist/web/<font>.json` | `"bell-outline"` |
+| The index of the set | The `name` of an entry of `icons` in `dist/icons.json` | `"name": "bell-outline"` |
 </CxTable>
 
 A project draws an icon by its name, so renaming or removing an icon breaks every project that uses it. A set that others read names its contract: `chassis.checks.json` lists the icons that a consumer reads by name, and `npm run verify` fails when one of them is missing.

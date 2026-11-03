@@ -2,8 +2,8 @@
 
 The builder of icon sets of the Chassis Design System, and of any team that wants a library
 of its own: the `chassis-icons` command builds a repository of SVG files into one optimized
-SVG file per icon, an SVG sprite and an icon font with its CSS and SCSS, and writes the
-manifest and the README of the package that holds them. The build is file-driven: save
+SVG file per icon, an SVG sprite, an icon font with its CSS and SCSS and the index of the
+set, and writes the manifest and the README of the package that holds them. The build is file-driven: save
 `<name>.svg` into `source/` and the icon is in the next build. The font name, the class
 prefix, the frame and the styles are settings.
 
@@ -26,16 +26,21 @@ icon, and build:
 
 ```bash
 pnpm lint      # chassis-icons lint-source: each file that cannot be an icon, and why
-pnpm build     # chassis-icons build: svgs/, icons/, codepoints.json, README.md, package.json
+pnpm build     # chassis-icons build: dist/, codepoints.json, README.md, package.json
 pnpm verify    # chassis-icons verify: the output is what the source builds
+pnpm preview   # chassis-icons preview --serve: the page of the set, at http://localhost:4325/
 ```
 
-Commit `source/` and the output together. `pnpm build` writes `svgs/<name>.svg`,
-`icons/<font>.{css,min.css,scss,json,svg,html,woff,woff2}`, `codepoints.json`, the registry
-of the code points, and `README.md`, which shows the four ways to use an icon of your set: the
-font class, the sprite, the SVG file and Sass. `icons/<font>.html` is the page of the set: open
-it in a browser to see every icon with its name, and click one for its class, its code point
-and the code that draws it.
+Commit `source/` and the output together. `pnpm build` writes `dist/svgs/<name>.svg`,
+`dist/web/<font>.{css,min.css,scss,json,svg,woff,woff2}`, `dist/icons.json`, the index of the
+set, `codepoints.json`, the registry of the code points, and `README.md`, which shows the
+four ways to use an icon of your set: the font class, the sprite, the SVG file and Sass. The
+package publishes `dist/`.
+
+`pnpm preview` writes the page of the set into `preview/` from `dist/`, and serves it until
+stopped. The page is drawn with Chassis CSS: search the icons, and click one for a drawer
+with the icon at size, examples of it in Chassis components, and the code that draws it, to
+copy. `preview/` is not committed and not published.
 
 ## Commands
 
@@ -44,7 +49,8 @@ and the code that draws it.
 | `chassis-icons build`         | Writes the output. `--only svgs\|sprite\|font\|package` runs one step, `--dry-run` lists the files that would change          |
 | `chassis-icons verify`        | Fails when the output differs from a fresh build, an icon lost its code point, or an icon of `chassis.checks.json` is missing |
 | `chassis-icons lint-source`   | Checks the files of `source/`: names, frame, one color, no stroke, the pairs of the styles                                    |
-| `chassis-icons archive`       | Writes `archives/<font>-<version>.zip`, with `icons/` and `svgs/` in it, for a release                                        |
+| `chassis-icons preview`       | Writes the page of the set into `preview/`. `--serve` serves it at `http://localhost:4325/`, `--port <n>` at another port     |
+| `chassis-icons archive`       | Writes `archives/<font>-web-<version>.zip`, with `icons.json`, `svgs/`, `web/` and `preview/` in it, for a release            |
 | `chassis-icons release-notes` | Prints the `CHANGELOG.md` entry of the version, and fails without one                                                         |
 | `chassis-icons init [dir]`    | Writes the files of a new repository of icons                                                                                 |
 
@@ -58,7 +64,7 @@ The `chassis.build` block of `package.json`:
 
 | Setting          | Default                 | What it sets                                                                                      |
 | ---------------- | ----------------------- | ------------------------------------------------------------------------------------------------- |
-| `name`           | required                | The name of the font, and of every file of `icons/`                                               |
+| `name`           | required                | The name of the font, and of every file of `dist/web/`                                            |
 | `prefix`         | required                | What a class starts with: `<prefix>-<icon>`                                                       |
 | `source`         | `"source"`              | The folder of your SVG files                                                                      |
 | `checks`         | `"chassis.checks.json"` | The file of the icons that others read by name. It may not exist                                  |

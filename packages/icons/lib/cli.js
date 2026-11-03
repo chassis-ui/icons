@@ -2,7 +2,8 @@
 
 /**
  * @file The `chassis-icons` command: the build of a repository of icons and its checks, the
- * archive and the release notes of a release, and `init`, which writes a new repository.
+ * page of the set, the archive and the release notes of a release, and `init`, which writes a
+ * new repository.
  * Run `chassis-icons --help`.
  */
 
@@ -13,23 +14,28 @@ import { ConfigError, loadConfig } from './config.js'
 import { runInit } from './init.js'
 import { lintSource } from './lint-source.js'
 import { createLogger } from './logger.js'
+import { servePreview, writePreview } from './preview.js'
 import { readReleaseNotes } from './release-notes.js'
 import { buildVersion, isEntry, resolveRoot } from './root.js'
 import { verify } from './verify.js'
 
-const HELP = `Builds an icon set: optimized SVG files, an SVG sprite, an icon font with its
-stylesheets, and the manifest and the README of the package, from the SVG files of the source
-folder and the "chassis.build" block of package.json.
+/** The port of `preview --serve`, beside the port of the site of this repository. */
+const DEFAULT_PORT = 4325
+
+const HELP = `Builds an icon set into dist/: optimized SVG files, an SVG sprite, an icon font
+with its stylesheets and the index of the set, and the manifest and the README of the package,
+from the SVG files of the source folder and the "chassis.build" block of package.json.
 
 Usage: chassis-icons <command> [options]
 
 Commands:
-  build          Write the output: svgs/, icons/, the registry of code points, the README,
-                 and the fields of package.json that name the files of the output
+  build          Write the output: dist/, the registry of code points, the README, and the
+                 fields of package.json that name the files of the output
   verify         Check that the output is what the source builds, that no icon lost its
                  code point, and that the icons of the checks file are there
   lint-source    Check the files of the source folder: names, frame, color, pairs
-  archive        Write <font>-<version>.zip of the output, for a release
+  preview        Write the page of the set into preview/, from the output
+  archive        Write <font>-web-<version>.zip of the output and the page, for a release
   release-notes  Print the changelog entry of a version, and fail without one
   init           Write the files of a new repository of icons into a folder
 
@@ -42,6 +48,10 @@ Options of build:
 
 Options of verify:
   --since <ref>  Compare the code points with those of a commit; the last tag by default
+
+Options of preview:
+  --serve        Serve the page at http://localhost:<port>/ until stopped
+  --port <n>     The port of --serve; ${DEFAULT_PORT} by default, 0 for any free one
 
 Options of archive:
   --to <dir>     Write the archive there; archives/ of the repository by default
@@ -82,6 +92,8 @@ export async function main(args, { cwd = process.cwd(), console: out = console }
         only: { type: 'string' },
         since: { type: 'string' },
         to: { type: 'string' },
+        port: { type: 'string' },
+        serve: { type: 'boolean', default: false },
         'dry-run': { type: 'boolean', default: false },
         verbose: { type: 'boolean', default: false },
         help: { type: 'boolean', short: 'h', default: false },
@@ -176,9 +188,32 @@ export async function main(args, { cwd = process.cwd(), console: out = console }
         return 0
       }
 
+      case 'preview': {
+        const config = loadConfig(root)
+        const port = values.port === undefined ? DEFAULT_PORT : Number(values.port)
+
+        if (!Number.isInteger(port) || port < 0 || port > 65535) {
+          out.error(`--port has to be a port number, and is "${values.port}".`)
+          return 2
+        }
+
+        const files = await writePreview(config)
+
+        for (const file of files) logger.debug(`  ${file}`)
+        logger.success(`${config.previewDir}: ${files.length} files`)
+
+        if (values.serve) {
+          const { url } = await servePreview(config.previewDir, { port })
+
+          logger.info(`The page of the set is at ${url}. Stop with Ctrl+C.`)
+        }
+
+        return 0
+      }
+
       case 'archive': {
         const config = loadConfig(root)
-        const { file, entries } = writeArchive(config, {
+        const { file, entries } = await writeArchive(config, {
           to: values.to === undefined ? undefined : resolveRoot(values.to, cwd)
         })
 

@@ -9,8 +9,8 @@
 ## How to check it
 
 <!--
-The quickest way for a reviewer to see it: the icons to look at in
-`vendor/icons/icons/chassis-icons.html` or on the site, or the check that fails without the change.
+The quickest way for a reviewer to see it: the icons to look at on the page of the set, which
+`pnpm icons:preview` serves, or on the site, or the check that fails without the change.
 -->
 
 ---

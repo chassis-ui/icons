@@ -32,6 +32,9 @@ describe('the command line', () => {
       'build',
       'verify',
       'lint-source',
+      'preview',
+      '--serve',
+      '--port',
       'archive',
       'release-notes',
       'init',
@@ -50,7 +53,8 @@ describe('the command line', () => {
     [['frobnicate'], 'There is no command "frobnicate"'],
     [['build', 'extra'], 'Too many arguments'],
     [['build', '--frobnicate'], "Unknown option '--frobnicate'"],
-    [['build', '--dry-run', '--only', 'font'], 'leave out --only']
+    [['build', '--dry-run', '--only', 'font'], 'leave out --only'],
+    [['preview', '--port', 'any'], '--port has to be a port number']
   ])('answers %j with the exit code 2', async (args, message) => {
     const { code, error } = await run(args)
 
@@ -70,7 +74,8 @@ describe('the command line', () => {
     const { code, dir, log } = await run(['build', '--dry-run'])
 
     expect(code).toBe(0)
-    expect(log).toContain('svgs/bar-fill.svg: missing')
+    expect(log).toContain('dist/svgs/bar-fill.svg: missing')
+    expect(log).toContain('dist/icons.json: missing')
     expect(log).toContain('README.md: missing')
     expect(log).toContain('package.json: changed')
     expect(log).toContain('A build would change 19 files')
@@ -96,12 +101,12 @@ describe('the command line', () => {
 
     expect((await run(['verify'], dir)).code).toBe(0)
 
-    fs.rmSync(path.join(dir, 'svgs/bar-fill.svg'))
+    fs.rmSync(path.join(dir, 'dist/svgs/bar-fill.svg'))
 
     const { code, error } = await run(['verify'], dir)
 
     expect(code).toBe(1)
-    expect(error).toContain('svgs/bar-fill.svg: missing')
+    expect(error).toContain('dist/svgs/bar-fill.svg: missing')
   })
 
   it('checks the source, and fails on a file that cannot be an icon', async () => {
@@ -150,8 +155,22 @@ describe('the command line', () => {
     const { code, log } = await run(['archive', '--to', 'out'], dir)
 
     expect(code).toBe(0)
-    expect(log).toContain('acme-glyphs-2.4.0.zip: 16 files')
-    expect(fs.readdirSync(to)).toEqual(['acme-glyphs-2.4.0.zip'])
+    expect(log).toContain('acme-glyphs-web-2.4.0.zip: 34 files')
+    expect(fs.readdirSync(to)).toEqual(['acme-glyphs-web-2.4.0.zip'])
+  })
+
+  it('writes the page of the set into preview/ with preview, and fails before a build', async () => {
+    const before = await run(['preview'])
+
+    expect(before.code).toBe(1)
+    expect(before.error).toContain('There is no dist/icons.json. Run the build first.')
+
+    const { dir } = await run(['build'])
+    const { code, log } = await run(['preview'], dir)
+
+    expect(code).toBe(0)
+    expect(log).toContain(`${path.join(dir, 'preview')}: 18 files`)
+    expect(fs.existsSync(path.join(dir, 'preview/index.html'))).toBe(true)
   })
 
   it('prints the changelog entry of the version with release-notes, and fails without one', async () => {

@@ -31,8 +31,10 @@ ref/ROADMAP.md         # the plan, its principles, the decisions and the session
 ```
 
 A repository of icons holds `source/`, a `package.json` with the `chassis` block, the
-committed output `svgs/`, `icons/`, `codepoints.json` and `README.md`, and
-`chassis.checks.json` when consumers read icons by name; `chassis-icons init` writes one.
+committed output `dist/` (`icons.json`, `svgs/` and `web/`), `codepoints.json` and
+`README.md`, and `chassis.checks.json` when consumers read icons by name; `chassis-icons init`
+writes one. `preview/`, the page of the set, and `archives/` are written from `dist/` and are
+not committed.
 
 ## Setup and commands
 
@@ -47,6 +49,8 @@ committed output `svgs/`, `icons/`, `codepoints.json` and `README.md`, and
   `--cwd vendor/icons`. The command works on one repository of icons: `--cwd <dir>`, by
   default the nearest folder upward whose `package.json` has a `chassis` block. The root of
   this workspace has none. `node packages/icons/lib/cli.js --help` prints every command.
+- `pnpm icons:preview` writes the page of the set into `vendor/icons/preview/` and serves it
+  at `http://localhost:4325/`.
 - `pnpm dev` runs the site at `http://localhost:4324/icons/`, after `pnpm vendor`.
 
 ## Before a task is done
@@ -74,8 +78,8 @@ The first nine are the principles of [ref/ROADMAP.md](ref/ROADMAP.md#principles)
 - **The build stays file-driven.** A designer saves `<name>.svg` into `source/` of a
   repository of icons and the build does the rest. Do not add a manifest or a list that has
   to be maintained beside the files.
-- **The shape of the output is the contract, for any set.** `icons/<font>.{css,min.css,scss,json,svg,html,woff,woff2}`
-  and `svgs/<name>.svg`, the sprite symbol `<name>`, the class `<prefix>-<name>`, an SVG root
+- **The shape of the output is the contract, for any set.** `dist/web/<font>.{css,min.css,scss,json,svg,woff,woff2}`,
+  `dist/svgs/<name>.svg` and `dist/icons.json`, the sprite symbol `<name>`, the class `<prefix>-<name>`, an SVG root
   with the frame and `fill="currentcolor"`. [docs/architecture.md](docs/architecture.md#output-contract)
   has the contract of each file. A change to it is a minor bump whose changeset starts with
   `**Breaking.**` while the version is `0.x`.

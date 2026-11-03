@@ -1,6 +1,6 @@
 /**
- * @file The second step of the build: the SVG sprite, one `<symbol>` per file of `svgs/` with
- * the name of the icon as its id.
+ * @file The second step of the build: the SVG sprite, one `<symbol>` per file of `dist/svgs/`
+ * with the name of the icon as its id.
  */
 
 import fs from 'node:fs/promises'

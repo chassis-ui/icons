@@ -1,8 +1,8 @@
 /**
  * @file The first step of the build: the SVG files of the source folder, optimized with SVGO
- * and given the root attributes of the set, are written to `svgs/`. The source folder is only
- * read. This module also holds the one SVGO configuration of the build, in the two forms that
- * its two users need: the files, and the symbols of the sprite.
+ * and given the root attributes of the set, are written to `dist/svgs/`. The source folder is
+ * only read. This module also holds the one SVGO configuration of the build, in the two forms
+ * that its two users need: the files, and the symbols of the sprite.
  */
 
 import fs from 'node:fs/promises'
@@ -40,7 +40,7 @@ function sharedPlugins({ convertPathData }) {
 const removeColors = { name: 'removeAttrs', params: { attrs: ['clip-rule', 'fill'] } }
 
 /**
- * The SVGO configuration of a file of `svgs/`: readable, with the path data as it was drawn,
+ * The SVGO configuration of a file of `dist/svgs/`: readable, with the path data as it was drawn,
  * and with the root attributes of the set in a fixed order.
  * @param {import('./config.js').Config} config
  * @param {string} name - The name of the icon
@@ -97,7 +97,7 @@ export function spriteConfig() {
  * @param {import('./config.js').Config} config
  * @param {string} name - The name of the icon
  * @param {string} svg - The contents of its source file
- * @returns {string} The contents of its file in `svgs/`
+ * @returns {string} The contents of its file in `dist/svgs/`
  */
 export function optimizeIcon(config, name, svg) {
   const { data } = optimize(svg, { path: `${name}.svg`, ...fileConfig(config, name) })

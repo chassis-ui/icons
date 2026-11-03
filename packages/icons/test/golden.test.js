@@ -56,14 +56,15 @@ describe('the steps of the build', () => {
     const config = loadConfig(dir)
 
     await build(config, { only: 'svgs', logger })
-    expect(fs.readdirSync(path.join(dir, 'svgs'))).toHaveLength(8)
-    expect(fs.existsSync(path.join(dir, 'icons', 'acme-glyphs.svg'))).toBe(false)
+    expect(fs.readdirSync(path.join(dir, 'dist/svgs'))).toHaveLength(8)
+    expect(fs.readdirSync(path.join(dir, 'dist'))).toEqual(['svgs'])
 
     await build(config, { only: 'sprite', logger })
-    expect(fs.readdirSync(path.join(dir, 'icons'))).toEqual(['acme-glyphs.svg'])
+    expect(fs.readdirSync(path.join(dir, 'dist/web'))).toEqual(['acme-glyphs.svg'])
 
     await build(config, { only: 'font', logger })
-    expect(fs.existsSync(path.join(dir, 'icons', 'acme-glyphs.html'))).toBe(true)
+    expect(fs.existsSync(path.join(dir, 'dist/icons.json'))).toBe(true)
+    expect(fs.existsSync(path.join(dir, 'dist/web/acme-glyphs.woff2'))).toBe(true)
     expect(fs.existsSync(path.join(dir, 'README.md'))).toBe(false)
 
     await build(config, { only: 'package', logger })
@@ -81,8 +82,11 @@ describe('the steps of the build', () => {
     const config = loadConfig(dir)
 
     await build(config, { logger })
-    fs.writeFileSync(path.join(dir, 'icons', 'old-name.woff'), '')
-    fs.writeFileSync(path.join(dir, 'svgs', 'gone-fill.svg'), '<svg/>')
+    fs.writeFileSync(path.join(dir, 'dist/web/old-name.woff'), '')
+    fs.writeFileSync(path.join(dir, 'dist/svgs/gone-fill.svg'), '<svg/>')
+    fs.mkdirSync(path.join(dir, 'dist/android'))
+    fs.writeFileSync(path.join(dir, 'dist/android/old.xml'), '')
+    fs.writeFileSync(path.join(dir, 'dist/old-name.json'), '')
 
     await build(config, { logger })
     expect(readOutput(dir)).toEqual(readOutput(goldenDir))
@@ -119,10 +123,22 @@ describe('the code points of a set that changes', () => {
       if (name in first.icons) expect(codepoint, name).toBe(first.icons[name])
     }
 
-    const css = fs.readFileSync(path.join(dir, 'icons/acme-glyphs.css'), 'utf8')
+    const css = fs.readFileSync(path.join(dir, 'dist/web/acme-glyphs.css'), 'utf8')
 
     expect(css).not.toContain('diamond')
     expect(css).toContain('.ag-anvil-fill::before { content: "\\e908"; }')
-    expect(fs.existsSync(path.join(dir, 'svgs/diamond-fill.svg'))).toBe(false)
+    expect(fs.existsSync(path.join(dir, 'dist/svgs/diamond-fill.svg'))).toBe(false)
+
+    const index = JSON.parse(fs.readFileSync(path.join(dir, 'dist/icons.json'), 'utf8'))
+
+    expect(index.icons.map((/** @type {{ name: string }} */ icon) => icon.name)).not.toContain(
+      'diamond-fill'
+    )
+    expect(index.icons[0]).toEqual({
+      name: 'anvil-fill',
+      codepoint: 'e908',
+      base: 'anvil',
+      style: 'fill'
+    })
   })
 })

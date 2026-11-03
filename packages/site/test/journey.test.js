@@ -159,17 +159,17 @@ function expectSiteOfSet(dir, out) {
   const config = loadConfig(path.join(dir, SET))
   const names = listIcons(config.svgsDir)
   const setPath = 'icons/static/set'
-  const sprite = `/${setPath}/icons/${config.name}.svg`
+  const sprite = `/${setPath}/web/${config.name}.svg`
   const read = (/** @type {string} */ file) => fs.readFileSync(path.join(out, file), 'utf8')
 
   expect(names.length).toBeGreaterThan(0)
 
-  // The set is served as the package holds it, and nothing but the set
+  // The set is served as dist/ of the package holds it, and nothing but the set
   expect(fs.readdirSync(path.join(out, setPath, 'svgs')).sort()).toEqual(
     names.map((name) => `${name}.svg`)
   )
-  expect(fs.readdirSync(path.join(out, setPath, 'icons')).sort()).toEqual(
-    ['css', 'html', 'json', 'min.css', 'scss', 'svg', ...config.formats]
+  expect(fs.readdirSync(path.join(out, setPath, 'web')).sort()).toEqual(
+    ['css', 'json', 'min.css', 'scss', 'svg', ...config.formats]
       .map((extension) => `${config.name}.${extension}`)
       .sort()
   )
@@ -186,7 +186,7 @@ function expectSiteOfSet(dir, out) {
     const html = read(`icons/${name}/index.html`)
     const text = textOf(html)
 
-    expect(html).toContain(`<link rel="stylesheet" href="/${setPath}/icons/${config.name}.css">`)
+    expect(html).toContain(`<link rel="stylesheet" href="/${setPath}/web/${config.name}.css">`)
     expect(html).toContain(`href="/${setPath}/svgs/${name}.svg"`)
     expect(text).toContain(`<i class="${config.prefix}-${name}"></i>`)
     expect(text).toContain(`<use href="${config.name}.svg#${name}"></use>`)

@@ -14,6 +14,7 @@ import {
   repositoryUrl
 } from '../lib/manifest.js'
 import { listIcons } from '../lib/names.js'
+import { writePreview } from '../lib/preview.js'
 import { copyFixture, fixtureDir, listFiles, packageDir, temporaryDir } from './helpers.js'
 
 const read = (/** @type {string} */ dir) =>
@@ -43,10 +44,11 @@ function expectedOutput(dir) {
   const config = loadConfig(dir)
 
   return [
-    ...['css', 'html', 'json', 'min.css', 'scss', 'svg', ...config.formats].map(
-      (extension) => `icons/${config.name}.${extension}`
+    'dist/icons.json',
+    ...['css', 'json', 'min.css', 'scss', 'svg', ...config.formats].map(
+      (extension) => `dist/web/${config.name}.${extension}`
     ),
-    ...listIcons(config.sourceDir).map((name) => `svgs/${name}.svg`)
+    ...listIcons(config.sourceDir).map((name) => `dist/svgs/${name}.svg`)
   ].sort()
 }
 
@@ -55,18 +57,17 @@ describe('the fields of package.json', () => {
 
   it('point at the files of the font name', () => {
     expect(manifestFields(config)).toEqual({
-      main: 'icons/acme-glyphs.css',
-      style: 'icons/acme-glyphs.css',
-      sass: 'icons/acme-glyphs.scss',
-      files: ['icons/acme-glyphs.*', 'svgs/*.svg'],
+      main: 'dist/web/acme-glyphs.css',
+      style: 'dist/web/acme-glyphs.css',
+      sass: 'dist/web/acme-glyphs.scss',
+      files: ['dist'],
       exports: {
         '.': {
-          sass: './icons/acme-glyphs.scss',
-          style: './icons/acme-glyphs.css',
-          default: './icons/acme-glyphs.css'
+          sass: './dist/web/acme-glyphs.scss',
+          style: './dist/web/acme-glyphs.css',
+          default: './dist/web/acme-glyphs.css'
         },
-        './icons/*': './icons/*',
-        './svgs/*': './svgs/*',
+        './dist/*': './dist/*',
         './package.json': './package.json'
       },
       sideEffects: ['*.css', '*.scss']
@@ -88,15 +89,23 @@ describe('the fields of package.json', () => {
     expect(applied.name).toBe('@acme/glyphs')
   })
 
-  it('keep their place, and replace what another font name left', () => {
+  it('keep their place, and replace what another font name or the layout before dist/ left', () => {
     const applied = applyManifestFields(
       {
         main: 'icons/old-name.css',
         name: '@acme/glyphs',
-        files: ['icons/old-name.*', 'svgs/*.svg', '!svgs/draft-*.svg', 'CHANGELOG.md'],
+        files: [
+          'icons/old-name.*',
+          'svgs/*.svg',
+          '!svgs/draft-*.svg',
+          'dist/web/old-name.*',
+          'CHANGELOG.md'
+        ],
         exports: {
           '.': './icons/old-name.css',
-          './icons/old-name.css': './icons/old-name.css',
+          './icons/*': './icons/*',
+          './svgs/*': './svgs/*',
+          './dist/web/old-name.css': './dist/web/old-name.css',
           './names': './names.js'
         }
       },
@@ -104,16 +113,10 @@ describe('the fields of package.json', () => {
     )
 
     expect(Object.keys(applied).slice(0, 4)).toEqual(['main', 'name', 'files', 'exports'])
-    expect(applied.main).toBe('icons/acme-glyphs.css')
+    expect(applied.main).toBe('dist/web/acme-glyphs.css')
     // What a team added for a file of its own stays
-    expect(applied.files).toEqual(['icons/acme-glyphs.*', 'svgs/*.svg', 'CHANGELOG.md'])
-    expect(Object.keys(applied.exports)).toEqual([
-      '.',
-      './icons/*',
-      './svgs/*',
-      './package.json',
-      './names'
-    ])
+    expect(applied.files).toEqual(['dist', 'CHANGELOG.md'])
+    expect(Object.keys(applied.exports)).toEqual(['.', './dist/*', './package.json', './names'])
   })
 
   it('leave the text of a manifest that has them as it is', () => {
@@ -121,7 +124,7 @@ describe('the fields of package.json', () => {
 
     expect(renderManifest(text, config)).toBe(text)
     expect(renderManifest('{"name":"@acme/glyphs"}', config)).toMatch(
-      /^\{\n {2}"name": "@acme\/glyphs",\n {2}"main": "icons\/acme-glyphs\.css",[^]*\n\}\n$/
+      /^\{\n {2}"name": "@acme\/glyphs",\n {2}"main": "dist\/web\/acme-glyphs\.css",[^]*\n\}\n$/
     )
   })
 
@@ -151,7 +154,7 @@ describe('the fields of package.json', () => {
     fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify(manifest))
     await build(loadConfig(dir), { logger })
 
-    expect(read(dir).exports['.'].default).toBe('./icons/acme-marks.css')
+    expect(read(dir).exports['.'].default).toBe('./dist/web/acme-marks.css')
     expect(fs.readFileSync(path.join(dir, 'README.md'), 'utf8')).not.toContain('acme-glyphs')
     expect(packedFiles(dir).filter((file) => file.includes('acme-glyphs'))).toEqual([])
   }, 30_000)
@@ -179,10 +182,12 @@ describe('the README of the package', () => {
     for (const text of [
       '# @acme/glyphs\n',
       'The set has 2 icons. Each is drawn on a frame of 16 by 16',
-      '`icons/acme-glyphs.woff2`, `icons/acme-glyphs.ttf`: the icon font',
+      '`dist/web/acme-glyphs.woff2`, `dist/web/acme-glyphs.ttf`: the icon font',
+      '`dist/icons.json`: the index of the set',
       '`<name>-line` or `<name>-fill`',
       '<i class="ag-bar-fill"></i>',
-      'icons/acme-glyphs.svg#bar-fill',
+      'dist/web/acme-glyphs.svg#bar-fill',
+      'dist/svgs/bar-fill.svg',
       "$acme-glyphs-font-dir: '/fonts'",
       '[site of the set](https://glyphs.acme.example/)',
       '[repository](https://git.acme.example/design/glyphs)'
@@ -204,7 +209,8 @@ describe('the README of the package', () => {
     expect(readme).toContain('built from the SVG files of `source/` with')
     expect(readme).not.toContain('[repository]')
     expect(readme).not.toContain('`npm run build` writes')
-    expect(readme.endsWith('never in the files of `icons/` and `svgs/`.\n')).toBe(true)
+    expect(readme).not.toContain('preview')
+    expect(readme.endsWith('never in the files of `dist/`.\n')).toBe(true)
     expect(readme).not.toMatch(/\n{3}/)
   })
 })
@@ -214,10 +220,11 @@ describe('the package', () => {
     const dir = copyFixture()
 
     await build(loadConfig(dir), { logger })
+    await writePreview(loadConfig(dir))
 
-    // Not the source, the registry or the checks file
+    // Not the source, the registry, the checks file or the page of the set
     expect(packedFiles(dir)).toEqual([...expectedOutput(dir), 'README.md', 'package.json'].sort())
-    expect(expectedOutput(dir)).toContain('icons/acme-glyphs.ttf')
+    expect(expectedOutput(dir)).toContain('dist/web/acme-glyphs.ttf')
   }, 30_000)
 
   it('of the build holds the command, its templates and its documents, and nothing else', () => {
@@ -245,12 +252,15 @@ describe('the package', () => {
     const { resolve } = createRequire(path.join(project, 'index.js'))
     const file = (/** @type {string} */ name) => fs.realpathSync(path.join(dir, name))
 
-    expect(resolve('@acme/glyphs')).toBe(file('icons/acme-glyphs.css'))
-    expect(resolve('@acme/glyphs/icons/acme-glyphs.min.css')).toBe(
-      file('icons/acme-glyphs.min.css')
+    expect(resolve('@acme/glyphs')).toBe(file('dist/web/acme-glyphs.css'))
+    expect(resolve('@acme/glyphs/dist/web/acme-glyphs.min.css')).toBe(
+      file('dist/web/acme-glyphs.min.css')
     )
-    expect(resolve('@acme/glyphs/icons/acme-glyphs.woff2')).toBe(file('icons/acme-glyphs.woff2'))
-    expect(resolve('@acme/glyphs/svgs/bar-fill.svg')).toBe(file('svgs/bar-fill.svg'))
+    expect(resolve('@acme/glyphs/dist/web/acme-glyphs.woff2')).toBe(
+      file('dist/web/acme-glyphs.woff2')
+    )
+    expect(resolve('@acme/glyphs/dist/svgs/bar-fill.svg')).toBe(file('dist/svgs/bar-fill.svg'))
+    expect(resolve('@acme/glyphs/dist/icons.json')).toBe(file('dist/icons.json'))
     expect(resolve('@acme/glyphs/package.json')).toBe(file('package.json'))
     expect(() => resolve('@acme/glyphs/codepoints.json')).toThrow('is not defined by "exports"')
   })

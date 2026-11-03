@@ -9,7 +9,7 @@ import { checkContracts, verify } from '../lib/verify.js'
 import { copyFixture, goldenDir } from './helpers.js'
 
 const goldenCodepoints = () =>
-  JSON.parse(fs.readFileSync(path.join(goldenDir, 'icons/acme-glyphs.json'), 'utf8'))
+  JSON.parse(fs.readFileSync(path.join(goldenDir, 'dist/web/acme-glyphs.json'), 'utf8'))
 
 /** @returns {Promise<{ dir: string, config: import('../lib/config.js').Config }>} */
 async function builtFixture() {
@@ -57,10 +57,10 @@ describe('verify', () => {
 
     const { problems } = await verify(config, { logger })
 
-    expect(problems).toContainEqual(expect.stringContaining('svgs/ring-fill.svg: changed'))
-    expect(problems).toContainEqual(expect.stringContaining('svgs/anvil-fill.svg: missing'))
-    expect(problems).toContainEqual(expect.stringContaining('icons/acme-glyphs.woff2: changed'))
-    expect(problems).toContainEqual(expect.stringContaining('icons/acme-glyphs.html: changed'))
+    expect(problems).toContainEqual(expect.stringContaining('dist/svgs/ring-fill.svg: changed'))
+    expect(problems).toContainEqual(expect.stringContaining('dist/svgs/anvil-fill.svg: missing'))
+    expect(problems).toContainEqual(expect.stringContaining('dist/web/acme-glyphs.woff2: changed'))
+    expect(problems).toContainEqual(expect.stringContaining('dist/icons.json: changed'))
     expect(problems).toContainEqual(expect.stringContaining('codepoints.json: changed'))
     expect(problems.every((problem) => problem.includes('run the build'))).toBe(true)
   })
@@ -68,21 +68,21 @@ describe('verify', () => {
   it('fails on a file in the output that the build does not write', async () => {
     const { dir, config } = await builtFixture()
 
-    fs.writeFileSync(path.join(dir, 'icons/acme-glyphs.eot'), '')
+    fs.writeFileSync(path.join(dir, 'dist/web/acme-glyphs.eot'), '')
 
     expect((await verify(config, { logger })).problems).toEqual([
-      expect.stringContaining('icons/acme-glyphs.eot: the build does not write it')
+      expect.stringContaining('dist/web/acme-glyphs.eot: the build does not write it')
     ])
   })
 
   it('changes no file of the package', async () => {
     const { dir, config } = await builtFixture()
 
-    fs.rmSync(path.join(dir, 'svgs/bar-fill.svg'))
+    fs.rmSync(path.join(dir, 'dist/svgs/bar-fill.svg'))
     fs.rmSync(path.join(dir, 'codepoints.json'))
     await verify(config, { logger })
 
-    expect(fs.existsSync(path.join(dir, 'svgs/bar-fill.svg'))).toBe(false)
+    expect(fs.existsSync(path.join(dir, 'dist/svgs/bar-fill.svg'))).toBe(false)
     expect(fs.existsSync(path.join(dir, 'codepoints.json'))).toBe(false)
   })
 
@@ -122,6 +122,35 @@ describe('verify', () => {
     await expect(verify(config, { since: 'no-such-ref', logger })).rejects.toThrow(
       'Git does not know'
     )
+  })
+
+  it('reads the code points of a tag made before dist/, from icons/<font>.json', async () => {
+    const { dir, config } = await builtFixture()
+    const git = (/** @type {string[]} */ ...args) =>
+      execFileSync('git', ['-c', 'user.name=Test', '-c', 'user.email=test@example.com', ...args], {
+        cwd: dir,
+        stdio: 'ignore'
+      })
+
+    fs.mkdirSync(path.join(dir, 'icons'))
+    fs.copyFileSync(
+      path.join(dir, 'dist/web/acme-glyphs.json'),
+      path.join(dir, 'icons/acme-glyphs.json')
+    )
+    git('init', '--quiet')
+    git('add', 'icons', 'package.json')
+    git('commit', '--quiet', '--no-gpg-sign', '-m', 'A release before dist/')
+    git('tag', 'v2.3.0')
+    fs.rmSync(path.join(dir, 'icons'), { recursive: true })
+
+    expect(await verify(config, { logger })).toMatchObject({ problems: [], notes: [] })
+
+    await swapCodepoints(dir, config)
+
+    expect((await verify(config, { logger })).problems).toEqual([
+      '"bar-fill" moved from the code point e900 to e901 since v2.3.0',
+      '"bar-line" moved from the code point e901 to e900 since v2.3.0'
+    ])
   })
 
   it('says so when there is no earlier state to compare the code points with', async () => {

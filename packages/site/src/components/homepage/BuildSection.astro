@@ -11,16 +11,18 @@ const tree = [
   ...files,
   '│   └── ...',
   '├── package.json',
-  '├── svgs/',
-  '├── icons/',
-  '└── codepoints.json'
+  '├── codepoints.json',
+  '└── dist/',
+  '    ├── icons.json',
+  '    ├── svgs/',
+  '    └── web/'
 ].join('\n')
 
 // A published package is on a CDN. The stylesheet of a private one is served by its project.
 const { name: packageName, version } = set.package
 const stylesheet = set.package.private
-  ? `icons/${set.name}.min.css`
-  : `https://cdn.jsdelivr.net/npm/${packageName}@${version}/icons/${set.name}.min.css`
+  ? `dist/web/${set.name}.min.css`
+  : `https://cdn.jsdelivr.net/npm/${packageName}@${version}/dist/web/${set.name}.min.css`
 ---
 
 <section id="build-section" class="home-section py-3xl md:py-6xl">

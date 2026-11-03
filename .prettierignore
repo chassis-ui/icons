@@ -1,7 +1,7 @@
 # Prettier ignore
 *.css
 *.scss
-packages/icons/lib/templates/*.hbs
+packages/icons/lib/templates/**/*.hbs
 # Templates of init: __NAME__ outside a code span is a placeholder, not bold text
 packages/icons/templates/*.md
 packages/icons/test/golden

@@ -1,12 +1,13 @@
 /**
  * @file The fourth step of the build: what the package says about its output. The files of
- * `icons/` are named after the font, so the fields of package.json that point at them, and
+ * `dist/web/` are named after the font, so the fields of package.json that point at them, and
  * the README that shows how to use them, are written from the configuration.
  */
 
 import fs from 'node:fs'
 import path from 'node:path'
 import Handlebars from 'handlebars'
+import { DIST_DIR } from './config.js'
 
 /** The manifest of the package, and the template of its README beside the other templates. */
 export const MANIFEST_FILE = 'package.json'
@@ -21,19 +22,17 @@ const SIDE_EFFECTS = ['*.css', '*.scss']
  * @returns {{ main: string, style: string, sass: string, files: string[], exports: Record<string, any>, sideEffects: string[] }}
  */
 export function manifestFields(config) {
-  const css = `icons/${config.name}.css`
-  const scss = `icons/${config.name}.scss`
+  const css = `${DIST_DIR}/web/${config.name}.css`
+  const scss = `${DIST_DIR}/web/${config.name}.scss`
 
   return {
     main: css,
     style: css,
     sass: scss,
-    // Every file of the font name: the font, the stylesheets, the sprite and the page
-    files: [`icons/${config.name}.*`, 'svgs/*.svg'],
+    files: [DIST_DIR],
     exports: {
       '.': { sass: `./${scss}`, style: `./${css}`, default: `./${css}` },
-      './icons/*': './icons/*',
-      './svgs/*': './svgs/*',
+      [`./${DIST_DIR}/*`]: `./${DIST_DIR}/*`,
       './package.json': './package.json'
     },
     sideEffects: SIDE_EFFECTS
@@ -42,12 +41,13 @@ export function manifestFields(config) {
 
 /**
  * Whether an entry of `files` or a key of `exports` is about the output, which the build
- * writes, or is one that a team added for a file of its own.
+ * writes, or is one that a team added for a file of its own. `icons/` and `svgs/` are where
+ * the output was before `dist/`, so an entry of them goes too.
  * @param {string} entry
  * @returns {boolean}
  */
 function isOutput(entry) {
-  return /^!?(?:\.\/)?(?:icons|svgs)(?:\/|$)/.test(entry)
+  return /^!?(?:\.\/)?(?:dist|icons|svgs)(?:\/|$)/.test(entry)
 }
 
 /**
@@ -136,9 +136,9 @@ export function renderReadme(config, manifest, names) {
     typeof value === 'string' && value !== '' ? value : null
 
   const scripts = manifest.scripts ?? {}
-  const commands = ['build', 'lint', 'verify'].every(
-    (script) => typeof scripts[script] === 'string' && scripts[script].includes('chassis-icons')
-  )
+  const runsBuild = (/** @type {string} */ script) =>
+    typeof scripts[script] === 'string' && scripts[script].includes('chassis-icons')
+  const commands = ['build', 'lint', 'verify'].every(runsBuild)
 
   return Handlebars.compile(template, { noEscape: true })({
     name: config.name,
@@ -156,6 +156,7 @@ export function renderReadme(config, manifest, names) {
     icon: names[0],
     // The commands of the repository, when package.json has the scripts that init writes
     commands,
+    preview: commands && runsBuild('preview'),
     run: fs.existsSync(path.join(config.packageDir, 'pnpm-lock.yaml')) ? 'pnpm' : 'npm run'
   })
 }

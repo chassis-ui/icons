@@ -57,6 +57,13 @@ export default defineConfig([
     }
   },
   {
+    // The script of the page of a set, which runs in a browser
+    files: ['packages/icons/lib/templates/**/*.js'],
+    languageOptions: {
+      globals: { ...globals.browser }
+    }
+  },
+  {
     files: ['packages/site/**/*.js', 'packages/site/**/*.mjs'],
     languageOptions: {
       globals: { ...globals.browser }

@@ -26,6 +26,24 @@ const DEFAULTS = {
   header: []
 }
 
+/** The folder of the output, and the folder of the page of the set, in a repository of icons. */
+export const DIST_DIR = 'dist'
+export const PREVIEW_DIR = 'preview'
+
+/**
+ * The paths of the output in a folder that holds it as `dist/` does.
+ * @param {string} distDir
+ * @returns {{ distDir: string, svgsDir: string, webDir: string, indexFile: string }}
+ */
+export function outputPaths(distDir) {
+  return {
+    distDir,
+    svgsDir: path.join(distDir, 'svgs'),
+    webDir: path.join(distDir, 'web'),
+    indexFile: path.join(distDir, 'icons.json')
+  }
+}
+
 /** A configuration that the build cannot use. Its message says which setting, and why. */
 export class ConfigError extends Error {
   name = 'ConfigError'
@@ -33,7 +51,7 @@ export class ConfigError extends Error {
 
 /**
  * @typedef {object} Config
- * @property {string} name - The name of the font, and of every file of `icons/`
+ * @property {string} name - The name of the font, and of every file of `dist/web/`
  * @property {string} prefix - What a class of the font starts with, before `-<icon>`
  * @property {number} frame - The width and the height of the frame an icon is drawn on
  * @property {string[]} styles - The last part a name may have; any name when empty
@@ -46,8 +64,14 @@ export class ConfigError extends Error {
  * @property {string} packageDir - The folder of the package
  * @property {string} sourceDir - The SVG files a team saves. The build only reads it
  * @property {string} checksFile - The icons that others read by name. It may not exist
- * @property {string} svgsDir - Output: the optimized SVG files
- * @property {string} iconsDir - Output: the font, its stylesheets and the sprite
+ * @property {string} distDir - Output: everything the build writes but the registry, the
+ *   manifest and the README
+ * @property {string} svgsDir - Output: the optimized SVG files, `dist/svgs/`
+ * @property {string} webDir - Output: the font, its stylesheets, its glyph map and the sprite,
+ *   `dist/web/`
+ * @property {string} indexFile - Output: the index of the set, `dist/icons.json`
+ * @property {string} previewDir - The page of the set, `preview/`, which `chassis-icons
+ *   preview` writes from the output. It is not output: not committed and not published
  * @property {string} registryFile - The code points the set has given out
  * @property {string} templatesDir - The templates of the stylesheets, the page and the README,
  *   beside this file
@@ -178,8 +202,8 @@ export function resolveConfig(manifest, packageDir) {
     packageDir,
     sourceDir: path.resolve(packageDir, source),
     checksFile: path.resolve(packageDir, checks),
-    svgsDir: path.join(packageDir, 'svgs'),
-    iconsDir: path.join(packageDir, 'icons'),
+    ...outputPaths(path.join(packageDir, DIST_DIR)),
+    previewDir: path.join(packageDir, PREVIEW_DIR),
     registryFile: path.join(packageDir, 'codepoints.json'),
     templatesDir: path.join(import.meta.dirname, 'templates')
   }

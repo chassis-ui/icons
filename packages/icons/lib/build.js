@@ -1,20 +1,22 @@
 /**
- * @file The build of a set: the optimized SVG files, the sprite, the font with its
- * stylesheets and the page of the set, and the manifest and the README of the package, written
- * from the source folder and the configuration. It can write to the folders of the package or
- * to any others, which is how `--dry-run` and `verify` build without changing a file of the
- * package.
+ * @file The build of a set: the optimized SVG files, the sprite, the font with its stylesheets
+ * and its glyph map, the index of the set, and the manifest and the README of the package,
+ * written from the source folder and the configuration. The output is `dist/`: `svgs/` and
+ * `icons.json`, which every target reads, and `web/`, the files of the web. The build can
+ * write to the folder of the package or to any other, which is how `--dry-run` and `verify`
+ * build without changing a file of the package.
  */
 
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { allocate, formatRegistry, readRegistry, toHex } from './codepoints.js'
+import { outputPaths } from './config.js'
 import { renderFontFiles } from './font.js'
 import { renderPackageFiles } from './manifest.js'
 import { listIcons } from './names.js'
 import { buildSvgs } from './optimize.js'
-import { renderPreview } from './preview.js'
+import { createIndex, formatIndex } from './set-index.js'
 import { renderSprite } from './sprite.js'
 
 /** The steps of the build, in their order. `--only` runs one of them. */
@@ -33,8 +35,7 @@ export const STEPS = ['svgs', 'sprite', 'font', 'package']
  * @param {import('./config.js').Config} config
  * @param {object} options
  * @param {string} [options.only] - One of `STEPS`; every step when left out
- * @param {string} [options.svgsDir] - Where the SVG files are written; `svgs/` of the package
- * @param {string} [options.iconsDir] - Where the rest is written; `icons/` of the package
+ * @param {string} [options.distDir] - Where the output is written; `dist/` of the package
  * @param {string} [options.packageDir] - Where package.json and the README are written; the
  *   folder of the package
  * @param {boolean} [options.writeRegistry] - Write the registry when the build changes it
@@ -43,19 +44,13 @@ export const STEPS = ['svgs', 'sprite', 'font', 'package']
  */
 export async function build(
   config,
-  {
-    only,
-    svgsDir = config.svgsDir,
-    iconsDir = config.iconsDir,
-    packageDir = config.packageDir,
-    writeRegistry = true,
-    logger
-  }
+  { only, distDir = config.distDir, packageDir = config.packageDir, writeRegistry = true, logger }
 ) {
   if (only !== undefined && !STEPS.includes(only)) {
     throw new Error(`There is no step "${only}". The steps are ${STEPS.join(', ')}.`)
   }
 
+  const { svgsDir, webDir, indexFile } = outputPaths(distDir)
   const runs = (/** @type {string} */ step) => only === undefined || only === step
   /** @type {BuildResult} */
   const result = { icons: 0, added: [], removed: [], registryChanged: false }
@@ -102,7 +97,7 @@ export async function build(
 
     Object.assign(
       files,
-      await renderFontFiles(config, { svgsDir, outDir: iconsDir, codepoints: registry.icons })
+      await renderFontFiles(config, { svgsDir, outDir: webDir, codepoints: registry.icons })
     )
 
     if (result.registryChanged && writeRegistry) {
@@ -113,18 +108,17 @@ export async function build(
       `The font of ${count(names.length, 'glyph')} as ${config.formats.join(', ')}: ${added.length} new, ${removed.length} retired`
     )
 
-    // The page shows the code points, so it is written with them
-    files[`${config.name}.html`] = await renderPreview(config, {
-      names,
-      codepoints: registry.icons
-    })
-    logger.success(`The page of ${count(names.length, 'icon')}`)
+    await fs.mkdir(distDir, { recursive: true })
+    await fs.writeFile(indexFile, formatIndex(createIndex(config, names, registry.icons)))
+    logger.success(`The index of ${count(names.length, 'icon')}`)
   }
 
-  await fs.mkdir(iconsDir, { recursive: true })
+  if (Object.keys(files).length > 0) {
+    await fs.mkdir(webDir, { recursive: true })
+  }
 
   for (const [name, contents] of Object.entries(files)) {
-    await fs.writeFile(path.join(iconsDir, name), contents)
+    await fs.writeFile(path.join(webDir, name), contents)
   }
 
   if (runs('package')) {
@@ -147,13 +141,24 @@ export async function build(
     )
   }
 
-  // A whole build leaves nothing in the folder that it did not write: the files of another
-  // font name, or of a format that the configuration no longer asks for.
+  // A whole build leaves nothing in the output that it did not write: the files of another
+  // font name, of a format that the configuration no longer asks for, or of a folder that the
+  // build no longer writes.
   if (only === undefined) {
-    for (const name of await fs.readdir(iconsDir)) {
-      if (!(name in files) && !name.startsWith('.')) {
-        await fs.rm(path.join(iconsDir, name), { recursive: true })
-        logger.debug(`  ${name} removed: the build does not write it`)
+    /** @type {Array<[string, string[]]>} */
+    const folders = [
+      [webDir, Object.keys(files)],
+      [distDir, [svgsDir, webDir, indexFile].map((file) => path.basename(file))]
+    ]
+
+    for (const [dir, keep] of folders) {
+      for (const name of await fs.readdir(dir)) {
+        if (!keep.includes(name) && !name.startsWith('.')) {
+          await fs.rm(path.join(dir, name), { recursive: true })
+          logger.debug(
+            `  ${relative(path.join(dir, name), distDir)} removed: the build does not write it`
+          )
+        }
       }
     }
   }
@@ -174,16 +179,9 @@ export async function compareWithBuild(config, { logger }) {
   const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'icons-build-'))
 
   try {
-    const built = {
-      svgsDir: path.join(tmp, 'svgs'),
-      iconsDir: path.join(tmp, 'icons'),
-      packageDir: path.join(tmp, 'package')
-    }
+    const built = { distDir: path.join(tmp, 'dist'), packageDir: path.join(tmp, 'package') }
     const result = await build(config, { ...built, writeRegistry: false, logger })
-    const differences = [
-      ...(await compareFolders(config.svgsDir, built.svgsDir, config.packageDir)),
-      ...(await compareFolders(config.iconsDir, built.iconsDir, config.packageDir))
-    ]
+    const differences = await compareFolders(config.distDir, built.distDir, config.packageDir)
 
     for (const name of await fs.readdir(built.packageDir)) {
       const [committed, fresh] = await Promise.all(
@@ -208,16 +206,33 @@ export async function compareWithBuild(config, { logger }) {
 }
 
 /**
+ * The files of a folder and of its folders, without hidden ones.
+ * @param {string} dir
+ * @returns {Promise<string[]>} Their paths from `dir`, with `/`; none when it does not exist
+ */
+async function listTree(dir) {
+  const entries = await fs.readdir(dir, { recursive: true, withFileTypes: true }).catch(() => [])
+
+  return entries
+    .filter(
+      (entry) =>
+        entry.isFile() &&
+        !relative(path.join(entry.parentPath, entry.name), dir)
+          .split('/')
+          .some((part) => part.startsWith('.'))
+    )
+    .map((entry) => relative(path.join(entry.parentPath, entry.name), dir))
+}
+
+/**
  * @param {string} committedDir - A folder of the package
  * @param {string} builtDir - The same folder of a fresh build
  * @param {string} packageDir
  * @returns {Promise<string[]>}
  */
 async function compareFolders(committedDir, builtDir, packageDir) {
-  const list = async (/** @type {string} */ dir) =>
-    (await fs.readdir(dir).catch(() => [])).filter((name) => !name.startsWith('.'))
-  const committed = await list(committedDir)
-  const built = await list(builtDir)
+  const committed = await listTree(committedDir)
+  const built = await listTree(builtDir)
   const differences = []
 
   for (const name of [...new Set([...committed, ...built])].sort()) {

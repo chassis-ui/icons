@@ -54,13 +54,13 @@ npx @chassis-ui/icons init acme-icons --name @acme/icons --pm pnpm
 
 `pnpm dlx @chassis-ui/icons init acme-icons --name @acme/icons --pm pnpm` does the same. `--name` is the name of the package, `--pm` the package manager that the workflows and the scripts name, `npm` by default; `--font`, `--prefix`, `--repository`, `--license` and `--author` fill in the rest, by default from the folder, the `origin` remote and `user.name` of Git. `chassis-icons init --help` lists them, and `--dry-run` prints the files and writes none.
 
-| File                                                        | What it holds                                                                                                                                                           |
-| ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `package.json`                                              | The details of the package, the `chassis.build` block, the scripts `build`, `lint`, `verify`, `archive` and `release-notes`, and `@chassis-ui/icons` as a devDependency |
-| `.gitignore`, `.nvmrc`                                      | The files that are not committed, and the Node.js version of the workflows                                                                                              |
-| `CHANGELOG.md`                                              | The changelog of the set, written by hand, with the entry of the first version                                                                                          |
-| `AGENTS.md`, `CLAUDE.md`                                    | The rules of the repository for AI coding agents                                                                                                                        |
-| `.github/workflows/ci.yml`, `.github/workflows/release.yml` | The checks of a push and a pull request, and the release of a push to `main`                                                                                            |
+| File                                                        | What it holds                                                                                                                                                                      |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `package.json`                                              | The details of the package, the `chassis.build` block, the scripts `build`, `lint`, `verify`, `preview`, `archive` and `release-notes`, and `@chassis-ui/icons` as a devDependency |
+| `.gitignore`, `.nvmrc`                                      | The files that are not committed, and the Node.js version of the workflows                                                                                                         |
+| `CHANGELOG.md`                                              | The changelog of the set, written by hand, with the entry of the first version                                                                                                     |
+| `AGENTS.md`, `CLAUDE.md`                                    | The rules of the repository for AI coding agents                                                                                                                                   |
+| `.github/workflows/ci.yml`, `.github/workflows/release.yml` | The checks of a push and a pull request, and the release of a push to `main`                                                                                                       |
 
 `init` writes nothing when a file exists, and never over `package.json` or `CHANGELOG.md`. It writes no `README.md`, which the build writes, and nothing into `source/`, which is yours.
 
@@ -122,6 +122,7 @@ Everything that is particular to your set is in `package.json`: the details of t
     "build": "chassis-icons build",
     "lint": "chassis-icons lint-source",
     "verify": "chassis-icons verify",
+    "preview": "chassis-icons preview --serve",
     "archive": "chassis-icons archive",
     "release-notes": "chassis-icons release-notes"
   },
@@ -148,17 +149,19 @@ pnpm build
 pnpm verify
 ```
 
-`pnpm lint` names each file that cannot be an icon, and why. `pnpm build` writes `svgs/`, `icons/`, `codepoints.json` and `README.md`, and the fields of `package.json` that name the files of the output. Commit all of them with `source/` and the lockfile: the output is committed, and `pnpm verify` fails in CI when a committed file is not what the source builds. `icons/acme-icons.html` is the page of the set: open it in a browser to see every icon with its name, and click one for its class, its code point and the code that draws it.
+`pnpm lint` names each file that cannot be an icon, and why. `pnpm build` writes `dist/`, `codepoints.json` and `README.md`, and the fields of `package.json` that name the files of the output. Commit all of them with `source/` and the lockfile: the output is committed, and `pnpm verify` fails in CI when a committed file is not what the source builds.
 
-The `README.md` that the build writes for your set shows the four ways to use an icon: the font class, the sprite, the SVG file and Sass. A project takes the two folders as they are:
+`pnpm preview` writes the page of the set into `preview/` from the output, and serves it at `http://localhost:4325/` until you stop it: every icon with its name, and on a click its class, its code point and the code that draws it. `preview/` is not committed.
+
+The `README.md` that the build writes for your set shows the four ways to use an icon: the font class, the sprite, the SVG file and Sass. A project takes the two folders of `dist/` as they are:
 
 ```bash
-cp -r icons svgs /path/to/your-project/static/icons/
+cp -r dist/web dist/svgs /path/to/your-project/static/icons/
 ```
 
 ### 6. Release
 
-A push to `main` with a new version in `package.json` releases it. Write the entry of the version in `CHANGELOG.md`, in the form of [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and set the version, in one commit; the release stops without the entry, and `pnpm release-notes` prints it. The release workflow lints the source, verifies the output, writes the archive `<font>-<version>.zip` with `icons/` and `svgs/` in it, publishes the package to npm with trusted publishing, and creates the tag `v<version>` and its GitHub release with the entry as its body and the archive attached. With `"private": true` in `package.json`, nothing is published to a registry, and the release is the tag and the archive. [Releases](.github/CONTRIBUTING.md#a-repository-of-icons) has the details.
+A push to `main` with a new version in `package.json` releases it. Write the entry of the version in `CHANGELOG.md`, in the form of [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and set the version, in one commit; the release stops without the entry, and `pnpm release-notes` prints it. The release workflow lints the source, verifies the output, writes the archive `<font>-web-<version>.zip` with `icons.json`, `svgs/`, `web/` and the page of the set in `preview/`, publishes the package to npm with trusted publishing, and creates the tag `v<version>` and its GitHub release with the entry as its body and the archive attached. With `"private": true` in `package.json`, nothing is published to a registry, and the release is the tag and the archive. [Releases](.github/CONTRIBUTING.md#a-repository-of-icons) has the details.
 
 ### 7. Take a newer build
 
@@ -168,7 +171,7 @@ A newer version of the build reaches your repository through its devDependency. 
 pnpm install
 pnpm build
 pnpm verify
-git diff -- icons svgs codepoints.json README.md package.json
+git diff -- dist codepoints.json README.md package.json
 ```
 
 The files that `init` wrote are yours from then on, and a newer version does not write over them. `chassis-icons init --check` reports which of them differ from what the installed version writes, such as the workflows and `AGENTS.md`, and exits 1 when one does. `chassis-icons init --only <file…> --force` writes the ones you want again; `package.json` and `CHANGELOG.md` are never written over.
@@ -185,7 +188,7 @@ A pnpm workspace of two packages, with the Chassis set as a submodule.
 ```text
 packages/icons/           -> @chassis-ui/icons, the builder, published to npm
   lib/                    -> The chassis-icons command: cli.js, the modules of the build
-  lib/templates/          -> The Handlebars templates of the stylesheets and of the README of a set
+  lib/templates/          -> The Handlebars templates of the stylesheets, of the README and of the page of a set
   templates/              -> What chassis-icons init writes into a repository of icons
   test/                   -> The tests of the build, on the fixture: the repository of icons of another team
   README.md               -> The README of the package on npm
@@ -200,7 +203,7 @@ ref/ROADMAP.md            -> The plan of this repository, its principles and dec
 .gitmodules               -> The entry of the vendor/icons submodule
 ```
 
-A repository of icons, such as `vendor/icons`, holds `source/`, `package.json` with the `chassis.build` block, the output `svgs/`, `icons/`, `codepoints.json` and `README.md`, which the build writes and the repository commits, `chassis.checks.json` when consumers read icons by name, and the files that `init` wrote.
+A repository of icons, such as `vendor/icons`, holds `source/`, `package.json` with the `chassis.build` block, the output `dist/`, `codepoints.json` and `README.md`, which the build writes and the repository commits, `chassis.checks.json` when consumers read icons by name, and the files that `init` wrote.
 
 ## Commands
 
@@ -210,14 +213,15 @@ Every command runs from the root. The `pnpm icons:*` scripts run the `chassis-ic
 
 The package has one command, `chassis-icons`, that builds and checks a repository of icons. A team installs `@chassis-ui/icons` in a repository of its own icons and runs it there, through the scripts that `init` wrote.
 
-| Command                       | What it does                                                                                                            | Script here              |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `chassis-icons build`         | Writes the output: `svgs/`, `icons/`, the registry of the code points, the README and the manifest fields               | `pnpm icons`             |
-| `chassis-icons verify`        | Fails when the output differs from a fresh build, an icon lost its code point, or an icon of the checks file is missing | `pnpm icons:verify`      |
-| `chassis-icons lint-source`   | Checks the files of `source/`: names, frame, one color, no stroke, the pairs of the styles                              | `pnpm icons:lint:source` |
-| `chassis-icons archive`       | Writes `<font>-<version>.zip` with `icons/` and `svgs/` in it, to `archives/` or `--to <dir>`. Needs `zip`              | `pnpm icons:archive`     |
-| `chassis-icons release-notes` | Prints the `CHANGELOG.md` entry of a version, without its heading, and fails without one                                |                          |
-| `chassis-icons init [dir]`    | Writes the files of a new repository of icons into a folder                                                             |                          |
+| Command                       | What it does                                                                                                                                      | Script here              |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| `chassis-icons build`         | Writes the output: `dist/`, the registry of the code points, the README and the manifest fields                                                   | `pnpm icons`             |
+| `chassis-icons verify`        | Fails when the output differs from a fresh build, an icon lost its code point, or an icon of the checks file is missing                           | `pnpm icons:verify`      |
+| `chassis-icons lint-source`   | Checks the files of `source/`: names, frame, one color, no stroke, the pairs of the styles                                                        | `pnpm icons:lint:source` |
+| `chassis-icons preview`       | Writes the page of the set into `preview/`, from `dist/`. With `--serve`, serves it at `http://localhost:4325/` until stopped, or at `--port <n>` | `pnpm icons:preview`     |
+| `chassis-icons archive`       | Writes `<font>-web-<version>.zip` with `icons.json`, `svgs/`, `web/` and `preview/` in it, to `archives/` or `--to <dir>`. Needs `zip`            | `pnpm icons:archive`     |
+| `chassis-icons release-notes` | Prints the `CHANGELOG.md` entry of a version, without its heading, and fails without one                                                          |                          |
+| `chassis-icons init [dir]`    | Writes the files of a new repository of icons into a folder                                                                                       |                          |
 
 Every command but `init` works on one repository of icons: `--cwd <dir>`, by default the nearest folder upward from the working directory whose `package.json` has a `chassis` block. The root of this workspace has none. `--verbose` says more, `--version` prints the version of the build, and the exit code is 1 when a command failed and 2 when it was not understood.
 
@@ -228,13 +232,14 @@ pnpm icons                  # The whole output of vendor/icons: SVG files, sprit
 pnpm icons --dry-run        # List the files that a build would change, and change none
 pnpm icons --only font      # One step: svgs, sprite, font or package
 pnpm icons --verbose        # Each file that is written, and each code point that is given or retired
-pnpm icons:svgs             # The step svgs: source/ optimized into svgs/
+pnpm icons:svgs             # The step svgs: source/ optimized into dist/svgs/
 pnpm icons:sprite           # The step sprite: the SVG sprite
-pnpm icons:font             # The step font: the font, its stylesheets, the code points and the page of the set
+pnpm icons:font             # The step font: the font, its stylesheets, the code points and the index of the set
+pnpm icons:preview          # The page of vendor/icons, into its preview/, served at http://localhost:4325/
 pnpm icons:archive          # The archive of vendor/icons, into .cache/archives/
 ```
 
-A whole build removes from `svgs/` each file whose source is gone, and from `icons/` each file that it did not write, such as the files of another font name. The steps after `svgs` read `svgs/`, so `--only sprite` and `--only font` build from the files that are there. Nothing that `pnpm icons` writes into `vendor/icons` is committed from here: the output of the Chassis set is committed in chassis-ui/website-icons.
+A whole build removes from `dist/svgs/` each file whose source is gone, and from `dist/` and `dist/web/` each file that it did not write, such as the files of another font name. The steps after `svgs` read `dist/svgs/`, so `--only sprite` and `--only font` build from the files that are there. Nothing that `pnpm icons` writes into `vendor/icons` is committed from here: the output of the Chassis set is committed in chassis-ui/website-icons.
 
 ### Check
 
@@ -296,7 +301,7 @@ The build reads one block of the `package.json` of a repository of icons. A sett
 
 | Setting          | Default                 | What it sets                                                                                        |
 | ---------------- | ----------------------- | --------------------------------------------------------------------------------------------------- |
-| `name`           | required                | The name of the font, and of every file of `icons/`: `<name>.css`, `<name>.svg`, `<name>.woff2`     |
+| `name`           | required                | The name of the font, and of every file of `dist/web/`: `<name>.css`, `<name>.svg`, `<name>.woff2`  |
 | `prefix`         | required                | What a class starts with: `<prefix>-<icon>`. Also the class of each SVG file and sprite symbol      |
 | `source`         | `"source"`              | The folder of your SVG files, from the folder of `package.json`                                     |
 | `checks`         | `"chassis.checks.json"` | The file of the icons that others read by name, from the folder of `package.json`. It may not exist |
@@ -313,14 +318,14 @@ The build reads one block of the `package.json` of a repository of icons. A sett
 
 The other fields of the `package.json` of a repository of icons describe the package, and the build and the release workflow read them.
 
-| Field                                                      | Who writes it | What it does                                                                                                             |
-| ---------------------------------------------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `name`, `version`                                          | You           | The package that the release workflow publishes, and the `{version}` of `header`                                         |
-| `description`, `homepage`, `repository`, `license`         | You           | Shown in the README of the set: the first paragraph, the link to your site, the link to the source, the license          |
-| `main`, `style`, `sass`, `files`, `exports`, `sideEffects` | The build     | Name the files of the font. An entry of `files` or `exports` that is not about `icons/` or `svgs/` is yours, and is kept |
-| `private`                                                  | You           | With `true`, the release workflow publishes nothing, and the release is the tag and the archive on GitHub                |
-| `publishConfig`                                            | You           | Read by npm when it publishes: `access`, and `provenance`. Set `provenance` to `false` to publish from your own machine  |
-| `scripts`, `devDependencies`                               | `init`        | The scripts that run the command, and the version of the build. Bump the dependency to take a newer build                |
+| Field                                                      | Who writes it | What it does                                                                                                                                                     |
+| ---------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`, `version`                                          | You           | The package that the release workflow publishes, and the `{version}` of `header`                                                                                 |
+| `description`, `homepage`, `repository`, `license`         | You           | Shown in the README of the set: the first paragraph, the link to your site, the link to the source, the license                                                  |
+| `main`, `style`, `sass`, `files`, `exports`, `sideEffects` | The build     | Name the files of the font. An entry of `files` or `exports` that is not about `dist/`, or about `icons/` and `svgs/` of an earlier build, is yours, and is kept |
+| `private`                                                  | You           | With `true`, the release workflow publishes nothing, and the release is the tag and the archive on GitHub                                                        |
+| `publishConfig`                                            | You           | Read by npm when it publishes: `access`, and `provenance`. Set `provenance` to `false` to publish from your own machine                                          |
+| `scripts`, `devDependencies`                               | `init`        | The scripts that run the command, and the version of the build. Bump the dependency to take a newer build                                                        |
 
 ### The checks file
 
@@ -338,6 +343,8 @@ The other fields of the `package.json` of a repository of icons describe the pac
 
 `readme.hbs` is the template of the `README.md` of a set. It gets `packageName`, `description`, `homepage`, `repository` and `license` from `package.json`, `name`, `prefix`, `frame`, `styles` and `formats` from the configuration, the number of icons as `count`, and the first icon as `icon`.
 
+`preview/` holds the template of the page of a set: `index.hbs`, written as `index.html`, and `preview.css` and `preview.js`, copied beside it. `index.hbs` gets the index of the set, `dist/icons.json`, and the name and the version of the package.
+
 `packages/icons/templates/` holds what `chassis-icons init` writes: `AGENTS.md`, `CHANGELOG.md`, `CLAUDE.md`, `gitignore` and the two workflows of `workflows/`. A file is written once and is the repository's from then on; a change here reaches a repository made earlier only when its team runs `init --check` and `init --only <file…> --force`.
 
 ### The code points
@@ -346,30 +353,30 @@ The other fields of the `package.json` of a repository of icons describe the pac
 
 ## Output
 
-`chassis-icons build` writes two folders, and their shape is the same for any set. `<font>` is `name` of the configuration, `<prefix>` its `prefix`, and `<name>` the name of an icon.
+`chassis-icons build` writes one folder, `dist/`, and its shape is the same for any set. `<font>` is `name` of the configuration, `<prefix>` its `prefix`, and `<name>` the name of an icon.
 
-| File                                       | What it holds                                                                                          |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-| `svgs/<name>.svg`                          | One icon, optimized, on the frame, with `fill="currentcolor"` and the class `<prefix>-<name>`          |
-| `icons/<font>.svg`                         | The sprite: one `<symbol>` per icon, with the id `<name>`                                              |
-| `icons/<font>.woff2`, `.woff`, `.ttf`      | The icon font, in the formats of the configuration                                                     |
-| `icons/<font>.css`, `icons/<font>.min.css` | The font face and one class per icon, `<prefix>-<name>`. They load the font from their own folder      |
-| `icons/<font>.scss`                        | The same for Sass, with the folder of the font, the hash and the map of the icons as `!default` values |
-| `icons/<font>.json`                        | The code point of each icon, by name, as a number                                                      |
-| `icons/<font>.html`                        | The page of the set: every icon with its name, a search box, and on a click the code that draws it     |
+| File                                             | What it holds                                                                                                                                                                 |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `dist/icons.json`                                | The index of the set: `name`, `prefix`, `frame`, `styles` and `pairs` of the configuration, and each icon with its code point, and its base and style when the set has styles |
+| `dist/svgs/<name>.svg`                           | One icon, optimized, on the frame, with `fill="currentcolor"` and the class `<prefix>-<name>`                                                                                 |
+| `dist/web/<font>.svg`                            | The sprite: one `<symbol>` per icon, with the id `<name>`                                                                                                                     |
+| `dist/web/<font>.woff2`, `.woff`, `.ttf`         | The icon font, in the formats of the configuration                                                                                                                            |
+| `dist/web/<font>.css`, `dist/web/<font>.min.css` | The font face and one class per icon, `<prefix>-<name>`. They load the font from their own folder                                                                             |
+| `dist/web/<font>.scss`                           | The same for Sass, with the folder of the font, the hash and the map of the icons as `!default` values                                                                        |
+| `dist/web/<font>.json`                           | The code point of each icon, by name, as a number                                                                                                                             |
 
-Beside them, at the root of the repository, `codepoints.json`, `README.md`, and the fields of `package.json` that name the files. [docs/architecture.md](docs/architecture.md#output-contract) has the contract of each file.
+Beside it, at the root of the repository, `codepoints.json`, `README.md`, and the fields of `package.json` that name the files. `files` of `package.json` publishes `dist/`. `chassis-icons preview` writes the page of the set into `preview/` from `dist/`: every icon with its name, a search box, and on a click the code that draws it. The page is not output: it is not committed, not published and not compared by `verify`. [docs/architecture.md](docs/architecture.md#output-contract) has the contract of each file.
 
 ## What reads the output
 
 The siblings of this repository take any set that keeps the shape above. None of them names the Chassis set in a way that a team cannot configure.
 
-| Consumer                                                    | What it reads                                                                                                                                            | How a team points it at its own set                    |
-| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| [Chassis CSS](https://github.com/chassis-ui/css)            | An SVG file by name: `svg-icon("<name>")` is the address of `svgs/<name>.svg`                                                                            | `$icon-url-prefix`, or serve `svgs/` at that address   |
-| [Chassis React](https://github.com/chassis-ui/react)        | `<Icon name>`: the sprite symbol `#<name>`, or with `font` the class `<fontPrefix><name>`                                                                | `IconProvider`: `sprite`, `fontPrefix`, `icons`        |
-| [`@chassis-ui/docs`](https://github.com/chassis-ui/website) | `/static/icons/chassis-icons.css` and the symbols of `/static/icons/chassis-icons.svg`, copied from `icons/` of the installed package of the Chassis set | The `sprite` prop of `Icon`; otherwise the Chassis set |
-| [Chassis Assets](https://github.com/chassis-ui/assets)      | The two folders as they are, copied into its `source/` and renamed per platform for the web, iOS and Android                                             | A brand copies the output of its own build             |
+| Consumer                                                    | What it reads                                                                                                                                            | How a team points it at its own set                       |
+| ----------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| [Chassis CSS](https://github.com/chassis-ui/css)            | An SVG file by name: `svg-icon("<name>")` is the address of `dist/svgs/<name>.svg`                                                                       | `$icon-url-prefix`, or serve `dist/svgs/` at that address |
+| [Chassis React](https://github.com/chassis-ui/react)        | `<Icon name>`: the sprite symbol `#<name>`, or with `font` the class `<fontPrefix><name>`                                                                | `IconProvider`: `sprite`, `fontPrefix`, `icons`           |
+| [`@chassis-ui/docs`](https://github.com/chassis-ui/website) | `/static/icons/chassis-icons.css` and the symbols of `/static/icons/chassis-icons.svg`, copied from `icons/` of the installed package of the Chassis set | The `sprite` prop of `Icon`; otherwise the Chassis set    |
+| [Chassis Assets](https://github.com/chassis-ui/assets)      | The output of a set, copied into its `source/` and renamed per platform for the web, iOS and Android                                                     | A brand copies the output of its own build                |
 
 The Chassis set also promises its names: the Chassis sites and Chassis React draw their own interface with icons of it. Those names are the `contracts` of `chassis.checks.json` of chassis-ui/website-icons.
 

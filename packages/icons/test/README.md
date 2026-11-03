@@ -10,7 +10,7 @@ The tests build the fixture, not the Chassis set, so that a part of the build th
 
 ## The golden output
 
-`golden/` is what the build writes for the fixture: `svgs/`, `icons/`, `codepoints.json` and `README.md`. `golden.test.js` builds the fixture and compares every file with it, byte for byte.
+`golden/` is what the build writes for the fixture: `dist/`, with `icons.json`, `svgs/` and `web/`, and `codepoints.json` and `README.md`. `golden.test.js` builds the fixture and compares every file with it, byte for byte. The page of the set is not output, so it has no golden file: `preview.test.js` checks it.
 
 After a change that is meant to change the output, write the golden files again and read the diff before you commit it:
 
@@ -23,23 +23,23 @@ Never edit a golden file by hand. Prettier leaves the folder alone.
 
 ## The test files
 
-| File                    | What it covers                                                                                                                                                  |
-| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `names.test.js`         | The names of the icons: kebab-case, the styles, the order                                                                                                       |
-| `config.test.js`        | The `chassis.build` block: its defaults, the folders it resolves, and every setting that is refused                                                             |
-| `codepoints.test.js`    | The registry: an icon keeps its code point, a removed one is retired, the checks                                                                                |
-| `templates.test.js`     | The templates of the stylesheets, and the minified CSS                                                                                                          |
-| `preview.test.js`       | The page of the set: what it links and draws, the JSON of the icons it carries, and the step that writes it                                                     |
-| `lint-source.test.js`   | The check of the source: frame, color, strokes, scripts, names, pairs                                                                                           |
-| `golden.test.js`        | The build of the fixture against the golden output, its steps, and a set that changes                                                                           |
-| `verify.test.js`        | `verify`: an output that is not built again, a moved code point, a missing icon of a contract                                                                   |
-| `manifest.test.js`      | The fields of `package.json` and the README of a set; what npm packs of a set and of the builder, and what resolves by name                                     |
-| `archive.test.js`       | `archive`: the archive of the output, where it is written, and an output that is not built                                                                      |
-| `release-notes.test.js` | `release-notes`: the entry of a version in either style of changelog, and a version without one                                                                 |
-| `init.test.js`          | `init`: the files it plans and writes, its options and their defaults, `--only`, `--check` and a dry run                                                        |
-| `journey.test.js`       | A team that writes a repository with `init`, saves its SVG files, builds, verifies, archives, and passes `init --check`                                         |
-| `cli.test.js`           | The command line: its commands, its options, where it finds the repository, and its exit codes                                                                  |
-| `scripts.test.js`       | The scripts of the root: delegation with `run` and `--cwd vendor/icons`; the changelog entry of a changeset; `checkChangeset` and `syncVersionRefs` of `build/` |
+| File                    | What it covers                                                                                                                                                                   |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `names.test.js`         | The names of the icons: kebab-case, the styles, the order                                                                                                                        |
+| `config.test.js`        | The `chassis.build` block: its defaults, the folders it resolves, and every setting that is refused                                                                              |
+| `codepoints.test.js`    | The registry: an icon keeps its code point, a removed one is retired, the checks                                                                                                 |
+| `templates.test.js`     | The templates of the stylesheets, and the minified CSS                                                                                                                           |
+| `preview.test.js`       | The page of the set: what it links and draws, the JSON of the icons it carries, the command that writes it into `preview/` from `dist/`, and the server of `--serve`             |
+| `lint-source.test.js`   | The check of the source: frame, color, strokes, scripts, names, pairs                                                                                                            |
+| `golden.test.js`        | The build of the fixture against the golden output, its steps, what a whole build removes from `dist/`, and a set that changes, in the registry, the stylesheet and the index    |
+| `verify.test.js`        | `verify`: an output that is not built again, a moved code point, a tag made before `dist/`, a missing icon of a contract                                                         |
+| `manifest.test.js`      | The fields of `package.json`, and what they replace of the layout before `dist/`, and the README of a set; what npm packs of a set and of the builder, and what resolves by name |
+| `archive.test.js`       | `archive`: the archive of the output for the web and of the page of the set, where it is written, and an output that is not built                                                |
+| `release-notes.test.js` | `release-notes`: the entry of a version in either style of changelog, and a version without one                                                                                  |
+| `init.test.js`          | `init`: the files it plans and writes, its options and their defaults, `--only`, `--check` and a dry run                                                                         |
+| `journey.test.js`       | A team that writes a repository with `init`, saves its SVG files, builds, verifies, archives, and passes `init --check`                                                          |
+| `cli.test.js`           | The command line: its commands, its options, where it finds the repository, and its exit codes                                                                                   |
+| `scripts.test.js`       | The scripts of the root: delegation with `run` and `--cwd vendor/icons`; the changelog entry of a changeset; `checkChangeset` and `syncVersionRefs` of `build/`                  |
 
 ## The test of the site
 

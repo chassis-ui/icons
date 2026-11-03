@@ -48,7 +48,7 @@ This is a file as a design tool exports it, for a set with a frame of `16`:
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M2 5H14V11H2V5ZM4 7V9H12V7H4Z" fill="#000"/></svg>
 ```
 
-The build writes this file to `svgs/` for it, in a set with the prefix `ag`:
+The build writes this file to `dist/svgs/` for it, in a set with the prefix `ag`:
 
 ```svg
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentcolor" class="ag-bar-line" viewBox="0 0 16 16">
@@ -86,7 +86,7 @@ The build writes what the source holds. These practices cover what a file needs 
 
 Avoid the habits that undo this:
 
-- **Do not fix a file in `svgs/`:** the next build writes it again from `source/`. Change the source file.
+- **Do not fix a file in `dist/svgs/`:** the next build writes it again from `source/`. Change the source file.
 - **Do not rely on `clip-rule`:** the build removes it with the fills.
 
 ## Next steps

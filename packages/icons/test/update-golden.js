@@ -24,7 +24,7 @@ try {
   fs.rmSync(goldenDir, { recursive: true, force: true })
   fs.mkdirSync(goldenDir, { recursive: true })
 
-  for (const entry of ['svgs', 'icons', 'codepoints.json', 'README.md']) {
+  for (const entry of ['dist', 'codepoints.json', 'README.md']) {
     fs.cpSync(path.join(dir, entry), path.join(goldenDir, entry), { recursive: true })
   }
 

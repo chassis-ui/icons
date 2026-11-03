@@ -5,10 +5,13 @@
 `@chassis-ui/icons` is pre-1.0. Only the latest published version gets fixes; there are no
 maintenance branches for older versions.
 
-The published package holds generated files only (SVG files, an SVG sprite, the icon font and
-its CSS and SCSS in `icons/` and `svgs/`); it has no dependencies and runs no code in your app.
-The build scripts in `packages/icons/lib/` and `build/`, and the documentation site, run on
-contributors' machines, in CI and on Vercel.
+The published package is the builder: the `chassis-icons` command, its templates and its
+dependencies. It runs on the machines and in the CI of the teams that build a set with it, and
+never in an app. What it writes into a repository of icons, in `dist/`, is generated files
+only: SVG files, an SVG sprite, the icon font, its CSS and SCSS, and JSON. The page of a set,
+which `chassis-icons preview` writes into `preview/`, holds a script, and `--serve` serves it on
+`localhost` only. The scripts in `build/` and the documentation site run on contributors'
+machines, in CI and on Vercel.
 
 ## Reporting a vulnerability
 

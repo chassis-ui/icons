@@ -9,18 +9,19 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { loadConfig } from '../../../icons/lib/config.js'
-import { listIcons, parseName } from '../../../icons/lib/names.js'
+import { listIcons } from '../../../icons/lib/names.js'
+import { parseIndex } from '../../../icons/lib/set-index.js'
 
 /**
- * URL path that the set of the repository is served from, in the folders of the package:
- * `icons/` and `svgs/`. It is under the path of the site, as the files of the Astro build
+ * URL path that the set of the repository is served from, in the folders of its `dist/`:
+ * `web/` and `svgs/`. It is under the path of the site, as the files of the Astro build
  * are, and apart from `/static/icons/`, which holds the icons of the site's own interface.
  */
 export const SET_PATH = '/icons/static/set'
 
 /** What the pages read of the set. It is the default export of `virtual:icon-set`. */
 export interface IconSet {
-  /** The name of the font, and of every file of `icons/`. */
+  /** The name of the font, and of every file of `dist/web/`. */
   name: string
   /** The name of the set for a reader, made of the name of the font. */
   title: string
@@ -61,7 +62,7 @@ export function getSetFiles(siteRoot: string): string[] {
   const dir = getSetDir(siteRoot)
   const config = loadConfig(dir)
 
-  return [path.join(dir, 'package.json'), path.join(config.iconsDir, `${config.name}.json`)]
+  return [path.join(dir, 'package.json'), config.indexFile]
 }
 
 /** A name in kebab-case as a title: `arrow-right` is "Arrow Right". */
@@ -72,14 +73,14 @@ export function toTitle(name: string): string {
     .join(' ')
 }
 
-function readCodepoints(file: string): Record<string, number> {
+function readIndex(file: string) {
   if (!fs.existsSync(file)) {
     throw new Error(
       `The output of the icon set is missing: ${file} does not exist. Run \`pnpm vendor\` first, and \`pnpm icons\` after a change to the set.`
     )
   }
 
-  return JSON.parse(fs.readFileSync(file, 'utf8'))
+  return parseIndex(fs.readFileSync(file, 'utf8'))
 }
 
 /**
@@ -121,54 +122,49 @@ export function loadIconSet(siteRoot: string, exampleIcon?: string): IconSet {
     },
     exampleIcon: exampleIcon ?? names[0],
     path: {
-      stylesheet: `${SET_PATH}/icons/${config.name}.css`,
-      sprite: `${SET_PATH}/icons/${config.name}.svg`,
+      stylesheet: `${SET_PATH}/web/${config.name}.css`,
+      sprite: `${SET_PATH}/web/${config.name}.svg`,
       svgs: `${SET_PATH}/svgs`
     }
   }
 }
 
-/** Reads the icons of the set, in the order of their names. */
+/** Reads the icons of the set from its index, `dist/icons.json`, in the order of their names. */
 export function loadIcons(siteRoot: string): SetIcon[] {
   const config = loadConfig(getSetDir(siteRoot))
-  const codepoints = readCodepoints(path.join(config.iconsDir, `${config.name}.json`))
+  const index = readIndex(config.indexFile)
+  const names = listIcons(config.svgsDir)
+  const indexed = index.icons.map((icon) => icon.name)
 
-  return listIcons(config.svgsDir).map((name) => {
-    const codepoint = codepoints[name]
+  if (names.join() !== indexed.join()) {
+    throw new Error(
+      `The index of the icon set does not name the SVG files of ${config.svgsDir}. Run \`pnpm icons\` to build the set again.`
+    )
+  }
 
-    if (codepoint === undefined) {
-      throw new Error(
-        `The icon "${name}" has no code point in ${config.name}.json. Run \`pnpm icons\` to build the set again.`
-      )
-    }
-
-    const parsed = parseName(name, config.styles)
-    const { base, style } = 'error' in parsed ? { base: name, style: null } : parsed
-
-    return {
-      name,
-      base,
-      style: style ?? undefined,
-      codepoint: codepoint.toString(16).toUpperCase(),
-      svg: fs.readFileSync(path.join(config.svgsDir, `${name}.svg`), 'utf8')
-    }
-  })
+  return index.icons.map(({ name, codepoint, base, style }) => ({
+    name,
+    base: base ?? name,
+    style,
+    codepoint: codepoint.toUpperCase(),
+    svg: fs.readFileSync(path.join(config.svgsDir, `${name}.svg`), 'utf8')
+  }))
 }
 
 /**
  * Copies the output of the set into the `public` directory of the site, so that it is served
  * from `SET_PATH`. The stylesheet loads the font from its own folder, so the folders keep
- * the names they have in the package. Only the files that the package publishes are copied:
+ * the names they have in `dist/`. Only the files that the package publishes are copied:
  * those of the font name, and the SVG files.
  */
 export function copyIconSet(siteRoot: string, publicDir: string) {
   const config = loadConfig(getSetDir(siteRoot))
   const destination = path.join(publicDir, SET_PATH)
 
-  fs.cpSync(config.iconsDir, path.join(destination, 'icons'), {
+  fs.cpSync(config.webDir, path.join(destination, 'web'), {
     recursive: true,
     filter: (source) =>
-      source === config.iconsDir || path.basename(source).startsWith(`${config.name}.`)
+      source === config.webDir || path.basename(source).startsWith(`${config.name}.`)
   })
   fs.cpSync(config.svgsDir, path.join(destination, 'svgs'), {
     recursive: true,

@@ -35,8 +35,11 @@ describe('resolveConfig', () => {
       path.resolve('/set/chassis.checks.json')
     )
     expect(config.checksFile).toBe(path.resolve('/set/chassis.checks.json'))
-    expect(config.svgsDir).toBe(path.resolve('/set/svgs'))
-    expect(config.iconsDir).toBe(path.resolve('/set/icons'))
+    expect(config.distDir).toBe(path.resolve('/set/dist'))
+    expect(config.svgsDir).toBe(path.resolve('/set/dist/svgs'))
+    expect(config.webDir).toBe(path.resolve('/set/dist/web'))
+    expect(config.indexFile).toBe(path.resolve('/set/dist/icons.json'))
+    expect(config.previewDir).toBe(path.resolve('/set/preview'))
     expect(config.registryFile).toBe(path.resolve('/set/codepoints.json'))
   })
 

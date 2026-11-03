@@ -30,7 +30,7 @@ and the Chassis set as a submodule.
 
 - [`packages/icons/`](../packages/icons/) is the package that is published to npm, the builder.
   Its `lib/` holds the `chassis-icons` command and the modules of the build, with the templates
-  of the stylesheets and of the README of a set in `lib/templates/`; its `templates/` holds what
+  of the stylesheets, of the README and of the page of a set in `lib/templates/`; its `templates/` holds what
   `chassis-icons init` writes into a repository of icons; and its `test/` the tests of the
   build. The package names no font, no prefix and no icon: what is particular to a set is in
   the `chassis.build` block of the `package.json` of its repository. `README.md` is the README
@@ -81,10 +81,10 @@ renamed or removed there, never in `vendor/icons/`, which is a checkout of that 
    the set is drawn on a 24 by 24 frame, in one color, and is named in kebab-case with its
    style as the last part: `<name>-outline`, `<name>-solid` or `<name>-brand`. An outline icon
    comes with its solid one. `pnpm lint` there checks all of this.
-2. Run `pnpm build` there. It writes `svgs/`, `icons/`, `codepoints.json` and `README.md`. A
-   new icon gets a code point of its own, the code points of the other icons stay as they
-   are, and the code point of a removed icon is retired. Look at the result in
-   `icons/chassis-icons.html`, the page of the set, in a browser.
+2. Run `pnpm build` there. It writes `dist/`, `codepoints.json` and `README.md`. A new icon
+   gets a code point of its own, the code points of the other icons stay as they are, and the
+   code point of a removed icon is retired. Look at the result with `pnpm preview`, which
+   writes the page of the set into `preview/` and serves it at `http://localhost:4325/`.
 3. Run `pnpm verify` there. It fails when a committed file is not what the source builds, when
    an icon lost its code point, or when an icon of `chassis.checks.json` is missing. Renaming
    or removing an icon breaks every project that uses it: it is the maintainer's decision, and
@@ -135,11 +135,12 @@ and changes the output of every set too: `pnpm icons --dry-run` says what change
 Chassis set, and the changeset says what changes for a repository of icons.
 
 The package writes what a set says about itself. The `README.md` of a set comes from
-`packages/icons/lib/templates/readme.hbs`, and its stylesheets from `css.hbs` and `scss.hbs`
-beside it: change the template, never a file that the build wrote. The fields `main`,
-`style`, `sass`, `files`, `exports` and `sideEffects` of the `package.json` of a set come from
-`packages/icons/lib/manifest.js`; an entry of `files` or `exports` that is not about
-`icons/` or `svgs/` is kept.
+`packages/icons/lib/templates/readme.hbs`, its stylesheets from `css.hbs` and `scss.hbs`
+beside it, and the page of the set from `preview/` beside them: change the template, never a
+file that the build wrote. The fields `main`, `style`, `sass`, `files`, `exports` and
+`sideEffects` of the `package.json` of a set come from `packages/icons/lib/manifest.js`; an
+entry of `files` or `exports` that is not about `dist/`, or about `icons/` and `svgs/` of an
+earlier build, is kept.
 
 `packages/icons/templates/` holds the files that `chassis-icons init` writes: `AGENTS.md`,
 `CHANGELOG.md`, `CLAUDE.md`, `gitignore` and the two workflows. A file is written once, and
@@ -362,10 +363,10 @@ A repository of icons, the Chassis set among them, releases itself with the work
 push and on a pull request: `release-notes`, which fails when the version of `package.json`
 has no entry in `CHANGELOG.md`, `lint` and `verify`. Its `release.yml` runs on a push to
 `main` with a version that npm does not have or that has no tag: it reads the release notes,
-lints the source, verifies the output, writes the archive `<font>-<version>.zip` with
-`icons/` and `svgs/` in it, publishes the package with npm trusted publishing unless
-`package.json` has `"private": true`, and creates the tag `v<version>` and its GitHub release
-with the entry as its body and the archive attached. A push that does not change the version
+lints the source, verifies the output, writes the archive `<font>-web-<version>.zip` with
+`icons.json`, `svgs/`, `web/` and the page of the set in `preview/`, publishes the package
+with npm trusted publishing unless `package.json` has `"private": true`, and creates the tag
+`v<version>` and its GitHub release with the entry as its body and the archive attached. A push that does not change the version
 releases nothing, and a release that fails makes no tag, so the next push tries again.
 
 So a release of a set is one commit: the new version in `package.json`, its entry in

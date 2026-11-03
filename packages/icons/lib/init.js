@@ -343,6 +343,7 @@ export function planFiles(options = {}) {
       build: 'chassis-icons build',
       lint: 'chassis-icons lint-source',
       verify: 'chassis-icons verify',
+      preview: 'chassis-icons preview --serve',
       archive: 'chassis-icons archive',
       'release-notes': 'chassis-icons release-notes'
     },

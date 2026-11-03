@@ -31,28 +31,32 @@ A set is the icons of one repository: the SVG files of `source/`, and what the b
 ```text
 source/                   -> The SVG files you save, one per icon. The build only reads them
 package.json              -> The details of the package and the chassis.build configuration
-svgs/                     -> Output: one optimized SVG file per icon
-icons/                    -> Output: the font, its stylesheets and the sprite
+dist/                     -> Output: committed and published
+  icons.json              -> The index of the set: its settings, and each icon with its code point
+  svgs/                   -> One optimized SVG file per icon
+  web/                    -> The font, its stylesheets and the sprite
 codepoints.json           -> The code point of each icon. Written by the build
 README.md                 -> Written by the build, for someone who installs the set
 chassis.checks.json       -> The icons that consumers of the set read by name, when it has one
+preview/                  -> The page of the set, written by chassis-icons preview. Not committed
 ```
 
 The name of a file is the name of its icon, and that name is everything a project needs to draw the icon: it is the symbol of the sprite, the last part of the class of the font, and the name of the optimized file.
 
 ## What the build writes
 
-The build writes two folders, and their shape is the same for any set. `<font>` is the font name of the configuration, `<prefix>` its class prefix, and `<name>` the name of an icon.
+The build writes one folder, `dist/`, and its shape is the same for any set. `<font>` is the font name of the configuration, `<prefix>` its class prefix, and `<name>` the name of an icon.
 
 <CxTable>
 | File | What it holds |
 | --- | --- |
-| `svgs/<name>.svg` | One icon, optimized, on the frame, with `fill="currentcolor"` |
-| `icons/<font>.svg` | The sprite: one `<symbol>` per icon, with the id `<name>` |
-| `icons/<font>.woff2` and the other formats | The icon font |
-| `icons/<font>.css`, `icons/<font>.min.css` | The font face and one class per icon, `<prefix>-<name>` |
-| `icons/<font>.scss` | The same for Sass, with the folder of the font and the map of the icons as variables |
-| `icons/<font>.json` | The code point of each icon, by name |
+| `dist/icons.json` | The index of the set: the font name, the prefix, the frame and the styles, and each icon with its code point and its style |
+| `dist/svgs/<name>.svg` | One icon, optimized, on the frame, with `fill="currentcolor"` |
+| `dist/web/<font>.svg` | The sprite: one `<symbol>` per icon, with the id `<name>` |
+| `dist/web/<font>.woff2` and the other formats | The icon font |
+| `dist/web/<font>.css`, `dist/web/<font>.min.css` | The font face and one class per icon, `<prefix>-<name>` |
+| `dist/web/<font>.scss` | The same for Sass, with the folder of the font and the map of the icons as variables |
+| `dist/web/<font>.json` | The code point of each icon, by name |
 </CxTable>
 
 The output is committed in the repository of icons and published as it is, so a project installs the set without building it. The pages of [Use in Project]([[docsref:/use-in-project/icon-font]]) show how a page draws an icon from each of these files.
@@ -66,7 +70,7 @@ Chassis CSS, Chassis React and Chassis Assets take any set that keeps this shape
 | --- | --- | --- |
 | Chassis CSS | An SVG file by name, through `svg-icon()` | [Chassis CSS]([[docsref:/use-in-project/chassis-css]]) |
 | Chassis React | A symbol of the sprite, or a class of the font, through `Icon` | [Chassis React]([[docsref:/use-in-project/chassis-react]]) |
-| Chassis Assets | The two folders of the output, renamed for iOS and Android | [iOS and Android]([[docsref:/use-in-project/ios-and-android]]) |
+| Chassis Assets | The two folders of `dist/`, renamed for iOS and Android | [iOS and Android]([[docsref:/use-in-project/ios-and-android]]) |
 </CxTable>
 
 ## Next steps

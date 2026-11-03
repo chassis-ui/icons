@@ -10,13 +10,13 @@ npm install @acme/glyphs
 
 ## What the package holds
 
-- `icons/acme-glyphs.css` and `icons/acme-glyphs.min.css`: the stylesheet of the icon font, with one class per icon
-- `icons/acme-glyphs.scss`: the same stylesheet for Sass, with the folder of the font and the map of the icons as variables
-- `icons/acme-glyphs.woff2`, `icons/acme-glyphs.ttf`: the icon font, which the stylesheets load from their own folder
-- `icons/acme-glyphs.svg`: the SVG sprite, one `<symbol>` per icon with the name of the icon as its `id`
-- `icons/acme-glyphs.json`: the code point of each icon in the font, by name
-- `icons/acme-glyphs.html`: the page of the set, to open in a browser: every icon with its name, and on a click its class, its code point and the code that draws it
-- `svgs/<name>.svg`: one optimized file per icon
+- `dist/svgs/<name>.svg`: one optimized file per icon
+- `dist/web/acme-glyphs.css` and `dist/web/acme-glyphs.min.css`: the stylesheet of the icon font, with one class per icon
+- `dist/web/acme-glyphs.scss`: the same stylesheet for Sass, with the folder of the font and the map of the icons as variables
+- `dist/web/acme-glyphs.woff2`, `dist/web/acme-glyphs.ttf`: the icon font, which the stylesheets load from their own folder
+- `dist/web/acme-glyphs.svg`: the SVG sprite, one `<symbol>` per icon with the name of the icon as its `id`
+- `dist/web/acme-glyphs.json`: the code point of each icon in the font, by name
+- `dist/icons.json`: the index of the set: its font name, class prefix, frame and styles, and each icon with its code point and its style
 
 The last part of a name is the style of the icon: `<name>-line` or `<name>-fill`. The examples below show `bar-fill`.
 
@@ -29,7 +29,7 @@ Browse the icons and their names on the [site of the set](https://glyphs.acme.ex
 One class per icon, `ag-<name>`, on an empty element:
 
 ```html
-<link rel="stylesheet" href="node_modules/@acme/glyphs/icons/acme-glyphs.min.css" />
+<link rel="stylesheet" href="node_modules/@acme/glyphs/dist/web/acme-glyphs.min.css" />
 
 <i class="ag-bar-fill"></i>
 ```
@@ -42,14 +42,14 @@ One file for the whole set, and one `<use>` per icon:
 
 ```html
 <svg width="16" height="16" fill="currentcolor" aria-hidden="true">
-  <use href="node_modules/@acme/glyphs/icons/acme-glyphs.svg#bar-fill"></use>
+  <use href="node_modules/@acme/glyphs/dist/web/acme-glyphs.svg#bar-fill"></use>
 </svg>
 ```
 
 ### A single SVG file
 
 ```html
-<img src="node_modules/@acme/glyphs/svgs/bar-fill.svg" alt="" width="16" height="16" />
+<img src="node_modules/@acme/glyphs/dist/svgs/bar-fill.svg" alt="" width="16" height="16" />
 ```
 
 ### Sass
@@ -58,7 +58,7 @@ The classes of the stylesheet, with the font served from a folder of your own, a
 
 ```scss
 @use 'sass:map';
-@use '@acme/glyphs/icons/acme-glyphs.scss' as icons with (
+@use '@acme/glyphs/dist/web/acme-glyphs.scss' as icons with (
   $acme-glyphs-font-dir: '/fonts'
 );
 
@@ -72,7 +72,7 @@ Sass finds the file in a load path that holds `node_modules`, and so does a bund
 
 ## The source
 
-The package is built from the SVG files of its [repository](https://git.acme.example/design/glyphs) with [`@chassis-ui/icons`](https://www.npmjs.com/package/@chassis-ui/icons). An icon is added or changed there, and never in the files of `icons/` and `svgs/`.
+The package is built from the SVG files of its [repository](https://git.acme.example/design/glyphs) with [`@chassis-ui/icons`](https://www.npmjs.com/package/@chassis-ui/icons). An icon is added or changed there, and never in the files of `dist/`.
 
 ## License
 

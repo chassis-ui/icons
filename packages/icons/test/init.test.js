@@ -52,9 +52,11 @@ describe('planFiles', () => {
       'build',
       'lint',
       'verify',
+      'preview',
       'archive',
       'release-notes'
     ])
+    expect(manifest.scripts.preview).toBe('chassis-icons preview --serve')
     expect(plan.get('.nvmrc')).toBe('24\n')
     expect(plan.get('CLAUDE.md')).toBe('@AGENTS.md\n')
   })

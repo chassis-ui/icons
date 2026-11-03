@@ -53,7 +53,8 @@ function git(cwd, args) {
 }
 
 /**
- * Reads the code points of the set as they were at a commit, from `icons/<font>.json`.
+ * Reads the code points of the set as they were at a commit, from the glyph map of the font:
+ * `dist/web/<font>.json`, or `icons/<font>.json` at a commit made before `dist/`.
  * @param {import('./config.js').Config} config
  * @param {string} [since] - A commit, a tag or a branch; the last tag when left out
  * @returns {{ ref: string, codepoints: Record<string, number> } | { skipped: string }}
@@ -71,10 +72,17 @@ export function readBaseline(config, since) {
     return { skipped: 'the repository has no tag, so there is no release to compare with' }
   }
 
-  const file = path.join(config.iconsDir, `${config.name}.json`)
-  // Where the file is in this repository, and where it was while the repository was the
+  const glyphMap = `${config.name}.json`
+  const files = [
+    path.join(config.webDir, glyphMap),
+    path.join(config.packageDir, 'icons', glyphMap)
+  ]
+  // Where each file is in this repository, and where it was while the repository was the
   // package itself
-  const candidates = [path.relative(root, file), path.relative(config.packageDir, file)]
+  const candidates = files.flatMap((file) => [
+    path.relative(root, file),
+    path.relative(config.packageDir, file)
+  ])
 
   for (const candidate of new Set(candidates)) {
     const contents = git(root, ['show', `${ref}:${candidate.split(path.sep).join('/')}`])

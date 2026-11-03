@@ -12,11 +12,11 @@ The examples use the Chassis set, whose font is `chassis-icons` and whose prefix
 
 ## Installation
 
-The files of the font are in the `icons/` folder of the output. There are three ways to get that folder.
+The files of the font are in the `dist/web/` folder of the output. There are three ways to get that folder.
 
 ### The package
 
-The Chassis set is on npm as `@chassis-ui/website-icons`, and the package holds `icons/` and `svgs/` as the build wrote them:
+The Chassis set is on npm as `@chassis-ui/website-icons`, and the package holds `dist/` as the build wrote it:
 
 ```bash
 npm install @chassis-ui/website-icons
@@ -24,29 +24,29 @@ npm install @chassis-ui/website-icons
 
 ### The archive of a release
 
-Each release of a repository of icons on GitHub has an archive, `<font>-<version>.zip`, with the two folders in it. Download it from the releases of the repository of the set, the [releases of chassis-ui/website-icons](https://github.com/chassis-ui/website-icons/releases) for the Chassis set, and unpack it into the folder that your project serves static files from.
+Each release of a repository of icons on GitHub has an archive, `<font>-web-<version>.zip`, with the folders `web/` and `svgs/`, the index `icons.json` and the page of the set, `preview/`, in it. Download it from the releases of the repository of the set, the [releases of chassis-ui/website-icons](https://github.com/chassis-ui/website-icons/releases) for the Chassis set, and unpack it into the folder that your project serves static files from.
 
 ### The folders of a build
 
-A set of your own is the output of your repository of icons after `npm run build`: the folders `icons/` and `svgs/` at its root. Copy the two folders as they are, from that root:
+A set of your own is the output of your repository of icons after `npm run build`: the folders `web/` and `svgs/` of its `dist/`. Copy the two folders as they are, from the root of the repository:
 
 ```bash
-cp -r icons svgs /path/to/your-project/static/icons/
+cp -r dist/web dist/svgs /path/to/your-project/static/icons/
 ```
 
-The stylesheet loads the font from its own folder, so keep the files of `icons/` together.
+The stylesheet loads the font from its own folder, so keep the files of `web/` together.
 
 ## Basic usage
 
 Load the stylesheet, and put the class of an icon, `<prefix>-<name>`, on an empty element:
 
 ```html
-<link rel="stylesheet" href="node_modules/@chassis-ui/website-icons/icons/chassis-icons.min.css" />
+<link rel="stylesheet" href="node_modules/@chassis-ui/website-icons/dist/web/chassis-icons.min.css" />
 
 <i class="cx-bell-outline"></i>
 ```
 
-`icons/<font>.css` and `icons/<font>.min.css` hold the same rules. With a bundler, import the package, which loads the same stylesheet and its font:
+`dist/web/<font>.css` and `dist/web/<font>.min.css` hold the same rules. With a bundler, import the package, which loads the same stylesheet and its font:
 
 ```js
 import '@chassis-ui/website-icons'
@@ -94,20 +94,20 @@ The font is written in each format of `chassis.build.formats`: `woff2`, `woff` a
 
 ### A set of your own
 
-The font name and the prefix are the settings `name` and `prefix` of `chassis.build`. With `"name": "acme-icons"` and `"prefix": "ai"` the stylesheet is `icons/acme-icons.css`, and the class of an icon is `ai-<name>`.
+The font name and the prefix are the settings `name` and `prefix` of `chassis.build`. With `"name": "acme-icons"` and `"prefix": "ai"` the stylesheet is `dist/web/acme-icons.css`, and the class of an icon is `ai-<name>`.
 
 ## Best practices
 
 The class of an icon is its name with the prefix, and the font is found beside the stylesheet. These practices keep both true in a project.
 
-- **Copy the whole `icons/` folder:** the stylesheet asks for `./<font>.woff2` beside itself.
+- **Copy the whole `web/` folder:** the stylesheet asks for `./<font>.woff2` beside itself.
 - **Hide a decorative icon:** add `aria-hidden="true"` to an icon that sits beside its text.
 - **Take the name from the set:** the page of each icon on the [home page](/icons/) has its class.
 
 Avoid the habits that undo this:
 
 - **Do not start a class of your own with the prefix:** the stylesheet sets the font on the `::before` of every element whose class starts with `<prefix>-`.
-- **Do not write a code point into a page:** `icons/<font>.json` and the Sass map hold the code points, and a class or the map reads them by name.
+- **Do not write a code point into a page:** `dist/web/<font>.json` and the Sass map hold the code points, and a class or the map reads them by name.
 
 ## Troubleshooting
 
@@ -115,7 +115,7 @@ Each entry gives the message or the symptom, then the cause and the fix.
 
 ### Icon shows as a square
 
-The page shows an empty square in place of the icon, and the browser logs a `404` for the `.woff2` file. The stylesheet loads the font from its own folder, and the font was not copied with it. Copy the whole `icons/` folder, or set `$<font>-font-dir` in Sass.
+The page shows an empty square in place of the icon, and the browser logs a `404` for the `.woff2` file. The stylesheet loads the font from its own folder, and the font was not copied with it. Copy the whole `web/` folder, or set `$<font>-font-dir` in Sass.
 
 ### Nothing is shown
 

@@ -3,7 +3,7 @@ name: Release
 # On a push to main, releases the version in package.json when it is new: publishes the
 # package when its registry does not have the version, and creates the tag v<version> and its
 # GitHub release, whose body is the entry of the version in CHANGELOG.md, with the archive
-# <font>-<version>.zip of the output attached, when the tag does not exist. A push that does
+# <font>-web-<version>.zip of the output and the page of the set attached, when the tag does not exist. A push that does
 # not change the version releases nothing, and a release that fails makes no tag, so the next
 # push tries again. Written by `chassis-icons init`.
 #
@@ -154,7 +154,7 @@ jobs:
       - name: Verify the output
         run: __RUN__ verify
 
-      # Before publishing too: <font>-<version>.zip, with icons/ and svgs/ in it
+      # Before publishing too: <font>-web-<version>.zip, with dist/ and the page of the set
       - name: Archive the output
         run: __RUN__ archive
 

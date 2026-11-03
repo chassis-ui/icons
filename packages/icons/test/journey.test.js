@@ -76,6 +76,7 @@ describe('the journey of a team that makes a repository of icons', () => {
     expect(await run(['lint-source'])).toBe(0)
     expect(await run(['build'])).toBe(0)
     expect(await run(['verify'])).toBe(0)
+    expect(await run(['preview'])).toBe(0)
     expect(await run(['archive'])).toBe(0)
     expect(await run(['release-notes'])).toBe(0)
     expect(out.lines.error).toEqual([])
@@ -83,22 +84,30 @@ describe('the journey of a team that makes a repository of icons', () => {
     const teamNames = listIcons(path.join(fixtureDir, 'source'))
 
     // The output is the team's set, as the golden output has it, and nothing but it
-    expect(listFiles(dir).filter((file) => !file.startsWith('.github/'))).toEqual(
+    expect(
+      listFiles(dir).filter((file) => !file.startsWith('.github/') && !file.startsWith('preview/'))
+    ).toEqual(
       [
         'AGENTS.md',
         'CHANGELOG.md',
         'CLAUDE.md',
         'README.md',
-        'archives/acme-glyphs-2.4.0.zip',
+        'archives/acme-glyphs-web-2.4.0.zip',
         'codepoints.json',
+        'dist/icons.json',
+        ...['css', 'json', 'min.css', 'scss', 'svg', 'ttf', 'woff2'].map(
+          (extension) => `dist/web/acme-glyphs.${extension}`
+        ),
+        ...teamNames.map((name) => `dist/svgs/${name}.svg`),
         'package.json',
         'pnpm-lock.yaml',
-        ...['css', 'html', 'json', 'min.css', 'scss', 'svg', 'ttf', 'woff2'].map(
-          (extension) => `icons/acme-glyphs.${extension}`
-        ),
-        ...teamNames.map((name) => `source/${name}.svg`),
-        ...teamNames.map((name) => `svgs/${name}.svg`)
+        ...teamNames.map((name) => `source/${name}.svg`)
       ].sort()
+    )
+    // The page of the set, which Git leaves out with the archives
+    expect(listFiles(path.join(dir, 'preview'))).toContain('index.html')
+    expect(fs.readFileSync(path.join(dir, '.gitignore'), 'utf8')).toMatch(
+      /^preview\/$[^]*^archives\/$/m
     )
 
     const built = readOutput(dir)
@@ -112,9 +121,10 @@ describe('the journey of a team that makes a repository of icons', () => {
     const readme = fs.readFileSync(path.join(dir, 'README.md'), 'utf8')
 
     expect(readme).toContain('`pnpm build` writes the output again')
+    expect(readme).toContain('`pnpm preview` writes the page of the set into `preview/`')
     expect(JSON.parse(fs.readFileSync(manifestFile, 'utf8'))).toMatchObject({
-      main: 'icons/acme-glyphs.css',
-      files: ['icons/acme-glyphs.*', 'svgs/*.svg', 'CHANGELOG.md']
+      main: 'dist/web/acme-glyphs.css',
+      files: ['dist', 'CHANGELOG.md']
     })
 
     // The repository is what this version of init writes
