@@ -3,8 +3,7 @@
 A change to `packages/icons/lib/` or to `packages/icons/templates/` adds a changeset: a
 Markdown file in this folder that names the version bump and the text of the changelog
 entry. Run `pnpm changeset` to write one. Changes to the site, the tests and the documents
-need none, and a change to the Chassis set is made in chassis-ui/website-icons, which has a
-changelog of its own.
+need none. A set of icons is a repository of its own, with a changelog of its own.
 
 Before 1.0, a change that changes the output of a set, a file that `init` writes, the
 options of a command or a default of `chassis.build` is a `minor` bump, and its summary

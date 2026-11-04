@@ -8,31 +8,31 @@ toc: true
 
 The build writes one optimized SVG file per icon, `dist/svgs/<name>.svg`. Choose the files when a project needs a few icons and not the set: as an image, pasted into the markup of a page, or as a mask in CSS. The files are also what a design tool or an app for iOS or Android reads.
 
-The examples use the Chassis set. The files of a set of your own have the same shape, with your frame and your prefix.
+The examples use `@acme/glyphs`, the set of the team Acme, whose frame is `16` and whose prefix is `ag`. The files of another set have the same shape, with its frame and its prefix.
 
 ## Installation
 
 The files are in the `dist/svgs/` folder of the output. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get the output: the package, the archive of a release, and the folders of a build.
 
 ```bash
-npm install @chassis-ui/website-icons
+npm install @acme/glyphs
 ```
 
-The page of each icon on the [home page](/icons/) has a download of its file.
+The page of the set that `chassis-icons preview` writes shows each icon with its name.
 
 ## Basic usage
 
 Use the file of an icon as an image:
 
 ```html
-<img src="node_modules/@chassis-ui/website-icons/dist/svgs/bell-outline.svg" alt="" width="24" height="24" />
+<img src="node_modules/@acme/glyphs/dist/svgs/ring-line.svg" alt="" width="16" height="16" />
 ```
 
 The build writes each file on the frame of the set, with `fill="currentcolor"` and the class of the icon on its root:
 
 ```svg
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentcolor" class="cx-minus-outline" viewBox="0 0 24 24">
-  <path d="M20.125 12C20.125 12.5469 19.6953 12.9375 19.1875 12.9375H4.8125C4.26562 12.9375 3.875 12.5469 3.875 12C3.875 11.4922 4.26562 11.0625 4.8125 11.0625H19.1875C19.6953 11.0625 20.125 11.4922 20.125 12Z"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentcolor" class="ag-ring-line" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15ZM8 13C10.7614 13 13 10.7614 13 8C13 5.23858 10.7614 3 8 3C5.23858 3 3 5.23858 3 8C3 10.7614 5.23858 13 8 13Z"/>
 </svg>
 ```
 
@@ -44,8 +44,8 @@ To color an icon, put the file into the markup of the page. The root has `fill="
 
 ```html
 <span style="color: rebeccapurple;">
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentcolor" class="cx-minus-outline" viewBox="0 0 24 24">
-    <path d="M20.125 12C20.125 12.5469 19.6953 12.9375 19.1875 12.9375H4.8125C4.26562 12.9375 3.875 12.5469 3.875 12C3.875 11.4922 4.26562 11.0625 4.8125 11.0625H19.1875C19.6953 11.0625 20.125 11.4922 20.125 12Z"/>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentcolor" class="ag-ring-line" viewBox="0 0 16 16">
+    <path fill-rule="evenodd" d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15ZM8 13C10.7614 13 13 10.7614 13 8C13 5.23858 10.7614 3 8 3C5.23858 3 3 5.23858 3 8C3 10.7614 5.23858 13 8 13Z"/>
   </svg>
 </span>
 ```
@@ -53,13 +53,13 @@ To color an icon, put the file into the markup of the page. The root has `fill="
 In CSS, use the file as a mask, and the icon has the `background-color` of its element:
 
 ```css
-.external::after {
+.marker::after {
   display: inline-block;
   width: 1em;
   height: 1em;
   content: "";
   background-color: currentcolor;
-  mask: url("/static/icons/svgs/arrow-up-right-from-square-outline.svg") center / contain no-repeat;
+  mask: url("/static/icons/svgs/diamond-line.svg") center / contain no-repeat;
 }
 ```
 
@@ -70,7 +70,7 @@ An image has its `alt` text, and an icon in the markup of a page is named as an 
 A decorative image has an empty `alt`, as in the example above. An image that carries meaning says it:
 
 ```html
-<img src="node_modules/@chassis-ui/website-icons/dist/svgs/bell-outline.svg" alt="Notifications" width="24" height="24" />
+<img src="node_modules/@acme/glyphs/dist/svgs/ring-line.svg" alt="Notifications" width="16" height="16" />
 ```
 
 For an icon in the markup of the page, see [SVG sprite]([[docsref:/use-in-project/svg-sprite#accessibility]]). An icon that CSS draws as a mask or a background has no name: keep the text of its element.
@@ -81,7 +81,7 @@ A file has no settings of its own. What its root holds follows from the configur
 
 ### A set of your own
 
-The frame and the prefix are the settings `frame` and `prefix` of `chassis.build`. With `"frame": 16` and `"prefix": "ai"`, the root of `dist/svgs/<name>.svg` has `width="16"`, `height="16"`, `viewBox="0 0 16 16"` and `class="ai-<name>"`.
+The frame and the prefix are the settings `frame` and `prefix` of `chassis.build`. The root of `dist/svgs/<name>.svg` has the frame as its `width`, its `height` and its `viewBox`, `0 0 <frame> <frame>`, and `class="<prefix>-<name>"`. With `"frame": 16` and `"prefix": "ag"`, as in the examples, it has `width="16"`, `height="16"`, `viewBox="0 0 16 16"` and `class="ag-<name>"`.
 
 ## Best practices
 

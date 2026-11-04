@@ -89,7 +89,8 @@ jobs:
       - name: Astro check
         run: pnpm check:astro
 
-  # The package: the SVG files, the sprite and the icon font, built from source/
+  # The builder, on the fixture of its tests: a repository of icons of another team. No set
+  # of a team, the Chassis set included, takes part in the checks of the builder
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -99,10 +100,6 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          # The Chassis set, which the build runs on; with its tags, verify compares the
-          # code points with those of the last one
-          fetch-depth: 0
-          submodules: true
 
       - name: Setup pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
@@ -116,21 +113,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Every file of source/ of the Chassis set can be an icon: its name, its frame, its
-      # color, its pair
-      - name: Lint the source of the Chassis set
-        run: pnpm icons:lint:source
-
       - name: Test
         run: pnpm icons:test
-
-      # The output of the Chassis set is committed in vendor/icons, and its consumers read the
-      # committed files. Builds into a temporary folder and fails when a committed file is not
-      # what this build writes from the source, when an icon lost the code point it had at
-      # the last tag of the set, or when an icon of its chassis.checks.json is missing. A
-      # change of the build that changes the output of a set needs a release of the set too.
-      - name: Verify the output of the Chassis set
-        run: pnpm icons:verify
 
       # What npm would publish: the fields of package.json point at files that the package
       # holds, in a form that bundlers and Node.js resolve
@@ -147,8 +131,7 @@ jobs:
         run: pnpm icons:test
 
   # The same build as Vercel: unpacks the assets that vendor/assets.json pins, then Astro and
-  # Pagefind.
-  # The site reads the committed files of packages/icons: its configuration and its output.
+  # Pagefind. The site is the documentation of the builder, and shows no set.
   site:
     name: Site
     runs-on: ubuntu-latest
@@ -158,8 +141,6 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          # The set of the repository, which the build runs on
-          submodules: true
 
       - name: Setup pnpm
         uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
@@ -183,19 +164,17 @@ jobs:
       - name: Validate HTML with the Nu Html Checker
         run: pnpm site:lint:vnu
 
-      # A copy of the repository, built for the set it ships with and again for the fixture
-      # of the tests of the build: each page shows the set of the copy, every icon that a
-      # page draws is in its sprite, and every link leads to a page that exists. After the
-      # build, which unpacked vendor/assets.
+      # The built site: every page is there, every icon that a page draws is in a sprite
+      # that the site serves, and every link leads to a page that exists. After the build,
+      # which unpacked vendor/assets.
       - name: Test the site
         run: pnpm site:test
 
-  # A change to source/, to the build of packages/icons or to its output needs a changeset;
+  # A change to the build of packages/icons or to the templates of init needs a changeset;
   # `pnpm changeset --empty` adds one that releases nothing. A pull request is compared with
   # its base branch, a push to develop with the tip it replaced. The version commit consumes
-  # the changesets, so a change of the version passes. `changeset status` cannot see source/:
-  # it is outside the package that has the version. So the job runs a script that reads Git,
-  # and needs no install.
+  # the changesets, so a change of the version passes. The job runs a script that reads the
+  # commits of the range from Git, and needs no install.
   changeset:
     name: Changeset
     # A manual run has nothing to compare with

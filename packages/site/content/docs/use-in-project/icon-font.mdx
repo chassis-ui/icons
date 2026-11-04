@@ -8,7 +8,7 @@ toc: true
 
 The icon font draws an icon with a class on an empty element. One stylesheet loads the font and holds a class per icon, so a page needs no markup beyond that element. Choose the font for icons inside text and controls, where an icon is sized and colored as a letter is. Choose the [sprite]([[docsref:/use-in-project/svg-sprite]]) when an icon needs the features of SVG, such as a title of its own.
 
-The examples use the Chassis set, whose font is `chassis-icons` and whose prefix is `cx`. If you build your own set, use the name of your font and your prefix in their place.
+The examples use `@acme/glyphs`, the set of the team Acme, whose font is `acme-glyphs` and whose prefix is `ag`. For another set, use the name of its package, its font and its prefix in their place.
 
 ## Installation
 
@@ -16,15 +16,15 @@ The files of the font are in the `dist/web/` folder of the output. There are thr
 
 ### The package
 
-The Chassis set is on npm as `@chassis-ui/website-icons`, and the package holds `dist/` as the build wrote it:
+A set that its team publishes is a package, which holds `dist/` as the build wrote it:
 
 ```bash
-npm install @chassis-ui/website-icons
+npm install @acme/glyphs
 ```
 
 ### The archive of a release
 
-Each release of a repository of icons on GitHub has an archive, `<font>-web-<version>.zip`, with the folders `web/` and `svgs/`, the index `icons.json` and the page of the set, `preview/`, in it. Download it from the releases of the repository of the set, the [releases of chassis-ui/website-icons](https://github.com/chassis-ui/website-icons/releases) for the Chassis set, and unpack it into the folder that your project serves static files from.
+Each release of a repository of icons on GitHub has an archive, `<font>-web-<version>.zip`, with the folders `web/` and `svgs/`, the index `icons.json` and the page of the set, `preview/`, in it. Download it from the releases of the repository of the set, and unpack it into the folder that your project serves static files from.
 
 ### The folders of a build
 
@@ -41,15 +41,15 @@ The stylesheet loads the font from its own folder, so keep the files of `web/` t
 Load the stylesheet, and put the class of an icon, `<prefix>-<name>`, on an empty element:
 
 ```html
-<link rel="stylesheet" href="node_modules/@chassis-ui/website-icons/dist/web/chassis-icons.min.css" />
+<link rel="stylesheet" href="node_modules/@acme/glyphs/dist/web/acme-glyphs.min.css" />
 
-<i class="cx-bell-outline"></i>
+<i class="ag-ring-line"></i>
 ```
 
 `dist/web/<font>.css` and `dist/web/<font>.min.css` hold the same rules. With a bundler, import the package, which loads the same stylesheet and its font:
 
 ```js
-import '@chassis-ui/website-icons'
+import '@acme/glyphs'
 ```
 
 The stylesheet has one rule per icon, `.<prefix>-<name>::before`, whose `content` is the character of the icon in the font. The element itself stays empty.
@@ -59,7 +59,7 @@ The stylesheet has one rule per icon, `.<prefix>-<name>::before`, whose `content
 An icon of the font is a character, so it takes the `font-size` and the `color` of its element:
 
 ```html
-<i class="cx-bell-outline" style="font-size: 2rem; color: rebeccapurple;"></i>
+<i class="ag-ring-line" style="font-size: 2rem; color: rebeccapurple;"></i>
 ```
 
 Inside a heading, a link or a button the icon needs neither: it has the size and the color of the text around it. The stylesheet sets `line-height: 1` and a `vertical-align` on the `::before` of the element, so that an icon sits on the line of the text.
@@ -71,13 +71,13 @@ A screen reader does not know what the character of an icon means. Hide an icon 
 A decorative icon is hidden:
 
 ```html
-<button type="button"><i class="cx-bell-outline" aria-hidden="true"></i> Notifications</button>
+<button type="button"><i class="ag-ring-line" aria-hidden="true"></i> Notifications</button>
 ```
 
 An icon that carries meaning gets a role and a label:
 
 ```html
-<i class="cx-bell-outline" role="img" aria-label="Notifications"></i>
+<i class="ag-ring-line" role="img" aria-label="Notifications"></i>
 ```
 
 ## Customization
@@ -94,7 +94,7 @@ The font is written in each format of `chassis.build.formats`: `woff2`, `woff` a
 
 ### A set of your own
 
-The font name and the prefix are the settings `name` and `prefix` of `chassis.build`. With `"name": "acme-icons"` and `"prefix": "ai"` the stylesheet is `dist/web/acme-icons.css`, and the class of an icon is `ai-<name>`.
+The font name and the prefix are the settings `name` and `prefix` of `chassis.build`. With `"name": "acme-glyphs"` and `"prefix": "ag"` the stylesheet is `dist/web/acme-glyphs.css`, and the class of an icon is `ag-<name>`. With the settings of your set, the stylesheet and the classes take your names.
 
 ## Best practices
 
@@ -102,7 +102,7 @@ The class of an icon is its name with the prefix, and the font is found beside t
 
 - **Copy the whole `web/` folder:** the stylesheet asks for `./<font>.woff2` beside itself.
 - **Hide a decorative icon:** add `aria-hidden="true"` to an icon that sits beside its text.
-- **Take the name from the set:** the page of each icon on the [home page](/icons/) has its class.
+- **Take the name from the set:** `dist/icons.json` lists the name of each icon, and the page of the set that `chassis-icons preview` writes shows its class.
 
 Avoid the habits that undo this:
 
@@ -119,7 +119,7 @@ The page shows an empty square in place of the icon, and the browser logs a `404
 
 ### Nothing is shown
 
-The element is empty and the browser logs no error. The class is not a class of the stylesheet: the name is misspelled, or the icon is not in the version of the set that the page loads. Find the name on the [home page](/icons/).
+The element is empty and the browser logs no error. The class is not a class of the stylesheet: the name is misspelled, or the icon is not in the version of the set that the page loads. Find the name in `dist/icons.json` of that version.
 
 ### Old icon after an update
 

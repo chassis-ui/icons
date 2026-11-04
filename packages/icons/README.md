@@ -1,16 +1,13 @@
 # @chassis-ui/icons
 
-The builder of icon sets of Chassis UI, for the Chassis website and for any team that wants a
-library of its own: the `chassis-icons` command builds a repository of SVG files into one optimized
+The builder of icon sets of Chassis UI, for any team that wants a library of icons of its
+own: the `chassis-icons` command builds a repository of SVG files into one optimized
 SVG file per icon, an SVG sprite, an icon font with its CSS and SCSS and the index of the
 set, and writes the manifest and the README of the package that holds them. For a set that
 names the targets `ios` and `android`, it also writes an asset catalog with a Swift file and
 vector drawables. The build is file-driven: save
 `<name>.svg` into `source/` and the icon is in the next build. The font name, the class
-prefix, the frame and the styles are settings.
-
-The icons of the Chassis website are a repository of icons built with it:
-[`@chassis-ui/website-icons`](https://www.npmjs.com/package/@chassis-ui/website-icons).
+prefix, the frame and the styles are settings. The package holds the build and no icons.
 
 ## A repository of icons
 

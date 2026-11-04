@@ -8,14 +8,14 @@ toc: true
 
 `dist/web/<font>.scss` is the stylesheet of the icon font for Sass. It writes the same font face and the same classes as the CSS, and its values are variables: the folder of the font, the hash of the font, and the map of the icons. Choose it over the CSS when the font is served from another folder than the stylesheet, or when a selector of your own draws an icon.
 
-The examples use the Chassis set, whose variables start with `$chassis-icons-`. If you build your own set, the variables start with the name of your font.
+The examples use `@acme/glyphs`, the set of the team Acme, whose font is `acme-glyphs` and whose variables start with `$acme-glyphs-`. For another set, the variables start with the name of its font.
 
 ## Installation
 
 The Sass file is in the `dist/web/` folder of the output. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get that folder: the package, the archive of a release, and the folders of a build.
 
 ```bash
-npm install @chassis-ui/website-icons
+npm install @acme/glyphs
 ```
 
 ## Basic usage
@@ -23,10 +23,10 @@ npm install @chassis-ui/website-icons
 Load the file with `@use`. It writes the font face and one class per icon:
 
 ```scss
-@use '@chassis-ui/website-icons/dist/web/chassis-icons.scss';
+@use '@acme/glyphs/dist/web/acme-glyphs.scss';
 ```
 
-Sass finds the file in a load path that holds `node_modules`, and so does a bundler. With the package importer of Sass, `@use 'pkg:@chassis-ui/website-icons'` loads the same file.
+Sass finds the file in a load path that holds `node_modules`, and so does a bundler. With the package importer of Sass, `@use 'pkg:@acme/glyphs'` loads the same file.
 
 ## Size and color
 
@@ -56,12 +56,12 @@ The variables of the file are `!default` values, so a project sets them where it
 By default the stylesheet loads the font from its own folder. Set `$<font>-font-dir` to serve the font from another one:
 
 ```scss
-@use '@chassis-ui/website-icons/dist/web/chassis-icons.scss' with (
-  $chassis-icons-font-dir: '/fonts'
+@use '@acme/glyphs/dist/web/acme-glyphs.scss' with (
+  $acme-glyphs-font-dir: '/fonts'
 );
 ```
 
-The font face then asks for `/fonts/chassis-icons.woff2`, with the hash of the font after it.
+The font face then asks for `/fonts/acme-glyphs.woff2`, with the hash of the font after it.
 
 ### The map of the icons
 
@@ -69,17 +69,17 @@ The font face then asks for `/fonts/chassis-icons.woff2`, with the hash of the f
 
 ```scss
 @use 'sass:map';
-@use '@chassis-ui/website-icons/dist/web/chassis-icons.scss' as icons;
+@use '@acme/glyphs/dist/web/acme-glyphs.scss' as icons;
 
 .my-icon::before {
-  font-family: icons.$chassis-icons-font;
-  content: map.get(icons.$chassis-icons-map, 'bell-outline');
+  font-family: icons.$acme-glyphs-font;
+  content: map.get(icons.$acme-glyphs-map, 'ring-line');
 }
 ```
 
 ### A set of your own
 
-The variables are named after the setting `name` of `chassis.build`. With `"name": "acme-icons"` the file is `dist/web/acme-icons.scss`, and its variables are `$acme-icons-font-dir`, `$acme-icons-map` and so on.
+The variables are named after the setting `name` of `chassis.build`. With `"name": "acme-glyphs"` the file is `dist/web/acme-glyphs.scss`, and its variables are `$acme-glyphs-font-dir`, `$acme-glyphs-map` and so on. With the name of your font, they take that name.
 
 ## Best practices
 
@@ -99,11 +99,11 @@ Each entry gives the message or the symptom, then the cause and the fix.
 
 ### File is not found
 
-Sass stops with `Can't find stylesheet to import.` No load path holds `node_modules`. Add the folder to the load paths of Sass, or use the package importer and `@use 'pkg:@chassis-ui/website-icons'`.
+Sass stops with `Can't find stylesheet to import.` No load path holds `node_modules`. Add the folder to the load paths of Sass, or use the package importer and `@use 'pkg:@acme/glyphs'`.
 
 ### Path is ambiguous
 
-The package importer of Sass refuses `pkg:@chassis-ui/website-icons/dist/web/chassis-icons`. The folder holds a `.css` and a `.scss` file of that name. Use `pkg:@chassis-ui/website-icons`, or the path with `.scss`.
+The package importer of Sass refuses `pkg:@acme/glyphs/dist/web/acme-glyphs`. The folder holds a `.css` and a `.scss` file of that name. Use `pkg:@acme/glyphs`, or the path with `.scss`.
 
 ### Icon shows as a square
 

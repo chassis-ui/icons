@@ -1,0 +1,100 @@
+---
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
+import Code from '@chassis-ui/docs/shortcodes/Code.astro'
+
+// The files of a build of the font `acme-icons` with the prefix `ai`, as `chassis-icons build`
+// names them, with one icon of `source/`
+const web = `dist/
+├── icons.json
+├── svgs/
+│   └── arrow-right-solid.svg
+└── web/
+    ├── acme-icons.css
+    ├── acme-icons.min.css
+    ├── acme-icons.scss
+    ├── acme-icons.json
+    ├── acme-icons.svg
+    ├── acme-icons.woff2
+    └── acme-icons.woff`
+
+const ios = `dist/ios/
+├── AcmeIcons.xcassets/
+│   └── arrow-right-solid.imageset/
+└── AcmeIcons.swift`
+
+const android = `dist/android/res/drawable/
+└── ai_arrow_right_solid.xml`
+---
+
+<section class="home-section py-3xl md:py-6xl">
+  <div class="container 2xl section-content">
+    <div class="grid mb-3xl md:mb-6xl">
+      <header class="section-header col-span-full lg:col-span-10 lg:col-start-2 xl:col-span-8 xl:col-start-3 text-center">
+        <h2 class="section-title font-3xl md:font-4xl lg:font-5xl mb-xs md:mb-sm lg:mb-md">
+          <span class="font-normal d-block">What a build</span> writes
+        </h2>
+        <p class="section-body md:font-lg lg:font-xl m-0">
+          The build always writes the files of the web. The targets <code>ios</code> and{' '}
+          <code>android</code> of <code>chassis.build.targets</code> add the files of apps, and{' '}
+          <code>chassis-icons preview</code> writes a page of the set from the output.
+        </p>
+      </header>
+    </div>
+
+    <div class="section-features grid grid-cols-1 md:grid-cols-2 gap-md md:gap-xl">
+      <div>
+        <FeatureCard icon="cx-css3">
+          <Fragment slot="title">Web</Fragment>
+          <Fragment slot="body">
+            An icon font with its CSS and Sass stylesheets, one class per icon; an SVG sprite, one{' '}
+            <code>&lt;symbol&gt;</code> per icon; one optimized SVG file per icon; and{' '}
+            <code>dist/icons.json</code>, the index of the set.
+          </Fragment>
+          <div class="border-top border-subtle pt-md">
+            <Code noToolbar lang="text" code={web} />
+          </div>
+        </FeatureCard>
+      </div>
+
+      <div>
+        <FeatureCard icon="cx-laptop-mobile">
+          <Fragment slot="title">iOS</Fragment>
+          <Fragment slot="body">
+            An asset catalog with an image set per icon, which renders as a template image in the
+            tint of its view, and a Swift file with an enum that has a case per icon.
+          </Fragment>
+          <div class="border-top border-subtle pt-md">
+            <Code noToolbar lang="text" code={ios} />
+          </div>
+        </FeatureCard>
+      </div>
+
+      <div>
+        <FeatureCard icon="cx-layer-group">
+          <Fragment slot="title">Android</Fragment>
+          <Fragment slot="body">
+            A vector drawable per icon, named <code>&lt;prefix&gt;_&lt;name&gt;</code> in snake
+            case, which takes the tint of its view.
+          </Fragment>
+          <div class="border-top border-subtle pt-md">
+            <Code noToolbar lang="text" code={android} />
+          </div>
+        </FeatureCard>
+      </div>
+
+      <div>
+        <FeatureCard icon="cx-grid-2">
+          <Fragment slot="title">The page of the set</Fragment>
+          <Fragment slot="body">
+            <code>chassis-icons preview</code> writes <code>preview/</code> from the output: every
+            icon with its name, a search, and a drawer with the code that draws an icon.{' '}
+            <code>--serve</code> serves the page, and the web archive of a release holds it.
+          </Fragment>
+          <div class="border-top border-subtle pt-md">
+            <Code noToolbar lang="bash" code="npm run preview" />
+          </div>
+        </FeatureCard>
+      </div>
+    </div>
+  </div>
+</section>

@@ -32,20 +32,27 @@ describe('the scripts of the root', () => {
     }
   })
 
-  // The set of the repository is the submodule, and the command of this checkout builds it
-  it('run the command of this checkout on vendor/icons', () => {
+  // The repository builds no set of a team: a script that runs the command of this checkout
+  // runs it on the copy of the fixture that `icons:fixture` writes
+  it('run the command of this checkout on the fixture, and on no set of a team', () => {
     const commands = Object.entries(scripts('.')).filter(([, command]) =>
-      command.startsWith('node packages/icons/lib/cli.js')
+      command.includes('packages/icons/')
     )
 
+    expect(scripts('.')['icons:fixture']).toBe('node build/fixture.js')
     expect(commands.map(([name]) => name)).toEqual(
-      expect.arrayContaining(['icons', 'icons:verify', 'icons:lint:source'])
+      expect.arrayContaining(['icons:preview', 'icons:native'])
     )
 
     for (const [name, command] of commands) {
-      if (name === 'release:notes') continue
-      expect(command, name).toContain('--cwd vendor/icons')
+      expect(command, name).not.toContain('vendor/icons')
+
+      if (command.includes('lib/cli.js') || command.includes('check.sh')) {
+        expect(command, name).toContain('.cache/fixture')
+      }
     }
+
+    expect(fs.existsSync(path.join(repositoryDir, '.gitmodules'))).toBe(false)
   })
 })
 

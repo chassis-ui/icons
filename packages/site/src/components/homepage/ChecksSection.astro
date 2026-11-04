@@ -1,0 +1,60 @@
+---
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
+import Code from '@chassis-ui/docs/shortcodes/Code.astro'
+---
+
+<section class="home-section py-3xl md:py-6xl">
+  <div class="container 2xl section-content">
+    <div class="grid mb-3xl md:mb-6xl">
+      <header class="section-header col-span-full lg:col-span-10 lg:col-start-2 xl:col-span-8 xl:col-start-3 text-center">
+        <h2 class="section-title font-3xl md:font-4xl lg:font-5xl mb-xs md:mb-sm lg:mb-md">
+          <span class="font-normal d-block">Checks</span> before a release
+        </h2>
+        <p class="section-body md:font-lg lg:font-xl m-0">
+          The CI workflow that <code>init</code> writes runs both checks on a pull request and on a
+          push to <code>main</code>, and the release workflow runs them before it builds and
+          publishes.
+        </p>
+      </header>
+    </div>
+
+    <div class="section-features grid grid-cols-1 md:grid-cols-2 gap-md md:gap-xl">
+      <div>
+        <FeatureCard icon="cx-filter">
+          <Fragment slot="title">Source lint</Fragment>
+          <Fragment slot="body">
+            <code>chassis-icons lint-source</code> checks each file of <code>source/</code>: its
+            name, its frame, one color, no stroke, and the pairs of the styles. It names each file
+            that cannot be an icon, and why.
+          </Fragment>
+          <div class="border-top border-subtle pt-md">
+            <Code noToolbar lang="bash" code="npm run lint" />
+          </div>
+        </FeatureCard>
+      </div>
+
+      <div>
+        <FeatureCard icon="cx-shield-check">
+          <Fragment slot="title">Verify</Fragment>
+          <Fragment slot="body">
+            <code>chassis-icons verify</code> builds the source and fails on any difference:
+          </Fragment>
+          <ul class="mb-0">
+            <li>Two builds of the source do not give the same files.</li>
+            <li>
+              <code>codepoints.json</code>, <code>README.md</code> or <code>package.json</code> is
+              not what the source builds.
+            </li>
+            <li>An icon lost the code point it had at the last tag.</li>
+            <li>
+              An icon that <code>chassis.checks.json</code> lists is missing.
+            </li>
+          </ul>
+          <div class="border-top border-subtle pt-md">
+            <Code noToolbar lang="bash" code="npm run verify" />
+          </div>
+        </FeatureCard>
+      </div>
+    </div>
+  </div>
+</section>

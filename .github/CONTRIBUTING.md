@@ -4,9 +4,8 @@ Thanks for taking the time to contribute. This doc covers dev setup, conventions
 request needs before it can be merged. The commands and the configuration are in the
 [README](../README.md), and how the build works and what it promises to write in
 [docs/architecture.md](../docs/architecture.md); this doc links to them rather than repeating
-them. An icon of the Chassis set is changed in its own repository, as
-[Changing the Chassis set](#changing-the-chassis-set) says, and a team that built a set of its
-own finds how to take a newer build into it under
+them. This repository holds the builder and no set: an icon is changed in the repository of
+its set. A team that built a set of its own finds how to take a newer build into it under
 [Taking a newer build into a repository of icons](#taking-a-newer-build-into-a-repository-of-icons).
 
 ## Dev setup
@@ -18,17 +17,15 @@ in `packageManager` of `package.json`; `corepack enable` picks it up) and Git.
 git clone https://github.com/chassis-ui/icons.git
 cd icons
 pnpm install
-pnpm vendor
 ```
 
-`pnpm vendor` checks out the `vendor/icons` submodule, builds the Chassis set there with
-`pnpm icons`, and unpacks the assets of the site. The tests need none of it;
-`git submodule update --init vendor/icons` is enough for `pnpm icons`,
-`pnpm icons:lint:source` and `pnpm icons:verify`. `pnpm icons:preview`, `pnpm icons:archive`
-and `pnpm icons:native` read `dist/` of `vendor/icons`, so they need a build first.
+The tests need nothing more. `pnpm icons:fixture` copies the fixture of the tests,
+`packages/icons/test/fixture/`, to `.cache/fixture/` and builds the copy with the build of this
+checkout, so that its output can be read. `pnpm icons:preview` and `pnpm icons:native` run it
+first. The site needs the assets that `pnpm vendor` unpacks; `pnpm dev` and `pnpm site:build`
+run it.
 
-The repository is a pnpm workspace: the package `@chassis-ui/icons`, its documentation site,
-and the Chassis set as a submodule.
+The repository is a pnpm workspace: the package `@chassis-ui/icons` and its documentation site.
 
 - [`packages/icons/`](../packages/icons/) is the package that is published to npm, the builder.
   Its `lib/` holds the `chassis-icons` command and the modules of the build, with the templates
@@ -37,21 +34,16 @@ and the Chassis set as a submodule.
   build. The package names no font, no prefix and no icon: what is particular to a set is in
   the `chassis.build` block of the `package.json` of its repository. `README.md` is the README
   of the package on npm, and `CHANGELOG.md` the changelog of the builder.
-- [`packages/site/`](../packages/site/) holds the Astro documentation site. It shows the set of
-  `vendor/icons`, with a page per icon that it makes from the output of the build, and holds
-  the documentation pages in `packages/site/content/docs/`. It is never published to npm.
-- `vendor/icons` is a submodule, a checkout of
-  [chassis-ui/website-icons](https://github.com/chassis-ui/website-icons), the repository of
-  icons of the Chassis set, pinned to a commit of its `main`. The `pnpm icons:*` scripts run
-  the build of this checkout on it with `--cwd vendor/icons`. Nothing in it is edited from
-  here, and its `dist/`, which `pnpm vendor` builds, is not committed in either repository.
-- [`build/`](../build/) holds the scripts of the repository: the check for a changeset, the
-  version references, and the notes of a release.
+- [`packages/site/`](../packages/site/) holds the Astro documentation site of the builder,
+  with the documentation pages in `packages/site/content/docs/`. It shows no set, and is never
+  published to npm.
+- [`build/`](../build/) holds the scripts of the repository: the copy of the fixture, the check
+  for a changeset, the version references, and the notes of a release.
 - [`docs/architecture.md`](../docs/architecture.md) explains the build, and
   [`ref/ROADMAP.md`](../ref/ROADMAP.md) holds the plan of the repository, its principles and
   its decisions.
 - [`vendor/assets.json`](../vendor/assets.json) pins the release of chassis-ui/website-assets
-  with the fonts and images of the site. `pnpm vendor` and `pnpm site:build` unpack its
+  with the fonts and images of the site. `pnpm vendor`, `pnpm dev` and `pnpm site:build` unpack its
   archive into `vendor/assets`, which is not committed. `pnpm sync-assets` moves the pin to
   the latest release.
 
@@ -72,63 +64,6 @@ Commits follow a loose `<type>(<scope>): <description>` convention:
 
 Branch names aren't templated; name yours descriptively (for example `feat/init-check`).
 
-## Changing the Chassis set
-
-The icons of the Chassis website are the repository
-[chassis-ui/website-icons](https://github.com/chassis-ui/website-icons), published as
-`@chassis-ui/website-icons`, with its own changelog and releases. An icon is added, changed,
-renamed or removed there, never in `vendor/icons/`, which is a checkout of that repository:
-
-1. In chassis-ui/website-icons, add, change or remove the SVG file in `source/`. An icon of
-   the set is drawn on a 24 by 24 frame, in one color, and is named in kebab-case with its
-   style as the last part: `<name>-outline`, `<name>-solid` or `<name>-brand`. An outline icon
-   comes with its solid one. `pnpm lint` there checks all of this.
-2. Run `pnpm build` there. It writes `dist/`, `codepoints.json`, `README.md` and the fields
-   of `package.json` that name the files. A new icon gets a code point of its own, the code points of the other icons stay as they are, and the
-   code point of a removed icon is retired. Look at the result with `pnpm preview`, which
-   writes the page of the set into `preview/` and serves it at `http://localhost:4325/`.
-3. Run `pnpm verify` there. It fails when the source does not build twice to the same files,
-   when `codepoints.json`, `README.md` or `package.json` is not what the source builds, when an
-   icon lost its code point, or when an icon of `chassis.checks.json` is missing. Renaming or
-   removing an icon breaks every project that uses it: it is the maintainer's decision, and
-   the changelog entry says so.
-4. Commit `source/` with `codepoints.json` and `README.md`, and `package.json` when the build
-   changed it. `dist/` is not committed: `.gitignore` names it. Add the entry of the next
-   version in `CHANGELOG.md`, and release: a push to its `main` with a new version builds the
-   output, publishes the package and creates the tag with the archives attached, as
-   [A repository of icons](#a-repository-of-icons) describes.
-
-The release reaches this repository by moving the pointer of the submodule to the tag, or to
-the commit of `main` that the site should show. Stage the pointer before the checks:
-`pnpm site:build` runs `pnpm vendor`, which checks out the commit that the index names.
-
-```bash
-cd vendor/icons
-git fetch
-git checkout <tag>
-cd ../..
-git add vendor/icons
-pnpm icons:lint:source
-pnpm icons:verify
-pnpm site:build
-```
-
-Commit the pointer when the three checks pass. The site shows the set at that commit, built
-with the build of this checkout, and CI builds and verifies it. A pointer move changes nothing of the published package, so it needs
-no changeset.
-
-`dist/` of `vendor/icons` is built with the build of this checkout, so the site and the
-checks of a pull request see what a changed build writes. A change to the build that changes
-a file that the Chassis set commits, `codepoints.json`, `README.md` or a field of
-`package.json`, fails `pnpm icons:verify` on `vendor/icons` until the set takes it. Run
-`pnpm icons`, which writes those files in `vendor/icons` with the build of this checkout,
-commit them on a branch of chassis-ui/website-icons, and point `vendor/icons` at it for the
-pull request. After the release of the build, the repository of the set takes the new
-version, as
-[Taking a newer build into a repository of icons](#taking-a-newer-build-into-a-repository-of-icons)
-says, and its next release builds and publishes the new output. See
-[Changing the build](#changing-the-build).
-
 ## Changing the build
 
 The build is `packages/icons/lib/cli.js` and the modules beside it:
@@ -140,8 +75,8 @@ warning, and formatted with Prettier: `pnpm lint:prettier` checks the whole repo
 with `init`, build the set of another team, the fixture, and compare the result with the
 golden files; see the [README of the tests](../packages/icons/test/README.md). A change that
 is meant to change the output writes the golden files again with `pnpm icons:test:golden`,
-and changes the output of every set too: `pnpm icons --dry-run` says what changes for the
-Chassis set, and the changeset says what changes for a repository of icons.
+and changes the output of every set too: the changeset says what changes for a repository of
+icons.
 
 The package writes what a set says about itself. The `README.md` of a set comes from
 `packages/icons/lib/templates/readme.hbs`, its stylesheets from `css.hbs` and `scss.hbs`
@@ -161,26 +96,25 @@ The targets of a set besides the web are `packages/icons/lib/ios.js`, which writ
 catalog and the Swift file of `dist/ios/`, and `packages/icons/lib/android.js`, which converts
 the optimized SVG files into the vector drawables of `dist/android/`. The tests read their
 output as text, and do not compile it. `pnpm icons:native` compiles it with the tools of the
-platforms, on `dist/` of `vendor/icons`, which `pnpm vendor` or `pnpm icons` builds: each
+platforms, on `dist/` of the copy of the fixture, which it builds first: each
 asset catalog with actool, with a check that each image set is a template image, the Swift
 file in the Swift 5 and Swift 6 language modes, and `res/` with aapt2 against `android.jar`.
 It needs Xcode and the Android SDK, found with `ANDROID_HOME` or `ANDROID_SDK_ROOT`, or named
 with `AAPT2` and `ANDROID_JAR`, so CI does not run it. Run it after a change to either module
 or to their output; `packages/icons/test/native/check.sh <repository> [ios] [android]` runs it
-on another built repository of icons, such as a copy of the fixture.
+on another built repository of icons.
 
 `pnpm icons:lint:package` runs [publint](https://publint.dev) on what npm would publish, and
 `manifest.test.js` checks that the package packs `lib/`, `templates/`, `package.json`,
 `README.md`, `CHANGELOG.md` and `LICENSE`, and nothing else.
 
-No module of the build, no template and no test names a font, a prefix or an icon of the
-Chassis set. After a change, run:
+No module of the build, no template and no test names a font, a prefix or an icon of a set
+other than the fixture. After a change, run:
 
 ```bash
 pnpm icons:lint
 pnpm icons:typecheck
 pnpm icons:test
-pnpm icons:verify
 pnpm icons:lint:package
 ```
 
@@ -191,24 +125,18 @@ The site uses the layouts and components of
 pages, components and styles are in `packages/site/src/`, its documentation pages in
 `packages/site/content/docs/`, and its settings in `packages/site/config.yml`.
 
-The site shows the set of `vendor/icons`, whatever set that is, so its code names no font,
-no prefix and no icon. `packages/site/src/libs/set.ts` reads the configuration and the
-output of that repository. A page reads the set from `virtual:icon-set` and the icons from
-the `icons` collection, and draws an icon of the set with `SetIcon.astro`. The set is served
-from `/icons/static/set/`.
+The site is the documentation of the builder: a page at `/icons/` that introduces it, and the
+documentation pages. It shows no set, and its code names no font, no prefix and no icon of a
+set. An example of a page uses the `acme` names of [WRITING.md](../WRITING.md).
 
-The interface of the site is another matter: the header, the sidebar and the search are
-drawn by `@chassis-ui/docs` with the Chassis set, from the installed `@chassis-ui/icons`
-alias at `/static/icons/`. `<Icon>` of `@chassis-ui/docs` and the `icon` of an entry of
-`packages/site/data/sidebar.yml` name icons of that package, and not of the set of
-`vendor/icons`.
+The interface of the site, the header, the sidebar and the search, is drawn by
+`@chassis-ui/docs` with the icons of the installed `@chassis-ui/icons` alias, a published
+version of this package, at `/static/icons/`. `<Icon>` of `@chassis-ui/docs` and the `icon` of
+an entry of `packages/site/data/sidebar.yml` name icons of that package.
 
-`pnpm site:test` holds the site to this. It copies the build, the site and `vendor/icons`
-into `.cache/`, builds the site of the copy for the set of `vendor/icons` and again with the
-fixture of the tests of the build in its place, and checks that each page shows the set of
-the copy, that every icon a page draws is in the sprite it is drawn from, and that every
-link leads to a page and a heading that exist. It needs the submodule and the files of
-`vendor/assets`, so run `pnpm vendor` once before it.
+`pnpm site:test` checks the built site: that every page is there, that every icon a page
+draws is in a sprite that the site serves, and that every link leads to a page and a heading
+that exist. It needs the files of `vendor/assets`, so run `pnpm site:build` before it.
 
 ```bash
 pnpm site:lint:eslint      # ESLint
@@ -216,7 +144,7 @@ pnpm site:lint:stylelint   # Stylelint
 pnpm lint:prettier         # Prettier, on the whole repository
 pnpm check:astro           # Types
 pnpm site:build            # The same build as Vercel: the assets, Astro and Pagefind
-pnpm site:test             # The site of a copy of the repository, for two sets
+pnpm site:test             # The pages, the icons and the links of the built site
 pnpm site:lint:html        # html-validate, on the built site
 pnpm site:lint:vnu         # The Nu Html Checker, on the built site. Needs Java
 pnpm astro:preview         # The built site, as it is deployed
@@ -230,13 +158,12 @@ patterns of `packages/site/astro.config.ts` on the same folder.
 
 The documents follow [WRITING.md](../WRITING.md): plain sentences, no counts and no marketing
 words, and every command, path and option written as it exists. Run a command before you
-write it down. The example of a repository of icons is a team named `acme`, never the Chassis
-set, which is one repository of icons among others.
+write it down. The example of a repository of icons is a team named `acme`.
 
 The documentation pages of the site are the MDX files of `packages/site/content/docs/`.
 A page is found by the slug of its entry in `packages/site/data/sidebar.yml`, and links to
 another page with `[[docsref:/<path>]]`: the build of the site fails on a link to a page
-that is not there. The pages use the Chassis set in their examples and say so.
+that is not there.
 
 `packages/icons/README.md` is the README of the package on npm, written by hand. The README
 of a set is written by the build: change `packages/icons/lib/templates/readme.hbs`, write the
@@ -252,19 +179,18 @@ goes into `words` of `.cspell.json`.
 
 Run the checks of the area you changed before you open a pull request. CI runs all of them.
 
-| Area changed                                               | Run                                                                                                                                                             |
-| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `packages/icons/lib/`                                      | `pnpm icons:lint`, `pnpm icons:typecheck`, `pnpm icons:test`, `pnpm icons:verify`, `pnpm icons:lint:package`. Add a changeset.                                  |
-| The output of a set is meant to change                     | `pnpm icons:test:golden`, then the row above: read the diff of `packages/icons/test/golden/`, and `pnpm icons --dry-run` says what changes for the Chassis set. |
-| `packages/icons/lib/ios.js`, `android.js` or their output  | The rows above, and `pnpm icons:native` on a machine with Xcode and the Android SDK.                                                                            |
-| `packages/icons/lib/templates/`                            | `pnpm icons:test:golden`, `pnpm icons:test`, `pnpm icons:verify`. Add a changeset.                                                                              |
-| `packages/icons/templates/`                                | `pnpm icons:test`, and `chassis-icons init --check` in a repository made earlier. Add a changeset that says which file to write again.                          |
-| `packages/icons/test/`                                     | `pnpm icons:lint`, `pnpm icons:test`.                                                                                                                           |
-| The manifest of the package, `packages/icons/package.json` | `pnpm icons:test`, `pnpm icons:lint:package`.                                                                                                                   |
-| The pin of `vendor/icons`                                  | `pnpm icons:lint:source`, `pnpm icons:verify`, `pnpm site:build`.                                                                                               |
-| The scripts of `build/`, the workflows, `.changeset/`      | `pnpm icons:lint`, `pnpm icons:test`.                                                                                                                           |
-| `packages/site/`                                           | `pnpm site:lint:eslint`, `pnpm site:lint:stylelint`, `pnpm check:astro`, `pnpm site:build`, `pnpm site:lint:html`, `pnpm site:test`.                            |
-| Any Markdown, JSON, YAML or configuration file             | `pnpm lint:prettier`, and `pnpm spellcheck` for Markdown.                                                                                                       |
+| Area changed                                               | Run                                                                                                                                    |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/icons/lib/`                                      | `pnpm icons:lint`, `pnpm icons:typecheck`, `pnpm icons:test`, `pnpm icons:lint:package`. Add a changeset.                              |
+| The output of a set is meant to change                     | `pnpm icons:test:golden`, then the row above: read the diff of `packages/icons/test/golden/`, and say in the changeset what changes.   |
+| `packages/icons/lib/ios.js`, `android.js` or their output  | The rows above, and `pnpm icons:native` on a machine with Xcode and the Android SDK.                                                   |
+| `packages/icons/lib/templates/`                            | `pnpm icons:test:golden`, `pnpm icons:test`. Add a changeset.                                                                          |
+| `packages/icons/templates/`                                | `pnpm icons:test`, and `chassis-icons init --check` in a repository made earlier. Add a changeset that says which file to write again. |
+| `packages/icons/test/`                                     | `pnpm icons:lint`, `pnpm icons:test`.                                                                                                  |
+| The manifest of the package, `packages/icons/package.json` | `pnpm icons:test`, `pnpm icons:lint:package`.                                                                                          |
+| The scripts of `build/`, the workflows, `.changeset/`      | `pnpm icons:lint`, `pnpm icons:test`.                                                                                                  |
+| `packages/site/`                                           | `pnpm site:lint:eslint`, `pnpm site:lint:stylelint`, `pnpm check:astro`, `pnpm site:build`, `pnpm site:lint:html`, `pnpm site:test`.   |
+| Any Markdown, JSON, YAML or configuration file             | `pnpm lint:prettier`, and `pnpm spellcheck` for Markdown.                                                                              |
 
 ## What a pull request needs before merge
 
@@ -273,15 +199,11 @@ CI runs these jobs on every pull request, and on every push to `develop`:
 - **Lint**: `pnpm icons:lint`, `pnpm site:lint:eslint`, `pnpm site:lint:stylelint`,
   `pnpm lint:prettier` and `pnpm spellcheck`.
 - **Type Check**: `pnpm icons:typecheck` and `pnpm check:astro`.
-- **Build**, with the submodule checked out: `pnpm icons:lint:source` on the Chassis set,
-  `pnpm icons:test` on the Node.js of `.nvmrc` and on Node.js 22, `pnpm icons:verify` and
-  `pnpm icons:lint:package`. It fails when this build does not write the same files twice for
-  `vendor/icons`, or when the files that `vendor/icons` commits, its registry, its README and
-  its `package.json`, are not what this build writes from its source: a change of the build
-  that changes them needs a change of the set too, as
-  [Changing the Chassis set](#changing-the-chassis-set) says.
-- **Site**, with the submodule checked out: `pnpm site:build`, which builds the set through
-  `pnpm vendor`, then `pnpm site:lint:html`, `pnpm site:lint:vnu` and `pnpm site:test`.
+- **Build**: `pnpm icons:test` on the Node.js of `.nvmrc` and on Node.js 22, and
+  `pnpm icons:lint:package`. The tests build the fixture and compare its output with the
+  golden files.
+- **Site**: `pnpm site:build`, which unpacks the assets through `pnpm vendor`, then
+  `pnpm site:lint:html`, `pnpm site:lint:vnu` and `pnpm site:test`.
 - **Changeset**: a change to `packages/icons/lib/` or to `packages/icons/templates/` has a
   changeset. `pnpm changeset:check develop` runs the same check on your branch.
 - **Audit**: `pnpm check:pnpm`.
@@ -311,7 +233,7 @@ everything else a `patch`.
 
 A change that releases nothing, such as a refactoring of the build that writes the same
 output, adds an empty changeset: `pnpm changeset --empty`. A change to the site, to the tests,
-to the documents or to the pin of `vendor/icons` needs none.
+or to the documents needs none.
 
 ## Releases
 
@@ -381,7 +303,7 @@ first job. Two names are tied to settings outside the repository, so change them
 
 ### A repository of icons
 
-A repository of icons, the Chassis set among them, releases itself with the workflows that
+A repository of icons releases itself with the workflows that
 `chassis-icons init` wrote, from `packages/icons/templates/workflows/`. Its `ci.yml` runs on a
 push and on a pull request: `release-notes`, which fails when the version of `package.json`
 has no entry in `CHANGELOG.md`, `lint` and `verify`. Its `release.yml` runs on a push to
@@ -446,9 +368,9 @@ stays as it is, and `init --check` keeps reporting it.
 ## Using the issue tracker
 
 The [issue tracker](https://github.com/chassis-ui/icons/issues) is for bug reports and
-documentation problems of the build, the site and this repository. An icon of the Chassis
-set, a request for one, or a problem with the files of `@chassis-ui/website-icons` belongs in
-[chassis-ui/website-icons](https://github.com/chassis-ui/website-icons/issues). A problem
+documentation problems of the build, the site and this repository. An icon of a set, a
+request for one, or a problem with the files of a set that the build wrote as it should
+belongs in the repository of that set. A problem
 with a token, a style or a component belongs in
 [that project's repository](https://github.com/chassis-ui). Report a security vulnerability
 privately, as [SECURITY.md](SECURITY.md) describes.

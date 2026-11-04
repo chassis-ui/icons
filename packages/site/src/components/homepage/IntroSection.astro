@@ -1,0 +1,53 @@
+---
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
+---
+
+<section class="home-section py-3xl md:py-6xl">
+  <div class="container 2xl section-content">
+    <div class="grid mb-3xl md:mb-6xl">
+      <header class="section-header col-span-full lg:col-span-10 lg:col-start-2 xl:col-span-8 xl:col-start-3 text-center">
+        <h2 class="section-title font-3xl md:font-4xl lg:font-5xl mb-xs md:mb-sm lg:mb-md">
+          <span class="font-normal d-block">A repository of icons</span> for each team
+        </h2>
+        <p class="section-body md:font-lg lg:font-xl m-0">
+          A team keeps its icons in a repository of its own, with <code>@chassis-ui/icons</code> as
+          a development dependency. The builder ships no icons: everything that is particular to a
+          set is in its repository.
+        </p>
+      </header>
+    </div>
+
+    <div class="section-features grid grid-cols-1 md:grid-cols-3 gap-md md:gap-xl">
+      <div>
+        <FeatureCard icon="cx-folders">
+          <Fragment slot="title">One file per icon</Fragment>
+          <Fragment slot="body">
+            Save <code>&lt;name&gt;.svg</code> into <code>source/</code>, and the icon is in the
+            next build. The name of the file is the name of the icon, and no list of icons is kept
+            beside the files.
+          </Fragment>
+        </FeatureCard>
+      </div>
+      <div>
+        <FeatureCard icon="cx-swatchbook">
+          <Fragment slot="title">Settings in package.json</Fragment>
+          <Fragment slot="body">
+            The <code>chassis.build</code> block names the font and the class prefix, and sets the
+            frame, the styles, the font formats and the targets. <code>init</code> writes it for
+            your font name.
+          </Fragment>
+        </FeatureCard>
+      </div>
+      <div>
+        <FeatureCard icon="cx-bullseye-arrow">
+          <Fragment slot="title">Code points that stay</Fragment>
+          <Fragment slot="body">
+            An icon keeps its code point in the font for as long as it is in the set. The build
+            records them in <code>codepoints.json</code>, and gives the code point of a removed icon
+            to no later icon.
+          </Fragment>
+        </FeatureCard>
+      </div>
+    </div>
+  </div>
+</section>

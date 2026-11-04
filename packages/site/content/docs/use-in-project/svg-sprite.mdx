@@ -8,14 +8,14 @@ toc: true
 
 The sprite is one SVG file, `dist/web/<font>.svg`, that holds every icon of the set as a `<symbol>` whose `id` is the name of the icon. One request loads the set, and a `<use>` element draws an icon. Choose the sprite when an icon is SVG in the page: it has a title of its own, it is styled with CSS, and it needs no font.
 
-The examples use the Chassis set, whose sprite is `chassis-icons.svg`. If you build your own set, use the name of your font in its place.
+The examples use `@acme/glyphs`, the set of the team Acme, whose sprite is `acme-glyphs.svg` and whose frame is `16`. For another set, use the name of its package and its font in their place.
 
 ## Installation
 
 The sprite is in the `dist/web/` folder of the output. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get that folder: the package, the archive of a release, and the folders of a build. The sprite is one file and needs no other.
 
 ```bash
-npm install @chassis-ui/website-icons
+npm install @acme/glyphs
 ```
 
 ## Basic usage
@@ -23,15 +23,15 @@ npm install @chassis-ui/website-icons
 Draw an icon with an `<svg>` element that holds a `<use>`, whose `href` is the address of the sprite and the name of the icon after `#`:
 
 ```html
-<svg width="24" height="24" fill="currentcolor" aria-hidden="true">
-  <use href="node_modules/@chassis-ui/website-icons/dist/web/chassis-icons.svg#bell-outline"></use>
+<svg width="16" height="16" fill="currentcolor" aria-hidden="true">
+  <use href="node_modules/@acme/glyphs/dist/web/acme-glyphs.svg#ring-line"></use>
 </svg>
 ```
 
 The build writes one symbol per icon, with the frame as its `viewBox`:
 
 ```svg
-<symbol class="cx-minus-outline" viewBox="0 0 24 24" id="minus-outline"><path d="M20.125 12c0 .547-.43.938-.937.938H4.813c-.547 0-.938-.391-.938-.938 0-.508.39-.937.938-.937h14.375a.95.95 0 0 1 .937.937"/></symbol>
+<symbol class="ag-ring-line" viewBox="0 0 16 16" id="ring-line"><path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14m0-2A5 5 0 1 0 8 3a5 5 0 0 0 0 10"/></symbol>
 ```
 
 ## Size and color
@@ -39,8 +39,8 @@ The build writes one symbol per icon, with the frame as its `viewBox`:
 The `width` and the `height` of the `<svg>` element are the size of the icon, in the attributes or in CSS. A symbol has no color of its own, so the icon takes the `fill` of the `<svg>` element: with `fill="currentcolor"` that is the color of the text around it.
 
 ```html
-<svg width="48" height="48" fill="currentcolor" style="color: rebeccapurple;" aria-hidden="true">
-  <use href="node_modules/@chassis-ui/website-icons/dist/web/chassis-icons.svg#bell-outline"></use>
+<svg width="32" height="32" fill="currentcolor" style="color: rebeccapurple;" aria-hidden="true">
+  <use href="node_modules/@acme/glyphs/dist/web/acme-glyphs.svg#ring-line"></use>
 </svg>
 ```
 
@@ -53,9 +53,9 @@ An `<svg>` element is an image to a screen reader. Hide an icon that repeats the
 A decorative icon is hidden with `aria-hidden="true"`, as in the examples above. An icon that carries meaning gets a role and a title:
 
 ```html
-<svg width="24" height="24" fill="currentcolor" role="img">
+<svg width="16" height="16" fill="currentcolor" role="img">
   <title>Notifications</title>
-  <use href="node_modules/@chassis-ui/website-icons/dist/web/chassis-icons.svg#bell-outline"></use>
+  <use href="node_modules/@acme/glyphs/dist/web/acme-glyphs.svg#ring-line"></use>
 </svg>
 ```
 
@@ -68,8 +68,8 @@ The sprite has no settings of its own. Its name follows from the configuration o
 A `<use>` element does not load a file from another origin. Serve the sprite from the origin of the page, or put the contents of the file into the page and refer to a symbol by its name alone:
 
 ```html
-<svg width="24" height="24" fill="currentcolor" aria-hidden="true">
-  <use href="#bell-outline"></use>
+<svg width="16" height="16" fill="currentcolor" aria-hidden="true">
+  <use href="#ring-line"></use>
 </svg>
 ```
 
@@ -77,7 +77,7 @@ Hide the sprite in the page with `style="display: none"` on its root, so that it
 
 ### A set of your own
 
-The name of the sprite is the setting `name` of `chassis.build`. With `"name": "acme-icons"` the sprite is `dist/web/acme-icons.svg`, and the `id` of a symbol is still the name of the icon.
+The name of the sprite is the setting `name` of `chassis.build`. With `"name": "acme-glyphs"` the sprite is `dist/web/acme-glyphs.svg`, and the `id` of a symbol is still the name of the icon.
 
 ## Best practices
 
@@ -98,7 +98,7 @@ Each entry gives the message or the symptom, then the cause and the fix.
 
 ### Icon is not drawn
 
-The `<svg>` element takes its space and stays empty, and the browser logs no error. The sprite is on another origin than the page, or the name after `#` is not an icon of the set. Serve the sprite from the origin of the page, and find the name on the [home page](/icons/).
+The `<svg>` element takes its space and stays empty, and the browser logs no error. The sprite is on another origin than the page, or the name after `#` is not an icon of the set. Serve the sprite from the origin of the page, and find the name in `dist/icons.json` of the set.
 
 ### Icon is black
 

@@ -4,10 +4,8 @@ baseURL:                "https://chassis-ui.com/icons"
 docsPath:               "/icons/docs"
 sitePath:               "packages/site"
 
-exampleIcon:            "info-circle-solid"
-
 subtitle:               "A Toolkit for Building Custom Icon Libraries"
-description:            "A repository that a team fills with its SVG files and builds into an icon font, an SVG sprite and optimized SVG files. The icons here are the Chassis defaults."
+description:            "The builder of icon sets of Chassis UI: a team saves its SVG files into a repository, and the build writes an icon font, an SVG sprite, optimized SVG files and the files of iOS and Android."
 authors:                "Ozgur Gunes"
 
 currentVersion:         "0.4.0-next.0"

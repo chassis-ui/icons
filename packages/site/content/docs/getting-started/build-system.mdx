@@ -6,7 +6,7 @@ toc: true
 
 ## Introduction
 
-The build is the `chassis-icons` command of `@chassis-ui/icons`, a development dependency of a repository of icons. It turns the SVG files of `source/` into the output of the set, step by step, and reads one block of configuration: the same build writes the Chassis set and the set of any team, and names no set itself.
+The build is the `chassis-icons` command of `@chassis-ui/icons`, a development dependency of a repository of icons. It turns the SVG files of `source/` into the output of the set, step by step, and reads one block of configuration: the same build writes the set of any team, and names no set itself.
 
 The output, `dist/`, is not committed: a build writes it from `source/`, `codepoints.json` and the version of the builder, and the release of the set builds it again. The build also writes `codepoints.json`, `README.md` and fields of `package.json`, which the repository commits. After a change to `source/` or to the configuration, run the build and commit those files with the change.
 
@@ -101,7 +101,7 @@ dist/
 
 The package on npm holds `icons.json`, `svgs/` and `web/`. The files of `ios/` and `android/` are not in it: the release attaches them to its GitHub release as archives, and [iOS and Android]([[docsref:/use-in-project/ios-and-android]]) shows how an app uses them.
 
-`dist/icons.json` is the index of the set: `name`, `prefix`, `frame`, `styles` and `pairs` of the configuration, and under `icons` one entry per icon with its `name` and its `codepoint` in four hex digits, and its `base` and `style` when the set has styles. It names no version, so a release that changes no icon changes no line of it. The page of the set and this site read it. An entry of `icons` has this shape, with the code point that `codepoints.json` gives the icon:
+`dist/icons.json` is the index of the set: `name`, `prefix`, `frame`, `styles` and `pairs` of the configuration, and under `icons` one entry per icon with its `name` and its `codepoint` in four hex digits, and its `base` and `style` when the set has styles. It names no version, so a release that changes no icon changes no line of it. The page of the set reads it. An entry of `icons` has this shape, with the code point that `codepoints.json` gives the icon:
 
 ```json
 {"name":"<name>","codepoint":"f101","base":"<base>","style":"<style>"}
@@ -160,7 +160,7 @@ The build reads the `chassis.build` block. A setting that the block leaves out h
 }
 ```
 
-The Chassis set has the styles `outline`, `solid` and `brand`, and the pair of `outline` and `solid`: a name of that set ends in a style, and an icon that has an `outline` file has a `solid` file too. [Names and styles]([[docsref:/icon-design/names-and-styles]]) describes both settings. The Chassis set also has the targets `ios` and `android`.
+A set of the team Acme, `@acme/glyphs`, has the frame `16`, the styles `line` and `fill`, and the pair of `line` and `fill`: a name of that set ends in a style, and an icon that has a `line` file has a `fill` file too. [Names and styles]([[docsref:/icon-design/names-and-styles]]) describes both settings. That set also has the targets `ios` and `android`.
 
 ### Package fields
 

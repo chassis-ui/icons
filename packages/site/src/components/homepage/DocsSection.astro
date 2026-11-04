@@ -1,0 +1,88 @@
+---
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
+import { getConfig, getDocsPath } from '@chassis-ui/docs/site'
+
+// The pages of each section of `data/sidebar.yml`, by title and slug
+const sections = [
+  {
+    icon: 'cx-rocket',
+    title: 'Getting Started',
+    body: 'Write a repository of icons, build it, and release it. The build system describes every command, setting and check.',
+    pages: [
+      ['Introduction', 'getting-started/introduction/'],
+      ['Quick Start', 'getting-started/quick-start/'],
+      ['Build System', 'getting-started/build-system/']
+    ]
+  },
+  {
+    icon: 'cx-compass-drafting',
+    title: 'Icon Design',
+    body: 'What an SVG file needs to be an icon of the set: the frame, one color, the name and its style, and the rules of the source lint.',
+    pages: [
+      ['Frame and Color', 'icon-design/frame-and-color/'],
+      ['Names and Styles', 'icon-design/names-and-styles/'],
+      ['Source Lint', 'icon-design/source-lint/']
+    ]
+  },
+  {
+    icon: 'cx-code',
+    title: 'Use in Project',
+    body: 'Draw an icon of a set on a page, with Chassis CSS or Chassis React, or in an iOS or Android app, and publish the set.',
+    pages: [
+      ['Icon Font', 'use-in-project/icon-font/'],
+      ['SVG Sprite', 'use-in-project/svg-sprite/'],
+      ['SVG Files', 'use-in-project/svg-files/'],
+      ['Sass', 'use-in-project/sass/'],
+      ['Chassis CSS', 'use-in-project/chassis-css/'],
+      ['Chassis React', 'use-in-project/chassis-react/'],
+      ['iOS and Android', 'use-in-project/ios-and-android/'],
+      ['Publishing', 'use-in-project/publishing/']
+    ]
+  }
+]
+---
+
+<section class="home-section py-3xl md:py-6xl">
+  <div class="container 2xl section-content">
+    <div class="grid mb-3xl md:mb-6xl">
+      <header class="section-header col-span-full lg:col-span-10 lg:col-start-2 xl:col-span-8 xl:col-start-3 text-center">
+        <h2 class="section-title font-3xl md:font-4xl lg:font-5xl mb-xs md:mb-sm lg:mb-md">
+          <span class="font-normal d-block">Build a set</span> of your own
+        </h2>
+        <p class="section-body md:font-lg lg:font-xl m-0">
+          The documentation covers the build, drawing icons for a set, and using the output in a
+          project.
+        </p>
+      </header>
+    </div>
+
+    <div class="section-features grid grid-cols-1 md:grid-cols-3 gap-md md:gap-xl">
+      {sections.map((section) => (
+        <div>
+          <FeatureCard icon={section.icon}>
+            <Fragment slot="title">{section.title}</Fragment>
+            <Fragment slot="body">{section.body}</Fragment>
+            <ul class="list-unstyled d-flex flex-column gap-xs">
+              {section.pages.map(([title, slug]) => (
+                <li>
+                  <a href={getDocsPath(slug)} class="link-primary">
+                    {title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </FeatureCard>
+        </div>
+      ))}
+    </div>
+
+    <div class="d-flex gap-md justify-content-center flex-wrap mt-3xl md:mt-6xl">
+      <a href={getDocsPath('getting-started/quick-start/')} class="button primary lg">
+        Get Started
+      </a>
+      <a href={getConfig().repo} class="button default lg" target="_blank" rel="noopener">
+        View on GitHub
+      </a>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,46 @@
+---
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
+---
+
+<section class="home-section py-3xl md:py-6xl">
+  <div class="container 2xl section-content">
+    <div class="grid mb-3xl md:mb-6xl">
+      <header class="section-header col-span-full lg:col-span-10 lg:col-start-2 xl:col-span-8 xl:col-start-3 text-center">
+        <h2 class="section-title font-3xl md:font-4xl lg:font-5xl mb-xs md:mb-sm lg:mb-md">
+          <span class="font-normal d-block">Built on</span> open tools
+        </h2>
+        <p class="section-body md:font-lg lg:font-xl m-0">
+          The build runs these tools on the files of <code>source/</code>, and writes the
+          stylesheets, the Swift file and the README of a set from templates of its own.
+        </p>
+      </header>
+    </div>
+
+    <div class="section-features grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-md md:gap-xl">
+      <div>
+        <FeatureCard>
+          <Fragment slot="title">SVGO</Fragment>
+          <Fragment slot="body">Optimizes the SVG files</Fragment>
+        </FeatureCard>
+      </div>
+      <div>
+        <FeatureCard>
+          <Fragment slot="title">svg-sprite</Fragment>
+          <Fragment slot="body">Writes the sprite</Fragment>
+        </FeatureCard>
+      </div>
+      <div>
+        <FeatureCard>
+          <Fragment slot="title">Fantasticon</Fragment>
+          <Fragment slot="body">Writes the icon font</Fragment>
+        </FeatureCard>
+      </div>
+      <div>
+        <FeatureCard>
+          <Fragment slot="title">svg2vectordrawable</Fragment>
+          <Fragment slot="body">Writes the vector drawables</Fragment>
+        </FeatureCard>
+      </div>
+    </div>
+  </div>
+</section>

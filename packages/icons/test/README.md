@@ -4,9 +4,9 @@
 
 ## The fixture
 
-`fixture/` is the repository of icons of another team, and nothing in it is like the Chassis set: icons on a frame of 16, the font `acme-glyphs`, the prefix `ag`, the styles `line` and `fill`, code points from `e900`, the formats `woff2` and `ttf`, and a `checks.json` of its own. It names the targets `ios` and `android`, so that the build writes the files of both for it. Its `package.json` holds the `chassis.build` block, with `source` and `checks` set explicitly, and the site, the repository and the license of that team, and `fixture/source/` the SVG files as a design tool exports them. The manifest has none of the fields that the build writes, so that a test sees the build write them.
+`fixture/` is the repository of icons of another team, `@acme/glyphs`, and its settings differ from the defaults: icons on a frame of 16, the font `acme-glyphs`, the prefix `ag`, the styles `line` and `fill`, code points from `e900`, the formats `woff2` and `ttf`, and a `checks.json` of its own. It names the targets `ios` and `android`, so that the build writes the files of both for it. Its `package.json` holds the `chassis.build` block, with `source` and `checks` set explicitly, and the site, the repository and the license of that team, and `fixture/source/` the SVG files as a design tool exports them. The manifest has none of the fields that the build writes, so that a test sees the build write them.
 
-The tests build the fixture, not the Chassis set, so that a part of the build that works for one set only fails here. `pnpm icons:test` needs no submodule.
+The tests build the fixture, the one set that the checks of this repository use, so that a part of the build that works for the defaults only fails here. `pnpm icons:fixture` copies it to `.cache/fixture/` and builds the copy, for a look at its output or its page with `pnpm icons:preview`.
 
 ## The golden output
 
@@ -40,11 +40,11 @@ Never edit a golden file by hand. Prettier leaves the folder alone.
 | `init.test.js`          | `init`: the files it plans and writes, its options and their defaults, `--only`, `--check` and a dry run                                                                                                                                                                                                            |
 | `journey.test.js`       | A team that writes a repository with `init`, saves its SVG files, builds, verifies, archives, and passes `init --check`                                                                                                                                                                                             |
 | `cli.test.js`           | The command line: its commands, its options, where it finds the repository, and its exit codes                                                                                                                                                                                                                      |
-| `scripts.test.js`       | The scripts of the root: delegation with `run` and `--cwd vendor/icons`; the changelog entry of a changeset; `checkChangeset` and `syncVersionRefs` of `build/`                                                                                                                                                     |
+| `scripts.test.js`       | The scripts of the root: delegation with `run`, and the command of this checkout run on the copy of the fixture only; the changelog entry of a changeset; `checkChangeset` and `syncVersionRefs` of `build/`                                                                                                        |
 
 ## The native check
 
-The tests read the output of the targets as text. `test/native/check.sh` compiles it with the tools of the platforms, which Vitest does not have, so CI does not run it. Run it after a change to `lib/ios.js`, `lib/android.js` or their output, on a machine with Xcode and the Android SDK. `pnpm icons:native` runs it on `vendor/icons`, after `pnpm vendor` or `pnpm icons` built it, and it takes any built repository of icons, such as a copy of the fixture, and the targets to check:
+The tests read the output of the targets as text. `test/native/check.sh` compiles it with the tools of the platforms, which Vitest does not have, so CI does not run it. Run it after a change to `lib/ios.js`, `lib/android.js` or their output, on a machine with Xcode and the Android SDK. `pnpm icons:native` builds a copy of the fixture with `pnpm icons:fixture` and runs it on `.cache/fixture`. It takes any built repository of icons, and the targets to check:
 
 ```bash
 packages/icons/test/native/check.sh <repository> [ios] [android]
@@ -54,7 +54,7 @@ For `ios`, it compiles each asset catalog of `dist/ios/` with actool, checks tha
 
 ## The test of the site
 
-The site has a test of its own, `packages/site/test/journey.test.js`, which `pnpm site:test` runs. It copies the build, `packages/icons/lib` and its `package.json`, the site and `vendor/icons` into `.cache/`, links the installed packages of the site and `vendor/assets`, and builds the site of the copy for the set of `vendor/icons`. Then it builds the fixture in place of `vendor/icons` in a second copy, and builds the site of that set. It checks that each page shows the set of the copy, that every icon a page draws is in the sprite it is drawn from, and that every link leads to a page that exists. It needs the set of `vendor/icons` and the files of `vendor/assets`, which `pnpm vendor` writes, so it runs in the Site job of CI and not with these tests.
+The site has a test of its own, in `packages/site/test/`, which `pnpm site:test` runs. The site is the documentation of the builder and shows no set: the test checks the built site, that every page is there, that every icon a page draws is in a sprite that the site serves, and that every link leads to a page that exists. It needs the files of `vendor/assets`, which `pnpm vendor` writes, so it runs in the Site job of CI and not with these tests.
 
 ## Adding a case
 

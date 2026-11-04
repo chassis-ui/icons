@@ -7,7 +7,6 @@
       "@chassis-ui/css/*": ["node_modules/@chassis-ui/css/*"],
       "@assets/*": ["src/assets/*"],
       "@components/*": ["src/components/*"],
-      "@layouts/*": ["src/layouts/*"],
       "@libs/*": ["src/libs/*"],
       "@scss/*": ["src/scss/*"]
     }

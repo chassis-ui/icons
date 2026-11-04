@@ -1,8 +1,8 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Icon gallery
-    url: https://chassis-ui.com/icons/
-    about: Every icon, with its name, its code point and how to use it as an SVG, in the sprite or with the icon font.
+  - name: An icon of the Chassis website
+    url: https://github.com/chassis-ui/website-icons/issues
+    about: The icons of the Chassis website are a set of their own, built with this package. A request for one of them, or a problem with one, belongs in its repository.
   - name: Chassis Assets, Tokens, CSS, Figma, React or the website
     url: https://github.com/chassis-ui
     about: A problem in one of those projects, or in its docs under chassis-ui.com, belongs in its own repository.

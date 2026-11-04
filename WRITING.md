@@ -4,7 +4,7 @@ How to write the documents of this repository: the repository docs (`README.md`,
 
 **The guide is the reference, not the existing pages.** Don't copy a convention from a document because the document does it; check it here. Migrate a document when editing it, and don't gate unrelated PRs on the migration.
 
-**The pages of the site are in `packages/site/content/docs/`.** They are the sections `getting-started/`, `icon-design/` and `use-in-project/`. The site also shows a page per icon, which has no file: the site makes it from the output of the build.
+**The pages of the site are in `packages/site/content/docs/`.** They are the sections `getting-started/`, `icon-design/` and `use-in-project/`. The site documents the builder, and shows no set.
 
 ## How this guide is organized
 
@@ -72,8 +72,8 @@ Every `##`, `###`, and `####` heading must be followed by at least one explanato
 The sprite holds every icon of the set as a `<symbol>` whose `id` is the name of the icon. One request loads the set, and a `<use>` draws an icon.
 
 ```html
-<svg width="24" height="24" fill="currentcolor">
-  <use href="/static/icons/chassis-icons.svg#bell-outline"></use>
+<svg width="16" height="16" fill="currentcolor">
+  <use href="/static/icons/acme-glyphs.svg#ring-line"></use>
 </svg>
 ```
 ````
@@ -84,8 +84,8 @@ The sprite holds every icon of the set as a `<symbol>` whose `id` is the name of
 ## The sprite
 
 ```html
-<svg width="24" height="24" fill="currentcolor">
-  <use href="/static/icons/chassis-icons.svg#bell-outline"></use>
+<svg width="16" height="16" fill="currentcolor">
+  <use href="/static/icons/acme-glyphs.svg#ring-line"></use>
 </svg>
 ```
 ````
@@ -118,33 +118,35 @@ Prefer active voice, with the actor named: the build, the step, the source lint,
 
 The project has one word for each concept. Using a synonym makes the reader wonder whether it's a second concept.
 
-| Use             | For                                                                                         | Not                                           |
-| --------------- | ------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| set             | The icons of one repository: the files of `source/` and what the build writes from them     | library (for the files), collection, pack     |
-| default set     | The Chassis set, in `chassis-ui/website-icons` and published as `@chassis-ui/website-icons` | the icons (as if there were no other set)     |
-| icon            | One file of `source/`, and everything the build writes for it                               | glyph (except inside the font), asset, image  |
-| name            | The name of an icon: its file name without `.svg`                                           | id, key, slug                                 |
-| style           | The last part of a name, one of `chassis.build.styles`: `outline`, `solid`, `brand`         | variant, type, weight                         |
-| pair            | The styles an icon comes in together, an entry of `chassis.build.pairs`                     | group, family                                 |
-| frame           | The square an icon is drawn on, `chassis.build.frame`                                       | canvas, artboard, grid, size                  |
-| source          | The files under `source/`                                                                   | input, originals, raw icons                   |
-| output          | What the build writes: `svgs/`, `icons/`, the registry, the README and the manifest fields  | dist, distribution, generated assets          |
-| sprite          | `icons/<font>.svg`, one `<symbol>` per icon                                                 | spritesheet, symbol file                      |
-| font, icon font | `icons/<font>.woff2` and the other formats                                                  | webfont, typeface                             |
-| prefix          | What a class of the font starts with, `chassis.build.prefix`                                | namespace, class name                         |
-| code point      | The character of an icon in the font, in the Private Use Area                               | unicode, codepoint (in prose), character code |
-| registry        | `packages/icons/codepoints.json`                                                            | map, manifest, lock file                      |
-| retired         | A code point of a removed icon, which no later icon gets                                    | deleted, freed, reserved                      |
-| step            | One part of the build: `svgs`, `sprite`, `font`, `package`                                  | stage, phase, task                            |
-| the build       | The build in `packages/icons/lib/`, `pnpm icons`                                            | the pipeline, the generator, the script       |
-| source lint     | `pnpm icons:lint:source`                                                                    | validation, the linter                        |
-| consumer        | A site, a package or an app that reads the output                                           | client, user                                  |
-| contract        | The icons a consumer reads by name, in `chassis.checks.json`; also the shape of the output  | requirements, dependencies                    |
-| adopt, adopter  | A team that builds its own set with the builder, in a repository of icons, and that team    | fork (as a verb for this), customer           |
+| Use             | For                                                                                                             | Not                                           |
+| --------------- | --------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| set             | The icons of one repository: the files of `source/` and what the build writes from them                         | library (for the files), collection, pack     |
+| example set     | The set of a team named `acme`: `@acme/icons` of the quick start, or `@acme/glyphs` of the fixture of the tests | the Chassis set, or any other real set        |
+| icon            | One file of `source/`, and everything the build writes for it                                                   | glyph (except inside the font), asset, image  |
+| name            | The name of an icon: its file name without `.svg`                                                               | id, key, slug                                 |
+| style           | The last part of a name, one of `chassis.build.styles`, such as `line` and `fill`                               | variant, type, weight                         |
+| pair            | The styles an icon comes in together, an entry of `chassis.build.pairs`                                         | group, family                                 |
+| frame           | The square an icon is drawn on, `chassis.build.frame`                                                           | canvas, artboard, grid, size                  |
+| source          | The files under `source/`                                                                                       | input, originals, raw icons                   |
+| output          | What the build writes: `dist/`, the registry, the README and the manifest fields                                | distribution, generated assets                |
+| sprite          | `dist/web/<font>.svg`, one `<symbol>` per icon                                                                  | spritesheet, symbol file                      |
+| font, icon font | `dist/web/<font>.woff2` and the other formats                                                                   | webfont, typeface                             |
+| prefix          | What a class of the font starts with, `chassis.build.prefix`                                                    | namespace, class name                         |
+| code point      | The character of an icon in the font, in the Private Use Area                                                   | unicode, codepoint (in prose), character code |
+| registry        | `codepoints.json` of a repository of icons                                                                      | map, manifest, lock file                      |
+| retired         | A code point of a removed icon, which no later icon gets                                                        | deleted, freed, reserved                      |
+| step            | One part of the build: `svgs`, `sprite`, `font`, `ios`, `android`, `package`                                    | stage, phase, task                            |
+| the build       | The build in `packages/icons/lib/`, `chassis-icons build`                                                       | the pipeline, the generator, the script       |
+| source lint     | `chassis-icons lint-source`                                                                                     | validation, the linter                        |
+| consumer        | A site, a package or an app that reads the output                                                               | client, user                                  |
+| contract        | The icons a consumer reads by name, in `chassis.checks.json`; also the shape of the output                      | requirements, dependencies                    |
+| adopt, adopter  | A team that builds its own set with the builder, in a repository of icons, and that team                        | fork (as a verb for this), customer           |
 
 **The build optimizes, and draws nothing.** It optimizes the SVG files, builds the sprite and the font, and writes stylesheets. It does not draw, resize or recolor an icon, and it does not outline a stroke: the source lint refuses a file it cannot use.
 
-**Owned and customized.** Chassis Icons is meant to be owned by the team that adopts it. Don't present the default set, its font name `chassis-icons`, its prefix `cx` or its styles as the only ones; see [§8](#8-counts-versions-and-configuration). A document about the toolkit says "the set" and "your set"; a document about the package `@chassis-ui/icons` may say "the Chassis set".
+**Owned and customized.** Chassis Icons is the builder, and holds no set: a set is owned by the team that builds it. Don't present a font name, a prefix or styles as the only ones; see [§8](#8-counts-versions-and-configuration). A document says "the set" and "your set".
+
+**The examples are of a team named `acme`.** The quick start writes `@acme/icons`, with the font `acme-icons` and the prefix `ai`. The fixture of the tests is `@acme/glyphs`, with the font `acme-glyphs`, the prefix `ag`, the frame `16` and the styles `line` and `fill`. A page uses one of the two throughout. An icon of an example is an icon of the fixture (`bar-*`, `diamond-*`, `notch-*`, `ring-*`), a placeholder such as `<name>`, or, for `@acme/icons`, a name that the quick start gives, such as `arrow-right-solid`. The Chassis set, or any other real set, is never an example, a reference or a consumer in a document of this repository.
 
 **Phases are for the roadmap.** "Phase" names a phase of `ref/ROADMAP.md`. A part of the build is a step.
 
@@ -158,20 +160,20 @@ Backtick every code reference. An icon has one name and several forms in the out
 
 | Referring to             | Form                                   | Example                                                       |
 | ------------------------ | -------------------------------------- | ------------------------------------------------------------- |
-| The icon itself          | Its name                               | `` `bell-outline` ``                                          |
-| Its source file          | Path from the repository root          | `` `source/bell-outline.svg` ``                               |
-| Its optimized file       | Path from the package                  | `` `svgs/bell-outline.svg` ``                                 |
-| Its class of the font    | With the dot only in a selector        | `` `cx-bell-outline` ``, `` `.cx-bell-outline` ``             |
-| Its symbol of the sprite | With the hash, as an address           | `` `#bell-outline` ``, `` `chassis-icons.svg#bell-outline` `` |
-| A group of icons         | A pattern with `*`                     | `` `bell-*` ``, `` `*-brand` ``                               |
+| The icon itself          | Its name                               | `` `ring-line` ``                                             |
+| Its source file          | Path from the repository root          | `` `source/ring-line.svg` ``                                  |
+| Its optimized file       | Path from the repository of icons      | `` `dist/svgs/ring-line.svg` ``                               |
+| Its class of the font    | With the dot only in a selector        | `` `ag-ring-line` ``, `` `.ag-ring-line` ``                   |
+| Its symbol of the sprite | With the hash, as an address           | `` `#ring-line` ``, `` `acme-glyphs.svg#ring-line` ``         |
+| A group of icons         | A pattern with `*`                     | `` `ring-*` ``, `` `*-fill` ``                                |
 | A code point             | Four hexadecimal digits, as in the CSS | `` `f101` ``, `` `"\f101"` ``                                 |
-| A file of the font name  | With `<font>` for any set              | `` `icons/<font>.css` ``, `` `icons/chassis-icons.css` ``     |
+| A file of the font name  | With `<font>` for any set              | `` `dist/web/<font>.css` ``, `` `dist/web/acme-glyphs.css` `` |
 | A folder                 | With a trailing slash                  | `` `source/` ``, `` `packages/icons/lib/` ``                  |
 | A setting                | As a path from `chassis`               | `` `chassis.build.prefix` ``                                  |
 
-**Placeholders** go in angle brackets, lowercase: `` `svgs/<name>.svg` ``, `` `<prefix>-<name>` ``, `` `icons/<font>.woff2` ``. Don't use square brackets or braces for placeholders. A document about any set uses the placeholders; an example may use the names of the default set and say so.
+**Placeholders** go in angle brackets, lowercase: `` `dist/svgs/<name>.svg` ``, `` `<prefix>-<name>` ``, `` `dist/web/<font>.woff2` ``. Don't use square brackets or braces for placeholders. A document about any set uses the placeholders; an example uses the names of an `acme` set ([§5](#5-vocabulary)).
 
-**Other references:** file paths relative to the repository root (`` `packages/icons/lib/cli.js` ``), or to the installed package when the reader has only that (`` `node_modules/@chassis-ui/website-icons/icons/` ``); commands in full (`` `pnpm icons --only font` ``); units and values in code (`` `24` ``, `` `currentcolor` ``). Interface labels of Figma are bold, not code: **Export → SVG**.
+**Other references:** file paths relative to the repository root (`` `packages/icons/lib/cli.js` ``), or to the installed package when the reader has only that (`` `node_modules/@acme/icons/dist/web/` ``); commands in full (`` `chassis-icons build --only font` ``); units and values in code (`` `24` ``, `` `currentcolor` ``). Interface labels of Figma are bold, not code: **Export → SVG**.
 
 ---
 
@@ -185,19 +187,19 @@ Chassis Icons is a toolkit that its adopters own and customize. The layout of th
 
 ```bash
 node packages/icons/lib/cli.js --help
-pnpm icons --dry-run
-ls source | grep bell
+pnpm icons:fixture
+ls .cache/fixture/dist/svgs
 ```
 
-**Output is copied from a build.** A line of a stylesheet, a symbol of the sprite or a tree of `packages/icons/` in a doc is what a build wrote. Shorten it by leaving lines out, never by editing a line.
+**Output is copied from a build.** A line of a stylesheet, a symbol of the sprite or a tree of `dist/` in a doc is what a build wrote: the golden output in `packages/icons/test/golden/`, or a build of the fixture with `pnpm icons:fixture`. Shorten it by leaving lines out, never by editing a line.
 
-**A statement about the build is checked by running it.** "A whole build removes a file whose source is gone", "`pnpm icons:verify` fails when a contract icon is missing": run the command, read what it prints, then write the sentence. The quick start of the `README.md` is walked in a fresh clone before it is changed.
+**A statement about the build is checked by running it.** "A whole build removes a file whose source is gone", "`chassis-icons verify` fails when a contract icon is missing": run the command on a copy of the fixture, read what it prints, then write the sentence. The quick start of the `README.md` is walked in a fresh clone before it is changed.
 
 **What stays out of prose and tables:**
 
 - **Counts of icons, files, tests or checks.** They change with every commit. See [§8](#8-counts-versions-and-configuration).
 - **Code points of particular icons.** A doc explains how code points are given and kept; `codepoints.json` holds the values.
-- **The source of the artwork.** The default set is a collection of icons modified from free libraries, and of originals. Don't credit an icon to a library in a doc.
+- **The source of the artwork.** The icons of a set are the business of its team. Don't credit an icon to a library in a doc.
 - **Features the build does not have.** A planned feature is named as planned ([§8](#8-counts-versions-and-configuration)), and nowhere described as if the build had it.
 - **Sizes of files.** They change with every icon.
 
@@ -205,11 +207,11 @@ ls source | grep bell
 
 ### 8. Counts, versions, and configuration
 
-A doc that states a number makes a promise the next commit can break. Don't count icons, files, tests or checks ("503 icons", "146 tests", "eight checks"); name the things or their pattern instead. `packages/icons/README.md` states the number of icons because the build writes it.
+A doc that states a number makes a promise the next commit can break. Don't count icons, files, tests or checks ("503 icons", "146 tests", "eight checks"); name the things or their pattern instead. The `README.md` of a set states the number of its icons because the build writes it.
 
-**Versions.** Write "Node.js 22.12 or later", not "the latest Node.js", and "the version named by `packageManager`" for pnpm. For the version of the set, use the `[[config:currentVersion]]` token ([§16](#16-cross-references)) on a site page instead of a number typed by hand. The badge of `README.md` is written by `pnpm changeset:version`.
+**Versions.** Write "Node.js 22.12 or later", not "the latest Node.js", and "the version named by `packageManager`" for pnpm. For the version of the builder, use the `[[config:currentVersion]]` token ([§16](#16-cross-references)) on a site page instead of a number typed by hand. The badge of `README.md` is written by `pnpm changeset:version`.
 
-**Configuration.** The font name, the prefix, the frame, the styles and the pairs in `chassis.build` of the `package.json` of a repository of icons are the committed configuration, not the system. Name them as such ("the default set has the styles `outline`, `solid` and `brand`"), and use them in examples, not in definitions, so an adopter with another configuration can follow. The same goes for `chassis.checks.json`: its contracts are those of the Chassis sites and Chassis React.
+**Configuration.** The font name, the prefix, the frame, the styles and the pairs in `chassis.build` of the `package.json` of a repository of icons are the configuration of that repository, not the system. Name them as such ("the fixture has the styles `line` and `fill`"), and use them in examples, not in definitions, so an adopter with another configuration can follow. The same goes for `chassis.checks.json`: its contracts are those of the consumers of one set.
 
 **Planned features.** A feature the build does not have is named as planned, in one place, and nowhere described as if the build had it. The optional features are Phase 6 of [ref/ROADMAP.md](ref/ROADMAP.md).
 
@@ -243,8 +245,6 @@ Optional fields and their accepted values:
 
 **Titles.** Page titles are in title case. `packages/site/data/sidebar.yml` finds a page by the slug of its sidebar title: the entry `Quick Start` loads `quick-start.mdx`. A new page needs a sidebar entry whose slug is its file name.
 
-**Icon pages** have no file. The content loader of `packages/site/src/content.config.ts` makes one from the output of the build for each icon: its `title` is the name of the icon, and its `categories` and `tags` are derived from the name.
-
 ### 10. Standard section order
 
 Each doc type has a section order. Skip sections that don't apply; don't reorder them.
@@ -255,7 +255,7 @@ Each doc type has a section order. Skip sections that don't apply; don't reorder
 ## Introduction              (what the rule is for, and which setting of chassis.build holds it)
 ## The rule                  (named after its subject: the frame, the color, the names, the styles)
 ## Exporting                 (how a design tool writes a file that follows the rule)
-## Source lint               (the message of pnpm icons:lint:source for a file that breaks it)
+## Source lint               (the message of chassis-icons lint-source for a file that breaks it)
 ## Best practices
 ## Next steps                (always last)
 ```
@@ -304,7 +304,7 @@ Tables on a site page are Markdown tables wrapped in `<CxTable>`, which makes th
 
 **Trees** are `text` blocks, with a comment after `->` where a line needs one. A tree of `packages/icons/` shows what a build wrote ([§7](#7-names-are-facts-icons-are-examples)), with `<font>` and `<name>` for a document about any set. Keep a tree to the lines that show the layout.
 
-**Icons are shown, not listed.** A page that needs to show icons draws them from the sprite of the set. A table of icon names goes stale with the next icon.
+**Icons are not listed.** The site serves no set, so a page names the icons of its example in code and draws none. A table of the icons of a set goes stale with the next icon.
 
 ### 14. Callouts
 
@@ -314,7 +314,7 @@ Use `<Callout>` for asides that interrupt the reading flow but are important eno
 - **`<Callout type="warning">`**: real gotchas, such as a file the source lint refuses, a name that breaks consumers, or an address the font is loaded from.
 - **`<Callout name="…" />`**: named callouts reuse content from `packages/site/content/callouts/`.
 
-**Good warning:** "A stroke is not drawn by the font. `pnpm icons:lint:source` refuses a file with a `stroke`: outline the stroke in the design tool, and export again."
+**Good warning:** "A stroke is not drawn by the font. `chassis-icons lint-source` refuses a file with a `stroke`: outline the stroke in the design tool, and export again."
 
 **Bad warning (this should be prose, not a callout):** "Note that the prefix can be customized."
 
@@ -329,11 +329,11 @@ Use `<Callout>` for asides that interrupt the reading flow but are important eno
 
 The build draws what the source holds. These practices cover what to export and how to name it.
 
-- **Export on the frame:** a file whose `viewBox` is not the frame of the set is refused by `pnpm icons:lint:source`.
+- **Export on the frame:** a file whose `viewBox` is not the frame of the set is refused by `chassis-icons lint-source`.
 
 Avoid the habits that undo this:
 
-- **Do not fix a file in `svgs/`:** the next build writes it again from `source/`.
+- **Do not fix a file in `dist/svgs/`:** the next build writes it again from `source/`.
 ```
 
 ### 15. Troubleshooting entries
@@ -433,7 +433,7 @@ Before opening a PR with a doc change, verify:
 - [ ] No container phrases ("The following…", "Below is…") and no bold label paragraphs ([§2](#2-every-heading-earns-its-paragraph)).
 - [ ] No marketing adjectives and no generic advice in prose ([§3](#3-describe-behavior-not-benefits)).
 - [ ] Project vocabulary: set, icon, name, style, pair, frame, source, output, prefix, code point, registry, step, the build ([§5](#5-vocabulary)).
-- [ ] The default set, its font name and its prefix are examples, not definitions ([§5](#5-vocabulary), [§8](#8-counts-versions-and-configuration)).
+- [ ] A font name, a prefix and the icons of an example are those of an `acme` set, never of the Chassis set, and are examples, not definitions ([§5](#5-vocabulary), [§8](#8-counts-versions-and-configuration)).
 - [ ] Icon names use the form of their context, and placeholders use angle brackets ([§6](#6-icon-names-and-code-references-in-prose)).
 - [ ] Every path, file name, command, option, setting and icon name exists as written, and every block of output is copied from a build ([§7](#7-names-are-facts-icons-are-examples)).
 - [ ] Every statement about what the build does was checked by running it ([§7](#7-names-are-facts-icons-are-examples)).
@@ -460,7 +460,7 @@ These conventions haven't been formalized here. To propose one: write the sectio
 Currently unwritten:
 
 - Live examples on a documentation page. The pages show code, and draw no icon: an icon that a page names is not in the set of an adopter.
-- The text of an icon page and of the home page, which are components of `packages/site/src/` and not documents.
+- The text of the home page, which is a component of `packages/site/src/` and not a document.
 - Screenshot conventions for Figma: when to embed images, alt text rules, where to store source files.
 - Conventions for changeset entries beyond what [CONTRIBUTING.md](.github/CONTRIBUTING.md#changesets) says.
 
@@ -500,4 +500,4 @@ Replaced at build time in prose, link targets, code blocks, and frontmatter.
 
 ### Other components
 
-`@chassis-ui/docs` also provides `<Icon>`, which draws an icon of the Chassis set for the interface of the site and not an icon of the set that the site shows, and `<Example>`, `<ResizableExample>`, `<ScssDocs>`, `<JsDocs>`, `<AddedIn>`, `<DeprecatedIn>`, and `<InFigma>`, which the Chassis CSS docs use. Their props are in Appendix A of the [chassis-ui/css guide](https://github.com/chassis-ui/css/blob/main/WRITING.md). Propose a convention here ([What's not in this guide](#whats-not-in-this-guide-yet)) before the first use on a documentation page.
+`@chassis-ui/docs` also provides `<Icon>`, which draws an icon of the installed `@chassis-ui/icons` alias for the interface of the site, and never an icon of an example, and `<Example>`, `<ResizableExample>`, `<ScssDocs>`, `<JsDocs>`, `<AddedIn>`, `<DeprecatedIn>`, and `<InFigma>`, which the Chassis CSS docs use. Their props are in Appendix A of the [chassis-ui/css guide](https://github.com/chassis-ui/css/blob/main/WRITING.md). Propose a convention here ([What's not in this guide](#whats-not-in-this-guide-yet)) before the first use on a documentation page.

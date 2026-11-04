@@ -11,7 +11,7 @@ body:
     attributes:
       label: Where
       description: The page URL or the file.
-      placeholder: https://chassis-ui.com/icons/search-outline/
+      placeholder: https://chassis-ui.com/icons/docs/getting-started/quick-start/
     validations:
       required: true
   - type: textarea

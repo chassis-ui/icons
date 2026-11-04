@@ -6,7 +6,7 @@ toc: true
 
 ## Introduction
 
-A repository of icons is released as a version: a package on npm with the output for the web, and a GitHub release with the archives of the output for the web and for each target. The repository does not commit the output: the release workflow that `chassis-icons init` wrote into it, `.github/workflows/release.yml`, builds the output from the commit of the version. The workflow names no package. It releases what `package.json` of the repository describes, so a set of your own is released as the Chassis set is, by its own repository.
+A repository of icons is released as a version: a package on npm with the output for the web, and a GitHub release with the archives of the output for the web and for each target. The repository does not commit the output: the release workflow that `chassis-icons init` wrote into it, `.github/workflows/release.yml`, builds the output from the commit of the version. The workflow names no package. It releases what `package.json` of the repository describes, so every set is released by its own repository, in the same way.
 
 The commands of this page are the scripts that `init` wrote into `package.json`, run with `npm run`. In a repository made with `--pm pnpm`, run them with `pnpm` in place of `npm run`.
 
@@ -28,7 +28,7 @@ A release needs a repository of icons on GitHub that passes its checks.
 
 ### Added
 
-- `bell-outline` and `bell-solid`.
+- `arrow-right-solid`.
 ```
 
 `npm run release-notes` prints the entry of the version that `package.json` names, without its heading, and fails without one. The workflow runs it first, so a version without an entry is not released.
@@ -80,19 +80,19 @@ The workflow publishes with npm trusted publishing and needs no npm token: the t
 
 ## What is published
 
-The package holds the output for the web, `dist/icons.json`, `dist/svgs/` and `dist/web/`, and nothing of the build. The files of `dist/ios/` and `dist/android/` and the page of the set, `preview/`, are not published. npm packs `dist/` although `.gitignore` names it, because `files` names it. The build writes the fields of `package.json` that say so, from the font name of the configuration, and keeps an entry of `files` or `exports` that is not about the output, such as the `CHANGELOG.md` that `init` added. For the Chassis set it writes:
+The package holds the output for the web, `dist/icons.json`, `dist/svgs/` and `dist/web/`, and nothing of the build. The files of `dist/ios/` and `dist/android/` and the page of the set, `preview/`, are not published. npm packs `dist/` although `.gitignore` names it, because `files` names it. The build writes the fields of `package.json` that say so, from the font name of the configuration, and keeps an entry of `files` or `exports` that is not about the output, such as the `CHANGELOG.md` that `init` added. For the font `acme-icons` of the [quick start]([[docsref:/getting-started/quick-start]]) it writes:
 
 ```json
 {
   "files": ["dist/icons.json", "dist/svgs", "dist/web", "CHANGELOG.md"],
-  "main": "dist/web/chassis-icons.css",
-  "style": "dist/web/chassis-icons.css",
-  "sass": "dist/web/chassis-icons.scss",
+  "main": "dist/web/acme-icons.css",
+  "style": "dist/web/acme-icons.css",
+  "sass": "dist/web/acme-icons.scss",
   "exports": {
     ".": {
-      "sass": "./dist/web/chassis-icons.scss",
-      "style": "./dist/web/chassis-icons.css",
-      "default": "./dist/web/chassis-icons.css"
+      "sass": "./dist/web/acme-icons.scss",
+      "style": "./dist/web/acme-icons.css",
+      "default": "./dist/web/acme-icons.css"
     },
     "./dist/*": "./dist/*",
     "./package.json": "./package.json"

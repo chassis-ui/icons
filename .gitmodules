@@ -1,4 +1,0 @@
-[submodule "vendor/icons"]
-	path = vendor/icons
-	url = https://github.com/chassis-ui/website-icons.git
-	branch = main

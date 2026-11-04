@@ -1,41 +1,41 @@
 ---
-import { getConfig, getDocsPages, getDocsPath } from '@chassis-ui/docs/site'
-import set from 'virtual:icon-set'
+import { getConfig, getDocsPath } from '@chassis-ui/docs/site'
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
 
-// The name of the set, and what `config.yml` says the site is about
 const config = getConfig()
-
-// The documentation pages when the site has them, the steps of this page otherwise
-const quickStart = 'getting-started/quick-start'
-const hasDocs = (await getDocsPages()).some((page) => page.id === quickStart)
-const start = hasDocs ? getDocsPath(`${quickStart}/`) : '#build-section'
 ---
 
-<section class="home-section py-3xl md:py-6xl">
+<div class="home-section py-3xl md:py-6xl">
   <div class="container 2xl section-content py-3xl md:py-6xl">
     <div class="grid mb-3xl md:mb-6xl">
-      <div class="col-span-full xl:col-span-10 xl:col-start-2 text-center">
+      <header class="section-header col-span-full xl:col-span-10 xl:col-start-2 text-center">
         <p class="module-title fg-primary md:font-xl font-mass text-uppercase mb-xs md:mb-sm">
-          {set.title}
+          Chassis Icons
         </p>
-        <h1 class="font-hero mb-sm md:mb-md lg:mb-lg">{config.subtitle}</h1>
-        <p class="font-lead mb-md md:mb-lg">{config.description}</p>
-      </div>
+        <h1 class="font-hero mb-sm md:mb-md lg:mb-lg">
+          <span class="font-normal">Build an icon set</span>{' '}
+          <span class="d-block">from a folder of SVG files</span>
+        </h1>
+        <p class="font-lead mb-md md:mb-lg">
+          The <code>chassis-icons</code> command builds a repository of SVG files into an icon font
+          with its stylesheets, an SVG sprite, optimized SVG files, and the files of iOS and Android
+          apps. The font name, the class prefix and the frame are settings of your repository.
+        </p>
+      </header>
     </div>
 
-    <div class="d-flex flex-column gap-md mb-md md:mb-lg lg:w-6/12 mx-auto">
+    <div class="section-features d-flex flex-column gap-md mb-md md:mb-lg lg:w-6/12 mx-auto">
       <!-- Code snippet -->
       <Code
         noToolbar
+        containerClass="md:mx-auto md:mw-100"
         lang="bash"
         code="npx @chassis-ui/icons init acme-icons"
-        containerClass="md:mx-auto"
       />
       <!-- Buttons -->
       <div class="d-grid md:d-flex gap-md md:justify-content-center flex-wrap">
-        <a href={start} class="button primary lg">
+        <a href={getDocsPath('getting-started/quick-start/')} class="button primary lg">
           <Icon name="book-open-outline" />
           <span>Get Started</span>
         </a>
@@ -47,7 +47,7 @@ const start = hasDocs ? getDocsPath(`${quickStart}/`) : '#build-section'
 
       <!-- Version info -->
       <p class="fg-subtle mb-0 text-center font-md">
-        Currently <strong>v{set.package.version}</strong>
+        Currently <strong>v{config.currentVersion}</strong>
         <span class="px-2xs">&middot;</span>
         <a href={`${config.repo}/releases`} class="link-secondary text-nowrap">
           Releases
@@ -55,4 +55,4 @@ const start = hasDocs ? getDocsPath(`${quickStart}/`) : '#build-section'
       </p>
     </div>
   </div>
-</section>
+</div>

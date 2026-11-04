@@ -10,7 +10,7 @@
 
 Chassis Icons is published to npm as [`@chassis-ui/icons`](https://www.npmjs.com/package/@chassis-ui/icons). A team installs it in a repository of its own icons, saves the SVG files a designer exports into `source/`, and the `chassis-icons` command writes a library from them: one optimized SVG file per icon, an SVG sprite, and an icon font with its CSS and SCSS. When the repository names iOS and Android as targets, the command also writes an asset catalog with a Swift file, and vector drawables. The build is file-driven: save `<name>.svg` into `source/` and the icon is in the output of the next build. There is no manifest to maintain, and the font name, the class prefix, the frame and the styles of the icons are settings of that repository.
 
-The package holds the build and no icons, as [Chassis Tokens](https://github.com/chassis-ui/tokens) and [Chassis Assets](https://github.com/chassis-ui/assets) hold a builder and no brand. The icons of the Chassis website are a repository of icons built with it, [chassis-ui/website-icons](https://github.com/chassis-ui/website-icons), published as [`@chassis-ui/website-icons`](https://www.npmjs.com/package/@chassis-ui/website-icons): to use that set in a project, install that package and read its README. This repository vendors it as the submodule `vendor/icons`, so that CI builds and checks a real set, and the [site](https://chassis-ui.com/icons/) shows it. The [documentation pages](https://chassis-ui.com/icons/docs/) of the site cover drawing icons for a set and using the output in a project.
+The package holds the build and no icons, as [Chassis Tokens](https://github.com/chassis-ui/tokens) and [Chassis Assets](https://github.com/chassis-ui/assets) hold a builder and no brand. A set of icons is a repository of its own, which a team writes with `init` and builds with the command; this repository holds none. The tests of the build, and the scripts that look at an output, run on a fixture: the repository of icons of another team in `packages/icons/test/fixture/`. The [documentation pages](https://chassis-ui.com/icons/docs/) of the [site](https://chassis-ui.com/icons/) cover drawing icons for a set and using the output in a project.
 
 The rest of this document is for building a set of your own, and for working on the build.
 
@@ -21,23 +21,22 @@ You need:
 - **Node.js** 22.12 or later, see `engines` in `package.json`. The repository pins 24 in `.nvmrc`.
 - **pnpm**, the version named by `packageManager` in `package.json`. Run `corepack enable` once and pnpm is used at that version.
 
-Clone the repository, install its packages, and check out the set that it builds:
+Clone the repository and install its packages:
 
 ```bash
 git clone https://github.com/chassis-ui/icons.git
 cd icons
 pnpm install
-pnpm vendor
 ```
 
-`pnpm vendor` checks out the `vendor/icons` submodule, a checkout of chassis-ui/website-icons, builds its `dist/` with the build of this checkout, and unpacks the fonts and images of the site. Then run the tests of the build, and check the Chassis set: that its source builds twice to the same files, and that the files of the build that it commits are up to date:
+Then run the tests of the build, and build a copy of the fixture with the build of this checkout:
 
 ```bash
 pnpm icons:test
-pnpm icons:verify
+pnpm icons:fixture
 ```
 
-Run every command from the root of the repository. `pnpm icons:test` needs no submodule.
+`pnpm icons:fixture` copies `packages/icons/test/fixture/` to `.cache/fixture/` and builds it there, so that the output of the build can be read: `.cache/fixture/dist/`. Run every command from the root of the repository. The site needs the fonts and images of `vendor/assets`, which `pnpm vendor` unpacks; `pnpm dev` and `pnpm site:build` run it.
 
 ## Build your own set
 
@@ -185,7 +184,7 @@ pnpm exec chassis-icons init --only .github/workflows/ci.yml .github/workflows/r
 
 ## Repository layout
 
-A pnpm workspace of two packages, with the Chassis set as a submodule.
+A pnpm workspace of two packages.
 
 ```text
 packages/icons/           -> @chassis-ui/icons, the builder, published to npm
@@ -196,82 +195,73 @@ packages/icons/           -> @chassis-ui/icons, the builder, published to npm
   README.md               -> The README of the package on npm
   CHANGELOG.md            -> The changelog of the builder, written by pnpm changeset:version
 packages/site/            -> The documentation site, built with Astro. Never published to npm
-vendor/icons              -> Submodule: chassis-ui/website-icons, the Chassis set that CI builds and the site shows
 vendor/assets.json        -> The release of chassis-ui/website-assets that has the fonts and images of the site
-build/                    -> Scripts of the repository: changeset check, version references, release notes
+build/                    -> Scripts of the repository: the copy of the fixture, changeset check, version references, release notes
 docs/architecture.md      -> How the build works, and what it promises to write
 ref/ROADMAP.md            -> The plan of this repository, its principles and decisions
 .changeset/               -> The changesets of the next version
-.gitmodules               -> The entry of the vendor/icons submodule
 ```
 
-A repository of icons, such as `vendor/icons`, commits `source/`, `package.json` with the `chassis.build` block, `codepoints.json` and `README.md`, which the build writes, `chassis.checks.json` when consumers read icons by name, and the files that `init` wrote. The output, `dist/`, is not committed: `pnpm vendor` builds it in `vendor/icons`, and the release of a set builds it again.
+A repository of icons commits `source/`, `package.json` with the `chassis.build` block, `codepoints.json` and `README.md`, which the build writes, `chassis.checks.json` when consumers read icons by name, and the files that `init` wrote. The output, `dist/`, is not committed: the release of a set builds it again.
 
 ## Commands
 
-Every command runs from the root. The `pnpm icons:*` scripts run the `chassis-icons` command of this checkout, `packages/icons/lib/cli.js`, on `vendor/icons`, with `--cwd vendor/icons`; `node packages/icons/lib/cli.js --help` prints the commands and the options of the build.
+Every command runs from the root. The root of this workspace is not a repository of icons: the `pnpm icons:*` scripts that build run the `chassis-icons` command of this checkout, `packages/icons/lib/cli.js`, on the copy of the fixture in `.cache/fixture/`. `node packages/icons/lib/cli.js --help` prints the commands and the options of the build.
 
 ### The command
 
 The package has one command, `chassis-icons`, that builds and checks a repository of icons. A team installs `@chassis-ui/icons` in a repository of its own icons and runs it there, through the scripts that `init` wrote.
 
-| Command                       | What it does                                                                                                                                                                                                     | Script here              |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| `chassis-icons build`         | Writes `dist/`, which is not committed, and the registry of the code points, the README and the manifest fields, which are                                                                                       | `pnpm icons`             |
-| `chassis-icons verify`        | Fails when the source does not build twice to the same files, the registry, the README or the manifest is out of date, an icon lost its code point, or an icon of the checks file is missing                     | `pnpm icons:verify`      |
-| `chassis-icons lint-source`   | Checks the files of `source/`: names, frame, one color, no stroke, the pairs of the styles                                                                                                                       | `pnpm icons:lint:source` |
-| `chassis-icons preview`       | Writes the page of the set into `preview/`, from `dist/`. With `--serve`, serves it at `http://localhost:4325/` until stopped, or at `--port <n>`                                                                | `pnpm icons:preview`     |
-| `chassis-icons archive`       | Writes `<font>-web-<version>.zip` with `icons.json`, `svgs/`, `web/` and `preview/` in it, and `<font>-<target>-<version>.zip` with `dist/<target>/` of each target, to `archives/` or `--to <dir>`. Needs `zip` | `pnpm icons:archive`     |
-| `chassis-icons release-notes` | Prints the `CHANGELOG.md` entry of a version, without its heading, and fails without one                                                                                                                         |                          |
-| `chassis-icons init [dir]`    | Writes the files of a new repository of icons into a folder                                                                                                                                                      |                          |
+| Command                       | What it does                                                                                                                                                                                                     |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `chassis-icons build`         | Writes `dist/`, which is not committed, and the registry of the code points, the README and the manifest fields, which are                                                                                       |
+| `chassis-icons verify`        | Fails when the source does not build twice to the same files, the registry, the README or the manifest is out of date, an icon lost its code point, or an icon of the checks file is missing                     |
+| `chassis-icons lint-source`   | Checks the files of `source/`: names, frame, one color, no stroke, the pairs of the styles                                                                                                                       |
+| `chassis-icons preview`       | Writes the page of the set into `preview/`, from `dist/`. With `--serve`, serves it at `http://localhost:4325/` until stopped, or at `--port <n>`                                                                |
+| `chassis-icons archive`       | Writes `<font>-web-<version>.zip` with `icons.json`, `svgs/`, `web/` and `preview/` in it, and `<font>-<target>-<version>.zip` with `dist/<target>/` of each target, to `archives/` or `--to <dir>`. Needs `zip` |
+| `chassis-icons release-notes` | Prints the `CHANGELOG.md` entry of a version, without its heading, and fails without one                                                                                                                         |
+| `chassis-icons init [dir]`    | Writes the files of a new repository of icons into a folder                                                                                                                                                      |
 
 Every command but `init` works on one repository of icons: `--cwd <dir>`, by default the nearest folder upward from the working directory whose `package.json` has a `chassis` block. The root of this workspace has none. `--verbose` says more, `--version` prints the version of the build, and the exit code is 1 when a command failed and 2 when it was not understood.
 
 ### Build
 
 ```bash
-pnpm icons                  # The whole output of vendor/icons: SVG files, sprite, font, stylesheets, README and manifest
-pnpm icons --dry-run        # List the files that a build would change, and change none
-pnpm icons --only font      # One step: svgs, sprite, font, ios, android or package
-pnpm icons --verbose        # Each file that is written, and each code point that is given or retired
-pnpm icons:svgs             # The step svgs: source/ optimized into dist/svgs/
-pnpm icons:sprite           # The step sprite: the SVG sprite
-pnpm icons:font             # The step font: the font, its stylesheets, the code points and the index of the set
-pnpm icons:preview          # The page of vendor/icons, into its preview/, served at http://localhost:4325/
-pnpm icons:archive          # The archives of vendor/icons, into .cache/archives/
+pnpm icons:fixture          # Copy packages/icons/test/fixture/ to .cache/fixture/, and build the copy
+pnpm icons:preview          # pnpm icons:fixture, then the page of the copy, into its preview/, served at http://localhost:4325/
+node packages/icons/lib/cli.js build --dry-run --cwd .cache/fixture    # List the files that a build of the copy would change, and change none
+node packages/icons/lib/cli.js build --only font --cwd .cache/fixture  # One step: svgs, sprite, font, ios, android or package
 ```
 
-A whole build removes from `dist/svgs/` each file whose source is gone, and from `dist/` and `dist/web/` each file that it did not write, such as the files of another font name, or the folder of a target that `targets` no longer names. The steps `ios` and `android` run when `targets` names them, and empty their folder before they write it; `--only ios` stops when it does not. The steps after `svgs` read `dist/svgs/`, so `--only sprite` and `--only font` build from the files that are there. `pnpm vendor` runs `pnpm icons` after it checks out the submodule. Nothing that `pnpm icons` writes into `vendor/icons` is committed from here: `dist/` is not committed, and the registry and the README of the Chassis set are committed in chassis-ui/website-icons.
+`pnpm icons:fixture` writes a fresh copy at each run, and nothing of `.cache/fixture/` is committed. The tests compare the output of the fixture with `packages/icons/test/golden/`. A whole build removes from `dist/svgs/` each file whose source is gone, and from `dist/` and `dist/web/` each file that it did not write, such as the files of another font name, or the folder of a target that `targets` no longer names. The steps `ios` and `android` run when `targets` names them, and empty their folder before they write it; `--only ios` stops when it does not. The steps after `svgs` read `dist/svgs/`, so `--only sprite` and `--only font` build from the files that are there.
 
 ### Check
 
-| Command                   | What it does                                                                                                                                                                                                        |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm icons:lint:source`  | Checks each file of `source/` of `vendor/icons` against its configuration: its name, its frame, one color, no stroke, the pairs of the styles                                                                       |
-| `pnpm icons:verify`       | Builds `vendor/icons` twice into temporary folders and fails when the two builds differ, a committed file that the build writes differs, an icon lost its code point, or a contract icon is missing. Needs no build |
-| `pnpm icons:test`         | The tests of the build, on the fixture in `packages/icons/test/fixture/`. `pnpm test` runs the same                                                                                                                 |
-| `pnpm icons:test:golden`  | Writes `packages/icons/test/golden/` again, after a change that is meant to change the output                                                                                                                       |
-| `pnpm icons:lint:package` | [publint](https://publint.dev) on what npm would publish                                                                                                                                                            |
-| `pnpm icons:lint`         | ESLint over the build, its tests and the scripts of `build/`. Fails on a warning                                                                                                                                    |
-| `pnpm icons:typecheck`    | TypeScript over `packages/icons/lib/`, from its JSDoc                                                                                                                                                               |
-| `pnpm icons:native`       | Compiles the output of the targets of `vendor/icons`, after a build, with the tools of the platforms: actool and swiftc, and aapt2. Not in CI                                                                       |
-| `pnpm lint:prettier`      | Formatting, across the repository                                                                                                                                                                                   |
-| `pnpm spellcheck`         | Spelling of the Markdown files, with the words of `.cspell.json`                                                                                                                                                    |
-| `pnpm check`              | The types of the site, `pnpm check:astro`, then `pnpm check:pnpm`: `pnpm audit --prod --audit-level moderate`                                                                                                       |
+| Command                   | What it does                                                                                                                                       |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm icons:test`         | The tests of the build, on the fixture in `packages/icons/test/fixture/`. `pnpm test` runs the same                                                |
+| `pnpm icons:test:golden`  | Writes `packages/icons/test/golden/` again, after a change that is meant to change the output                                                      |
+| `pnpm icons:lint:package` | [publint](https://publint.dev) on what npm would publish                                                                                           |
+| `pnpm icons:lint`         | ESLint over the build, its tests and the scripts of `build/`. Fails on a warning                                                                   |
+| `pnpm icons:typecheck`    | TypeScript over `packages/icons/lib/`, from its JSDoc                                                                                              |
+| `pnpm icons:native`       | `pnpm icons:fixture`, then compiles the output of the targets of the copy with the tools of the platforms: actool and swiftc, and aapt2. Not in CI |
+| `pnpm lint:prettier`      | Formatting, across the repository                                                                                                                  |
+| `pnpm spellcheck`         | Spelling of the Markdown files, with the words of `.cspell.json`                                                                                   |
+| `pnpm check`              | The types of the site, `pnpm check:astro`, then `pnpm check:pnpm`: `pnpm audit --prod --audit-level moderate`                                      |
 
-`pnpm icons:verify --since <ref>` compares the code points with those of a commit, a branch or a tag of `vendor/icons`, in place of its last tag. [CONTRIBUTING.md](.github/CONTRIBUTING.md#checks-per-changed-area) says which checks to run for which change.
+[CONTRIBUTING.md](.github/CONTRIBUTING.md#checks-per-changed-area) says which checks to run for which change.
 
 ### Documentation site
 
 ```bash
-pnpm vendor               # Check out vendor/icons, build it, and unpack the assets that vendor/assets.json pins into vendor/assets
+pnpm vendor               # Unpack the assets that vendor/assets.json pins into vendor/assets
 pnpm dev                  # pnpm vendor, then the site at http://localhost:4324/icons/
 pnpm astro:dev            # The site alone, without pnpm vendor
 pnpm site:build           # pnpm vendor, the site and its search index, into _site/
 pnpm astro:build          # The site alone, into _site/
 pnpm site:pagefind        # The search index of _site/
 pnpm build                # The same as pnpm site:build
-pnpm site:test            # Build the site of a copy of the repository, for the set of vendor/icons and for the fixture
+pnpm site:test            # Check the built site: its pages, the icons that they draw, and their links
 pnpm astro:preview        # Serve _site/ as it is deployed
 pnpm site                 # pnpm site:build, then pnpm site:lint
 pnpm site:lint            # ESLint, Stylelint, Prettier and the Nu Html Checker over the site
@@ -316,7 +306,7 @@ The build reads one block of the `package.json` of a repository of icons. A sett
 | `header`         | `[]`                    | The lines of the comment at the top of each stylesheet. `{version}` is the version of the package   |
 | `targets`        | `[]`                    | The targets besides the web, which is always built: `ios`, `android`                                |
 
-`name` and `prefix` are kebab-case names. The Chassis set has `"name": "chassis-icons"`, `"prefix": "cx"`, the styles `outline`, `solid` and `brand`, the pair of `outline` and `solid`, and the targets `ios` and `android`.
+`name` and `prefix` are kebab-case names. The fixture of the tests, `@acme/glyphs`, has `"name": "acme-glyphs"`, `"prefix": "ag"`, the frame `16`, the styles `line` and `fill`, the pair of `line` and `fill`, and the targets `ios` and `android`.
 
 ### The package
 
@@ -376,20 +366,20 @@ Beside it, at the root of the repository, the build writes `codepoints.json`, `R
 
 ## What reads the output
 
-The siblings of this repository take any set that keeps the shape above. None of them names the Chassis set in a way that a team cannot configure.
+The siblings of this repository take any set that keeps the shape above, and a team points each of them at its own set.
 
 | Consumer                                                    | What it reads                                                                                                                                                                                                           | How a team points it at its own set                       |
 | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | [Chassis CSS](https://github.com/chassis-ui/css)            | An SVG file by name: `svg-icon("<name>")` is the address of `dist/svgs/<name>.svg`                                                                                                                                      | `$icon-url-prefix`, or serve `dist/svgs/` at that address |
 | [Chassis React](https://github.com/chassis-ui/react)        | `<Icon name>`: the sprite symbol `#<name>`, or with `font` the class `<fontPrefix><name>`                                                                                                                               | `IconProvider`: `sprite`, `fontPrefix`, `icons`           |
-| [`@chassis-ui/docs`](https://github.com/chassis-ui/website) | `/static/icons/chassis-icons.css` and the symbols of `/static/icons/chassis-icons.svg`, copied from `icons/` of the installed package of the Chassis set                                                                | The `sprite` prop of `Icon`; otherwise the Chassis set    |
+| [`@chassis-ui/docs`](https://github.com/chassis-ui/website) | `<Icon name>`: the symbol `#<name>` of an SVG sprite that the site serves                                                                                                                                               | The `sprite` prop of `Icon`                               |
 | [Chassis Assets](https://github.com/chassis-ui/assets)      | No set: it writes the icons of a brand that are outside a set for iOS and Android, with `--icon-catalog` and `--vector-drawables`. An app takes the icons of a set from the archives of the `ios` and `android` targets | Nothing to point: a set is not copied into it             |
 
-The Chassis set also promises its names: the Chassis sites and Chassis React draw their own interface with icons of it. Those names are the `contracts` of `chassis.checks.json` of chassis-ui/website-icons.
+A set whose icons a consumer reads by name lists those names in its checks file, so that `chassis-icons verify` fails when one is missing.
 
 ## Branches and CI
 
-Work goes to `develop`. CI runs there and on pull requests, with the jobs Lint, Type Check, Build, Site and Audit, and Changeset when there is something to compare with; Build and Site check out `vendor/icons`, so that the build and the site run on the Chassis set. `main` holds released versions only: the commit of a version that passed on `develop` is pushed to `main`, and that push publishes the package and creates the GitHub release. See [Releases](.github/CONTRIBUTING.md#releases).
+Work goes to `develop`. CI runs there and on pull requests, with the jobs Lint, Type Check, Build, Site and Audit, and Changeset when there is something to compare with; Build runs the checks of the build on the fixture, and Site builds and checks the documentation site. `main` holds released versions only: the commit of a version that passed on `develop` is pushed to `main`, and that push publishes the package and creates the GitHub release. See [Releases](.github/CONTRIBUTING.md#releases).
 
 ## Chassis ecosystem
 
@@ -403,11 +393,11 @@ Work goes to `develop`. CI runs there and on pull requests, with the jobs Lint, 
 | [chassis-ui/figma](https://github.com/chassis-ui/figma)     | Documentation of the Figma libraries                                | [/figma/](https://chassis-ui.com/figma/)   |
 | [chassis-ui/react](https://github.com/chassis-ui/react)     | React components, published as `@chassis-ui/react`                  | Not yet routed on chassis-ui.com           |
 
-The icons of the Chassis sites are `@chassis-ui/website-icons`, from [chassis-ui/website-icons](https://github.com/chassis-ui/website-icons), a repository of icons built with this package; the site of this repository shows it. The tokens of the Chassis sites are `@chassis-ui/website-tokens`, from [chassis-ui/website-tokens](https://github.com/chassis-ui/website-tokens). Chassis CSS and the site of this repository read them.
+The tokens of the Chassis sites are `@chassis-ui/website-tokens`, from [chassis-ui/website-tokens](https://github.com/chassis-ui/website-tokens). Chassis CSS and the site of this repository read them.
 
 ## Contributing
 
-Branch from `develop` and open a pull request against `develop`. [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md) covers the setup, changing the build and the site, changing the Chassis set, the checks to run for each, changesets and releases. [docs/architecture.md](docs/architecture.md) explains the build. [WRITING.md](WRITING.md) is the style guide of the documentation, and [AGENTS.md](AGENTS.md) holds the rules for AI coding agents. Everyone taking part follows the [Code of Conduct](.github/CODE_OF_CONDUCT.md); report a vulnerability as [SECURITY.md](.github/SECURITY.md) says.
+Branch from `develop` and open a pull request against `develop`. [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md) covers the setup, changing the build, the templates and the site, the checks to run for each, changesets and releases. [docs/architecture.md](docs/architecture.md) explains the build. [WRITING.md](WRITING.md) is the style guide of the documentation, and [AGENTS.md](AGENTS.md) holds the rules for AI coding agents. Everyone taking part follows the [Code of Conduct](.github/CODE_OF_CONDUCT.md); report a vulnerability as [SECURITY.md](.github/SECURITY.md) says.
 
 ## License
 

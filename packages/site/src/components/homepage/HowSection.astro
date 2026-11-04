@@ -1,0 +1,85 @@
+---
+import FeatureCard from '@chassis-ui/docs/components/FeatureCard.astro'
+import Code from '@chassis-ui/docs/shortcodes/Code.astro'
+
+// A repository of icons that `init` wrote, after a first build
+const tree = `acme-icons/
+├── source/
+│   ├── arrow-right-solid.svg
+│   └── ...
+├── package.json
+├── codepoints.json
+├── README.md
+└── dist/`
+
+const archives = `acme-icons-web-<version>.zip
+acme-icons-ios-<version>.zip
+acme-icons-android-<version>.zip`
+---
+
+<section class="home-section py-3xl md:py-6xl">
+  <div class="container 2xl section-content">
+    <div class="grid mb-3xl md:mb-6xl">
+      <header class="section-header col-span-full lg:col-span-10 lg:col-start-2 xl:col-span-8 xl:col-start-3 text-center">
+        <h2 class="section-title font-3xl md:font-4xl lg:font-5xl mb-xs md:mb-sm lg:mb-md">
+          <span class="font-normal d-block">From SVG files</span> to a release
+        </h2>
+        <p class="section-body md:font-lg lg:font-xl m-0">
+          The repository that <code>init</code> writes has a script for each command, a CI workflow
+          and a release workflow. The commands here are those of npm, and{' '}
+          <code>init --pm pnpm</code> writes them for pnpm.
+        </p>
+      </header>
+    </div>
+
+    <div class="section-features grid grid-cols-1 md:grid-cols-3 gap-md md:gap-xl">
+      <div>
+        <FeatureCard icon="cx-number-one">
+          <Fragment slot="title">Save the icons</Fragment>
+          <Fragment slot="body">
+            Save one SVG file per icon into <code>source/</code>, drawn on the frame of the set in
+            one color. The build only reads this folder.
+          </Fragment>
+          <div class="border-top border-subtle pt-md">
+            <Code noToolbar lang="text" code={tree} />
+          </div>
+        </FeatureCard>
+      </div>
+
+      <div>
+        <FeatureCard icon="cx-number-two">
+          <Fragment slot="title">Build the set</Fragment>
+          <Fragment slot="body">
+            The build writes <code>dist/</code>, and beside it <code>codepoints.json</code>,{' '}
+            <code>README.md</code> and the fields of <code>package.json</code> that name the files.
+            Commit those with <code>source/</code>. <code>dist/</code> is not committed.
+          </Fragment>
+          <div class="border-top border-subtle pt-md">
+            <Code
+              noToolbar
+              lang="bash"
+              code={`npm run lint
+npm run build
+npm run verify`}
+            />
+          </div>
+        </FeatureCard>
+      </div>
+
+      <div>
+        <FeatureCard icon="cx-number-three">
+          <Fragment slot="title">Release a version</Fragment>
+          <Fragment slot="body">
+            Push a new version with its entry in <code>CHANGELOG.md</code> to <code>main</code>. The
+            release workflow builds <code>dist/</code> again, publishes the package to npm for the
+            web, and attaches an archive per target to the GitHub release. The web archive holds the
+            page of the set.
+          </Fragment>
+          <div class="border-top border-subtle pt-md">
+            <Code noToolbar lang="text" code={archives} />
+          </div>
+        </FeatureCard>
+      </div>
+    </div>
+  </div>
+</section>

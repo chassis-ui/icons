@@ -8,14 +8,14 @@ toc: true
 
 [Chassis React](https://chassis-ui.com/react) draws an icon with its `Icon` component: a symbol of the sprite by default, or a class of the font. It holds no icons, and `IconProvider` points it at the set of a project. This page covers what Chassis React reads of a set. The [Icon](https://chassis-ui.com/react/docs/components/icon/) page of Chassis React documents the components and their props.
 
-The examples use the Chassis set. If you build your own set, use the name of your font and your prefix in their place.
+The examples use `@acme/glyphs`, the set of the team Acme, whose font is `acme-glyphs` and whose prefix is `ag`. For another set, use the name of its package, its font and its prefix in their place.
 
 ## Installation
 
 An app needs Chassis React and the output of a set. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get the output: the package, the archive of a release, and the folders of a build.
 
 ```bash
-npm install @chassis-ui/react @chassis-ui/website-icons
+npm install @chassis-ui/react @acme/glyphs
 ```
 
 Serve the folder `dist/web/` of the set from the origin of the app. The examples serve it at `/static/icons/`.
@@ -29,8 +29,8 @@ import { Icon, IconProvider } from '@chassis-ui/react'
 
 export function App() {
   return (
-    <IconProvider sprite="/static/icons/chassis-icons.svg">
-      <Icon name="bell-outline" />
+    <IconProvider sprite="/static/icons/acme-glyphs.svg">
+      <Icon name="ring-line" />
     </IconProvider>
   )
 }
@@ -43,7 +43,7 @@ export function App() {
 `Icon` adds the class `icon`, so Chassis CSS sizes and colors it. Its `size` prop sets the size of one icon:
 
 ```jsx
-<Icon name="bell-outline" size={32} />
+<Icon name="ring-line" size={32} />
 ```
 
 [Chassis CSS]([[docsref:/use-in-project/chassis-css#size-and-color]]) describes the class and its utilities.
@@ -53,7 +53,7 @@ export function App() {
 `Icon` hides an icon from assistive technology by default, for an icon that sits beside its text. An icon that carries meaning gets a `title`:
 
 ```jsx
-<Icon name="bell-outline" title="Notifications" />
+<Icon name="ring-line" title="Notifications" />
 ```
 
 ## Customization
@@ -62,16 +62,16 @@ export function App() {
 
 ### The font
 
-With `font`, `Icon` renders a `<span>` with the class of the icon in place of the SVG. The class is `fontPrefix` and the name, and `fontPrefix` is `cx-` by default. The app loads the stylesheet of the font itself.
+With `font`, `Icon` renders a `<span>` with the class of the icon in place of the SVG. The class is `fontPrefix` and the name, so `fontPrefix` is the prefix of the set with its `-`. The app loads the stylesheet of the font itself.
 
 ```jsx
-import '@chassis-ui/website-icons'
+import '@acme/glyphs'
 import { Icon, IconProvider } from '@chassis-ui/react'
 
 export function App() {
   return (
-    <IconProvider font>
-      <Icon name="bell-outline" />
+    <IconProvider font fontPrefix="ag-">
+      <Icon name="ring-line" />
     </IconProvider>
   )
 }
@@ -79,25 +79,25 @@ export function App() {
 
 ### Icons of the components
 
-Components of Chassis React that draw an icon of their own ask for it by purpose, such as `check`, `previous`, `next` and `clear`, and each purpose has an icon of the Chassis set as its default. The `icons` prop maps a purpose to another icon:
+Components of Chassis React that draw an icon of their own ask for it by purpose, such as `check`, `previous`, `next` and `clear`, and each purpose has the name of an icon as its default. The `icons` prop maps a purpose to an icon of the set:
 
 ```jsx
-<IconProvider icons={{ previous: 'arrow-left-outline', next: 'arrow-right-outline' }}>
+<IconProvider icons={{ check: 'diamond-fill', clear: 'ring-line' }}>
 ```
 
 ### A set of your own
 
-A set of your own needs three props: the address of your sprite, the prefix of your font with its `-`, and an icon of your set for each purpose whose default your set does not have.
+A set of your own needs three props: the address of your sprite, the prefix of your font with its `-`, and an icon of your set for each purpose whose default name your set does not have.
 
 ```jsx
 <IconProvider
-  sprite="/static/icons/acme-icons.svg"
-  fontPrefix="ai-"
-  icons={{ check: 'tick-solid', clear: 'close-outline' }}
+  sprite="/static/icons/acme-glyphs.svg"
+  fontPrefix="ag-"
+  icons={{ check: 'diamond-fill', clear: 'ring-line' }}
 >
 ```
 
-The defaults of Chassis React are icons of the Chassis set, and `chassis.checks.json` of its repository, chassis-ui/website-icons, lists them as a contract. A set that keeps those names needs no `icons` prop.
+A set that has an icon under each default name needs no `icons` prop. Its `chassis.checks.json` can list those names as a contract, so that `npm run verify` fails when one of them is gone.
 
 ## Best practices
 
@@ -109,7 +109,7 @@ Chassis React reads a set through one provider. These practices keep the set of 
 
 Avoid the habits that undo this:
 
-- **Do not pass the prefix without its `-`:** `fontPrefix` is everything before the name, so the prefix `ai` of a set is `fontPrefix="ai-"`.
+- **Do not pass the prefix without its `-`:** `fontPrefix` is everything before the name, so the prefix `ag` of a set is `fontPrefix="ag-"`.
 
 ## Troubleshooting
 
@@ -121,7 +121,7 @@ An `Icon` takes its space and stays empty. The sprite is on another origin than 
 
 ### Component has no icon
 
-A control of a component, such as the arrow of a pagination, is empty. The component asks for an icon of the Chassis set by its default name, and the sprite of the app is another set. Map the purpose with the `icons` prop of `IconProvider`.
+A control of a component, such as the arrow of a pagination, is empty. The component asks for an icon by its default name, and the set of the app has no icon of that name. Map the purpose with the `icons` prop of `IconProvider`.
 
 ## Next steps
 

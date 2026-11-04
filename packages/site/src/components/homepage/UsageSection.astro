@@ -1,72 +1,114 @@
 ---
-import set from 'virtual:icon-set'
-import Example from '@chassis-ui/docs/shortcodes/Example.astro'
-import { fontIcon, spriteIcon, svgPath } from '@libs/icon'
+import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 
-const name = set.exampleIcon
+// The code of the README that the build writes for the package `@acme/icons`, the font
+// `acme-icons` and the prefix `ai`, drawn on the frame 24, with the icon `arrow-right-solid`
+const font = `<link rel="stylesheet" href="node_modules/@acme/icons/dist/web/acme-icons.min.css" />
+
+<i class="ai-arrow-right-solid"></i>`
+
+const sprite = `<svg width="24" height="24" fill="currentcolor" aria-hidden="true">
+  <use href="node_modules/@acme/icons/dist/web/acme-icons.svg#arrow-right-solid"></use>
+</svg>`
+
+const file = `<img src="node_modules/@acme/icons/dist/svgs/arrow-right-solid.svg" alt="" width="24" height="24" />`
+
+const sass = `@use 'sass:map';
+@use '@acme/icons/dist/web/acme-icons.scss' as icons with (
+  $acme-icons-font-dir: '/fonts'
+);
+
+.my-icon::before {
+  font-family: icons.$acme-icons-font;
+  content: map.get(icons.$acme-icons-map, 'arrow-right-solid');
+}`
+
+const swift = `Image(AiIcon.arrowRightSolid)
+UIImage(AiIcon.arrowRightSolid)`
+
+const kotlin = `Icon(painterResource(R.drawable.ai_arrow_right_solid), contentDescription = null)`
 ---
 
-<section id="usage-section" class="home-section py-3xl md:py-6xl">
+<section class="home-section py-3xl md:py-6xl">
   <div class="container 2xl section-content">
     <div class="grid mb-3xl md:mb-6xl">
-      <header class="section-header col-span-full lg:col-span-10 xl:col-span-8">
-        <h2 id="usage">Usage</h2>
-        <p>
-          The build writes the set in three forms: an SVG sprite, one SVG file per icon and an icon
-          font. The examples show <code>{name}</code>, and the page of each icon has the code for
-          that icon. On this site <a href="https://chassis-ui.com/css">Chassis CSS</a> sizes and
-          colors an element with the class <code>icon</code>.
+      <header class="section-header col-span-full lg:col-span-10 lg:col-start-2 xl:col-span-8 xl:col-start-3 text-center">
+        <h2 class="section-title font-3xl md:font-4xl lg:font-5xl mb-xs md:mb-sm lg:mb-md">
+          <span class="font-normal d-block">Use an icon</span> of your set
+        </h2>
+        <p class="section-body md:font-lg lg:font-xl m-0">
+          The README that the build writes for a set shows each way with its font name and its
+          prefix. The examples use the package <code>@acme/icons</code> and the icon{' '}
+          <code>arrow-right-solid</code>.
         </p>
       </header>
-    </div>
-
-    <div class="grid row-gap-0 my-lg mt-4xl">
-      <div class="col-span-full md:col-span-4">
-        <h3>Sprite</h3>
-        <p>
-          The sprite holds every icon as a <code>&lt;symbol&gt;</code> whose <code>id</code> is the
-          name of the icon. One request loads the set, a <code>&lt;use&gt;</code> element draws an
-          icon, and the icon takes the color of the text around it.
-        </p>
-        <p>
-          A <code>&lt;use&gt;</code> element does not load a file from another origin, so serve the
-          sprite from the origin of the page.
-        </p>
-      </div>
-      <div class="col-span-full md:col-span-8">
-        <Example code={spriteIcon(name)} />
-      </div>
-    </div>
-
-    <div class="grid row-gap-0 my-lg">
-      <div class="col-span-full md:col-span-4">
-        <h3>External image</h3>
-        <p>
-          The SVG file of an icon is an image for the <code>&lt;img&gt;</code> element. An image
-          does not take the color of the text: the icon is black.
-        </p>
-      </div>
-      <div class="col-span-full md:col-span-8">
-        <Example
-          code={`<img src="${svgPath(name)}" alt="" width="${set.frame}" height="${set.frame}">`}
-        />
-      </div>
     </div>
 
     <div class="grid row-gap-0 my-lg">
       <div class="col-span-full md:col-span-4">
         <h3>Icon font</h3>
         <p>
-          The stylesheet of the font has one class per icon, <code>{set.prefix}-&lt;name&gt;</code>.
-          Load the stylesheet, and put the class on an empty element.
-        </p>
-        <p>
-          Use <code>font-size</code> and <code>color</code> to change the size and the color of the
-          icon.
+          Load the stylesheet, and put the class <code>ai-&lt;name&gt;</code> on an empty element.
+          The icon takes the size and the color of the text. With a bundler,{' '}
+          <code>import '@acme/icons'</code> loads the same stylesheet and its font.
         </p>
       </div>
       <div class="col-span-full md:col-span-8">
-        <Example code={fontIcon(name)} />
+        <Code lang="html" code={font} />
+      </div>
+    </div>
+
+    <div class="grid row-gap-0 my-lg">
+      <div class="col-span-full md:col-span-4">
+        <h3>SVG sprite</h3>
+        <p>
+          One file for the whole set, and a <code>&lt;use&gt;</code> per icon whose address is the
+          name of the icon. A <code>&lt;use&gt;</code> does not load a file from another origin, so
+          serve the sprite from the origin of the page.
+        </p>
+      </div>
+      <div class="col-span-full md:col-span-8">
+        <Code lang="html" code={sprite} />
+      </div>
+    </div>
+
+    <div class="grid row-gap-0 my-lg">
+      <div class="col-span-full md:col-span-4">
+        <h3>SVG file</h3>
+        <p>
+          One optimized file per icon, for an <code>&lt;img&gt;</code> element. An image does not
+          take the color of the text around it.
+        </p>
+      </div>
+      <div class="col-span-full md:col-span-8">
+        <Code lang="html" code={file} />
+      </div>
+    </div>
+
+    <div class="grid row-gap-0 my-lg">
+      <div class="col-span-full md:col-span-4">
+        <h3>Sass</h3>
+        <p>
+          The classes of the stylesheet, with the font served from a folder of your own, and the map
+          of the icons for a selector of your own.
+        </p>
+      </div>
+      <div class="col-span-full md:col-span-8">
+        <Code lang="scss" code={sass} />
+      </div>
+    </div>
+
+    <div class="grid row-gap-0 my-lg">
+      <div class="col-span-full md:col-span-4">
+        <h3>iOS and Android</h3>
+        <p>
+          An app takes its files from the archives of a release. On iOS each icon is a case of the
+          enum <code>AiIcon</code>; on Android each icon is a drawable of <code>res/</code>.
+        </p>
+      </div>
+      <div class="col-span-full md:col-span-8">
+        <Code lang="swift" code={swift} />
+        <Code lang="kotlin" code={kotlin} />
       </div>
     </div>
   </div>

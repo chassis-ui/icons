@@ -8,14 +8,14 @@ toc: true
 
 [Chassis CSS](https://chassis-ui.com/css) holds no icons, and takes those of any set. Its class `icon` sizes and colors an icon of the sprite or of the font, and its Sass function `svg-icon()` makes the address of an SVG file from the name of an icon. This page covers what Chassis CSS reads of a set. Its own documentation covers the class and its utilities: see [Icon](https://chassis-ui.com/css/docs/helpers/icon/) and [Icons](https://chassis-ui.com/css/docs/content/icons/).
 
-The examples use the Chassis set. If you build your own set, use the name of your font and your prefix in their place.
+The examples use `@acme/glyphs`, the set of the team Acme, whose font is `acme-glyphs` and whose prefix is `ag`. For another set, use the name of its package, its font and its prefix in their place.
 
 ## Installation
 
 A page needs Chassis CSS and the output of a set. [Icon font]([[docsref:/use-in-project/icon-font#installation]]) describes the three ways to get the output: the package, the archive of a release, and the folders of a build.
 
 ```bash
-npm install @chassis-ui/css @chassis-ui/website-icons
+npm install @chassis-ui/css @acme/glyphs
 ```
 
 ## Basic usage
@@ -24,10 +24,10 @@ Add the class `icon` to an icon of the sprite, or to an icon of the font beside 
 
 ```html
 <svg class="icon" aria-hidden="true">
-  <use href="/static/icons/chassis-icons.svg#bell-outline"></use>
+  <use href="/static/icons/acme-glyphs.svg#ring-line"></use>
 </svg>
 
-<span class="icon cx-bell-outline" aria-hidden="true"></span>
+<span class="icon ag-ring-line" aria-hidden="true"></span>
 ```
 
 The addresses of the example are those of a project that serves the folder `dist/web/` of the set at `/static/icons/`, and `dist/svgs/` at `/static/icons/svgs/`. The font also needs its stylesheet, as [Icon font]([[docsref:/use-in-project/icon-font#basic-usage]]) describes.
@@ -38,7 +38,7 @@ Chassis CSS reads the size and the color of an element with the class `icon` fro
 
 ```html
 <svg class="icon icon-xl icon-primary" aria-hidden="true">
-  <use href="/static/icons/chassis-icons.svg#bell-outline"></use>
+  <use href="/static/icons/acme-glyphs.svg#ring-line"></use>
 </svg>
 ```
 
@@ -59,12 +59,12 @@ Chassis CSS finds the SVG file of an icon by its name, at an address that two Sa
 ```scss
 @use "@chassis-ui/css/scss/functions" as *;
 
-.external-link::after {
-  mask-image: svg-icon("arrow-up-right-from-square-outline");
+.marker::after {
+  mask-image: svg-icon("diamond-line");
 }
 ```
 
-Sass writes `mask-image: url("/static/icons/svgs/arrow-up-right-from-square-outline.svg")` for it.
+Sass writes `mask-image: url("/static/icons/svgs/diamond-line.svg")` for it.
 
 ### The address of the files
 
@@ -76,8 +76,8 @@ A project that serves the files at another address sets `$icon-url-prefix`, befo
 );
 @use "@chassis-ui/css/scss/functions" as *;
 
-.external-link::after {
-  mask-image: svg-icon("arrow-up-right-from-square-outline");
+.marker::after {
+  mask-image: svg-icon("diamond-line");
 }
 ```
 

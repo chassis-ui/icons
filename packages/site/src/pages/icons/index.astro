@@ -1,60 +1,35 @@
 ---
-import IconsLayout from '@layouts/IconsLayout.astro'
+import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
 import HeroSection from '@components/homepage/HeroSection.astro'
-import ListSection from '@components/homepage/ListSection.astro'
-import BuildSection from '@components/homepage/BuildSection.astro'
+import IntroSection from '@components/homepage/IntroSection.astro'
+import HowSection from '@components/homepage/HowSection.astro'
+import OutputSection from '@components/homepage/OutputSection.astro'
 import UsageSection from '@components/homepage/UsageSection.astro'
-import StylingSection from '@components/homepage/StylingSection.astro'
-import AccessibilitySection from '@components/homepage/AccessibilitySection.astro'
-import SVGSection from '@components/homepage/SVGSection.astro'
-import set from 'virtual:icon-set'
-import { iconsPages } from '@libs/content'
+import ChecksSection from '@components/homepage/ChecksSection.astro'
+import TechSection from '@components/homepage/TechSection.astro'
+import DocsSection from '@components/homepage/DocsSection.astro'
 import HomeIcons from '/static/icons/cx-sprite.svg?raw'
-import '@scss/_icons.scss'
 ---
 
-<IconsLayout frontmatter={{ title: set.title }} id="icons-layout">
+<BaseLayout title="Chassis Icons - The builder of icon sets of Chassis UI">
+  <!-- Hero Section -->
   <HeroSection />
-  <nav
-    class="container 2xl sticky-top bg-main mb-6xl"
-    aria-label="Icons Navigation"
-    style="top: 4rem; z-index: 10;"
-  >
-    <ul id="icons-nav" class="nav nav-underline justify-content-center">
-      <li class="nav-item">
-        <a class="nav-link py-xs" href="#build-section">
-          Build
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link py-xs" href="#icons-section">
-          Icons
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link py-xs" href="#usage-section">
-          Usage
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link py-xs" href="#styling-section">
-          Styling
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link py-xs" href="#accessibility-section">
-          Accessibility
-        </a>
-      </li>
-    </ul>
-  </nav>
-  <BuildSection />
-  <ListSection lead={`${set.package.description} The set has ${iconsPages.length} icons.`} />
+  <hr class="hr container" />
+  <!-- A repository of icons per team -->
+  <IntroSection />
+  <!-- From the SVG files to a release -->
+  <HowSection />
+  <!-- What a build writes -->
+  <OutputSection />
+  <!-- The ways to use an icon -->
   <UsageSection />
-  <StylingSection />
-  <AccessibilitySection />
-  <SVGSection />
+  <!-- The source lint and verify -->
+  <ChecksSection />
+  <!-- The tools of the build -->
+  <TechSection />
+  <!-- Documentation Section -->
+  <DocsSection />
   <div class="d-none">
     <Fragment set:html={HomeIcons} />
   </div>
-</IconsLayout>
+</BaseLayout>

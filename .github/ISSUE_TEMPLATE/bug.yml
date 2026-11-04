@@ -1,11 +1,11 @@
 name: Bug report
-description: An icon that is drawn wrong, a file of the package that is missing or broken, or a build or check that fails, for the Chassis set or for a set of your own
+description: A file of the output that the build writes wrong, a file of the package that is missing or broken, or a command or a check that fails
 labels: [bug, needs-triage]
 body:
   - type: markdown
     attributes:
       value: |
-        This repository holds the builder that turns the SVG files of any set into optimized SVG files, an SVG sprite and an icon font. A problem with an icon of the Chassis set belongs in [chassis-ui/website-icons](https://github.com/chassis-ui/website-icons/issues). A problem with a token, a style or a component belongs in [that project's repository](https://github.com/chassis-ui).
+        This repository holds the builder that turns the SVG files of any set into optimized SVG files, an SVG sprite and an icon font, and holds no icons. A problem with how an icon is drawn belongs in the repository of its set. A problem with a token, a style or a component belongs in [that project's repository](https://github.com/chassis-ui).
   - type: dropdown
     id: area
     attributes:
@@ -14,8 +14,7 @@ body:
         - The build: chassis-icons build, verify, lint-source, archive, release-notes or init
         - The output of a set: an SVG file, the sprite, the icon font or its CSS and SCSS
         - The package, its manifest or an import that does not resolve
-        - The build, pnpm icons
-        - A check, such as pnpm icons:lint:source or pnpm icons:verify
+        - A script of this repository, such as pnpm icons:test or pnpm icons:fixture
         - Building a set of my own, with the steps of the README
         - A release, pnpm changeset:version or the release workflow
         - The documentation site
@@ -38,8 +37,8 @@ body:
     id: reproduction
     attributes:
       label: How to reproduce it
-      description: The name of the icon and how you use it (SVG file, sprite, font or Sass), or the command you ran. For a set of your own, add the `chassis.build` block of its `package.json`. `chassis-icons build --verbose` says more. An icon of the Chassis set is reported at chassis-ui/website-icons.
-      placeholder: <i class="cx-search-outline"></i>
+      description: The command you ran, and the `chassis.build` block of the `package.json` of the set. For a file of the output, the name of the icon and how you use it (SVG file, sprite, font or Sass). `chassis-icons build --verbose` says more.
+      placeholder: chassis-icons build --only font
     validations:
       required: true
   - type: input

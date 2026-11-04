@@ -1,6 +1,4 @@
 export declare global {
-  export const StackBlitzSDK: typeof import('@stackblitz/sdk').default
-
   /**
    * The `chassis` object is exposed to the global scope and also to the `window` object in the browser.
    * We rely on the DefinitelyTyped community types for this object to get proper type checking for part of the

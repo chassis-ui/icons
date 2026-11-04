@@ -22,7 +22,7 @@ Chassis Icons turns the SVG files of a team into an icon font, an SVG sprite and
 
 The build is file-driven. Save `<name>.svg` into `source/`, and the icon is in the output of the next build: there is no list to maintain beside the files. The font name, the class prefix, the frame and the styles of the icons are settings of `chassis.build`, so the same build writes the set of any team, as [Chassis Tokens](https://chassis-ui.com/tokens) builds the tokens of any team.
 
-The Chassis set, the icons that the Chassis documentation sites and Figma libraries use, is a repository of icons like any other: [chassis-ui/website-icons](https://github.com/chassis-ui/website-icons), published as `@chassis-ui/website-icons` and shown on this site. These pages use its names in their examples. The [quick start]([[docsref:/getting-started/quick-start]]) makes a repository of your own; the pages of [Icon Design]([[docsref:/icon-design/frame-and-color]]) say what a file needs to be an icon of a set, and those of [Use in Project]([[docsref:/use-in-project/icon-font]]) how a page draws an icon from the output.
+These pages document the builder, and show no set. Their examples are of the team Acme: the quick start makes `@acme/icons`, and the pages of Use in Project draw the icons of `@acme/glyphs`, a set with the font `acme-glyphs`, the prefix `ag` and a frame of 16. The [quick start]([[docsref:/getting-started/quick-start]]) makes a repository of your own; the pages of [Icon Design]([[docsref:/icon-design/frame-and-color]]) say what a file needs to be an icon of a set, and those of [Use in Project]([[docsref:/use-in-project/icon-font]]) how a page draws an icon from the output.
 
 ## What a set is
 
@@ -67,7 +67,7 @@ The repository of icons does not commit the output: its release builds it, publi
 
 ## What reads a set
 
-Chassis CSS, Chassis React and the apps of iOS and Android take any set that keeps this shape. None of them names the Chassis set in a way that a team cannot configure.
+Chassis CSS, Chassis React and the apps of iOS and Android take any set that keeps this shape, and a team points each of them at its own set.
 
 <CxTable>
 | Consumer | What it reads | Page |

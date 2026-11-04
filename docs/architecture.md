@@ -2,7 +2,7 @@
 
 How the build of an icon set works, why it is built this way, and what it promises to write. It is for contributors who change the builder in `packages/icons/lib/` or the files that `init` writes from `packages/icons/templates/`, and for a team that wants to know what the command does in its repository. How to set up the repository, run the checks and open a pull request is in [CONTRIBUTING.md](../.github/CONTRIBUTING.md).
 
-`lib/`, `templates/` and `test/` below are relative to `packages/icons/`. `source/`, `dist/`, `preview/`, `codepoints.json`, `README.md` and the `package.json` with the `chassis.build` block are those of a repository of icons: the folder that the `chassis-icons` command runs on, which this repository is not. The Chassis set is such a repository, `chassis-ui/website-icons`, and the submodule `vendor/icons` of this checkout. `<font>` is `name` of the configuration, `<prefix>` its `prefix`, and `<name>` the name of an icon.
+`lib/`, `templates/` and `test/` below are relative to `packages/icons/`. `source/`, `dist/`, `preview/`, `codepoints.json`, `README.md` and the `package.json` with the `chassis.build` block are those of a repository of icons: the folder that the `chassis-icons` command runs on, which this repository is not. This repository builds no set of a team: its tests and its scripts use the fixture, `test/fixture/`, a repository of icons of another team. `<font>` is `name` of the configuration, `<prefix>` its `prefix`, and `<name>` the name of an icon.
 
 ## The build in one picture
 
@@ -60,7 +60,7 @@ preview.js           Handlebars: index.html, every icon with its name; its style
                      → preview/, or preview/ of the archive; --serve serves it over HTTP
 ```
 
-`chassis-icons build --dry-run` runs the whole build into a temporary folder and lists the files of the repository that it would change. Here, `pnpm icons --dry-run` does that on `vendor/icons`, with the build of this checkout.
+`chassis-icons build --dry-run` runs the whole build into a temporary folder and lists the files of the repository that it would change. Here, `pnpm icons:fixture` builds a copy of the fixture in `.cache/fixture/` with the build of this checkout, and the command runs on it with `--cwd .cache/fixture`.
 
 ## The modules
 
@@ -98,9 +98,9 @@ The scripts of the root `build/` belong to this repository and not to the build 
 
 ### The package is the builder, and ships no icons
 
-`@chassis-ui/icons` is the `chassis-icons` command: `lib/`, `templates/`, its README and its changelog, and nothing else, which `manifest.test.js` holds it to. A set is a repository of icons that installs the builder as a development dependency and runs it with the scripts that `init` wrote, as a repository of tokens installs `chassis-ui/tokens`. The Chassis set is one of them, `chassis-ui/website-icons`, and this repository builds it as the submodule `vendor/icons`, so that a change to the build meets a real set before it is released: `pnpm icons:verify` builds `vendor/icons` with the build of this checkout, and the site shows it.
+`@chassis-ui/icons` is the `chassis-icons` command: `lib/`, `templates/`, its README and its changelog, and nothing else, which `manifest.test.js` holds it to. A set is a repository of icons that installs the builder as a development dependency and runs it with the scripts that `init` wrote, as a repository of tokens installs `chassis-ui/tokens`. This repository holds no such repository and builds no set of a team, the sets of Chassis UI included: the checks run on the fixture, and a set takes a new version of the builder as a team takes any dependency, with a build and `verify` in its own repository.
 
-Every command but `init` works on one repository: `resolveRoot` in `root.js` takes `--cwd <dir>` as it is, or the nearest folder upward from the working directory whose `package.json` has a `chassis` block. The root of this workspace has none, so its `icons:*` scripts name `vendor/icons` with `--cwd`.
+Every command but `init` works on one repository: `resolveRoot` in `root.js` takes `--cwd <dir>` as it is, or the nearest folder upward from the working directory whose `package.json` has a `chassis` block. The root of this workspace has none, so its `icons:*` scripts name the copy of the fixture with `--cwd .cache/fixture`.
 
 ### The build names no set
 
@@ -122,11 +122,11 @@ The build reads `source/` and writes everything else. Before the workspace layou
 
 The output of a repository of icons is one folder, `dist/`, as the output of `chassis-ui/tokens` and `chassis-ui/assets` is. What every target of the build reads is at its top: `svgs/`, the optimized files, and `icons.json`, the index. Each target has a folder of its own: `web/` holds the font, its stylesheets, its glyph map and the sprite, `ios/` the asset catalog and the Swift file, and `android/` the vector drawables. The web is always built; `targets` of `chassis.build` names the others. A later target, for a platform or a framework, is a folder beside them and an archive of its own, and changes no path of the others. The registry is not in `dist/`: it is the state of the build, which the build reads as well as writes, and it is not published.
 
-Before `dist/`, the output was `icons/` and `svgs/` at the root of the repository. The Chassis set moved to `dist/` before its first release, when no project read it from `@chassis-ui/website-icons` yet.
+Before `dist/`, the output was `icons/` and `svgs/` at the root of the repository.
 
 ### The output is not committed, and the release builds it
 
-A repository of icons commits `source/`, `codepoints.json`, `README.md`, `package.json` with the fields that the build writes, and its lockfile, and not `dist/`, as `chassis-ui/assets` does not commit its `dist/`. `dist/` is a function of the source, the registry and the version of the builder that the lockfile pins, so a committed copy holds nothing of its own. It cost merge conflicts that only a build resolves, since two branches that each add an icon both write the font, the sprite and the stylesheets, and a history that grows by the font files at every change. The release workflow builds `dist/`, publishes its files for the web to npm and attaches an archive per target, so what is released is built from source in one place. This repository builds `vendor/icons` in `pnpm vendor`, before the site reads it.
+A repository of icons commits `source/`, `codepoints.json`, `README.md`, `package.json` with the fields that the build writes, and its lockfile, and not `dist/`, as `chassis-ui/assets` does not commit its `dist/`. `dist/` is a function of the source, the registry and the version of the builder that the lockfile pins, so a committed copy holds nothing of its own. It cost merge conflicts that only a build resolves, since two branches that each add an icon both write the font, the sprite and the stylesheets, and a history that grows by the font files at every change. The release workflow builds `dist/`, publishes its files for the web to npm and attaches an archive per target, so what is released is built from source in one place.
 
 `verify` builds into a temporary folder and fails when a committed file that the build writes, the registry, the README or a field of `package.json`, is not what the source builds, so a commit cannot hold a registry that its source does not give. It builds a second time and fails when a file of `dist/` differs between the two, since a release has to be the same build wherever it runs. The names are sorted by code unit and not by locale, and SVGO, svg-sprite and Fantasticon get a fixed configuration, so a build on Linux writes, byte for byte, what one on macOS writes.
 
@@ -173,7 +173,7 @@ An app takes the files of its platform from the archive of a release, not from n
 
 ### Tools are called through their APIs
 
-SVGO, svg-sprite, Fantasticon, clean-css and svg2vectordrawable are called as libraries, in one Node.js process. A whole build of the Chassis set takes about two seconds. Replacing one of the tools is a task of its own, with a comparison of the output before and after.
+SVGO, svg-sprite, Fantasticon, clean-css and svg2vectordrawable are called as libraries, in one Node.js process. A whole build of a set of a few hundred icons takes a few seconds. Replacing one of the tools is a task of its own, with a comparison of the output before and after.
 
 ## Configuration
 
@@ -255,62 +255,33 @@ How the siblings take a set, found in their sources. A set that keeps the output
 | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
 | Chassis CSS        | An SVG file by name: `svg-icon("<name>")` returns `url($icon-url-prefix + <name> + $icon-url-suffix)`, `/static/icons/svgs/` and `.svg` by default.               | `$icon-url-prefix`, or serve `dist/svgs/` at that address |
 | Chassis React      | `<Icon name>`: the sprite symbol `#<name>` in the file of `sprite`, or with `font` the class `<fontPrefix><name>`. Its own icons are named by purpose in `icons`. | `IconProvider`: `sprite`, `fontPrefix`, `icons`           |
-| `@chassis-ui/docs` | `/static/icons/chassis-icons.css` and `/static/icons/chassis-icons.svg#<name>`, copied from the `icons/` folder of the installed `@chassis-ui/icons`.             | The `sprite` prop of `Icon`; otherwise the Chassis set    |
+| `@chassis-ui/docs` | The stylesheet and the sprite of a set at `/static/icons/`, and `<name>` in them, for the interface of a Chassis site.                                            | The `sprite` prop of `Icon`                               |
 | Chassis Assets     | Icons of an app that are in no set, renamed per platform for the web, iOS and Android. The icons of a set reach an app from its `ios` and `android` targets.      | Nothing: a set is not copied there                        |
 
-The Chassis set, `@chassis-ui/website-icons`, promises more than its shape, because its consumers name it. They move to it from `@chassis-ui/icons`, which held the set before it became the builder, and find the files in `dist/`, where `icons/` became `dist/web/` and `svgs/` became `dist/svgs/`:
-
-- `dist/` holds `icons.json`, `svgs/`, `web/`, `ios/` and `android/`, and `web/` holds `chassis-icons.{css,min.css,scss,json,svg,woff,woff2}`.
-- For apps, the catalog `ChassisIcons.xcassets` with the enum `CxIcon`, and the drawables `cx_<name>`.
-- The class prefix is `cx-`, and the font family `chassis-icons`.
-- The names of its icons. `@chassis-ui/docs` draws its own interface with some of them, Chassis React has others as its defaults, and the Figma libraries use the set by name. The `chassis.checks.json` of its repository lists the names that the two packages read, and `verify` fails when one is missing.
-
-A change to one of these is made in `chassis-ui/website-icons`, whose changelog names the icons that are added, renamed or removed. This repository promises `release.yml` by that file name, which is the trusted publisher of `@chassis-ui/icons` on npmjs.com, the check names `Lint`, `Type Check`, `Build` and `Site`, which the ruleset of `main` requires, and the site at `chassis-ui.com/icons`, built by Vercel with `pnpm site:build` into `_site/`. While the version of the builder is `0.x`, a change to the output contract is a minor bump whose changeset starts with `**Breaking.**`.
+This repository promises `release.yml` by that file name, which is the trusted publisher of `@chassis-ui/icons` on npmjs.com, the check names `Lint`, `Type Check`, `Build` and `Site`, which the ruleset of `main` requires, and the site at `chassis-ui.com/icons`, built by Vercel with `pnpm site:build` into `_site/`. While the version of the builder is `0.x`, a change to the output contract is a minor bump whose changeset starts with `**Breaking.**`.
 
 ## The site
 
-`packages/site/` shows the set of `vendor/icons`, and it names no set either. It reads the same two things as a consumer: the configuration and the output.
+`packages/site/` is the documentation of the builder, and shows no set: a landing page at `/icons/`, and the MDX pages of `content/docs/` in the `docs` collection of every Chassis site, under `/icons/docs/`. An example of a page names a set of a team with `acme` names, and every command, path and output in it is one of the build, copied from a build of the fixture.
 
-```text
-vendor/icons/package.json ───────┐  chassis.build, and the name and the version of the package
-vendor/icons/dist/icons.json ────┤  the index: each icon with its code point and its style
-vendor/icons/dist/web/ ──────────┤  the stylesheets, the sprite, the font
-vendor/icons/dist/svgs/ ─────────┘  one file per icon
-        │
-        ▼
-src/libs/set.ts          reads the set with config.js, names.js and set-index.js of the build
-        │
-        ├─▶ src/content.config.ts   the `icons` collection: one entry per icon of the index,
-        │                           with its SVG markup and its code point
-        ├─▶ src/libs/astro.ts       `virtual:icon-set`: the font name, the prefix, the frame,
-        │                           the package and the addresses of the set
-        └─▶ public/icons/static/set/   web/ and svgs/, as dist/ holds them
-```
-
-`getSetDir` in `src/libs/set.ts` is the one place that names `vendor/icons`, from the root of the site, and `pnpm vendor` checks the submodule out before the site builds. A page of an icon is an entry of the collection, so the site has a page for each icon of the output and no file per icon. A page or a component reads the set from `virtual:icon-set`, since it is bundled and cannot read the files itself, and draws an icon of the set with `SetIcon.astro`. `exampleIcon` of `config.yml` names the icon of the examples, the first icon of the set when it is left out, and the site does not build with a name that the set does not have.
-
-The interface of the site is drawn by `@chassis-ui/docs` with the Chassis set, as on every Chassis site: `/static/icons/` holds `icons/` of the installed `@chassis-ui/icons`. The package of the workspace has the same name, so the site asks for the published one with an npm alias, a version that still held the set, until the Chassis sites move to `@chassis-ui/website-icons`. The set of the repository is served from a path of its own, `/icons/static/set/`, under the path that chassis-ui.com routes to this site. For the Chassis set the two are versions of one set, and for the fixture that `pnpm site:test` builds they are two sets.
-
-The documentation pages are the MDX files of `content/docs/`, in the `docs` collection of every Chassis site, under `/icons/docs/`.
+The interface of the site is drawn by `@chassis-ui/docs`, as on every Chassis site: `/static/icons/` holds `icons/` of the installed `@chassis-ui/icons`. The package of the workspace has the same name, so the site asks for the published one with an npm alias, a version that still held the icons of the Chassis website, until the Chassis sites take them from `@chassis-ui/website-icons`.
 
 ## Checks
 
-Each check has a command, and CI runs all of them. The `icons:*` scripts that run the command do so with the build of this checkout, on `vendor/icons`.
+Each check has a command, and CI runs all of them but the native check. The scripts that run the command do so with the build of this checkout, on the copy of the fixture that `pnpm icons:fixture` writes into `.cache/fixture/`.
 
 | Command                       | Checks                                                                                                                                                                                                                                                                                                                                                       |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `pnpm icons:lint:source`      | `vendor/icons/source/`: only SVG files, kebab-case names that end in a style, the frame, one color, no stroke, no raster, gradient, pattern or script, the pairs                                                                                                                                                                                             |
-| `pnpm icons:verify`           | Two builds of `vendor/icons` give the same files, and its committed registry, README and manifest are what it builds; no icon moved from the code point it had at the last tag of that repository; no two icons share one; the contract icons                                                                                                                |
 | `pnpm icons:test`             | Vitest, on the fixture, which has the `ios` and `android` targets: the golden output, the steps, the code points, the configuration, the targets, the page of the set and its server, the manifest, what npm packs of a set and of the builder, the archive, the release notes, `init`, the journey of a team, the command line, and the scripts of the root |
 | `pnpm icons:lint:package`     | publint on what npm would publish of the builder                                                                                                                                                                                                                                                                                                             |
 | `pnpm icons:lint`             | ESLint on `lib/`, `test/` and the root `build/`, with no warning allowed                                                                                                                                                                                                                                                                                     |
 | `pnpm icons:typecheck`        | TypeScript `checkJs` on `lib/`                                                                                                                                                                                                                                                                                                                               |
 | `pnpm changeset:check <base>` | The commits since a base come with a changeset when they change `lib/` or `templates/`; the commit of a version passes                                                                                                                                                                                                                                       |
-| `pnpm site:test`              | Vitest, on a copy of the build, the site and `vendor/icons`: the site of the Chassis set and of the fixture, the icons that each page draws, and the links between the pages                                                                                                                                                                                 |
+| `pnpm site:test`              | Vitest, on the built site: every page is the home page or a page of the documentation, every icon that a page draws is in a sprite that the site serves, and every link leads to a page that is there                                                                                                                                                        |
 | `pnpm icons:test:golden`      | Not a check: writes `test/golden/` again from a build of the fixture                                                                                                                                                                                                                                                                                         |
-| `pnpm icons:archive`          | Not a check: writes the archive of `vendor/icons` into `.cache/archives/`, which Git ignores                                                                                                                                                                                                                                                                 |
-| `pnpm icons:native`           | Not in CI: compiles `dist/ios/` and `dist/android/` of `vendor/icons` with actool, swiftc, xcodebuild and aapt2. Needs Xcode and the Android SDK, in `ANDROID_HOME`                                                                                                                                                                                          |
-| `pnpm icons:preview`          | Not a check: writes the page of `vendor/icons` into its `preview/`, which its Git ignores, and serves it                                                                                                                                                                                                                                                     |
+| `pnpm icons:native`           | Not in CI: builds the fixture, and compiles its `dist/ios/` and `dist/android/` with actool, swiftc and aapt2. Needs Xcode and the Android SDK, in `ANDROID_HOME`                                                                                                                                                                                            |
+| `pnpm icons:fixture`          | Not a check: writes a copy of the fixture into `.cache/fixture/` and builds it, for the scripts that look at an output                                                                                                                                                                                                                                       |
+| `pnpm icons:preview`          | Not a check: builds the fixture, and writes its page into `.cache/fixture/preview/` and serves it                                                                                                                                                                                                                                                            |
 
 `verify` reads the code points of the last tag from `codepoints.json` at that tag, in the repository of the set, or from the glyph map of the font, `dist/web/<font>.json` or `icons/<font>.json`, at a tag that has no registry. A repository without a tag, or a tag without any of them, is reported as a note and not as a problem. [`test/README.md`](../packages/icons/test/README.md) describes the tests, the fixture and the golden output.
 
@@ -318,7 +289,7 @@ Each check has a command, and CI runs all of them. The `icons:*` scripts that ru
 
 The builder is versioned on `develop` with Changesets: a change to `lib/` or `templates/` comes with a changeset, and `pnpm changeset:version` bumps `packages/icons/package.json`, writes its `CHANGELOG.md` and copies the version to the badge of `README.md` and to `currentVersion` of `packages/site/config.yml`. A push of the commit to `main` releases it. `release.yml` reads the name and the version from `packages/icons/package.json`, stops unless `Lint`, `Type Check`, `Build` and `Site` passed on the commit, publishes the package to npm with trusted publishing unless npm has the version, and creates the tag `v<version>` and the GitHub release whose body is the entry of the version in `CHANGELOG.md`, which `build/release-notes.js` prints and fails without. The release is the package, its tag and its notes, and no archive: the archive of a set is released by its repository.
 
-A repository of icons releases with the workflow that `init` wrote. A push to its `main` with a new version in `package.json` lints the source, verifies the set, builds `dist/`, writes `<font>-web-<version>.zip` with `archive`, which holds the files for the web and the page of the set, and `<font>-<target>-<version>.zip` of each target, publishes the package to npm unless it is private or npm has the version, and creates the tag and the GitHub release with the archives attached, from the entry of the version in its `CHANGELOG.md`. The Chassis set reaches this repository when the pointer of `vendor/icons` moves to that release. The steps, the prerelease mode and what each workflow reads are in [CONTRIBUTING.md](../.github/CONTRIBUTING.md#releases).
+A repository of icons releases with the workflow that `init` wrote. A push to its `main` with a new version in `package.json` lints the source, verifies the set, builds `dist/`, writes `<font>-web-<version>.zip` with `archive`, which holds the files for the web and the page of the set, and `<font>-<target>-<version>.zip` of each target, publishes the package to npm unless it is private or npm has the version, and creates the tag and the GitHub release with the archives attached, from the entry of the version in its `CHANGELOG.md`. The steps, the prerelease mode and what each workflow reads are in [CONTRIBUTING.md](../.github/CONTRIBUTING.md#releases).
 
 ## Known oddities
 
@@ -335,12 +306,8 @@ Kept on purpose, or until a phase of the roadmap removes them. Do not fix one wi
 - **`main` is a stylesheet.** `main`, `style` and `sass` are kept beside `exports` for tools that read them. Node.js cannot import the package of a set, and nothing in it is JavaScript.
 - **The package importer of Sass refuses the path without an extension.** `dist/web/` holds a `.css` and a `.scss` of the font name, so `pkg:<package>/dist/web/<font>` is ambiguous. `pkg:<package>` and the path with `.scss` are not.
 - **The font holds its glyphs in the order in which Fantasticon finds the files**, which is the reverse of the order of the names. The order is in the bytes of the font and in nothing that it draws: a class finds its glyph by its code point.
-- **The Chassis set starts with two retired code points.** `f243` and `f245` were the code points of two duplicates, removed before the set moved to `chassis-ui/website-icons`, whose registry moved as it was.
 - **The page of a set draws with the font from the file system.** A browser does not let a `file:` page read the sprite beside it, so there the page draws the icons with the font, says so, and has no embedded snippet. Served, it reads the sprite into itself, and its embedded snippet is the drawing of the sprite, which may write a path shorter than the file of `svgs/`.
 - **The page of a set needs the network for its styles.** Chassis CSS and its script come from jsDelivr, at a fixed version and with their hashes, so the page of a set is the same whatever version of Chassis CSS a project has. Offline, the icons, the search and the drawer still work, unstyled.
-- **The site loads the font of the Chassis set twice.** The interface loads the stylesheet of the installed package, and the pages of the set load the one of `vendor/icons`. Both name the family and the classes of one set, and the second wins.
-- **The categories and the tags of an icon page are derived.** The category is the first word of the name, and the tags are `icon`, the style and `svg`, until the set has curated metadata.
-- **The test of the site copies the build, the site and `vendor/icons` into `.cache/`.** Astro reads a file of a linked package by its path only when that path and the site have a folder in common, which the temporary folder of a machine does not have with the repository.
 
 ## History
 
@@ -351,3 +318,5 @@ In November 2026 the set moved to `chassis-ui/website-icons`, published as `@cha
 Before the first release of the set, the output moved into `dist/`, by target, as the output of `chassis-ui/website-tokens` and `chassis-ui/website-assets` is, and `dist/icons.json` was added. The page of the set left the output for `preview/`, which `chassis-icons preview` writes from it, and the archive of a release became `<font>-web-<version>.zip`, with the page in it. The files of the output did not change by a byte, only their paths.
 
 Then the `ios` and `android` targets took the icons of a set to apps: an asset catalog, a Swift enum, vector drawables, and an archive per target. They were the work of `chassis-ui/assets` for the icons of the Chassis set until then, which keeps them for the icons that are in no set. With them, `dist/` stopped being committed: the release builds it, and `verify` builds twice and compares the committed files that the build writes.
+
+Before the first release of the builder, this repository stopped building and showing the Chassis set. The submodule `vendor/icons` went, the checks of the builder run on the fixture alone, and the site became the documentation of the builder, without a page per icon: the repository and the package name no set and need none, as if no team had built a set yet.
