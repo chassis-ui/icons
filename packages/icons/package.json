@@ -1,6 +1,6 @@
 {
   "name": "@chassis-ui/icons",
-  "version": "0.4.0-next.0",
+  "version": "0.4.0",
   "type": "module",
   "description": "The builder of icon sets of Chassis UI: the chassis-icons command, which builds a repository of SVG files into optimized SVG files, an SVG sprite and an icon font with its stylesheets",
   "repository": {

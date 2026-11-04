@@ -8,7 +8,7 @@ subtitle:               "A Toolkit for Building Custom Icon Libraries"
 description:            "The builder of icon sets of Chassis UI: a team saves its SVG files into a repository, and the build writes an icon font, an SVG sprite, optimized SVG files and the files of iOS and Android."
 authors:                "Ozgur Gunes"
 
-currentVersion:         "0.4.0-next.0"
+currentVersion:         "0.4.0"
 repo:                   "https://github.com/chassis-ui/icons"
 
 githubOrg:              "chassis-ui"

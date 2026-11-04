@@ -3,7 +3,7 @@
 > The builder of icon sets of Chassis UI: the `chassis-icons` command builds a repository of SVG files into optimized SVG files, an SVG sprite and an icon font with its stylesheets, and `init` writes such a repository for a team.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Version: 0.4.0-next.0](https://img.shields.io/badge/Version-0.4.0--next.0-blue.svg)](https://github.com/chassis-ui/icons)
+[![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-blue.svg)](https://github.com/chassis-ui/icons)
 [![CI](https://github.com/chassis-ui/icons/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/chassis-ui/icons/actions/workflows/ci.yml)
 
 ## Overview
