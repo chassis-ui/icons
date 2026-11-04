@@ -21,9 +21,11 @@ pnpm install
 pnpm vendor
 ```
 
-`pnpm vendor` checks out the `vendor/icons` submodule and unpacks the assets of the site. The
-tests need neither; `git submodule update --init vendor/icons` is enough for the `icons:*`
-scripts.
+`pnpm vendor` checks out the `vendor/icons` submodule, builds the Chassis set there with
+`pnpm icons`, and unpacks the assets of the site. The tests need none of it;
+`git submodule update --init vendor/icons` is enough for `pnpm icons`,
+`pnpm icons:lint:source` and `pnpm icons:verify`. `pnpm icons:preview`, `pnpm icons:archive`
+and `pnpm icons:native` read `dist/` of `vendor/icons`, so they need a build first.
 
 The repository is a pnpm workspace: the package `@chassis-ui/icons`, its documentation site,
 and the Chassis set as a submodule.
@@ -42,7 +44,7 @@ and the Chassis set as a submodule.
   [chassis-ui/website-icons](https://github.com/chassis-ui/website-icons), the repository of
   icons of the Chassis set, pinned to a commit of its `main`. The `pnpm icons:*` scripts run
   the build of this checkout on it with `--cwd vendor/icons`. Nothing in it is edited from
-  here.
+  here, and its `dist/`, which `pnpm vendor` builds, is not committed in either repository.
 - [`build/`](../build/) holds the scripts of the repository: the check for a changeset, the
   version references, and the notes of a release.
 - [`docs/architecture.md`](../docs/architecture.md) explains the build, and
@@ -72,7 +74,7 @@ Branch names aren't templated; name yours descriptively (for example `feat/init-
 
 ## Changing the Chassis set
 
-The icons of the Chassis Design System are the repository
+The icons of the Chassis website are the repository
 [chassis-ui/website-icons](https://github.com/chassis-ui/website-icons), published as
 `@chassis-ui/website-icons`, with its own changelog and releases. An icon is added, changed,
 renamed or removed there, never in `vendor/icons/`, which is a checkout of that repository:
@@ -81,44 +83,51 @@ renamed or removed there, never in `vendor/icons/`, which is a checkout of that 
    the set is drawn on a 24 by 24 frame, in one color, and is named in kebab-case with its
    style as the last part: `<name>-outline`, `<name>-solid` or `<name>-brand`. An outline icon
    comes with its solid one. `pnpm lint` there checks all of this.
-2. Run `pnpm build` there. It writes `dist/`, `codepoints.json` and `README.md`. A new icon
-   gets a code point of its own, the code points of the other icons stay as they are, and the
+2. Run `pnpm build` there. It writes `dist/`, `codepoints.json`, `README.md` and the fields
+   of `package.json` that name the files. A new icon gets a code point of its own, the code points of the other icons stay as they are, and the
    code point of a removed icon is retired. Look at the result with `pnpm preview`, which
    writes the page of the set into `preview/` and serves it at `http://localhost:4325/`.
-3. Run `pnpm verify` there. It fails when a committed file is not what the source builds, when
-   an icon lost its code point, or when an icon of `chassis.checks.json` is missing. Renaming
-   or removing an icon breaks every project that uses it: it is the maintainer's decision, and
+3. Run `pnpm verify` there. It fails when the source does not build twice to the same files,
+   when `codepoints.json`, `README.md` or `package.json` is not what the source builds, when an
+   icon lost its code point, or when an icon of `chassis.checks.json` is missing. Renaming or
+   removing an icon breaks every project that uses it: it is the maintainer's decision, and
    the changelog entry says so.
-4. Commit `source/` and the output together, with the entry of the next version in
-   `CHANGELOG.md`, and release: a push to its `main` with a new version publishes the package
-   and creates the tag with the archive attached, as [A repository of icons](#a-repository-of-icons)
-   describes.
+4. Commit `source/` with `codepoints.json` and `README.md`, and `package.json` when the build
+   changed it. `dist/` is not committed: `.gitignore` names it. Add the entry of the next
+   version in `CHANGELOG.md`, and release: a push to its `main` with a new version builds the
+   output, publishes the package and creates the tag with the archives attached, as
+   [A repository of icons](#a-repository-of-icons) describes.
 
 The release reaches this repository by moving the pointer of the submodule to the tag, or to
-the commit of `main` that the site should show:
+the commit of `main` that the site should show. Stage the pointer before the checks:
+`pnpm site:build` runs `pnpm vendor`, which checks out the commit that the index names.
 
 ```bash
 cd vendor/icons
 git fetch
 git checkout <tag>
 cd ../..
+git add vendor/icons
 pnpm icons:lint:source
 pnpm icons:verify
 pnpm site:build
-git add vendor/icons
 ```
 
-Commit the pointer when the three checks pass. The site shows the set at that commit, and CI
-builds and verifies it. A pointer move changes nothing of the published package, so it needs
+Commit the pointer when the three checks pass. The site shows the set at that commit, built
+with the build of this checkout, and CI builds and verifies it. A pointer move changes nothing of the published package, so it needs
 no changeset.
 
-A change to the build that changes the output of a set fails `pnpm icons:verify` on
-`vendor/icons` until the Chassis set is built again with it. Run `pnpm icons`, which writes the
-output of the Chassis set in `vendor/icons` with the build of this checkout, commit that on a
-branch of chassis-ui/website-icons, and point `vendor/icons` at it for the pull request. After
-the release of the build, the repository of the set takes the new version, as
+`dist/` of `vendor/icons` is built with the build of this checkout, so the site and the
+checks of a pull request see what a changed build writes. A change to the build that changes
+a file that the Chassis set commits, `codepoints.json`, `README.md` or a field of
+`package.json`, fails `pnpm icons:verify` on `vendor/icons` until the set takes it. Run
+`pnpm icons`, which writes those files in `vendor/icons` with the build of this checkout,
+commit them on a branch of chassis-ui/website-icons, and point `vendor/icons` at it for the
+pull request. After the release of the build, the repository of the set takes the new
+version, as
 [Taking a newer build into a repository of icons](#taking-a-newer-build-into-a-repository-of-icons)
-says, and releases. See [Changing the build](#changing-the-build).
+says, and its next release builds and publishes the new output. See
+[Changing the build](#changing-the-build).
 
 ## Changing the build
 
@@ -147,6 +156,18 @@ earlier build, is kept.
 is the repository's from then on: a change here reaches a repository made earlier only when
 its team runs `chassis-icons init --check` and `chassis-icons init --only <file…> --force`.
 So a template change that a repository needs is said in the changeset.
+
+The targets of a set besides the web are `packages/icons/lib/ios.js`, which writes the asset
+catalog and the Swift file of `dist/ios/`, and `packages/icons/lib/android.js`, which converts
+the optimized SVG files into the vector drawables of `dist/android/`. The tests read their
+output as text, and do not compile it. `pnpm icons:native` compiles it with the tools of the
+platforms, on `dist/` of `vendor/icons`, which `pnpm vendor` or `pnpm icons` builds: each
+asset catalog with actool, with a check that each image set is a template image, the Swift
+file in the Swift 5 and Swift 6 language modes, and `res/` with aapt2 against `android.jar`.
+It needs Xcode and the Android SDK, found with `ANDROID_HOME` or `ANDROID_SDK_ROOT`, or named
+with `AAPT2` and `ANDROID_JAR`, so CI does not run it. Run it after a change to either module
+or to their output; `packages/icons/test/native/check.sh <repository> [ios] [android]` runs it
+on another built repository of icons, such as a copy of the fixture.
 
 `pnpm icons:lint:package` runs [publint](https://publint.dev) on what npm would publish, and
 `manifest.test.js` checks that the package packs `lib/`, `templates/`, `package.json`,
@@ -235,6 +256,7 @@ Run the checks of the area you changed before you open a pull request. CI runs a
 | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `packages/icons/lib/`                                      | `pnpm icons:lint`, `pnpm icons:typecheck`, `pnpm icons:test`, `pnpm icons:verify`, `pnpm icons:lint:package`. Add a changeset.                                  |
 | The output of a set is meant to change                     | `pnpm icons:test:golden`, then the row above: read the diff of `packages/icons/test/golden/`, and `pnpm icons --dry-run` says what changes for the Chassis set. |
+| `packages/icons/lib/ios.js`, `android.js` or their output  | The rows above, and `pnpm icons:native` on a machine with Xcode and the Android SDK.                                                                            |
 | `packages/icons/lib/templates/`                            | `pnpm icons:test:golden`, `pnpm icons:test`, `pnpm icons:verify`. Add a changeset.                                                                              |
 | `packages/icons/templates/`                                | `pnpm icons:test`, and `chassis-icons init --check` in a repository made earlier. Add a changeset that says which file to write again.                          |
 | `packages/icons/test/`                                     | `pnpm icons:lint`, `pnpm icons:test`.                                                                                                                           |
@@ -253,12 +275,13 @@ CI runs these jobs on every pull request, and on every push to `develop`:
 - **Type Check**: `pnpm icons:typecheck` and `pnpm check:astro`.
 - **Build**, with the submodule checked out: `pnpm icons:lint:source` on the Chassis set,
   `pnpm icons:test` on the Node.js of `.nvmrc` and on Node.js 22, `pnpm icons:verify` and
-  `pnpm icons:lint:package`. It fails when the committed output of `vendor/icons` is not what
-  this build writes from its source: a change of the build that changes the output of a set
-  needs a release of the set too, as [Changing the Chassis set](#changing-the-chassis-set)
-  says.
-- **Site**, with the submodule checked out: `pnpm site:build`, then `pnpm site:lint:html`,
-  `pnpm site:lint:vnu` and `pnpm site:test`.
+  `pnpm icons:lint:package`. It fails when this build does not write the same files twice for
+  `vendor/icons`, or when the files that `vendor/icons` commits, its registry, its README and
+  its `package.json`, are not what this build writes from its source: a change of the build
+  that changes them needs a change of the set too, as
+  [Changing the Chassis set](#changing-the-chassis-set) says.
+- **Site**, with the submodule checked out: `pnpm site:build`, which builds the set through
+  `pnpm vendor`, then `pnpm site:lint:html`, `pnpm site:lint:vnu` and `pnpm site:test`.
 - **Changeset**: a change to `packages/icons/lib/` or to `packages/icons/templates/` has a
   changeset. `pnpm changeset:check develop` runs the same check on your branch.
 - **Audit**: `pnpm check:pnpm`.
@@ -363,22 +386,25 @@ A repository of icons, the Chassis set among them, releases itself with the work
 push and on a pull request: `release-notes`, which fails when the version of `package.json`
 has no entry in `CHANGELOG.md`, `lint` and `verify`. Its `release.yml` runs on a push to
 `main` with a version that npm does not have or that has no tag: it reads the release notes,
-lints the source, verifies the output, writes the archive `<font>-web-<version>.zip` with
-`icons.json`, `svgs/`, `web/` and the page of the set in `preview/`, publishes the package
-with npm trusted publishing unless `package.json` has `"private": true`, and creates the tag
-`v<version>` and its GitHub release with the entry as its body and the archive attached. A push that does not change the version
+lints the source, verifies the set, builds `dist/`, which is not committed, writes the archive
+`<font>-web-<version>.zip` with `icons.json`, `svgs/`, `web/` and the page of the set in
+`preview/`, and `<font>-<target>-<version>.zip` with `dist/<target>/` of each target of
+`chassis.build`, publishes the package with the output for the web, with npm trusted
+publishing, unless `package.json` has `"private": true`, and creates the tag `v<version>`
+and its GitHub release with the entry as its body and the archives attached. An app takes
+the files of iOS and Android from those archives. A push that does not change the version
 releases nothing, and a release that fails makes no tag, so the next push tries again.
 
-So a release of a set is one commit: the new version in `package.json`, its entry in
+So a release of a set is one commit: the new version in `package.json`, and its entry in
 `CHANGELOG.md`, written by hand in the form of Keep a Changelog and naming the icons that are
-added, renamed or removed, and the output built again with `build`, so that the headers of
-the stylesheets name the version. The trusted publisher of the package on npmjs.com names
+added, renamed or removed. The release builds `dist/` from that commit, so the headers of the
+stylesheets name the version. The trusted publisher of the package on npmjs.com names
 `release.yml` of that repository.
 
 ## Taking a newer build into a repository of icons
 
-A repository of icons owns `source/`, its configuration, its output and the files that `init`
-wrote, and takes the build from npm. So a newer build is taken by bumping the devDependency,
+A repository of icons owns `source/`, its configuration, its registry of the code points and
+the files that `init` wrote, and takes the build from npm. So a newer build is taken by bumping the devDependency,
 and not by copying files:
 
 1. Bump `@chassis-ui/icons` in `devDependencies` of `package.json` to the new version, and
@@ -387,17 +413,21 @@ and not by copying files:
 
 2. Install, build the set with the newer build, and check it. The commands are the scripts
    of `package.json`, with `npm run` in place of `pnpm` in a repository that `init` wrote
-   with `--pm npm`.
+   with `--pm npm`. `build --dry-run`, before the build, lists the files that the newer build
+   writes differently from the `dist/` of the last build.
 
    ```bash
    pnpm install
+   pnpm build --dry-run
    pnpm build
    pnpm verify
    ```
 
-3. Read `git diff` before you commit. A newer build can write other files for the same
-   source, and a change to your output is a change to your package: the entry of your next
-   version in `CHANGELOG.md` names what changed for those who use your set.
+3. Read `git diff` before you commit: it shows what changed in `codepoints.json`, `README.md`
+   and `package.json`, and not in `dist/`, which is not committed. A newer build can write
+   other files for the same source, and a change to your output is a change to your package:
+   the entry of your next version in `CHANGELOG.md` names what changed for those who use your
+   set.
 
 4. Check the files that `init` wrote. They are yours from then on, and a newer build does not
    write over them, so `init --check` reports the ones that differ from what the installed

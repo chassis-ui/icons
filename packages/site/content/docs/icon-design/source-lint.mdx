@@ -80,7 +80,7 @@ The drawing of a file is checked against `chassis.build.frame` and the rules of 
 
 ## Lint and verify
 
-The source lint checks the files that go into the build, and `npm run verify` checks what came out of it. A change to `source/` runs both: the lint, the build, then the verification.
+The source lint checks the files that go into the build, and `npm run verify` checks what the build makes of them. A change to `source/` runs both: the lint, the build, then the verification.
 
 ```bash
 npm run lint
@@ -88,7 +88,7 @@ npm run build
 npm run verify
 ```
 
-[Build system]([[docsref:/getting-started/build-system#checks]]) describes what `npm run verify` compares.
+[Build system]([[docsref:/getting-started/build-system#checks]]) describes what `npm run verify` checks.
 
 ## Best practices
 

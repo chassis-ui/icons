@@ -5,8 +5,8 @@ breaks without being told; the docs it links to explain the rest.
 
 ## Project
 
-Chassis Icons is `@chassis-ui/icons`, the builder of icon sets of the Chassis Design System
-and of any team that adopts it: the `chassis-icons` command builds a repository of SVG files
+Chassis Icons is `@chassis-ui/icons`, the builder of icon sets of Chassis UI, for the Chassis
+website and for any team that adopts it: the `chassis-icons` command builds a repository of SVG files
 into optimized SVG files, an SVG sprite and an icon font with its stylesheets, and `init`
 writes such a repository. The build is file-driven and names no set: the font name, the
 class prefix, the frame and the styles are the `chassis.build` block of the repository it
@@ -30,11 +30,12 @@ docs/                  # architecture.md
 ref/ROADMAP.md         # the plan, its principles, the decisions and the session log
 ```
 
-A repository of icons holds `source/`, a `package.json` with the `chassis` block, the
-committed output `dist/` (`icons.json`, `svgs/` and `web/`), `codepoints.json` and
-`README.md`, and `chassis.checks.json` when consumers read icons by name; `chassis-icons init`
-writes one. `preview/`, the page of the set, and `archives/` are written from `dist/` and are
-not committed.
+A repository of icons commits `source/`, a `package.json` with the `chassis` block,
+`codepoints.json`, `README.md`, and `chassis.checks.json` when consumers read icons by name;
+`chassis-icons init` writes one. The build writes `dist/` (`icons.json`, `svgs/`, `web/`, and
+`ios/` and `android/` with the targets), which is not committed: the release builds it.
+`preview/`, the page of the set, and `archives/` are written from `dist/` and are not
+committed either.
 
 ## Setup and commands
 
@@ -49,6 +50,8 @@ not committed.
   `--cwd vendor/icons`. The command works on one repository of icons: `--cwd <dir>`, by
   default the nearest folder upward whose `package.json` has a `chassis` block. The root of
   this workspace has none. `node packages/icons/lib/cli.js --help` prints every command.
+- `pnpm icons:native` compiles the `ios` and `android` output of `vendor/icons` with Xcode and
+  the Android SDK; CI does not run it.
 - `pnpm icons:preview` writes the page of the set into `vendor/icons/preview/` and serves it
   at `http://localhost:4325/`.
 - `pnpm dev` runs the site at `http://localhost:4324/icons/`, after `pnpm vendor`.
@@ -60,6 +63,7 @@ Run the checks of the area you changed, and report the ones that fail.
 | Area changed                                   | Run                                                                                                                                               |
 | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `packages/icons/lib/`, `templates/` or `test/` | `pnpm icons:lint`, `pnpm icons:typecheck`, `pnpm icons:test`, `pnpm icons:verify`, `pnpm icons:lint:package`                                      |
+| `lib/ios.js`, `lib/android.js` or their output | The row above, and `pnpm icons:native` with Xcode and the Android SDK (`ANDROID_HOME`); say so when the machine has neither                       |
 | The output of a set is meant to change         | `pnpm icons:test:golden`, then the row above; review the diff of `test/golden/`, and `pnpm icons --dry-run` says what changes for the Chassis set |
 | The pin of `vendor/icons`                      | `pnpm icons:lint:source`, `pnpm icons:verify`, `pnpm site:build`                                                                                  |
 | `build/`, `.github/workflows/`, `.changeset/`  | `pnpm icons:lint`, `pnpm icons:test`                                                                                                              |
@@ -80,15 +84,19 @@ The first nine are the principles of [ref/ROADMAP.md](ref/ROADMAP.md#principles)
   to be maintained beside the files.
 - **The shape of the output is the contract, for any set.** `dist/web/<font>.{css,min.css,scss,json,svg,woff,woff2}`,
   `dist/svgs/<name>.svg` and `dist/icons.json`, the sprite symbol `<name>`, the class `<prefix>-<name>`, an SVG root
-  with the frame and `fill="currentcolor"`. [docs/architecture.md](docs/architecture.md#output-contract)
+  with the frame and `fill="currentcolor"`; with the targets, `dist/ios/` with the image set
+  `<name>` and the Swift case of the name, and the drawable `<prefix>_<name>` of
+  `dist/android/`. [docs/architecture.md](docs/architecture.md#output-contract)
   has the contract of each file. A change to it is a minor bump whose changeset starts with
   `**Breaking.**` while the version is `0.x`.
 - **An icon keeps its code point.** Adding an icon never moves another, and the code point of
   a removed icon is retired. `codepoints.json` of a repository is written by the build only.
-- **The output of a set is committed there, and a fresh build equals it.** `verify` fails on
-  any difference. A change to the build that changes the output of a set is a change for
-  every repository of icons: the changeset says what changes, and the Chassis set is built
-  again in its repository when the pin moves.
+- **The output of a set is built, not committed.** `dist/` follows from the source, the
+  registry and the version of the builder, and the release builds it. The build also writes
+  files that are committed, the registry, the README and fields of `package.json`, and
+  `verify` fails when one is not what the source builds, or when two builds differ. A change
+  to the build that changes the output of a set is a change for every repository of icons:
+  the changeset says what changes.
 - **Rewrite the scripts, keep the tools.** SVGO, svg-sprite and Fantasticon stay. Replacing or
   upgrading one is a task of its own, with a comparison of the output.
 - **Match the siblings in tooling, not in product.** The layout, the tests, CI, Changesets,

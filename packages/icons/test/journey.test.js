@@ -92,6 +92,8 @@ describe('the journey of a team that makes a repository of icons', () => {
         'CHANGELOG.md',
         'CLAUDE.md',
         'README.md',
+        'archives/acme-glyphs-android-2.4.0.zip',
+        'archives/acme-glyphs-ios-2.4.0.zip',
         'archives/acme-glyphs-web-2.4.0.zip',
         'codepoints.json',
         'dist/icons.json',
@@ -99,6 +101,8 @@ describe('the journey of a team that makes a repository of icons', () => {
           (extension) => `dist/web/acme-glyphs.${extension}`
         ),
         ...teamNames.map((name) => `dist/svgs/${name}.svg`),
+        ...listFiles(path.join(goldenDir, 'dist/ios')).map((file) => `dist/ios/${file}`),
+        ...listFiles(path.join(goldenDir, 'dist/android')).map((file) => `dist/android/${file}`),
         'package.json',
         'pnpm-lock.yaml',
         ...teamNames.map((name) => `source/${name}.svg`)
@@ -107,7 +111,7 @@ describe('the journey of a team that makes a repository of icons', () => {
     // The page of the set, which Git leaves out with the archives
     expect(listFiles(path.join(dir, 'preview'))).toContain('index.html')
     expect(fs.readFileSync(path.join(dir, '.gitignore'), 'utf8')).toMatch(
-      /^preview\/$[^]*^archives\/$/m
+      /^dist\/$[^]*^preview\/$[^]*^archives\/$/m
     )
 
     const built = readOutput(dir)
@@ -120,11 +124,11 @@ describe('the journey of a team that makes a repository of icons', () => {
     // The README names the commands of the repository, and its manifest the files of the font
     const readme = fs.readFileSync(path.join(dir, 'README.md'), 'utf8')
 
-    expect(readme).toContain('`pnpm build` writes the output again')
+    expect(readme).toContain('`pnpm build` writes the output into `dist/`, which is not committed')
     expect(readme).toContain('`pnpm preview` writes the page of the set into `preview/`')
     expect(JSON.parse(fs.readFileSync(manifestFile, 'utf8'))).toMatchObject({
       main: 'dist/web/acme-glyphs.css',
-      files: ['dist', 'CHANGELOG.md']
+      files: ['dist/icons.json', 'dist/svgs', 'dist/web', 'CHANGELOG.md']
     })
 
     // The repository is what this version of init writes

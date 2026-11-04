@@ -371,7 +371,7 @@ Quote the message as the tool prints it, so a search for the error finds the pag
 
 **Configuration values.** `[[config:<key>]]` prints a value of `packages/site/config.yml`, in prose, links, and code blocks: `[[config:currentVersion]]`, `[[config:repo]]`.
 
-**Other Chassis docs.** Use a standard Markdown link to the page on chassis-ui.com. Chassis CSS owns `svg-icon()` and `$icon-url-prefix`, Chassis React owns `Icon` and `IconProvider`, and Chassis Assets owns the names of the icons on iOS and Android. Link their docs rather than describing them here.
+**Other Chassis docs.** Use a standard Markdown link to the page on chassis-ui.com. Chassis CSS owns `svg-icon()` and `$icon-url-prefix`, Chassis React owns `Icon` and `IconProvider`, and Chassis Assets owns the icons of an app that are in no set. Link their docs rather than describing them here. The names of the icons of a set on iOS and Android are the builder's, from its `ios` and `android` targets, and are described here.
 
 **External references.** Standard Markdown links. Prefer MDN, the specifications and the official docs of Sass, npm, SVGO and Figma over blog posts.
 

@@ -2,7 +2,7 @@ import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { build } from '../lib/build.js'
+import { build, compareWithBuild } from '../lib/build.js'
 import { loadConfig } from '../lib/config.js'
 import { silentLogger as logger } from '../lib/logger.js'
 import { checkContracts, verify } from '../lib/verify.js'
@@ -37,17 +37,17 @@ async function swapCodepoints(dir, config) {
 }
 
 describe('verify', () => {
-  it('passes for an output that the source builds', async () => {
-    const { config } = await builtFixture()
+  it('passes for a set that the source builds, with or without dist/', async () => {
+    const { dir, config } = await builtFixture()
+    const passes = { icons: 8, problems: [], notes: [] }
 
-    expect(await verify(config, { baseline: goldenCodepoints(), logger })).toEqual({
-      icons: 8,
-      problems: [],
-      notes: []
-    })
+    expect(await verify(config, { baseline: goldenCodepoints(), logger })).toEqual(passes)
+
+    fs.rmSync(path.join(dir, 'dist'), { recursive: true })
+    expect(await verify(config, { baseline: goldenCodepoints(), logger })).toEqual(passes)
   })
 
-  it('fails on an output that was not built again after the source changed', async () => {
+  it('fails on a committed file that was not built again after the source changed', async () => {
     const { dir, config } = await builtFixture()
     const file = path.join(dir, 'source/ring-fill.svg')
 
@@ -57,22 +57,25 @@ describe('verify', () => {
 
     const { problems } = await verify(config, { logger })
 
-    expect(problems).toContainEqual(expect.stringContaining('dist/svgs/ring-fill.svg: changed'))
-    expect(problems).toContainEqual(expect.stringContaining('dist/svgs/anvil-fill.svg: missing'))
-    expect(problems).toContainEqual(expect.stringContaining('dist/web/acme-glyphs.woff2: changed'))
-    expect(problems).toContainEqual(expect.stringContaining('dist/icons.json: changed'))
-    expect(problems).toContainEqual(expect.stringContaining('codepoints.json: changed'))
-    expect(problems.every((problem) => problem.includes('run the build'))).toBe(true)
+    expect(problems).toEqual([
+      'README.md: changed. It is not what the source builds: run the build, and commit it.',
+      'codepoints.json: changed. It is not what the source builds: run the build, and commit it.'
+    ])
   })
 
-  it('fails on a file in the output that the build does not write', async () => {
+  it('leaves dist/ of the working copy alone, which the release builds again', async () => {
     const { dir, config } = await builtFixture()
 
     fs.writeFileSync(path.join(dir, 'dist/web/acme-glyphs.eot'), '')
+    fs.rmSync(path.join(dir, 'dist/svgs/bar-fill.svg'))
 
-    expect((await verify(config, { logger })).problems).toEqual([
-      expect.stringContaining('dist/web/acme-glyphs.eot: the build does not write it')
-    ])
+    expect((await verify(config, { logger })).problems).toEqual([])
+  })
+
+  it('builds twice, and finds no file that differs between the builds', async () => {
+    const { config } = await builtFixture()
+
+    expect((await compareWithBuild(config, { repeat: true, logger })).unstable).toEqual([])
   })
 
   it('changes no file of the package', async () => {

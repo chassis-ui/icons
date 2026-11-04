@@ -8,7 +8,7 @@ toc: true
 
 The build is the `chassis-icons` command of `@chassis-ui/icons`, a development dependency of a repository of icons. It turns the SVG files of `source/` into the output of the set, step by step, and reads one block of configuration: the same build writes the Chassis set and the set of any team, and names no set itself.
 
-The output is committed in the repository of icons, and a fresh build equals it. After a change to `source/` or to the configuration, run the build and commit the result with the change.
+The output, `dist/`, is not committed: a build writes it from `source/`, `codepoints.json` and the version of the builder, and the release of the set builds it again. The build also writes `codepoints.json`, `README.md` and fields of `package.json`, which the repository commits. After a change to `source/` or to the configuration, run the build and commit those files with the change.
 
 ## Prerequisites
 
@@ -21,15 +21,15 @@ The build needs a repository of icons, which `chassis-icons init` writes, with N
 <CxTable>
 | Command | What it does |
 | --- | --- |
-| `build` | Writes `dist/`, `codepoints.json`, `README.md` and the fields of `package.json` that name the files of the output |
-| `build --only <step>` | One step: `svgs`, `sprite`, `font` or `package` |
-| `build --dry-run` | Lists the files that a build would change, and changes none |
-| `verify` | Checks that the output is what the source builds, that no icon lost its code point, and that the icons of the checks file are there |
+| `build` | Writes `dist/`, which is not committed, and `codepoints.json`, `README.md` and the fields of `package.json` that name the files of the output, which are |
+| `build --only <step>` | One step: `svgs`, `sprite`, `font`, `ios`, `android` or `package` |
+| `build --dry-run` | Lists the files that a build would change, `dist/` among them, and changes none |
+| `verify` | Checks that the source builds, twice to the same files, that `codepoints.json`, `README.md` and `package.json` are up to date, that no icon lost its code point, and that the icons of the checks file are there |
 | `verify --since <ref>` | Compares the code points with those of a commit, a branch or a tag, in place of the last tag |
 | `lint-source` | Checks the files of `source/`: names, frame, color, pairs |
 | `preview` | Writes the page of the set into `preview/`, from the output in `dist/` |
 | `preview --serve` | Writes the page and serves it at `http://localhost:4325/` until stopped; `--port <n>` serves it at another port, `0` at any free one |
-| `archive` | Writes `archives/<font>-web-<version>.zip`, with `icons.json`, `svgs/`, `web/` and `preview/` in it; `--to <dir>` writes it to another folder |
+| `archive` | Writes the archives of a release into `archives/`: `<font>-web-<version>.zip`, with `icons.json`, `svgs/`, `web/` and `preview/` in it, and `<font>-<target>-<version>.zip` of each target; `--to <dir>` writes them to another folder |
 | `release-notes [version]` | Prints the entry of a version in `CHANGELOG.md`, that of `package.json` by default, and fails without one |
 | `init [dir]` | Writes the files of a new repository of icons |
 </CxTable>
@@ -65,7 +65,7 @@ npx chassis-icons init --help
 
 ## Steps
 
-The build has these steps, and each reads what the step before it wrote.
+The build has these steps, and each reads what the step before it wrote. `ios` and `android` run when `chassis.build.targets` names them.
 
 <CxTable>
 | Step | Reads | Writes |
@@ -73,26 +73,33 @@ The build has these steps, and each reads what the step before it wrote.
 | `svgs` | `source/` | `dist/svgs/<name>.svg`, optimized with SVGO, and removes a file whose source is gone |
 | `sprite` | `dist/svgs/` | `dist/web/<font>.svg`, built with svg-sprite |
 | `font` | `dist/svgs/` and `codepoints.json` | The font in each format, built with Fantasticon, `dist/web/<font>.css`, `.min.css`, `.scss` and `.json`, `dist/icons.json`, the index of the set, and `codepoints.json` |
+| `ios` | `dist/svgs/` | `dist/ios/<module>.xcassets`, an asset catalog with an image set per icon, and `dist/ios/<module>.swift`, the enum of the icons |
+| `android` | `dist/svgs/` | `dist/android/res/drawable/<prefix>_<name>.xml`, a vector drawable per icon, converted with svg2vectordrawable |
 | `package` | The configuration | The fields of `package.json` that name the files, and `README.md` |
 </CxTable>
 
-A whole build removes from `dist/svgs/` each file whose source is gone, and from `dist/` and `dist/web/` each file that it did not write, such as the files of another font name. The steps after `svgs` read `dist/svgs/`, so `build --only sprite` and `build --only font` build from the files that are there.
+`<module>` is the font name in PascalCase: `acme-icons` gives `AcmeIcons`. The `ios` and `android` steps empty their folder and write it again. A whole build removes from `dist/svgs/` each file whose source is gone, and from `dist/` and `dist/web/` each file that it did not write, such as the files of another font name, or the folder of a target that the configuration no longer names. `build --only ios` stops when `targets` does not name `ios`, and so does `build --only android`. The steps after `svgs` read `dist/svgs/`, so `build --only sprite` and `build --only font` build from the files that are there.
 
 The build optimizes, and draws nothing. It does not resize or recolor an icon, and it does not outline a stroke: the [source lint]([[docsref:/icon-design/source-lint]]) refuses a file that the build cannot use.
 
 ## Output
 
-`dist/` is the output of the set: the build writes it, the repository commits it, `files` of `package.json` publishes it, and `verify` compares it with a fresh build. What every target reads is at its top, and the files of the web are in a folder of their own.
+`dist/` is the output of the set: the build writes it, `.gitignore` keeps it out of the commits, the release builds it again, and `files` of `package.json` publishes the files of the web. What every target reads is at its top, and the files of the web and of each target of the configuration are in a folder of their own.
 
 ```text
 dist/
-  icons.json              -> The index of the set
-  svgs/<name>.svg         -> One optimized SVG file per icon
-  web/<font>.css          -> The stylesheet of the font, with .min.css and .scss beside it
-  web/<font>.woff2        -> The font, in each format of the configuration
-  web/<font>.svg          -> The sprite
-  web/<font>.json         -> The code point of each icon, by name, as a number
+  icons.json                                -> The index of the set
+  svgs/<name>.svg                           -> One optimized SVG file per icon
+  web/<font>.css                            -> The stylesheet of the font, with .min.css and .scss beside it
+  web/<font>.woff2                          -> The font, in each format of the configuration
+  web/<font>.svg                            -> The sprite
+  web/<font>.json                           -> The code point of each icon, by name, as a number
+  ios/<module>.xcassets/                    -> With the ios target: an image set per icon, <name>.imageset
+  ios/<module>.swift                        -> With the ios target: the enum of the icons
+  android/res/drawable/<prefix>_<name>.xml  -> With the android target: a vector drawable per icon
 ```
+
+The package on npm holds `icons.json`, `svgs/` and `web/`. The files of `ios/` and `android/` are not in it: the release attaches them to its GitHub release as archives, and [iOS and Android]([[docsref:/use-in-project/ios-and-android]]) shows how an app uses them.
 
 `dist/icons.json` is the index of the set: `name`, `prefix`, `frame`, `styles` and `pairs` of the configuration, and under `icons` one entry per icon with its `name` and its `codepoint` in four hex digits, and its `base` and `style` when the set has styles. It names no version, so a release that changes no icon changes no line of it. The page of the set and this site read it. An entry of `icons` has this shape, with the code point that `codepoints.json` gives the icon:
 
@@ -102,7 +109,7 @@ dist/
 
 ## Page of the set
 
-`chassis-icons preview` writes the page of the set into `preview/` from `dist/`: `index.html`, its stylesheet and its script, and copies of the files of `dist/web/` and `dist/svgs/`. The page is not output: `.gitignore` keeps it out of the commits, `files` does not publish it, and `verify` does not compare it. The archive of a release holds it.
+`chassis-icons preview` writes the page of the set into `preview/` from `dist/`: `index.html`, its stylesheet and its script, and copies of the files of `dist/web/` and `dist/svgs/`. The page is not output: `.gitignore` keeps it out of the commits, `files` does not publish it, and `verify` does not check it. The archive of a release holds it.
 
 ```bash
 npm run preview
@@ -131,9 +138,10 @@ The build reads the `chassis.build` block. A setting that the block leaves out h
 | `startCodepoint` | `"f101"` | The code point of the first icon of a new set, in the Private Use Area, `e000` to `f8ff` |
 | `formats` | `["woff2", "woff"]` | The font formats, in the order of the `src` of the font face: `woff2`, `woff`, `ttf` |
 | `header` | `[]` | The lines of the comment at the top of each stylesheet. `{version}` is the version of the package |
+| `targets` | `[]` | The targets besides the web, which is always built: `ios`, `android` |
 </CxTable>
 
-`name` and `prefix` are kebab-case names. `init` writes the block with every setting, so that the defaults are in view. For the font `acme-icons` and the author Acme:
+`name` and `prefix` are kebab-case names. `init` writes the block with every setting but `targets`, so that the defaults are in view. For the font `acme-icons` and the author Acme:
 
 ```json
 {
@@ -152,18 +160,18 @@ The build reads the `chassis.build` block. A setting that the block leaves out h
 }
 ```
 
-The Chassis set has the styles `outline`, `solid` and `brand`, and the pair of `outline` and `solid`: a name of that set ends in a style, and an icon that has an `outline` file has a `solid` file too. [Names and styles]([[docsref:/icon-design/names-and-styles]]) describes both settings.
+The Chassis set has the styles `outline`, `solid` and `brand`, and the pair of `outline` and `solid`: a name of that set ends in a style, and an icon that has an `outline` file has a `solid` file too. [Names and styles]([[docsref:/icon-design/names-and-styles]]) describes both settings. The Chassis set also has the targets `ios` and `android`.
 
 ### Package fields
 
-The other fields of `package.json` describe the package. `init` writes `name`, `version`, `description`, `repository`, `license`, `author`, `publishConfig`, the scripts and the dependency on the builder, and from then on they are yours, `private` and `homepage` among them. The build writes `main`, `style`, `sass`, `files`, `exports` and `sideEffects`, which name the files of the font, and keeps an entry of `files` or `exports` that is not about `dist/`, such as the `CHANGELOG.md` that `init` lists. An entry about `icons/` or `svgs/`, where an earlier build wrote the output, is removed. For the font `acme-icons`, with `exports` left out here:
+The other fields of `package.json` describe the package. `init` writes `name`, `version`, `description`, `repository`, `license`, `author`, `publishConfig`, the scripts and the dependency on the builder, and from then on they are yours, `private` and `homepage` among them. The build writes `main`, `style`, `sass`, `files`, `exports` and `sideEffects`, which name the files of the font, and keeps an entry of `files` or `exports` that is not about `dist/`, such as the `CHANGELOG.md` that `init` lists. An entry about `icons/` or `svgs/`, where an earlier build wrote the output, is removed. `files` names the output for the web only, and npm packs it although `.gitignore` names `dist/`. For the font `acme-icons`, with `exports` left out here:
 
 ```json
 {
   "main": "dist/web/acme-icons.css",
   "style": "dist/web/acme-icons.css",
   "sass": "dist/web/acme-icons.scss",
-  "files": ["dist", "CHANGELOG.md"],
+  "files": ["dist/icons.json", "dist/svgs", "dist/web", "CHANGELOG.md"],
   "sideEffects": ["*.css", "*.scss"]
 }
 ```
@@ -182,7 +190,7 @@ The other fields of `package.json` describe the package. `init` writes `name`, `
 
 ### The README
 
-The build writes `README.md` at the root of the repository, for someone who installs the set: the package and what it holds, the code of the font class, the sprite, an SVG file and Sass with the font name and the prefix of the set, and a section on the source, which names `npm run build`, `npm run lint` and `npm run verify` when `package.json` has the scripts of `init`, and the `pnpm` commands when `pnpm-lock.yaml` is beside it. `description`, `homepage`, `repository` and `license` of `package.json` are shown in it. Never change the file by hand: the next build writes it again.
+The build writes `README.md` at the root of the repository, for someone who installs the set: the package and what it holds, the code of the font class, the sprite, an SVG file and Sass with the font name and the prefix of the set, a section for iOS and one for Android when the set has those targets, and a section on the source, which names `npm run build`, `npm run lint` and `npm run verify` when `package.json` has the scripts of `init`, and the `pnpm` commands when `pnpm-lock.yaml` is beside it. `description`, `homepage`, `repository` and `license` of `package.json` are shown in it. Never change the file by hand: the next build writes it again.
 
 ### Templates
 
@@ -199,27 +207,28 @@ An icon keeps its code point for as long as it is in the set, so a stylesheet th
 }
 ```
 
-A new icon gets the first code point, from `startCodepoint`, that no icon has or had, and never moves another. The code point of a removed icon is retired: no later icon gets it. `build --verbose` names each code point that a build gives or retires. Commit the registry with the output.
+A new icon gets the first code point, from `startCodepoint`, that no icon has or had, and never moves another. The code point of a removed icon is retired: no later icon gets it. `build --verbose` names each code point that a build gives or retires. The registry is the state of the build, so commit it with the change to `source/`.
 
 `dist/web/<font>.json` is output for a consumer: the same code points as numbers, without the retired ones. `dist/icons.json` has them too, as hex digits.
 
 ## Checks
 
-Two commands check a set. `lint-source` checks the files of `source/` before a build, and `verify` checks the output after it. The CI workflow that `init` wrote runs `release-notes`, `lint-source` and `verify` on every push and pull request.
+Two commands check a set. `lint-source` checks the files of `source/` before a build, and `verify` checks what the build makes of them. The CI workflow that `init` wrote runs `release-notes`, `lint-source` and `verify` on every push and pull request.
 
 ```bash
 npx chassis-icons lint-source
 npx chassis-icons verify
 ```
 
-`verify` builds into a temporary folder and fails when a committed file is not what the source builds, when an icon lost the code point it had at the last tag, when two icons share a code point, or when an icon of the checks file is missing. `verify --since <ref>` compares the code points with those of a commit, a branch or a tag, in place of the last tag.
+`verify` builds the set twice into temporary folders, and fails when a file of `dist/` differs between the two builds, when `codepoints.json`, `README.md` or `package.json` is not what the source builds, when an icon lost the code point that `codepoints.json` gave it at the last tag, when two icons share a code point, or when an icon of the checks file is missing. It does not read `dist/` of the repository, so it passes with or without a build there. `verify --since <ref>` compares the code points with those of a commit, a branch or a tag, in place of the last tag.
 
 ## Taking a newer build
 
-A new version of the builder reaches a repository of icons through its development dependency, and the files that `init` wrote are the repository's from then on. Raise the version of `@chassis-ui/icons` in `devDependencies` of `package.json`, install, build, and read the diff of the output: a newer build can write other files for the same source, and a change to the output is a change to the package of the set, which the changelog entry of its next version says.
+A new version of the builder reaches a repository of icons through its development dependency, and the files that `init` wrote are the repository's from then on. Raise the version of `@chassis-ui/icons` in `devDependencies` of `package.json`, install, and see what changes: a newer build can write other files for the same source, and a change to the output is a change to the package of the set, which the changelog entry of its next version says. `dist/` is not committed, so `build --dry-run`, before the build, lists the files that the newer build writes differently from the `dist/` of the last build, and `git diff` shows what changed in the files that are committed.
 
 ```bash
 npm install
+npm run build -- --dry-run
 npm run build
 git diff --stat
 ```
@@ -245,17 +254,17 @@ The build stops with `Unknown setting in "chassis.build": <setting>`. The block 
 
 The command stops with `There is no package.json in <dir>`. No folder upward from the working directory has a `package.json` with a `chassis` block, so the command took the working directory. Run it inside the repository of icons, or name the repository with `--cwd <dir>`.
 
-### Output is not built
+### Committed file is stale
 
-`verify` prints `<file>: changed. The output is not what the source builds: run the build.` A file of `source/`, the configuration or the builder changed, and the committed output is older. Run `build`, and commit the output with the change.
+`verify` prints `<file>: changed. It is not what the source builds: run the build, and commit it.` for `codepoints.json`, `README.md` or `package.json`. A file of `source/`, the configuration or the builder changed, and the committed file is older. Run `build`, and commit the file with the change.
 
-### File is not written
+### Build is not reproducible
 
-`verify` prints `<file>: the build does not write it.` The output holds a file that no source file builds, such as the file of a removed icon. Run `build`, which removes it.
+`verify` prints `<file> differs between two builds: the build is not reproducible.` Two builds of the same source wrote that file of `dist/` differently, so a release would not publish what the repository builds. It comes from the builder or a tool that it runs, not from the files of the set: report it in [its repository]([[config:repo]]) with the name of the file.
 
 ### Code points not compared
 
-`verify` prints a note that starts with `The code points were not compared with an earlier state`. The repository has no tag yet, or the tag has neither `dist/web/<font>.json` nor `icons/<font>.json`, where a build before `dist/` wrote the code points. It is a note and not a problem: the comparison starts with the first release of the set.
+`verify` prints a note that starts with `The code points were not compared with an earlier state`. The repository has no tag yet, or the tag has no `codepoints.json`, and neither `dist/web/<font>.json` nor `icons/<font>.json`, where earlier builds wrote the code points. It is a note and not a problem: the comparison starts with the first release of the set.
 
 ### Repository differs
 

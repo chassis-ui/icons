@@ -34,6 +34,10 @@
       "header": [
         "Acme Glyphs v{version}",
         "Copyright Acme Works"
+      ],
+      "targets": [
+        "ios",
+        "android"
       ]
     }
   }

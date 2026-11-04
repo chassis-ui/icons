@@ -60,7 +60,7 @@ describe('the fields of package.json', () => {
       main: 'dist/web/acme-glyphs.css',
       style: 'dist/web/acme-glyphs.css',
       sass: 'dist/web/acme-glyphs.scss',
-      files: ['dist'],
+      files: ['dist/icons.json', 'dist/svgs', 'dist/web'],
       exports: {
         '.': {
           sass: './dist/web/acme-glyphs.scss',
@@ -115,7 +115,7 @@ describe('the fields of package.json', () => {
     expect(Object.keys(applied).slice(0, 4)).toEqual(['main', 'name', 'files', 'exports'])
     expect(applied.main).toBe('dist/web/acme-glyphs.css')
     // What a team added for a file of its own stays
-    expect(applied.files).toEqual(['dist', 'CHANGELOG.md'])
+    expect(applied.files).toEqual(['dist/icons.json', 'dist/svgs', 'dist/web', 'CHANGELOG.md'])
     expect(Object.keys(applied.exports)).toEqual(['.', './dist/*', './package.json', './names'])
   })
 
@@ -188,6 +188,10 @@ describe('the README of the package', () => {
       '<i class="ag-bar-fill"></i>',
       'dist/web/acme-glyphs.svg#bar-fill',
       'dist/svgs/bar-fill.svg',
+      'The files for iOS and Android are not in the package',
+      'Image(AgIcon.barFill)\nUIImage(AgIcon.barFill)',
+      'from the archive `acme-glyphs-ios-<version>.zip` of a release',
+      'Icon(painterResource(R.drawable.ag_bar_fill), contentDescription = null)',
       "$acme-glyphs-font-dir: '/fonts'",
       '[site of the set](https://glyphs.acme.example/)',
       '[repository](https://git.acme.example/design/glyphs)'
@@ -210,6 +214,9 @@ describe('the README of the package', () => {
     expect(readme).not.toContain('[repository]')
     expect(readme).not.toContain('`npm run build` writes')
     expect(readme).not.toContain('preview')
+    expect(readme).not.toContain('### iOS')
+    expect(readme).not.toContain('archives')
+    expect(readme).not.toContain('### Android')
     expect(readme.endsWith('never in the files of `dist/`.\n')).toBe(true)
     expect(readme).not.toMatch(/\n{3}/)
   })
@@ -221,10 +228,14 @@ describe('the package', () => {
 
     await build(loadConfig(dir), { logger })
     await writePreview(loadConfig(dir))
+    // As the repository that init writes has it: dist/ is not committed, and npm packs it
+    fs.writeFileSync(path.join(dir, '.gitignore'), 'dist/\npreview/\n')
 
-    // Not the source, the registry, the checks file or the page of the set
+    // Not the source, the registry, the checks file, the page of the set, or the files for
+    // iOS and Android, which an app takes from the archives
     expect(packedFiles(dir)).toEqual([...expectedOutput(dir), 'README.md', 'package.json'].sort())
     expect(expectedOutput(dir)).toContain('dist/web/acme-glyphs.ttf')
+    expect(fs.existsSync(path.join(dir, 'dist/ios'))).toBe(true)
   }, 30_000)
 
   it('of the build holds the command, its templates and its documents, and nothing else', () => {

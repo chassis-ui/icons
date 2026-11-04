@@ -67,6 +67,15 @@ describe('the steps of the build', () => {
     expect(fs.existsSync(path.join(dir, 'dist/web/acme-glyphs.woff2'))).toBe(true)
     expect(fs.existsSync(path.join(dir, 'README.md'))).toBe(false)
 
+    await build(config, { only: 'ios', logger })
+    expect(fs.readdirSync(path.join(dir, 'dist/ios'))).toEqual([
+      'AcmeGlyphs.swift',
+      'AcmeGlyphs.xcassets'
+    ])
+
+    await build(config, { only: 'android', logger })
+    expect(fs.readdirSync(path.join(dir, 'dist/android/res/drawable'))).toHaveLength(8)
+
     await build(config, { only: 'package', logger })
     expect(readOutput(dir)).toEqual(readOutput(goldenDir))
   })
@@ -77,19 +86,34 @@ describe('the steps of the build', () => {
     )
   })
 
-  it('removes what it did not write from the output', async () => {
+  it('refuses the step of a target that the configuration does not name', async () => {
     const dir = copyFixture()
+    const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'))
+
+    manifest.chassis.build.targets = ['android']
+    fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify(manifest))
+
+    await expect(build(loadConfig(dir), { only: 'ios', logger })).rejects.toThrow(
+      '"targets" of chassis.build does not name ios'
+    )
+  })
+
+  it('writes no folder of a target for a set without targets, and no Swift package', async () => {
+    const dir = copyFixture()
+    const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'package.json'), 'utf8'))
+
+    await build(loadConfig(dir), { logger })
+    expect(fs.existsSync(path.join(dir, 'Package.swift'))).toBe(false)
+
+    // The team drops the targets: their folders go with the next build
+    delete manifest.chassis.build.targets
+    fs.writeFileSync(path.join(dir, 'package.json'), JSON.stringify(manifest))
+
     const config = loadConfig(dir)
 
     await build(config, { logger })
-    fs.writeFileSync(path.join(dir, 'dist/web/old-name.woff'), '')
-    fs.writeFileSync(path.join(dir, 'dist/svgs/gone-fill.svg'), '<svg/>')
-    fs.mkdirSync(path.join(dir, 'dist/android'))
-    fs.writeFileSync(path.join(dir, 'dist/android/old.xml'), '')
-    fs.writeFileSync(path.join(dir, 'dist/old-name.json'), '')
-
-    await build(config, { logger })
-    expect(readOutput(dir)).toEqual(readOutput(goldenDir))
+    expect(fs.readdirSync(path.join(dir, 'dist')).sort()).toEqual(['icons.json', 'svgs', 'web'])
+    expect((await compareWithBuild(config, { logger })).differences).toEqual([])
   })
 })
 

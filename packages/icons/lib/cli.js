@@ -8,7 +8,7 @@
  */
 
 import { parseArgs } from 'node:util'
-import { writeArchive } from './archive.js'
+import { writeArchives } from './archive.js'
 import { STEPS, build, compareWithBuild } from './build.js'
 import { ConfigError, loadConfig } from './config.js'
 import { runInit } from './init.js'
@@ -29,13 +29,15 @@ from the SVG files of the source folder and the "chassis.build" block of package
 Usage: chassis-icons <command> [options]
 
 Commands:
-  build          Write the output: dist/, the registry of code points, the README, and the
-                 fields of package.json that name the files of the output
-  verify         Check that the output is what the source builds, that no icon lost its
-                 code point, and that the icons of the checks file are there
+  build          Write the output into dist/, which is not committed, and the registry of
+                 code points, the README and the fields of package.json, which are
+  verify         Check that the source builds, twice to the same bytes, that the registry,
+                 the README and package.json are up to date, that no icon lost its code
+                 point, and that the icons of the checks file are there
   lint-source    Check the files of the source folder: names, frame, color, pairs
   preview        Write the page of the set into preview/, from the output
-  archive        Write <font>-web-<version>.zip of the output and the page, for a release
+  archive        Write the archives of a release: <font>-web-<version>.zip of the output
+                 and the page, and <font>-<target>-<version>.zip of each target
   release-notes  Print the changelog entry of a version, and fail without one
   init           Write the files of a new repository of icons into a folder
 
@@ -54,7 +56,7 @@ Options of preview:
   --port <n>     The port of --serve; ${DEFAULT_PORT} by default, 0 for any free one
 
 Options of archive:
-  --to <dir>     Write the archive there; archives/ of the repository by default
+  --to <dir>     Write the archives there; archives/ of the repository by default
 
 Options of release-notes:
   [version]      The version; that of package.json by default
@@ -170,7 +172,9 @@ export async function main(args, { cwd = process.cwd(), console: out = console }
           return 1
         }
 
-        logger.success(`The output of ${icons} icons is what the source builds`)
+        logger.success(
+          `${icons} icons build, and the files of the build that are committed are up to date`
+        )
         return 0
       }
 
@@ -213,12 +217,15 @@ export async function main(args, { cwd = process.cwd(), console: out = console }
 
       case 'archive': {
         const config = loadConfig(root)
-        const { file, entries } = await writeArchive(config, {
+        const archives = await writeArchives(config, {
           to: values.to === undefined ? undefined : resolveRoot(values.to, cwd)
         })
 
-        for (const entry of entries) logger.debug(`  ${entry}`)
-        logger.success(`${file}: ${entries.length} files`)
+        for (const { file, entries } of archives) {
+          for (const entry of entries) logger.debug(`  ${entry}`)
+          logger.success(`${file}: ${entries.length} files`)
+        }
+
         return 0
       }
 

@@ -78,7 +78,7 @@ describe('the command line', () => {
     expect(log).toContain('dist/icons.json: missing')
     expect(log).toContain('README.md: missing')
     expect(log).toContain('package.json: changed')
-    expect(log).toContain('A build would change 19 files')
+    expect(log).toContain('A build would change 45 files')
     expect(fs.readdirSync(dir).sort()).toEqual(['checks.json', 'package.json', 'source'])
   })
 
@@ -96,17 +96,21 @@ describe('the command line', () => {
     expect(error).toContain('There is no package.json')
   })
 
-  it('verifies the output, and fails when it is not what the source builds', async () => {
+  it('verifies the set, and fails when a committed file is not what the source builds', async () => {
     const { dir } = await run(['build'])
 
+    // dist/ is not committed, so a working copy without it verifies
+    fs.rmSync(path.join(dir, 'dist'), { recursive: true })
     expect((await run(['verify'], dir)).code).toBe(0)
 
-    fs.rmSync(path.join(dir, 'dist/svgs/bar-fill.svg'))
+    fs.copyFileSync(path.join(dir, 'source/bar-fill.svg'), path.join(dir, 'source/anvil-fill.svg'))
+    fs.copyFileSync(path.join(dir, 'source/bar-line.svg'), path.join(dir, 'source/anvil-line.svg'))
 
     const { code, error } = await run(['verify'], dir)
 
     expect(code).toBe(1)
-    expect(error).toContain('dist/svgs/bar-fill.svg: missing')
+    expect(error).toContain('codepoints.json: changed. It is not what the source builds')
+    expect(error).not.toContain('dist/')
   })
 
   it('checks the source, and fails on a file that cannot be an icon', async () => {
@@ -129,7 +133,7 @@ describe('the command line', () => {
     const { code, log } = await run(['build', '--dry-run'], inside)
 
     expect(code).toBe(0)
-    expect(log).toContain('A build would change 19 files')
+    expect(log).toContain('A build would change 45 files')
 
     const elsewhere = temporaryDir()
     const withCwd = await main(['build', '--dry-run', '--cwd', dir], {
@@ -156,7 +160,13 @@ describe('the command line', () => {
 
     expect(code).toBe(0)
     expect(log).toContain('acme-glyphs-web-2.4.0.zip: 34 files')
-    expect(fs.readdirSync(to)).toEqual(['acme-glyphs-web-2.4.0.zip'])
+    expect(log).toContain('acme-glyphs-ios-2.4.0.zip: 18 files')
+    expect(log).toContain('acme-glyphs-android-2.4.0.zip: 8 files')
+    expect(fs.readdirSync(to).sort()).toEqual([
+      'acme-glyphs-android-2.4.0.zip',
+      'acme-glyphs-ios-2.4.0.zip',
+      'acme-glyphs-web-2.4.0.zip'
+    ])
   })
 
   it('writes the page of the set into preview/ with preview, and fails before a build', async () => {

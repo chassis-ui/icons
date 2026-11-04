@@ -18,6 +18,8 @@ npm install @acme/glyphs
 - `dist/web/acme-glyphs.json`: the code point of each icon in the font, by name
 - `dist/icons.json`: the index of the set: its font name, class prefix, frame and styles, and each icon with its code point and its style
 
+The files for iOS and Android are not in the package: they are in the archives of the releases.
+
 The last part of a name is the style of the icon: `<name>-line` or `<name>-fill`. The examples below show `bar-fill`.
 
 Browse the icons and their names on the [site of the set](https://glyphs.acme.example/).
@@ -69,6 +71,23 @@ The classes of the stylesheet, with the font served from a folder of your own, a
 ```
 
 Sass finds the file in a load path that holds `node_modules`, and so does a bundler. With the package importer of Sass, `@use 'pkg:@acme/glyphs'` loads the same file.
+
+### iOS
+
+Add `AcmeGlyphs.xcassets` and `AcmeGlyphs.swift` to the target of an app, from the archive `acme-glyphs-ios-<version>.zip` of a release of [the repository](https://git.acme.example/design/glyphs). Each icon is a case of `AgIcon`, and draws as a template image in the tint of its view:
+
+```swift
+Image(AgIcon.barFill)
+UIImage(AgIcon.barFill)
+```
+
+### Android
+
+Copy `res/` from the archive `acme-glyphs-android-<version>.zip` of a release of [the repository](https://git.acme.example/design/glyphs) into `src/main/` of a module. Each icon is a drawable that takes the tint of its view:
+
+```kotlin
+Icon(painterResource(R.drawable.ag_bar_fill), contentDescription = null)
+```
 
 ## The source
 

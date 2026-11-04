@@ -1,9 +1,41 @@
+# The output, from `chassis-icons build`: the release builds it
+dist/
+
 # The page of the set, from `chassis-icons preview`
 preview/
 
 # The archives of a release, from `chassis-icons archive`
 archives/
 
+# Swift tooling, of an editor or of a look at the iOS files
+.build/
+.swiftpm/
+
+# Node.js
 node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files, which may hold a token
+.env
+.env.*
+!.env.example
+
+# Caches of tools
+.cache/
+.eslintcache
+coverage/
+
+# Editors
+.idea/
+*.swp
+
+# Operating systems
 .DS_Store
+._*
 Thumbs.db

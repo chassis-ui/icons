@@ -29,7 +29,9 @@ const LINKED = ['packages/site/node_modules', 'vendor/assets']
 // What Astro writes into the folder of the site
 const WRITTEN = ['node_modules', 'public', '.astro', 'dist']
 // What a repository of icons holds that the site does not read
-const NOT_READ = ['node_modules', '.git', 'archives']
+// What a repository of icons may hold beside what the build and the site read: Git, the
+// install, the archives and the page of a release, and the caches of Xcode and Swift
+const NOT_READ = ['node_modules', '.git', 'archives', 'preview', '.build', '.swiftpm']
 
 const BUILD_TIMEOUT = 300_000
 
@@ -310,7 +312,8 @@ describe('the site of a set', () => {
 
       // The repository of the set is the one of another team, with its own source and
       // configuration,
-      fs.rmSync(set, { recursive: true })
+      // With retries, as the copies are removed: a file of a fresh copy may be held a moment
+      fs.rmSync(set, { recursive: true, maxRetries: 5, retryDelay: 200 })
       fs.cpSync(fixtureDir, set, { recursive: true })
 
       // built with the build of the repository,

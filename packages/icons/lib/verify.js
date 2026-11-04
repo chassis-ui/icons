@@ -1,7 +1,9 @@
 /**
- * @file The check of the output: whether the committed files are what the source builds, and
- * whether the set keeps the promises that others rely on. An icon keeps its code point, and
- * the icons that a consumer reads by name are there.
+ * @file The check of a repository of icons: whether the source builds, twice to the same
+ * bytes, whether the committed files that the build writes are up to date, and whether the set
+ * keeps the promises that others rely on. An icon keeps its code point, and the icons that a
+ * consumer reads by name are there. `dist/` is not committed, so it is not compared: the
+ * release builds it.
  */
 
 import { execFileSync } from 'node:child_process'
@@ -53,8 +55,9 @@ function git(cwd, args) {
 }
 
 /**
- * Reads the code points of the set as they were at a commit, from the glyph map of the font:
- * `dist/web/<font>.json`, or `icons/<font>.json` at a commit made before `dist/`.
+ * Reads the code points of the set as they were at a commit: from the registry,
+ * `codepoints.json`, or from the glyph map of the font at a commit that had none,
+ * `dist/web/<font>.json` or `icons/<font>.json`.
  * @param {import('./config.js').Config} config
  * @param {string} [since] - A commit, a tag or a branch; the last tag when left out
  * @returns {{ ref: string, codepoints: Record<string, number> } | { skipped: string }}
@@ -73,22 +76,33 @@ export function readBaseline(config, since) {
   }
 
   const glyphMap = `${config.name}.json`
+  /** @type {Array<[string, (text: string) => Record<string, number>]>} */
   const files = [
-    path.join(config.webDir, glyphMap),
-    path.join(config.packageDir, 'icons', glyphMap)
+    [
+      config.registryFile,
+      (text) =>
+        Object.fromEntries(
+          Object.entries(JSON.parse(text).icons ?? {}).map(([name, hex]) => [
+            name,
+            parseInt(String(hex), 16)
+          ])
+        )
+    ],
+    [path.join(config.webDir, glyphMap), JSON.parse],
+    [path.join(config.packageDir, 'icons', glyphMap), JSON.parse]
   ]
-  // Where each file is in this repository, and where it was while the repository was the
-  // package itself
-  const candidates = files.flatMap((file) => [
-    path.relative(root, file),
-    path.relative(config.packageDir, file)
-  ])
 
-  for (const candidate of new Set(candidates)) {
-    const contents = git(root, ['show', `${ref}:${candidate.split(path.sep).join('/')}`])
+  for (const [file, read] of files) {
+    // Where the file is in this repository, and where it was while the repository was the
+    // package itself
+    const candidates = new Set([path.relative(root, file), path.relative(config.packageDir, file)])
 
-    if (contents !== null) {
-      return { ref, codepoints: JSON.parse(contents) }
+    for (const candidate of candidates) {
+      const contents = git(root, ['show', `${ref}:${candidate.split(path.sep).join('/')}`])
+
+      if (contents !== null) {
+        return { ref, codepoints: read(contents) }
+      }
     }
   }
 
@@ -96,7 +110,7 @@ export function readBaseline(config, since) {
     throw new Error(`Git does not know "${ref}"`)
   }
 
-  return { skipped: `${ref} has no ${candidates[0]}` }
+  return { skipped: `${ref} has no ${path.relative(root, config.registryFile)}` }
 }
 
 /**
@@ -120,10 +134,15 @@ export async function verify(config, { since, baseline, logger }) {
   const problems = []
   const notes = []
 
-  const { icons, differences } = await compareWithBuild(config, { logger })
+  const { icons, differences, unstable } = await compareWithBuild(config, { repeat: true, logger })
 
-  for (const difference of differences) {
-    problems.push(`${difference}. The output is not what the source builds: run the build.`)
+  // dist/ is the scratch output of the working copy, and the release builds its own
+  for (const difference of differences.filter((file) => !file.startsWith('dist/'))) {
+    problems.push(`${difference}. It is not what the source builds: run the build, and commit it.`)
+  }
+
+  for (const file of unstable) {
+    problems.push(`${file} differs between two builds: the build is not reproducible.`)
   }
 
   const registry = readRegistry(config.registryFile)

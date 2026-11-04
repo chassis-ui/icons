@@ -2,7 +2,8 @@
  * @file The build of a set: the optimized SVG files, the sprite, the font with its stylesheets
  * and its glyph map, the index of the set, and the manifest and the README of the package,
  * written from the source folder and the configuration. The output is `dist/`: `svgs/` and
- * `icons.json`, which every target reads, and `web/`, the files of the web. The build can
+ * `icons.json`, which every target reads, `web/`, the files of the web, and a folder for each
+ * target of `targets`: `ios/` and `android/`. The build can
  * write to the folder of the package or to any other, which is how `--dry-run` and `verify`
  * build without changing a file of the package.
  */
@@ -10,17 +11,22 @@
 import fs from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
+import { renderAndroid } from './android.js'
 import { allocate, formatRegistry, readRegistry, toHex } from './codepoints.js'
 import { outputPaths } from './config.js'
 import { renderFontFiles } from './font.js'
+import { renderIos } from './ios.js'
 import { renderPackageFiles } from './manifest.js'
 import { listIcons } from './names.js'
 import { buildSvgs } from './optimize.js'
 import { createIndex, formatIndex } from './set-index.js'
 import { renderSprite } from './sprite.js'
 
-/** The steps of the build, in their order. `--only` runs one of them. */
-export const STEPS = ['svgs', 'sprite', 'font', 'package']
+/**
+ * The steps of the build, in their order. `--only` runs one of them. `ios` and `android` run
+ * when `targets` names them.
+ */
+export const STEPS = ['svgs', 'sprite', 'font', 'ios', 'android', 'package']
 
 /**
  * @typedef {object} BuildResult
@@ -50,7 +56,17 @@ export async function build(
     throw new Error(`There is no step "${only}". The steps are ${STEPS.join(', ')}.`)
   }
 
+  if ((only === 'ios' || only === 'android') && !config.targets.includes(only)) {
+    throw new Error(
+      `"targets" of chassis.build does not name ${only}, so the step has nothing to do.`
+    )
+  }
+
   const { svgsDir, webDir, indexFile } = outputPaths(distDir)
+  /** @type {Record<string, string>} */
+  const targetDirs = Object.fromEntries(
+    config.targets.map((target) => [target, path.join(distDir, target)])
+  )
   const runs = (/** @type {string} */ step) => only === undefined || only === step
   /** @type {BuildResult} */
   const result = { icons: 0, added: [], removed: [], registryChanged: false }
@@ -121,12 +137,37 @@ export async function build(
     await fs.writeFile(path.join(webDir, name), contents)
   }
 
+  /** @type {Array<[string, string, typeof renderIos]>} */
+  const targets = [
+    ['ios', 'iOS', renderIos],
+    ['android', 'Android', renderAndroid]
+  ]
+
+  for (const [target, label, render] of targets) {
+    if (!config.targets.includes(target) || !runs(target)) continue
+
+    const dir = targetDirs[target]
+    const targetFiles = await render(config, { svgsDir, names })
+
+    // The folder holds what this step writes and nothing else
+    await fs.rm(dir, { recursive: true, force: true })
+
+    for (const [file, contents] of Object.entries(targetFiles)) {
+      await fs.mkdir(path.dirname(path.join(dir, file)), { recursive: true })
+      await fs.writeFile(path.join(dir, file), contents)
+    }
+
+    logger.success(`The ${label} files of ${count(names.length, 'icon')}`)
+  }
+
   if (runs('package')) {
     const written = []
 
     await fs.mkdir(packageDir, { recursive: true })
 
-    for (const [name, contents] of Object.entries(renderPackageFiles(config, names))) {
+    const packageFiles = renderPackageFiles(config, names)
+
+    for (const [name, contents] of Object.entries(packageFiles)) {
       const file = path.join(packageDir, name)
 
       // package.json is the configuration too: it is written only when a field changes
@@ -137,7 +178,7 @@ export async function build(
     }
 
     logger.success(
-      `The manifest and the README of the package: ${written.length === 0 ? 'no change' : `${written.join(' and ')} written`}`
+      `The manifest and the README of the package: ${written.length === 0 ? 'no change' : `${written.join(', ')} written`}`
     )
   }
 
@@ -148,7 +189,12 @@ export async function build(
     /** @type {Array<[string, string[]]>} */
     const folders = [
       [webDir, Object.keys(files)],
-      [distDir, [svgsDir, webDir, indexFile].map((file) => path.basename(file))]
+      [
+        distDir,
+        [svgsDir, webDir, indexFile, ...Object.values(targetDirs)].map((file) =>
+          path.basename(file)
+        )
+      ]
     ]
 
     for (const [dir, keep] of folders) {
@@ -167,15 +213,19 @@ export async function build(
 }
 
 /**
- * Builds the whole set into a temporary folder, and lists how the output of the package
- * differs from it. Changes no file of the package.
+ * Builds the whole set into a temporary folder, and lists how the files of the package
+ * differ from it: `dist/` as it is in the working copy, the registry, the manifest and the
+ * README. Changes no file of the package.
  * @param {import('./config.js').Config} config
  * @param {object} options
+ * @param {boolean} [options.repeat] - Build a second time, and list the files of `dist/` that
+ *   differ between the two builds
  * @param {import('./logger.js').Logger} options.logger
- * @returns {Promise<BuildResult & { differences: string[] }>} The paths of the files that a
- *   build would write, add or remove, each relative to the package and with what would happen
+ * @returns {Promise<BuildResult & { differences: string[], unstable: string[] }>} The paths of
+ *   the files that a build would write, add or remove, each relative to the package and with
+ *   what would happen; and the files that two builds write differently
  */
-export async function compareWithBuild(config, { logger }) {
+export async function compareWithBuild(config, { repeat = false, logger }) {
   const tmp = await fs.mkdtemp(path.join(os.tmpdir(), 'icons-build-'))
 
   try {
@@ -199,7 +249,26 @@ export async function compareWithBuild(config, { logger }) {
       differences.push(`${relative(config.registryFile, config.packageDir)}: changed`)
     }
 
-    return { ...result, differences }
+    /** @type {string[]} */
+    const unstable = []
+
+    if (repeat) {
+      const again = path.join(tmp, 'again')
+
+      await build(config, {
+        distDir: path.join(again, 'dist'),
+        packageDir: path.join(again, 'package'),
+        writeRegistry: false,
+        logger
+      })
+      unstable.push(
+        ...(await compareFolders(built.distDir, path.join(again, 'dist'), tmp)).map((difference) =>
+          difference.replace(/: .*$/, '')
+        )
+      )
+    }
+
+    return { ...result, differences, unstable }
   } finally {
     await fs.rm(tmp, { recursive: true, force: true })
   }

@@ -1,73 +1,228 @@
 ---
 title: iOS and Android
-description: The icons of a set reach an iOS or Android app through Chassis Assets, which copies the output and renames the SVG files for each platform.
+description: Draw the icons of a set in an iOS or Android app, from the ios and android targets of the build and the archives of a release.
 toc: true
 ---
 
 ## Introduction
 
-The build of Chassis Icons writes files for the web. An app for iOS or Android gets the icons through [Chassis Assets](https://chassis-ui.com/assets), which holds a copy of the output of a set and gives each platform the files it can use, under the names it expects. This page covers the copy. The [Icon Assets](https://chassis-ui.com/assets/docs/asset-types/icons/) page of Chassis Assets documents its build and its output.
+The build writes the files of a set for an app besides those of the web, when the configuration of the set names the platform in its targets. The `ios` target writes an asset catalog and a Swift file, and the `android` target writes a vector drawable per icon. The release of the set attaches them to its GitHub release as an archive per platform, which an app adds to its project. On both platforms an icon is a template image, which takes the tint of its view as an icon takes `currentcolor` on the web.
+
+The examples use the set of the team Acme: the font `acme-glyphs`, the prefix `ag`, the package `@acme/glyphs`, and the icon `bar-fill`, drawn on a frame of 16. For your own set, use the names that the build writes from your font name and your prefix, which [Names per platform](#names-per-platform) lists.
 
 ## Installation
 
-Chassis Assets reads the two folders of `dist/` as they are: `dist/web/`, the font, its stylesheets and the sprite, and `dist/svgs/`, the SVG files. Build your set first, in your repository of icons, so that the two folders are what the source builds:
+An app gets the files of a set from the archives of a release, or from the folders of a build. Both need a set whose configuration names the targets.
 
-```bash
-npm run build
-npm run verify
+### The targets
+
+The web is always built, and `chassis.build.targets` names the other targets of the set, `ios` and `android`, none by default. `init` does not write the setting, so add it to `chassis.build` of `package.json` in the repository of icons:
+
+```json
+{
+  "chassis": {
+    "build": {
+      "name": "acme-glyphs",
+      "prefix": "ag",
+      "targets": ["ios", "android"]
+    }
+  }
+}
 ```
 
-In a repository made with `--pm pnpm`, run `pnpm build` and `pnpm verify`. A published set has the same two folders: for the Chassis set, `dist/web/` and `dist/svgs/` of the package `@chassis-ui/website-icons`. The archive of a release, `<font>-web-<version>.zip`, holds them as `web/` and `svgs/`, beside the index `icons.json` and the page of the set, `preview/`.
+Then build, and commit `package.json`. The build writes `dist/ios/` for `ios`, and `dist/android/` for `android`. `dist/` is not committed: the release of the set builds it again, and writes an archive of each folder.
+
+```text
+dist/
+  ios/AcmeGlyphs.xcassets/                       -> The asset catalog: one image set per icon
+  ios/AcmeGlyphs.xcassets/bar-fill.imageset/     -> bar-fill.svg and its Contents.json
+  ios/AcmeGlyphs.swift                           -> The enum AgIcon, and the initializers of UIImage and Image
+  android/res/drawable/ag_bar_fill.xml           -> One vector drawable per icon
+```
+
+The name of the catalog and of the Swift file is the font name in PascalCase, `AcmeGlyphs`, and the enum of the icons is the prefix in PascalCase with `Icon`, `AgIcon`. Removing a target from the list removes its folder from `dist/` with the next build.
+
+### The archives
+
+Each release of a set on GitHub has an archive per target beside the archive of the web: `<font>-ios-<version>.zip` holds the files of `dist/ios/`, and `<font>-android-<version>.zip` the files of `dist/android/`, both at their top level. Download them from the releases of the repository of the set. The npm package of the set does not hold them: it holds the output for the web.
+
+For iOS, unpack the archive, and add `AcmeGlyphs.xcassets` and `AcmeGlyphs.swift` to one target of the app in Xcode. The Swift file is then part of the module of that target, so it needs no `import` there, and it finds the catalog in the bundle of that target.
+
+For Android, unpack the archive into `src/main/` of a module, so that its `res/` joins the resources of the module:
+
+```bash
+unzip acme-glyphs-android-<version>.zip -d app/src/main/
+```
+
+A set of your own that is not released yet has the same files in `dist/ios/` and `dist/android/` of its repository after a build, and `npm run archive` writes the same archives into `archives/`.
 
 ## Basic usage
 
-Copy the two folders into the `icons/` folder of an app of a brand, in your copy of the Chassis Assets repository, and build there. Chassis Assets names the folder of the font `icons/`, so `dist/web/` is copied under that name. Run this from the root of that repository, with the path of your repository of icons in place of the first part of each address:
+An icon is a case of the enum on iOS, and a drawable of `R.drawable` on Android. The names follow the name of the icon, so `bar-fill` is `AgIcon.barFill` and `R.drawable.ag_bar_fill`.
 
-```bash
-rm -rf source/<brand>/<app>/icons/icons source/<brand>/<app>/icons/svgs
-cp -r /path/to/acme-icons/dist/web source/<brand>/<app>/icons/icons
-cp -r /path/to/acme-icons/dist/svgs source/<brand>/<app>/icons/svgs
-pnpm assets
+### iOS
+
+Draw an icon with SwiftUI `Image` or with `UIImage`, in a file of the target that holds `AcmeGlyphs.swift`:
+
+```swift
+Image(AgIcon.barFill)
+UIImage(AgIcon.barFill)
 ```
 
-The build of Chassis Assets copies every file to the web output, and the SVG files to the output of iOS and Android. The icon font and its stylesheets are for the web only.
+The raw value of a case is the name of the icon, and `AgIcon.allCases` lists every icon of the set. A name that is a word of Swift becomes a case between backticks.
 
-## Names per platform
+### Android
 
-Chassis Assets renames each file for its platform, and the name of the icon stays readable in every form.
+Draw an icon with `Icon` of Jetpack Compose, or with an `ImageView` in a layout:
+
+```kotlin
+Icon(painterResource(R.drawable.ag_bar_fill), contentDescription = null)
+```
+
+```xml
+<ImageView
+    android:layout_width="24dp"
+    android:layout_height="24dp"
+    app:srcCompat="@drawable/ag_bar_fill"
+    app:tint="?attr/colorOnSurface" />
+```
+
+## Size and color
+
+An icon is a vector at the size of the frame, in points on iOS and in `dp` on Android, and it scales without blur. Its color comes from the view, as on the web it comes from the text around it.
+
+### Template images
+
+Each image set of the catalog has `"template-rendering-intent": "template"` and `"preserves-vector-representation": true` in its `Contents.json`, which the build writes:
+
+```json
+{
+  "images": [
+    {
+      "filename": "bar-fill.svg",
+      "idiom": "universal"
+    }
+  ],
+  "info": {
+    "author": "xcode",
+    "version": 1
+  },
+  "properties": {
+    "preserves-vector-representation": true,
+    "template-rendering-intent": "template"
+  }
+}
+```
+
+So an image of the set draws in the foreground style of a SwiftUI view and in the `tintColor` of a `UIImageView`. Give it another size with `resizable()` and a frame:
+
+```swift
+Image(AgIcon.barFill)
+    .resizable()
+    .frame(width: 24, height: 24)
+    .foregroundStyle(.red)
+```
+
+```swift
+let imageView = UIImageView(image: UIImage(AgIcon.barFill))
+imageView.tintColor = .systemBlue
+```
+
+### Tinted drawables
+
+A drawable fills its paths with black, which a tint replaces. The build writes it from the optimized SVG file of the icon:
+
+```xml
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="16dp"
+    android:height="16dp"
+    android:viewportWidth="16"
+    android:viewportHeight="16">
+    <path
+        android:fillColor="#FF000000"
+        android:pathData="M2 5h12v6H2z"/>
+</vector>
+```
+
+`Icon` of Compose tints with the content color of its place, or with its `tint` parameter, and takes another size from a modifier such as `Modifier.size(24.dp)`. An `ImageView` draws the black of the file unless it has a tint, so give it `app:tint` as the example of [Basic usage](#basic-usage) does.
+
+## Accessibility
+
+An icon beside a label is decorative, and an icon alone carries the meaning of its control, so a screen reader has to name it.
+
+On iOS, hide a decorative icon with `accessibilityHidden(true)`, and name one that carries meaning with `accessibilityLabel`. SwiftUI otherwise reads the name of the image, such as `bar-fill`. A `UIImageView` is not read unless `isAccessibilityElement` is `true` and it has an `accessibilityLabel`.
+
+```swift
+Image(AgIcon.barFill)
+    .accessibilityLabel("Settings")
+```
+
+On Android, `contentDescription = null` leaves a decorative icon out, and a string names one that carries meaning. In a layout, `android:contentDescription` names it, and `android:importantForAccessibility="no"` leaves it out.
+
+## Customization
+
+The names of an icon on each platform come from its name, the font name and the prefix of the set, and the build writes them for any set.
+
+### Names per platform
+
+The web, iOS and Android name an icon in the form each one allows. For the icon `bar-fill` of the set `acme-glyphs`:
 
 <CxTable>
-| Platform | Form of a name | For the icon `arrow-right-solid` |
+| Platform | Form | For `bar-fill` |
 | --- | --- | --- |
-| Web | kebab-case, as the build wrote it | `arrow-right-solid.svg` |
-| iOS | snake_case | `arrow_right_solid.svg` |
-| Android | snake_case with the prefix `ic_` | `ic_arrow_right_solid.svg` |
+| Web | The class `<prefix>-<name>`, the symbol `#<name>`, the file `<name>.svg` | `ag-bar-fill` |
+| iOS | The image set `<name>`, and the name in camelCase as a case of the enum, which is the prefix in PascalCase with `Icon` | `AgIcon.barFill` |
+| Android | The drawable `<prefix>_<name>`, the class with `_` | `R.drawable.ag_bar_fill` |
 </CxTable>
 
-The pages of Chassis Assets for [iOS](https://chassis-ui.com/assets/docs/use-in-project/ios-applications/) and [Android](https://chassis-ui.com/assets/docs/use-in-project/android-applications/) describe how an app reads these files, and how an Android build gets vector drawables.
+The Chassis set has the font name `chassis-icons` and the prefix `cx`, so its catalog is `ChassisIcons.xcassets`, its enum `CxIcon`, and its drawables `cx_<name>`: `bell-outline` is `CxIcon.bellOutline` and `R.drawable.cx_bell_outline`.
 
-## A set of your own
+### Icons outside a set
 
-A brand with icons of its own builds its set with Chassis Icons and copies the two folders of its `dist/` under the same names. Chassis Assets reads the folders and names no font, so a set with another font name and prefix is copied the same way.
-
-An app refers to an icon by its name, so a brand that keeps the names of the default brand needs no change in the app.
+[Chassis Assets](https://chassis-ui.com/assets) delivers the fonts and images of the apps of a brand, and an icon that is not in a set, such as one icon of one app. The [Icon Assets](https://chassis-ui.com/assets/docs/asset-types/icons/) page of Chassis Assets documents it. The icons of a set come from the targets of its build, so do not copy them into Chassis Assets: take the archives of a release.
 
 ## Best practices
 
-The files in Chassis Assets are a copy of the output of one build. These practices keep the copy whole.
+The files of a target are the output of one build of the set, and an app reads them by name. These practices keep the names and the files in step.
 
-- **Copy both folders together:** `dist/web/` and `dist/svgs/` come from one build. A font of one version and SVG files of another disagree on the icons they hold.
-- **Copy after `npm run verify` passes:** the committed output is then what the source builds.
-- **Keep the names across brands:** an app that shows `arrow-right-solid` gets the drawing of the brand it is built for.
+- **Turn on the targets in the repository of the set:** `chassis.build.targets` writes the files with every build, and every release attaches their archives.
+- **Take a release, not a build:** the archives of a release hold the files of the version of its tag, `v<version>`, and its changelog entry names the icons that it adds, renames or removes.
+- **Tint every `ImageView`:** a drawable is black until a tint replaces it.
+- **Name an icon by its case or its resource:** `AgIcon.barFill` and `R.drawable.ag_bar_fill` fail to compile when the icon is removed or renamed, where a string fails when the app runs.
 
 Avoid the habits that undo this:
 
-- **Do not edit the copy:** change the icon in `source/` of your repository of icons, build, and copy again.
+- **Do not edit the files of `dist/ios/` or `dist/android/`:** the next build writes them again from `source/`. Change the icon in the repository of the set.
+- **Do not mix the files of two versions:** the catalog, the Swift file and the drawables of one release name the same icons. Unpacking an archive over that of an earlier version keeps the drawables of the icons that it removed, so remove the files of the earlier archive first.
+
+## Troubleshooting
+
+Each entry gives the message or the symptom, then the cause and the fix.
+
+### Step has nothing to do
+
+`build --only ios` stops with `"targets" of chassis.build does not name ios, so the step has nothing to do.` The configuration does not name the target. Add it to `chassis.build.targets`, as [The targets](#the-targets) shows, and build.
+
+### Targets are refused
+
+The build stops with `"targets" has to be a list of ios, android, and is <value>. The web is always built.` The list names `web`, a platform the build does not know, or a target twice. Keep `ios` and `android`, each once.
+
+### Two icons, one case
+
+The build stops with `The icons "<name>" and "<name>" would both be the Swift case <case>: rename one`. Two names differ only in their hyphens, such as `bar-2-fill` and `bar2-fill`, and give one case of the enum. Rename one of the icons in `source/`, which is the decision of the maintainer of the set.
+
+### Image is not found
+
+`UIImage(AgIcon.barFill)` stops the app, or `Image(AgIcon.barFill)` draws nothing. The Swift file looks for the catalog in the bundle of its own target, and `AcmeGlyphs.xcassets` was added to another target, or to none. Add the catalog to the target that holds `AcmeGlyphs.swift`.
+
+### Icon draws black
+
+An icon draws in black on Android. The view has no tint, and the drawable fills its paths with black. Give the `ImageView` an `app:tint`, or draw the icon with `Icon` of Compose, which tints it.
 
 ## Next steps
 
 Continue with one of these pages:
 
-- [SVG files]([[docsref:/use-in-project/svg-files]]): the files that the apps get.
-- [Names and styles]([[docsref:/icon-design/names-and-styles]]): the names that an app refers to.
-- [Publishing]([[docsref:/use-in-project/publishing]]): a version of the set to copy from.
+- [Build system]([[docsref:/getting-started/build-system#steps]]): the steps of the build, `ios` and `android` among them.
+- [Names and styles]([[docsref:/icon-design/names-and-styles]]): the names that the enum and the drawables come from.
+- [Publishing]([[docsref:/use-in-project/publishing]]): the tag and the archives of a release.

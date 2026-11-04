@@ -68,7 +68,7 @@ Everything that is particular to the set is in `package.json`: the details of th
 }
 ```
 
-With this block the font is `acme-icons`, its files are `dist/web/acme-icons.css`, `dist/web/acme-icons.woff2` and so on, and the class of an icon is `ai-<name>`. The set has no styles yet: with `"styles": ["outline", "solid"]` a name ends in one of them, and with `"pairs": [["outline", "solid"]]` an icon comes in both. [Configuration]([[docsref:/getting-started/build-system#configuration]]) describes each setting.
+With this block the font is `acme-icons`, its files are `dist/web/acme-icons.css`, `dist/web/acme-icons.woff2` and so on, and the class of an icon is `ai-<name>`. The set has no styles yet: with `"styles": ["outline", "solid"]` a name ends in one of them, and with `"pairs": [["outline", "solid"]]` an icon comes in both. The build writes the files of the web only, until `"targets": ["ios", "android"]` adds those of iOS and Android. [Configuration]([[docsref:/getting-started/build-system#configuration]]) describes each setting.
 
 When a project reads icons of the set by name, list them in `chassis.checks.json` beside `package.json`, and `npm run verify` fails when one of them is gone:
 
@@ -80,14 +80,14 @@ When a project reads icons of the set by name, list them in `chassis.checks.json
 
 ## Build and verify
 
-Build the set, and check that the committed output is what the source builds:
+Build the set, and check it:
 
 ```bash
 npm run build
 npm run verify
 ```
 
-The build writes `dist/`: `dist/svgs/`, one optimized file per icon; `dist/web/`, the font `acme-icons` in each format with its stylesheets, the sprite and the code points by name; and `dist/icons.json`, the index of the set. Beside it, the build writes `codepoints.json`, the registry of the code points; `README.md`, with the code for your font name and your prefix; and the fields of `package.json` that name the files. Commit all of them with `source/` and the lockfile of the install, which the workflows install from: the output is committed, and `verify` fails when a committed file is not what the source builds.
+The build writes `dist/`: `dist/svgs/`, one optimized file per icon; `dist/web/`, the font `acme-icons` in each format with its stylesheets, the sprite and the code points by name; and `dist/icons.json`, the index of the set. Beside it, the build writes `codepoints.json`, the registry of the code points; `README.md`, with the code for your font name and your prefix; and the fields of `package.json` that name the files. `dist/` is not committed: `.gitignore` names it, and the release builds it again. Commit the other files with `source/` and the lockfile of the install, which the workflows install from. `verify` fails when the source does not build twice to the same files, or when a committed file that the build writes is not what the source builds.
 
 To see the set, write its page and serve it:
 
@@ -99,19 +99,19 @@ The command writes the page of the set into `preview/` and serves it at `http://
 
 ## Use the output
 
-The output for a project is in two folders of `dist/`, which a project takes as they are:
+The output for a page is in two folders of `dist/`, which a project takes as they are:
 
 ```bash
 cp -r dist/web dist/svgs /path/to/your-project/static/icons/
 ```
 
-`README.md`, which the build wrote for the set, shows the font class, the sprite, an SVG file and Sass with your font name and your prefix, and the pages of [Use in Project]([[docsref:/use-in-project/icon-font]]) describe each way at length.
+`README.md`, which the build wrote for the set, shows the font class, the sprite, an SVG file and Sass with your font name and your prefix, and the pages of [Use in Project]([[docsref:/use-in-project/icon-font]]) describe each way at length. With the targets `ios` and `android`, an app takes the files of `dist/ios/` and `dist/android/` from the archives of a release, as [iOS and Android]([[docsref:/use-in-project/ios-and-android]]) shows.
 
 ## Release a version
 
-A release is a push to `main` with a new version in `package.json` and its entry in `CHANGELOG.md`. The workflow that `init` wrote lints the source, verifies the output, publishes the package to npm, and creates the tag `v<version>` and its GitHub release, with the changelog entry as its text and the archive `acme-icons-web-<version>.zip` of the output and the page of the set attached. A push whose version npm has and whose tag exists releases nothing.
+A release is a push to `main` with a new version in `package.json` and its entry in `CHANGELOG.md`. The workflow that `init` wrote lints the source, verifies the set, builds `dist/`, publishes the package to npm, and creates the tag `v<version>` and its GitHub release, with the changelog entry as its text and the archive `acme-icons-web-<version>.zip` of the output and the page of the set attached, and one archive per target, such as `acme-icons-ios-<version>.zip`. A push whose version npm has and whose tag exists releases nothing.
 
-The workflow publishes with npm trusted publishing, so it needs no token: on npmjs.com, the package trusts the repository `acme/acme-icons` and the workflow file `release.yml`. For a set that is not published, set `"private": true` in `package.json`: the release is then the tag, the GitHub release and its archive. [Publishing]([[docsref:/use-in-project/publishing]]) covers what the workflow reads of `package.json`.
+The workflow publishes with npm trusted publishing, so it needs no token: on npmjs.com, the package trusts the repository `acme/acme-icons` and the workflow file `release.yml`. For a set that is not published, set `"private": true` in `package.json`: the release is then the tag, the GitHub release and its archives. [Publishing]([[docsref:/use-in-project/publishing]]) covers what the workflow reads of `package.json`.
 
 ## Troubleshooting
 
@@ -121,9 +121,9 @@ Each entry gives the message or the symptom, then the cause and the fix.
 
 `npm run lint` prints a line such as `<file> has the viewBox "0 0 32 32": it has to be "0 0 24 24"`. The file is not drawn on the frame of the configuration. Export it on the frame, or set `chassis.build.frame` to the frame of your icons. [Source lint]([[docsref:/icon-design/source-lint]]) lists every message.
 
-### Output is not built
+### Committed file is stale
 
-`npm run verify` prints `<file>: changed. The output is not what the source builds: run the build.` A file of `source/` or the configuration changed after the last build. Run `npm run build`, and commit the output with the change.
+`npm run verify` prints `<file>: changed. It is not what the source builds: run the build, and commit it.` A file of `source/` or the configuration changed after the last build, and `codepoints.json`, `README.md` or `package.json` is older. Run `npm run build`, and commit the file with the change.
 
 ### Contract icon is missing
 

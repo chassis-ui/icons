@@ -10,6 +10,12 @@ import path from 'node:path'
 /** The first and the last code point of the Private Use Area of the Basic Multilingual Plane. */
 export const PRIVATE_USE_AREA = { first: 0xe000, last: 0xf8ff }
 
+/**
+ * The targets of the build besides the web, which it always builds: each is a folder of
+ * `dist/` and an archive of its own.
+ */
+export const TARGETS = ['ios', 'android']
+
 /** The font formats the build writes, with the name of each in a `src` descriptor. */
 export const FONT_FORMATS = { woff2: 'woff2', woff: 'woff', ttf: 'truetype' }
 
@@ -23,7 +29,8 @@ const DEFAULTS = {
   pairs: [],
   startCodepoint: 'f101',
   formats: ['woff2', 'woff'],
-  header: []
+  header: [],
+  targets: []
 }
 
 /** The folder of the output, and the folder of the page of the set, in a repository of icons. */
@@ -33,14 +40,16 @@ export const PREVIEW_DIR = 'preview'
 /**
  * The paths of the output in a folder that holds it as `dist/` does.
  * @param {string} distDir
- * @returns {{ distDir: string, svgsDir: string, webDir: string, indexFile: string }}
+ * @returns {{ distDir: string, svgsDir: string, webDir: string, indexFile: string, iosDir: string, androidDir: string }}
  */
 export function outputPaths(distDir) {
   return {
     distDir,
     svgsDir: path.join(distDir, 'svgs'),
     webDir: path.join(distDir, 'web'),
-    indexFile: path.join(distDir, 'icons.json')
+    indexFile: path.join(distDir, 'icons.json'),
+    iosDir: path.join(distDir, 'ios'),
+    androidDir: path.join(distDir, 'android')
   }
 }
 
@@ -59,6 +68,7 @@ export class ConfigError extends Error {
  * @property {number} startCodepoint - The code point of the first icon of a new set
  * @property {string[]} formats - The font formats, in the order of the `src` descriptor
  * @property {string[]} header - The lines of the comment at the top of each stylesheet
+ * @property {string[]} targets - The targets besides the web, in the order of `TARGETS`
  * @property {string} packageName - `name` of package.json
  * @property {string} version - `version` of package.json
  * @property {string} packageDir - The folder of the package
@@ -70,6 +80,8 @@ export class ConfigError extends Error {
  * @property {string} webDir - Output: the font, its stylesheets, its glyph map and the sprite,
  *   `dist/web/`
  * @property {string} indexFile - Output: the index of the set, `dist/icons.json`
+ * @property {string} iosDir - Output: the asset catalog and the Swift file, `dist/ios/`
+ * @property {string} androidDir - Output: the vector drawables, `dist/android/`
  * @property {string} previewDir - The page of the set, `preview/`, which `chassis-icons
  *   preview` writes from the output. It is not output: not committed and not published
  * @property {string} registryFile - The code points the set has given out
@@ -116,7 +128,7 @@ export function resolveConfig(manifest, packageDir) {
   }
 
   const settings = { ...DEFAULTS, ...block }
-  const { name, prefix, source, checks, frame, styles, pairs, formats, header } = settings
+  const { name, prefix, source, checks, frame, styles, pairs, formats, header, targets } = settings
 
   if (typeof name !== 'string' || !NAME.test(name)) {
     throw new ConfigError(
@@ -186,6 +198,16 @@ export function resolveConfig(manifest, packageDir) {
     throw new ConfigError('A line of "header" cannot hold "*/" or a line break')
   }
 
+  if (
+    !isStringArray(targets) ||
+    targets.some((target) => !TARGETS.includes(target)) ||
+    new Set(targets).size !== targets.length
+  ) {
+    throw new ConfigError(
+      `"targets" has to be a list of ${TARGETS.join(', ')}, and is ${show(targets)}. The web is always built.`
+    )
+  }
+
   const version = typeof manifest.version === 'string' ? manifest.version : ''
 
   return {
@@ -197,6 +219,7 @@ export function resolveConfig(manifest, packageDir) {
     startCodepoint: parseStartCodepoint(settings.startCodepoint),
     formats,
     header: header.map((line) => line.replaceAll('{version}', version)),
+    targets: TARGETS.filter((target) => targets.includes(target)),
     packageName: typeof manifest.name === 'string' ? manifest.name : '',
     version,
     packageDir,

@@ -19,6 +19,10 @@ npm install {{ packageName }}
 - `dist/web/{{ name }}.svg`: the SVG sprite, one `<symbol>` per icon with the name of the icon as its `id`
 - `dist/web/{{ name }}.json`: the code point of each icon in the font, by name
 - `dist/icons.json`: the index of the set: its font name, class prefix, frame and styles, and each icon with its code point and its style
+{{# if platforms }}
+
+The files for {{ platforms }} are not in the package: they are in the archives of the releases.
+{{/ if }}
 
 {{# if styles }}
 The last part of a name is the style of the icon: {{# each styles }}{{# if @first }}{{ else if @last }} or {{ else }}, {{/ if }}`<name>-{{ this }}`{{/ each }}. The examples below show `{{ icon }}`.
@@ -78,9 +82,30 @@ The classes of the stylesheet, with the font served from a folder of your own, a
 
 Sass finds the file in a load path that holds `node_modules`, and so does a bundler. With the package importer of Sass, `@use 'pkg:{{ packageName }}'` loads the same file.
 
+{{# if ios }}
+### iOS
+
+Add `{{ ios.catalog }}` and `{{ ios.swiftFile }}` to the target of an app, from the archive `{{ name }}-ios-<version>.zip` of a release{{# if repository }} of [the repository]({{ repository }}){{/ if }}. Each icon is a case of `{{ ios.type }}`, and draws as a template image in the tint of its view:
+
+```swift
+Image({{ ios.type }}.{{ ios.case }})
+UIImage({{ ios.type }}.{{ ios.case }})
+```
+
+{{/ if }}
+{{# if android }}
+### Android
+
+Copy `res/` from the archive `{{ name }}-android-<version>.zip` of a release{{# if repository }} of [the repository]({{ repository }}){{/ if }} into `src/main/` of a module. Each icon is a drawable that takes the tint of its view:
+
+```kotlin
+Icon(painterResource(R.drawable.{{ android.drawable }}), contentDescription = null)
+```
+
+{{/ if }}
 ## The source
 
-The package is built from the SVG files of {{# if repository }}its [repository]({{ repository }}){{ else }}`source/`{{/ if }} with [`@chassis-ui/icons`](https://www.npmjs.com/package/@chassis-ui/icons). An icon is added or changed there, and never in the files of `dist/`.{{# if commands }} `{{ run }} build` writes the output again, `{{ run }} lint` checks the files of the source, and `{{ run }} verify` checks that the output is what the source builds.{{/ if }}{{# if preview }} `{{ run }} preview` writes the page of the set into `preview/` and serves it, to browse the icons, their classes, their code points and the code that draws them.{{/ if }}
+The package is built from the SVG files of {{# if repository }}its [repository]({{ repository }}){{ else }}`source/`{{/ if }} with [`@chassis-ui/icons`](https://www.npmjs.com/package/@chassis-ui/icons). An icon is added or changed there, and never in the files of `dist/`.{{# if commands }} `{{ run }} build` writes the output into `dist/`, which is not committed, `{{ run }} lint` checks the files of the source, and `{{ run }} verify` checks that the source builds, that the registry of the code points and this README are up to date, and that no icon lost its code point.{{/ if }}{{# if preview }} `{{ run }} preview` writes the page of the set into `preview/` and serves it, to browse the icons, their classes, their code points and the code that draws them.{{/ if }}
 {{# if license }}
 
 ## License

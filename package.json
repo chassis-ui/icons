@@ -22,6 +22,7 @@
     "icons:lint": "eslint --cache --cache-location .cache/.eslintcache --max-warnings 0 build packages/icons/lib packages/icons/test",
     "icons:lint:package": "pnpm --filter ./packages/icons run lint:package",
     "icons:lint:source": "node packages/icons/lib/cli.js lint-source --cwd vendor/icons",
+    "icons:native": "bash packages/icons/test/native/check.sh vendor/icons",
     "icons:preview": "node packages/icons/lib/cli.js preview --serve --cwd vendor/icons",
     "icons:sprite": "node packages/icons/lib/cli.js build --only sprite --cwd vendor/icons",
     "icons:svgs": "node packages/icons/lib/cli.js build --only svgs --cwd vendor/icons",
@@ -54,7 +55,7 @@
     "changeset:version": "changeset version && node build/sync-version-refs.js",
     "release:notes": "node build/release-notes.js",
     "sync-assets": "pnpm --filter ./packages/site exec chassis-docs sync-assets",
-    "vendor": "git submodule update --init vendor/icons && pnpm --filter ./packages/site exec chassis-docs vendor"
+    "vendor": "git submodule update --init vendor/icons && pnpm icons && pnpm --filter ./packages/site exec chassis-docs vendor"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",

@@ -7,7 +7,9 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import Handlebars from 'handlebars'
+import { drawableName } from './android.js'
 import { DIST_DIR } from './config.js'
+import { swiftCase, swiftNames } from './ios.js'
 
 /** The manifest of the package, and the template of its README beside the other templates. */
 export const MANIFEST_FILE = 'package.json'
@@ -29,7 +31,8 @@ export function manifestFields(config) {
     main: css,
     style: css,
     sass: scss,
-    files: [DIST_DIR],
+    // The output for the web: an app takes the files of its platform from an archive
+    files: [`${DIST_DIR}/icons.json`, `${DIST_DIR}/svgs`, `${DIST_DIR}/web`],
     exports: {
       '.': { sass: `./${scss}`, style: `./${css}`, default: `./${css}` },
       [`./${DIST_DIR}/*`]: `./${DIST_DIR}/*`,
@@ -157,6 +160,13 @@ export function renderReadme(config, manifest, names) {
     // The commands of the repository, when package.json has the scripts that init writes
     commands,
     preview: commands && runsBuild('preview'),
+    ios: config.targets.includes('ios')
+      ? { ...swiftNames(config), case: swiftCase(names[0]) }
+      : null,
+    android: config.targets.includes('android')
+      ? { drawable: drawableName(config, names[0]) }
+      : null,
+    platforms: config.targets.map((target) => (target === 'ios' ? 'iOS' : 'Android')).join(' and '),
     run: fs.existsSync(path.join(config.packageDir, 'pnpm-lock.yaml')) ? 'pnpm' : 'npm run'
   })
 }

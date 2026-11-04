@@ -40,7 +40,8 @@ jobs:
       - name: Lint the source
         run: __RUN__ lint
 
-      # Fails when the committed output differs from a fresh build of source/, an icon lost
-      # its code point, or an icon of chassis.checks.json is missing
-      - name: Verify the output
+      # Fails when source/ does not build, or not twice to the same bytes, when codepoints.json,
+      # the README or package.json is not what the build writes, when an icon lost its code
+      # point, or when an icon of chassis.checks.json is missing
+      - name: Verify the set
         run: __RUN__ verify

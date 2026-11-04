@@ -2,7 +2,7 @@
   "name": "@chassis-ui/icons",
   "version": "0.4.0-next.0",
   "type": "module",
-  "description": "The builder of icon sets for the Chassis Design System: the chassis-icons command, which builds a repository of SVG files into optimized SVG files, an SVG sprite and an icon font with its stylesheets",
+  "description": "The builder of icon sets of Chassis UI: the chassis-icons command, which builds a repository of SVG files into optimized SVG files, an SVG sprite and an icon font with its stylesheets",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chassis-ui/icons.git",
@@ -57,6 +57,7 @@
     "handlebars": "^4.7.10",
     "picocolors": "^1.1.1",
     "svg-sprite": "3.0.0-rc3",
+    "svg2vectordrawable": "^2.9.1",
     "svgo": "^4.1.0"
   },
   "devDependencies": {

@@ -1,6 +1,8 @@
 {
   "version": "0.2",
   "words": [
+    "aapt",
+    "actool",
     "artboard",
     "chassis",
     "codepoint",
@@ -15,13 +17,19 @@
     "frontmatter",
     "fusv",
     "Gunes",
+    "imageset",
+    "Jetpack",
     "mundi",
     "npmjs",
     "Ozgur",
     "slugifying",
     "spritesheet",
     "stackblitz",
+    "swiftc",
+    "swiftpm",
+    "vectordrawable",
     "viewports",
+    "xcassets",
     "xlarge",
     "xmark"
   ],

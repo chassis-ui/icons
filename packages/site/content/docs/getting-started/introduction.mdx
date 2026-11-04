@@ -17,8 +17,8 @@ aliases:
 
 Chassis Icons turns the SVG files of a team into an icon font, an SVG sprite and optimized SVG files. The work is split over two kinds of repository, so that a team owns its icons and shares the build:
 
-- **The builder.** `@chassis-ui/icons` is an npm package with the `chassis-icons` command, which optimizes the files with SVGO, builds the sprite with svg-sprite and the font with Fantasticon, and writes the stylesheets of the font. It holds no icons.
-- **A repository of icons.** It holds the SVG files in `source/`, one per icon, the `chassis.build` block of its `package.json`, and the committed output. `chassis-icons init` writes one, and the builder is a development dependency of it.
+- **The builder.** `@chassis-ui/icons` is an npm package with the `chassis-icons` command, which optimizes the files with SVGO, builds the sprite with svg-sprite and the font with Fantasticon, and writes the stylesheets of the font. For a set whose targets name `ios` and `android`, it also writes an asset catalog with a Swift file, and vector drawables. It holds no icons.
+- **A repository of icons.** It holds the SVG files in `source/`, one per icon, the `chassis.build` block of its `package.json`, and the registry of the code points. The output is built from them and not committed: the release of the repository builds and publishes it. `chassis-icons init` writes one, and the builder is a development dependency of it.
 
 The build is file-driven. Save `<name>.svg` into `source/`, and the icon is in the output of the next build: there is no list to maintain beside the files. The font name, the class prefix, the frame and the styles of the icons are settings of `chassis.build`, so the same build writes the set of any team, as [Chassis Tokens](https://chassis-ui.com/tokens) builds the tokens of any team.
 
@@ -31,12 +31,14 @@ A set is the icons of one repository: the SVG files of `source/`, and what the b
 ```text
 source/                   -> The SVG files you save, one per icon. The build only reads them
 package.json              -> The details of the package and the chassis.build configuration
-dist/                     -> Output: committed and published
+dist/                     -> Output: not committed. The release of the set builds it again
   icons.json              -> The index of the set: its settings, and each icon with its code point
   svgs/                   -> One optimized SVG file per icon
   web/                    -> The font, its stylesheets and the sprite
-codepoints.json           -> The code point of each icon. Written by the build
-README.md                 -> Written by the build, for someone who installs the set
+  ios/                    -> With the ios target: the asset catalog and the Swift file
+  android/                -> With the android target: the vector drawables
+codepoints.json           -> The code point of each icon. Written by the build, and committed
+README.md                 -> Written by the build, and committed, for someone who installs the set
 chassis.checks.json       -> The icons that consumers of the set read by name, when it has one
 preview/                  -> The page of the set, written by chassis-icons preview. Not committed
 ```
@@ -45,7 +47,7 @@ The name of a file is the name of its icon, and that name is everything a projec
 
 ## What the build writes
 
-The build writes one folder, `dist/`, and its shape is the same for any set. `<font>` is the font name of the configuration, `<prefix>` its class prefix, and `<name>` the name of an icon.
+The build writes one folder, `dist/`, and its shape is the same for any set. The web is always built, and `chassis.build.targets` adds the folders of iOS and Android. `<font>` is the font name of the configuration, `<prefix>` its class prefix, and `<name>` the name of an icon.
 
 <CxTable>
 | File | What it holds |
@@ -57,20 +59,22 @@ The build writes one folder, `dist/`, and its shape is the same for any set. `<f
 | `dist/web/<font>.css`, `dist/web/<font>.min.css` | The font face and one class per icon, `<prefix>-<name>` |
 | `dist/web/<font>.scss` | The same for Sass, with the folder of the font and the map of the icons as variables |
 | `dist/web/<font>.json` | The code point of each icon, by name |
+| `dist/ios/<module>.xcassets`, `dist/ios/<module>.swift` | With the `ios` target: an image set per icon, and the enum of the icons. `<module>` is the font name in PascalCase |
+| `dist/android/res/drawable/<prefix>_<name>.xml` | With the `android` target: a vector drawable per icon |
 </CxTable>
 
-The output is committed in the repository of icons and published as it is, so a project installs the set without building it. The pages of [Use in Project]([[docsref:/use-in-project/icon-font]]) show how a page draws an icon from each of these files.
+The repository of icons does not commit the output: its release builds it, publishes the files of the web as a package, and attaches the archives of the web and of each target to its GitHub release, so a project installs the set without building it. The pages of [Use in Project]([[docsref:/use-in-project/icon-font]]) show how a page draws an icon from each of these files.
 
 ## What reads a set
 
-Chassis CSS, Chassis React and Chassis Assets take any set that keeps this shape. None of them names the Chassis set in a way that a team cannot configure.
+Chassis CSS, Chassis React and the apps of iOS and Android take any set that keeps this shape. None of them names the Chassis set in a way that a team cannot configure.
 
 <CxTable>
 | Consumer | What it reads | Page |
 | --- | --- | --- |
 | Chassis CSS | An SVG file by name, through `svg-icon()` | [Chassis CSS]([[docsref:/use-in-project/chassis-css]]) |
 | Chassis React | A symbol of the sprite, or a class of the font, through `Icon` | [Chassis React]([[docsref:/use-in-project/chassis-react]]) |
-| Chassis Assets | The two folders of `dist/`, renamed for iOS and Android | [iOS and Android]([[docsref:/use-in-project/ios-and-android]]) |
+| An iOS or Android app | The files of `dist/ios/` and `dist/android/`, from the archives of a release | [iOS and Android]([[docsref:/use-in-project/ios-and-android]]) |
 </CxTable>
 
 ## Next steps
