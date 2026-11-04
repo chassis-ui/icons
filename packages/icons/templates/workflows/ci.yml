@@ -1,7 +1,8 @@
 name: CI
 
-# On a push and on a pull request: the changelog, the source lint and a fresh build against
-# the committed output, with the commands of @chassis-ui/icons. Written by `chassis-icons init`.
+# On a pull request and on a push to main: the changelog, the source lint, and two builds of
+# the source that have to match each other and the committed files that the build writes,
+# with the commands of @chassis-ui/icons. Written by `chassis-icons init`.
 on:
   push:
     branches: [main]

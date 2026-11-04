@@ -28,7 +28,7 @@ A release needs a repository of icons on GitHub that passes its checks.
 
 ### Added
 
-- `arrow-right-solid`.
+- `bar-line`.
 ```
 
 `npm run release-notes` prints the entry of the version that `package.json` names, without its heading, and fails without one. The workflow runs it first, so a version without an entry is not released.
@@ -113,7 +113,7 @@ The workflow runs and stops in its first job, `Detect Version`. npm has the vers
 
 ### Version has no entry
 
-The step `Release notes` of the workflow, or `npm run release-notes`, stops with `CHANGELOG.md has no entry for <version>. Add it.` The version of `package.json` has no heading in the changelog, or its entry is empty. Write the entry and push again: nothing was published.
+The step `Release notes` of the workflow, or `npm run release-notes`, stops with `CHANGELOG.md has no entry for <version>. Add it.` when the version of `package.json` has no heading in the changelog, and with `The entry of CHANGELOG.md for <version> is empty.` when its heading has nothing under it. Write the entry and push again: nothing was published.
 
 ### Committed file is stale
 

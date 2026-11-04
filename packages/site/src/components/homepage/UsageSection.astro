@@ -2,16 +2,16 @@
 import Code from '@chassis-ui/docs/shortcodes/Code.astro'
 
 // The code of the README that the build writes for the package `@acme/icons`, the font
-// `acme-icons` and the prefix `ai`, drawn on the frame 24, with the icon `arrow-right-solid`
+// `acme-icons` and the prefix `ai`, drawn on the frame 24, with the icon `bar-line`
 const font = `<link rel="stylesheet" href="node_modules/@acme/icons/dist/web/acme-icons.min.css" />
 
-<i class="ai-arrow-right-solid"></i>`
+<i class="ai-bar-line"></i>`
 
 const sprite = `<svg width="24" height="24" fill="currentcolor" aria-hidden="true">
-  <use href="node_modules/@acme/icons/dist/web/acme-icons.svg#arrow-right-solid"></use>
+  <use href="node_modules/@acme/icons/dist/web/acme-icons.svg#bar-line"></use>
 </svg>`
 
-const file = `<img src="node_modules/@acme/icons/dist/svgs/arrow-right-solid.svg" alt="" width="24" height="24" />`
+const file = `<img src="node_modules/@acme/icons/dist/svgs/bar-line.svg" alt="" width="24" height="24" />`
 
 const sass = `@use 'sass:map';
 @use '@acme/icons/dist/web/acme-icons.scss' as icons with (
@@ -20,13 +20,13 @@ const sass = `@use 'sass:map';
 
 .my-icon::before {
   font-family: icons.$acme-icons-font;
-  content: map.get(icons.$acme-icons-map, 'arrow-right-solid');
+  content: map.get(icons.$acme-icons-map, 'bar-line');
 }`
 
-const swift = `Image(AiIcon.arrowRightSolid)
-UIImage(AiIcon.arrowRightSolid)`
+const swift = `Image(AiIcon.barLine)
+UIImage(AiIcon.barLine)`
 
-const kotlin = `Icon(painterResource(R.drawable.ai_arrow_right_solid), contentDescription = null)`
+const kotlin = `Icon(painterResource(R.drawable.ai_bar_line), contentDescription = null)`
 ---
 
 <section class="home-section py-3xl md:py-6xl">
@@ -39,7 +39,7 @@ const kotlin = `Icon(painterResource(R.drawable.ai_arrow_right_solid), contentDe
         <p class="section-body md:font-lg lg:font-xl m-0">
           The README that the build writes for a set shows each way with its font name and its
           prefix. The examples use the package <code>@acme/icons</code> and the icon{' '}
-          <code>arrow-right-solid</code>.
+          <code>bar-line</code>.
         </p>
       </header>
     </div>

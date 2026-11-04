@@ -5,16 +5,16 @@ import { compareNames, listIcons, parseName } from '../lib/names.js'
 import { temporaryDir } from './helpers.js'
 
 describe('parseName', () => {
-  const styles = ['outline', 'solid', 'brand']
+  const styles = ['line', 'fill', 'duo']
 
   it('splits a name into what it shows and its style', () => {
-    expect(parseName('arrow-right-solid', styles)).toEqual({ base: 'arrow-right', style: 'solid' })
-    expect(parseName('figma-brand', styles)).toEqual({ base: 'figma', style: 'brand' })
-    expect(parseName('h1-outline', styles)).toEqual({ base: 'h1', style: 'outline' })
+    expect(parseName('ring-half-fill', styles)).toEqual({ base: 'ring-half', style: 'fill' })
+    expect(parseName('diamond-duo', styles)).toEqual({ base: 'diamond', style: 'duo' })
+    expect(parseName('h1-line', styles)).toEqual({ base: 'h1', style: 'line' })
   })
 
   it('takes any kebab-case name when the set has no styles', () => {
-    expect(parseName('arrow-right', [])).toEqual({ base: 'arrow-right', style: null })
+    expect(parseName('ring-half', [])).toEqual({ base: 'ring-half', style: null })
   })
 
   it('finds the longest style that a name ends in', () => {
@@ -24,19 +24,15 @@ describe('parseName', () => {
     })
   })
 
-  it.each([
-    'Star_Filled',
-    'star--solid',
-    '-star-solid',
-    'star-solid-',
-    '1star-solid',
-    'star solid'
-  ])('refuses %s, which is not in kebab-case', (name) => {
-    expect(parseName(name, styles)).toHaveProperty('error', expect.stringContaining('kebab-case'))
-  })
+  it.each(['Star_Filled', 'bar--fill', '-bar-fill', 'bar-fill-', '1bar-fill', 'bar fill'])(
+    'refuses %s, which is not in kebab-case',
+    (name) => {
+      expect(parseName(name, styles)).toHaveProperty('error', expect.stringContaining('kebab-case'))
+    }
+  )
 
-  it.each(['star', 'star-filled', 'solid'])('refuses %s, which ends in no style', (name) => {
-    expect(parseName(name, styles)).toHaveProperty('error', expect.stringContaining('-outline'))
+  it.each(['bar', 'bar-filled', 'fill'])('refuses %s, which ends in no style', (name) => {
+    expect(parseName(name, styles)).toHaveProperty('error', expect.stringContaining('-line'))
   })
 })
 
@@ -50,11 +46,11 @@ describe('listIcons', () => {
   it('lists the SVG files of a folder by name, sorted', () => {
     const dir = temporaryDir()
 
-    for (const file of ['b-solid.svg', 'a-solid.svg', 'notes.txt', '.DS_Store']) {
+    for (const file of ['b-fill.svg', 'a-fill.svg', 'notes.txt', '.DS_Store']) {
       fs.writeFileSync(path.join(dir, file), '')
     }
 
-    expect(listIcons(dir)).toEqual(['a-solid', 'b-solid'])
+    expect(listIcons(dir)).toEqual(['a-fill', 'b-fill'])
   })
 
   it('lists nothing for a folder that does not exist', () => {

@@ -305,7 +305,7 @@ first job. Two names are tied to settings outside the repository, so change them
 
 A repository of icons releases itself with the workflows that
 `chassis-icons init` wrote, from `packages/icons/templates/workflows/`. Its `ci.yml` runs on a
-push and on a pull request: `release-notes`, which fails when the version of `package.json`
+pull request and on a push to `main`: `release-notes`, which fails when the version of `package.json`
 has no entry in `CHANGELOG.md`, `lint` and `verify`. Its `release.yml` runs on a push to
 `main` with a version that npm does not have or that has no tag: it reads the release notes,
 lints the source, verifies the set, builds `dist/`, which is not committed, writes the archive

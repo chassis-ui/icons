@@ -3,8 +3,8 @@
  * icon, which renders as a template in the tint of its view as `currentcolor` does on the
  * web, and a Swift file with an enum of the icons and the initializers of `UIImage` and
  * SwiftUI `Image` that draw one. An app adds both from the archive of a release. The image
- * sets are named as the icons are, so `bell-outline` is the image `bell-outline` and the case
- * `bellOutline`. The Swift file finds the catalog in `Bundle.module` when it is built in a
+ * sets are named as the icons are, so `bar-line` is the image `bar-line` and the case
+ * `barLine`. The Swift file finds the catalog in `Bundle.module` when it is built in a
  * Swift package, so a later Swift package of the folder needs no other file.
  */
 

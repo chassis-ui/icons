@@ -12,3 +12,12 @@ minimumReleaseAgeExclude:
 peerDependencyRules:
   allowedVersions:
     'html-validate>vitest': '5'
+
+# Two moderate advisories of the build's tools that no version in their ranges fixes:
+# fantasticon and svg-sprite pin glob 7 and 10, and with them minimatch 3 and 9. Neither is
+# reachable from what a set controls: the build passes its own patterns over the folders of
+# the repository, and passes no AbortSignal. Remove an entry when its tool takes a fixed glob.
+auditConfig:
+  ignoreGhsas:
+    - GHSA-g3hv-75wg-m249 # minimatch <11.0.1: denial of service through a crafted pattern
+    - GHSA-3g3m-2fjr-6pw4 # glob 9 to 14.0.1: a search goes on after its AbortSignal fires

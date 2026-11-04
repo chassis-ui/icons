@@ -60,9 +60,9 @@ describe('resolveConfig', () => {
     ['a prefix with a dot', { ...minimal, prefix: '.ag' }, '"prefix"'],
     ['a frame of zero', { ...minimal, frame: 0 }, '"frame"'],
     ['a frame that is not a whole number', { ...minimal, frame: 16.5 }, '"frame"'],
-    ['styles that are not a list', { ...minimal, styles: 'solid' }, '"styles"'],
-    ['a style twice', { ...minimal, styles: ['solid', 'solid'] }, '"styles"'],
-    ['a pair of one', { ...minimal, styles: ['solid'], pairs: [['solid']] }, '"pairs"'],
+    ['styles that are not a list', { ...minimal, styles: 'fill' }, '"styles"'],
+    ['a style twice', { ...minimal, styles: ['fill', 'fill'] }, '"styles"'],
+    ['a pair of one', { ...minimal, styles: ['fill'], pairs: [['fill']] }, '"pairs"'],
     [
       'a pair of a style that is not listed',
       { ...minimal, styles: ['a'], pairs: [['a', 'b']] },

@@ -25,9 +25,10 @@ It prints one line per problem, each with the file and what is wrong with it, th
 ✗ Star_Filled.svg has a stroke: a font draws filled shapes only, so outline it
 ✗ plain.svg does not end in a style: -line, -fill
 ✗ lonely-line.svg has no "lonely-fill" beside it: line and fill come together
+✗ 6 problems
 ```
 
-A source without a problem ends with one line, which says that the source files can be icons of the set. The CI workflow that `chassis-icons init` wrote runs the lint on every push and pull request.
+A source without a problem ends with one line, which says that the source files can be icons of the set. The CI workflow that `chassis-icons init` wrote runs the lint on a pull request and on a push to `main`.
 
 ## What it checks
 

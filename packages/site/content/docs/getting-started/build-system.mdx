@@ -43,7 +43,7 @@ npx chassis-icons init --help
 
 ### init
 
-`chassis-icons init [dir]` writes into a folder, the working directory by default, `package.json` with the `chassis.build` block, the scripts and the dependency on the builder, `.gitignore`, `.nvmrc`, `CHANGELOG.md`, `AGENTS.md`, `CLAUDE.md`, and the workflows `.github/workflows/ci.yml` and `.github/workflows/release.yml`. It writes nothing into `source/` and no README: the build writes the README. A file that exists is kept, and `package.json` and `CHANGELOG.md` are never written over.
+`chassis-icons init [dir]` writes into a folder, the working directory by default, `package.json` with the `chassis.build` block, the scripts and the dependency on the builder, `.gitignore`, `.nvmrc`, `CHANGELOG.md`, `AGENTS.md`, `CLAUDE.md`, and the workflows `.github/workflows/ci.yml` and `.github/workflows/release.yml`. It writes nothing into `source/` and no README: the build writes the README. When a file that it would write exists, it writes nothing, unless `--force` writes over the others; `package.json` and `CHANGELOG.md` are never written over.
 
 <CxTable>
 | Option | Default | What it sets |
@@ -184,7 +184,7 @@ The other fields of `package.json` describe the package. `init` writes `name`, `
 
 ```json
 {
-  "contracts": [{ "reader": "the toolbar of the app", "icons": ["search-solid", "xmark-outline"] }]
+  "contracts": [{ "reader": "the toolbar of the app", "icons": ["bar-fill", "ring-line"] }]
 }
 ```
 
@@ -213,7 +213,7 @@ A new icon gets the first code point, from `startCodepoint`, that no icon has or
 
 ## Checks
 
-Two commands check a set. `lint-source` checks the files of `source/` before a build, and `verify` checks what the build makes of them. The CI workflow that `init` wrote runs `release-notes`, `lint-source` and `verify` on every push and pull request.
+Two commands check a set. `lint-source` checks the files of `source/` before a build, and `verify` checks what the build makes of them. The CI workflow that `init` wrote runs `release-notes`, `lint-source` and `verify` on a pull request and on a push to `main`.
 
 ```bash
 npx chassis-icons lint-source

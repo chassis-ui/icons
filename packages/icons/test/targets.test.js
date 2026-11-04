@@ -37,8 +37,8 @@ describe('the ios target', () => {
   })
 
   it('names a case in camelCase, between backticks when it is a word of Swift', () => {
-    expect(swiftCase('arrow-up-right-outline')).toBe('arrowUpRightOutline')
-    expect(swiftCase('arrow-2')).toBe('arrow2')
+    expect(swiftCase('ring-half-line')).toBe('ringHalfLine')
+    expect(swiftCase('bar-2')).toBe('bar2')
     expect(swiftCase('repeat')).toBe('`repeat`')
     expect(swiftCase('default')).toBe('`default`')
   })

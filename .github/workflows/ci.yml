@@ -236,8 +236,8 @@ jobs:
           # step would fail the job.
           package-manager-cache: false
 
-      # Blocking: what a consumer of the package installs with it. The package has no
-      # dependencies, so this passes until one is added.
+      # Blocking: what a consumer of the package installs with it, the tools of the build.
+      # `auditConfig` of pnpm-workspace.yaml names the advisories that are ignored, and why.
       - name: Audit runtime dependencies
         run: pnpm check:pnpm
 

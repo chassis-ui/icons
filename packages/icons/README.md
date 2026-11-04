@@ -78,8 +78,8 @@ The `chassis.build` block of `package.json`:
 | `source`         | `"source"`              | The folder of your SVG files                                                                      |
 | `checks`         | `"chassis.checks.json"` | The file of the icons that others read by name. It may not exist                                  |
 | `frame`          | `24`                    | The width and the height of the frame an icon is drawn on                                         |
-| `styles`         | `[]`                    | The last part a name may have, such as `["outline", "solid"]`. Any kebab-case name when empty     |
-| `pairs`          | `[]`                    | The styles an icon comes in together, such as `[["outline", "solid"]]`                            |
+| `styles`         | `[]`                    | The last part a name may have, such as `["line", "fill"]`. Any kebab-case name when empty         |
+| `pairs`          | `[]`                    | The styles an icon comes in together, such as `[["line", "fill"]]`                                |
 | `startCodepoint` | `"f101"`                | The code point of the first icon of a new set, in the Private Use Area                            |
 | `formats`        | `["woff2", "woff"]`     | The font formats, in the order of the `src` of the font face: `woff2`, `woff`, `ttf`              |
 | `header`         | `[]`                    | The lines of the comment at the top of each stylesheet. `{version}` is the version of the package |

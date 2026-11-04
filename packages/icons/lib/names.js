@@ -38,7 +38,7 @@ export function listIcons(dir) {
 
 /**
  * Splits a name into what the icon shows and the style it is drawn in.
- * @param {string} name - The name of an icon, such as `arrow-right-solid`
+ * @param {string} name - The name of an icon, such as `ring-half-fill`
  * @param {string[]} styles - The styles a name may end in; any name when empty
  * @returns {{ base: string, style: string | null } | { error: string }}
  */
@@ -53,7 +53,7 @@ export function parseName(name, styles) {
     return { base: name, style: null }
   }
 
-  // The longest style first, so that `fill-solid` is found before `solid`
+  // The longest style first, so that `half-fill` is found before `fill`
   const style = [...styles]
     .sort((a, b) => b.length - a.length)
     .find((candidate) => name.endsWith(`-${candidate}`))

@@ -74,7 +74,7 @@ pnpm install
 
 ### 3. Save the source
 
-Save your SVG files into `source/`, one file per icon. The name of a file is the name of its icon: `arrow-right-solid.svg` is the icon `arrow-right-solid`. A file can be an icon when:
+Save your SVG files into `source/`, one file per icon. The name of a file is the name of its icon: `bar-line.svg` is the icon `bar-line`. A file can be an icon when:
 
 - its name is in kebab-case, and ends in one of the `styles` of your configuration when you set any,
 - its `viewBox` is `0 0 <frame> <frame>`, and its `width` and `height`, when it has them, are the frame,
@@ -133,7 +133,7 @@ Everything that is particular to your set is in `package.json`: the details of t
 }
 ```
 
-With this block the font is `acme-icons`, its files are `acme-icons.css`, `acme-icons.woff2` and so on, and the class of an icon is `ai-<name>`. Set `styles` and `pairs` when your icons come in styles, such as `["outline", "solid"]` and `[["outline", "solid"]]`, and edit `description` and `header`. Add `"targets": ["ios", "android"]` for the files of iOS and Android apps, or one of the two; `init` does not write the setting, and the web is always built. [Configuration](#configuration) describes each setting. Leave the other fields of the file to the build: it writes `main`, `style`, `sass`, `files`, `exports` and `sideEffects` for your font name, and keeps the entries that are yours, such as `CHANGELOG.md` in `files`.
+With this block the font is `acme-icons`, its files are `acme-icons.css`, `acme-icons.woff2` and so on, and the class of an icon is `ai-<name>`. Set `styles` and `pairs` when your icons come in styles, such as `["line", "fill"]` and `[["line", "fill"]]`, and edit `description` and `header`. Add `"targets": ["ios", "android"]` for the files of iOS and Android apps, or one of the two; `init` does not write the setting, and the web is always built. [Configuration](#configuration) describes each setting. Leave the other fields of the file to the build: it writes `main`, `style`, `sass`, `files`, `exports` and `sideEffects` for your font name, and keeps the entries that are yours, such as `CHANGELOG.md` in `files`.
 
 When a project of yours reads icons by name, list them in `chassis.checks.json` at the root of the repository, and `pnpm verify` fails when one of them is missing; see [The checks file](#the-checks-file). A repository without the file passes.
 
@@ -299,8 +299,8 @@ The build reads one block of the `package.json` of a repository of icons. A sett
 | `source`         | `"source"`              | The folder of your SVG files, from the folder of `package.json`                                     |
 | `checks`         | `"chassis.checks.json"` | The file of the icons that others read by name, from the folder of `package.json`. It may not exist |
 | `frame`          | `24`                    | The width and the height of the frame an icon is drawn on                                           |
-| `styles`         | `[]`                    | The last part a name may have, such as `["outline", "solid"]`. Any kebab-case name when empty       |
-| `pairs`          | `[]`                    | The styles an icon comes in together, such as `[["outline", "solid"]]`                              |
+| `styles`         | `[]`                    | The last part a name may have, such as `["line", "fill"]`. Any kebab-case name when empty           |
+| `pairs`          | `[]`                    | The styles an icon comes in together, such as `[["line", "fill"]]`                                  |
 | `startCodepoint` | `"f101"`                | The code point of the first icon of a new set, in the Private Use Area (`e000` to `f8ff`)           |
 | `formats`        | `["woff2", "woff"]`     | The font formats, in the order of the `src` of the font face: `woff2`, `woff`, `ttf`                |
 | `header`         | `[]`                    | The lines of the comment at the top of each stylesheet. `{version}` is the version of the package   |
@@ -327,13 +327,13 @@ The other fields of the `package.json` of a repository of icons describe the pac
 
 ```json
 {
-  "contracts": [{ "reader": "the toolbar of the app", "icons": ["search-solid", "xmark-outline"] }]
+  "contracts": [{ "reader": "the toolbar of the app", "icons": ["bar-fill", "ring-line"] }]
 }
 ```
 
 ### The templates
 
-`packages/icons/lib/templates/css.hbs` and `scss.hbs` are the Handlebars templates of the stylesheets. Change them to change what the stylesheets hold, for every set. They get `name`, `prefix`, `header`, `formats`, `fontSrc`, `fontHash` and `codepoints` from the build.
+`packages/icons/lib/templates/css.hbs` and `scss.hbs` are the Handlebars templates of the stylesheets. Change them to change what the stylesheets hold, for every set. They get `name`, `prefix`, `header`, `formats`, `fontSrc`, `fontsUrl`, `fontHash` and `codepoints` from the build.
 
 `readme.hbs` is the template of the `README.md` of a set. It gets `packageName`, `description`, `homepage`, `repository` and `license` from `package.json`, `name`, `prefix`, `frame`, `styles` and `formats` from the configuration, the number of icons as `count`, the first icon as `icon`, and, for the targets of the set, their platforms as `platforms`, the Swift names of the set and the first icon as `ios`, and the drawable of the first icon as `android`.
 

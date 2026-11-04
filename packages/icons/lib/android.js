@@ -3,8 +3,8 @@
  * converted from its optimized SVG file by svg2vectordrawable with the options of
  * `chassis-ui/tokens` for its icons. A path is filled black, which the tint of a view or of
  * `Icon` in Compose replaces, as `currentcolor` takes the color of the text on the web. A
- * drawable is named after the class of the icon in the font: `cx-bell-outline` is
- * `cx_bell_outline`, which a resource name has to be.
+ * drawable is named after the class of the icon in the font: `ag-bar-line` is
+ * `ag_bar_line`, which a resource name has to be.
  */
 
 import fs from 'node:fs/promises'

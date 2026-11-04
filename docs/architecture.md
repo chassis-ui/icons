@@ -9,7 +9,8 @@ How the build of an icon set works, why it is built this way, and what it promis
 The command runs on one repository of icons, and reads three things of it.
 
 ```text
-package.json ──────────┐  chassis.build: name, prefix, frame, styles, pairs, formats, header
+package.json ──────────┐  chassis.build: name, prefix, frame, styles, pairs, startCodepoint,
+                       │  formats, header, targets, source, checks
 source/<name>.svg ─────┤  only read, never written
 codepoints.json ───────┘  the code points the set has given out, and the retired ones
         │
@@ -90,7 +91,7 @@ Each module of `lib/` does one thing, and takes what it needs as arguments.
 | `logger.js`        | The one logger. A module never writes to the console itself                                                    |
 | `lib/templates/`   | `css.hbs` and `scss.hbs`, the stylesheets, `readme.hbs`, the README, and `preview/`, the page of the set       |
 
-`templates/` of the package holds what `init` writes into a repository: `AGENTS.md`, `CHANGELOG.md`, `CLAUDE.md`, `gitignore` and the workflows `workflows/ci.yml` and `workflows/release.yml`. `init` fills in the name of the package, the font, the prefix and the package manager, and writes `package.json`, `.gitignore` and `.nvmrc` from values of its own.
+`templates/` of the package holds what `init` writes into a repository: `AGENTS.md`, `CHANGELOG.md`, `CLAUDE.md`, `gitignore` and the workflows `workflows/ci.yml` and `workflows/release.yml`. `init` fills in the name of the package, the font, the prefix and the package manager, and writes `package.json` and `.nvmrc` from values of its own.
 
 The scripts of the root `build/` belong to this repository and not to the build of a set: `check-changeset.js` asks for a changeset, `sync-version-refs.js` copies the version of the builder into the files that show it, and `release-notes.js` prints the changelog entry of the builder with the module of the same name.
 
@@ -167,7 +168,7 @@ The README of the package is written from `lib/templates/readme.hbs` for the sam
 
 ### The platforms are built from the files of the web
 
-The `ios` and `android` targets start from `dist/svgs/`, the files that the web draws, so an icon looks the same on the three. An image set holds the SVG file as it is and renders as a template, and a vector drawable fills its paths black: in both, the tint of a view gives the color, as the color of the text does to `currentcolor`. An image set and a drawable are named after the icon and its class, so `bell-outline` is the image `bell-outline`, the case `bellOutline` of `<Prefix>Icon` and `R.drawable.<prefix>_bell_outline`. The conversion to a drawable is the one of `chassis-ui/tokens` for its icons, svg2vectordrawable with the same options. `chassis-ui/assets` builds icons for iOS and Android too, for the icons of an app that are in no set.
+The `ios` and `android` targets start from `dist/svgs/`, the files that the web draws, so an icon looks the same on the three. An image set holds the SVG file as it is and renders as a template, and a vector drawable fills its paths black: in both, the tint of a view gives the color, as the color of the text does to `currentcolor`. An image set and a drawable are named after the icon and its class, so `bar-line` is the image `bar-line`, the case `barLine` of `<Prefix>Icon` and `R.drawable.<prefix>_bar_line`. The conversion to a drawable is the one of `chassis-ui/tokens` for its icons, svg2vectordrawable with the same options. `chassis-ui/assets` builds icons for iOS and Android too, for the icons of an app that are in no set.
 
 An app takes the files of its platform from the archive of a release, not from npm, which holds the files for the web only. There is no Swift package: Swift Package Manager reads its files from the Git tag, and `dist/` is not committed. The Swift file finds the catalog in the bundle of the target that it is added to, and in `Bundle.module` when it is built in a Swift package, so a Swift package of `dist/ios/` at a release tag needs no other file. The native tools are not in CI: `test/native/check.sh` compiles the output with actool, swiftc and aapt2 on a machine that has Xcode and the Android SDK.
 

@@ -38,7 +38,7 @@ mkdir source
 cp /path/to/your/icons/*.svg source/
 ```
 
-The name of a file is the name of its icon: `arrow-right-solid.svg` is the icon `arrow-right-solid`. The pages of [Icon Design]([[docsref:/icon-design/frame-and-color]]) say what a file needs to be an icon: a name in kebab-case, the frame of the set, one color and filled shapes only. The build only reads `source/`, and never changes a file there.
+The name of a file is the name of its icon: `bar-line.svg` is the icon `bar-line`. The pages of [Icon Design]([[docsref:/icon-design/frame-and-color]]) say what a file needs to be an icon: a name in kebab-case, the frame of the set, one color and filled shapes only. The build only reads `source/`, and never changes a file there.
 
 Check the files before the first build:
 
@@ -68,13 +68,13 @@ Everything that is particular to the set is in `package.json`: the details of th
 }
 ```
 
-With this block the font is `acme-icons`, its files are `dist/web/acme-icons.css`, `dist/web/acme-icons.woff2` and so on, and the class of an icon is `ai-<name>`. The set has no styles yet: with `"styles": ["outline", "solid"]` a name ends in one of them, and with `"pairs": [["outline", "solid"]]` an icon comes in both. The build writes the files of the web only, until `"targets": ["ios", "android"]` adds those of iOS and Android. [Configuration]([[docsref:/getting-started/build-system#configuration]]) describes each setting.
+With this block the font is `acme-icons`, its files are `dist/web/acme-icons.css`, `dist/web/acme-icons.woff2` and so on, and the class of an icon is `ai-<name>`. The set has no styles yet: with `"styles": ["line", "fill"]` a name ends in one of them, and with `"pairs": [["line", "fill"]]` an icon comes in both. The build writes the files of the web only, until `"targets": ["ios", "android"]` adds those of iOS and Android. [Configuration]([[docsref:/getting-started/build-system#configuration]]) describes each setting.
 
 When a project reads icons of the set by name, list them in `chassis.checks.json` beside `package.json`, and `npm run verify` fails when one of them is gone:
 
 ```json
 {
-  "contracts": [{ "reader": "the toolbar of the app", "icons": ["search-solid", "xmark-outline"] }]
+  "contracts": [{ "reader": "the toolbar of the app", "icons": ["bar-fill", "ring-line"] }]
 }
 ```
 

@@ -146,7 +146,7 @@ The project has one word for each concept. Using a synonym makes the reader wond
 
 **Owned and customized.** Chassis Icons is the builder, and holds no set: a set is owned by the team that builds it. Don't present a font name, a prefix or styles as the only ones; see [§8](#8-counts-versions-and-configuration). A document says "the set" and "your set".
 
-**The examples are of a team named `acme`.** The quick start writes `@acme/icons`, with the font `acme-icons` and the prefix `ai`. The fixture of the tests is `@acme/glyphs`, with the font `acme-glyphs`, the prefix `ag`, the frame `16` and the styles `line` and `fill`. A page uses one of the two throughout. An icon of an example is an icon of the fixture (`bar-*`, `diamond-*`, `notch-*`, `ring-*`), a placeholder such as `<name>`, or, for `@acme/icons`, a name that the quick start gives, such as `arrow-right-solid`. The Chassis set, or any other real set, is never an example, a reference or a consumer in a document of this repository.
+**The examples are of a team named `acme`.** The quick start writes `@acme/icons`, with the font `acme-icons` and the prefix `ai`. The fixture of the tests is `@acme/glyphs`, with the font `acme-glyphs`, the prefix `ag`, the frame `16` and the styles `line` and `fill`. A page uses one of the two throughout. An icon of an example is an icon of the fixture (`bar-*`, `diamond-*`, `notch-*`, `ring-*`), or a placeholder such as `<name>`, for `@acme/icons` too; a style of an example is `line` or `fill`. The Chassis set, or any other real set, is never an example, a reference or a consumer in a document of this repository.
 
 **Phases are for the roadmap.** "Phase" names a phase of `ref/ROADMAP.md`. A part of the build is a step.
 
