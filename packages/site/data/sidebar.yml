@@ -1,7 +1,7 @@
 # The entries of the sidebar of the documentation pages. An entry finds its page by the slug
 # of its title: "Quick Start" under "Getting Started" is
-# content/docs/getting-started/quick-start.mdx. The icons are of the installed @chassis-ui/icons
-# alias, which draws the interface of the site.
+# content/docs/getting-started/quick-start.mdx. The icons are of the installed
+# @chassis-ui/website-icons, which draws the interface of the site.
 
 - title: Getting Started
   icon: rocket-solid

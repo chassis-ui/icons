@@ -265,7 +265,7 @@ This repository promises `release.yml` by that file name, which is the trusted p
 
 `packages/site/` is the documentation of the builder, and shows no set: a landing page at `/icons/`, and the MDX pages of `content/docs/` in the `docs` collection of every Chassis site, under `/icons/docs/`. An example of a page names a set of a team with `acme` names, and every command, path and output in it is one of the build, copied from a build of the fixture.
 
-The interface of the site is drawn by `@chassis-ui/docs`, as on every Chassis site: `/static/icons/` holds `icons/` of the installed `@chassis-ui/icons`. The package of the workspace has the same name, so the site asks for the published one with an npm alias, a version that still held the icons of the Chassis website, until the Chassis sites take them from `@chassis-ui/website-icons`.
+The interface of the site is drawn by `@chassis-ui/docs`, as on every Chassis site: `/static/icons/` holds `dist/web/` of the installed `@chassis-ui/website-icons`, the icons of the Chassis websites from chassis-ui/website-icons, which `getChassisIconsFsPath()` of `@chassis-ui/docs` returns. The site does not depend on `@chassis-ui/icons`, the builder of this workspace.
 
 ## Checks
 

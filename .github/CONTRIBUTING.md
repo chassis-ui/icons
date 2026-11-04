@@ -130,9 +130,10 @@ documentation pages. It shows no set, and its code names no font, no prefix and 
 set. An example of a page uses the `acme` names of [WRITING.md](../WRITING.md).
 
 The interface of the site, the header, the sidebar and the search, is drawn by
-`@chassis-ui/docs` with the icons of the installed `@chassis-ui/icons` alias, a published
-version of this package, at `/static/icons/`. `<Icon>` of `@chassis-ui/docs` and the `icon` of
-an entry of `packages/site/data/sidebar.yml` name icons of that package.
+`@chassis-ui/docs` with the icons of the Chassis websites, the installed
+`@chassis-ui/website-icons` of chassis-ui/website-icons, at `/static/icons/`. `<Icon>` of
+`@chassis-ui/docs` and the `icon` of an entry of `packages/site/data/sidebar.yml` name icons of
+that package. The site does not take them from the builder of this workspace.
 
 `pnpm site:test` checks the built site: that every page is there, that every icon a page
 draws is in a sprite that the site serves, and that every link leads to a page and a heading

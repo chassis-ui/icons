@@ -187,12 +187,13 @@ function copyChassisCSS(root: string, publicDir: string) {
 }
 
 /**
- * Copies the `icons/` folder of the installed `@chassis-ui/icons` into `public/static/icons/`
- * so icons are served from `/static/icons/`. The layouts and the components of
- * `@chassis-ui/docs` draw the interface of the site with them, as on every Chassis site.
+ * Copies the `dist/web/` folder of the installed `@chassis-ui/website-icons`, the icons of the
+ * Chassis websites, into `public/static/icons/` so they are served from `/static/icons/`. The
+ * layouts and the components of `@chassis-ui/docs` draw the interface of the site with them, as
+ * on every Chassis site. They are not built by the `@chassis-ui/icons` of this workspace.
  */
 function copyChassisIcons(root: string, publicDir: string) {
-  const source = path.join(getChassisIconsFsPath({ root }), 'icons')
+  const source = getChassisIconsFsPath({ root })
   const destination = path.join(publicDir, 'static', 'icons')
 
   fs.mkdirSync(destination, { recursive: true })

@@ -125,8 +125,9 @@ And these:
   TypeScript.
 - **The site is the documentation of the builder, and shows no set.** It has the home page
   and the pages of `content/docs/`, and no page per icon. `<Icon>` of `@chassis-ui/docs` and
-  the icons of `data/sidebar.yml` are of the installed `@chassis-ui/icons` alias, which draws
-  the interface, as on every Chassis site.
+  the icons of `data/sidebar.yml` are of the installed `@chassis-ui/website-icons`, of
+  chassis-ui/website-icons, which draws the interface, as on every Chassis site, and not of
+  the builder of this workspace.
 - **A root script runs a package script with `run`.** `pnpm --filter ./packages/icons run test`,
   never `pnpm --filter ./packages/icons test`.
 - **Add a changeset** (`pnpm changeset`, or a file in `.changeset/`) to a change in
