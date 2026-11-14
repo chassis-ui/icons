@@ -1,35 +1,236 @@
 ---
+/**
+ * The home page of Chassis Icons, composed of the home page sections of `@chassis-ui/docs`.
+ * The copy is that of the Figma design "Icons · Home". A door is one page of the docs with its
+ * real title, and the groups of the doors follow `data/sidebar.yml`.
+ */
+
 import BaseLayout from '@chassis-ui/docs/layouts/BaseLayout.astro'
-import HeroSection from '@components/homepage/HeroSection.astro'
-import IntroSection from '@components/homepage/IntroSection.astro'
-import HowSection from '@components/homepage/HowSection.astro'
-import OutputSection from '@components/homepage/OutputSection.astro'
-import UsageSection from '@components/homepage/UsageSection.astro'
-import ChecksSection from '@components/homepage/ChecksSection.astro'
-import TechSection from '@components/homepage/TechSection.astro'
-import DocsSection from '@components/homepage/DocsSection.astro'
-import HomeIcons from '/static/icons/cx-sprite.svg?raw'
+import Cards from '@chassis-ui/docs/sections/Cards.astro'
+import Doors from '@chassis-ui/docs/sections/Doors.astro'
+import Facts from '@chassis-ui/docs/sections/Facts.astro'
+import Hero from '@chassis-ui/docs/sections/Hero.astro'
+import Rows from '@chassis-ui/docs/sections/Rows.astro'
+import Section from '@chassis-ui/docs/sections/Section.astro'
+import Steps from '@chassis-ui/docs/sections/Steps.astro'
+import Icon from '@chassis-ui/docs/shortcodes/Icon.astro'
+import { getConfig, getDocsPath } from '@chassis-ui/docs/site'
+
+const { description, repo, currentVersion } = getConfig()
+const changelog = `${repo}/blob/main/packages/icons/CHANGELOG.md`
+
+const benefits = [
+  {
+    label: 'Source',
+    title: 'Add an icon by saving a file.',
+    points: [
+      'The name of the file is the name of the icon. No list is kept beside it.',
+      'The font name, the class prefix and the frame are settings of your repository.',
+      'An icon keeps its code point for as long as it is in the set.'
+    ]
+  },
+  {
+    label: 'Output',
+    title: 'Use an icon the way each project needs.',
+    points: [
+      'A font with CSS and Sass stylesheets, a sprite and single SVG files for the web.',
+      'An asset catalog and a Swift enum for iOS.',
+      'A vector drawable per icon for Android.'
+    ]
+  },
+  {
+    label: 'Checks',
+    title: 'Catch a broken icon before a release.',
+    points: [
+      'The source lint checks the name, the frame and the color of each file.',
+      'Verify fails when two builds of the source differ.',
+      'Both run in CI on a pull request and before a release.'
+    ]
+  }
+]
+
+const steps = [
+  {
+    name: 'Source to release',
+    stations: [
+      {
+        label: '01 · Save',
+        title: 'Save the icons.',
+        body: 'One SVG file per icon, drawn on the frame of the set in one color.'
+      },
+      {
+        label: '02 · Build',
+        title: 'Build the set.',
+        body: 'The build writes the font, the sprite, the SVG files and the files of apps.'
+      },
+      {
+        label: '03 · Release',
+        title: 'Release a version.',
+        body: 'The release workflow publishes to npm and attaches an archive per target.'
+      }
+    ]
+  }
+]
+
+const related = [
+  {
+    name: 'Chassis CSS',
+    icon: 'cx-brackets-curly',
+    href: 'https://chassis-ui.com/css/',
+    body: 'Use the icon font or the sprite with the components of Chassis CSS.'
+  },
+  {
+    name: 'Chassis React',
+    icon: 'cx-react',
+    href: 'https://chassis-ui.com/react/',
+    body: 'Use the icons of your set in Chassis React components.'
+  },
+  {
+    name: 'Chassis Assets',
+    icon: 'cx-folder-tree',
+    href: 'https://chassis-ui.com/assets/',
+    body: 'The other files of a brand: fonts, images and app icons, built for each platform.'
+  }
+]
+
+const facts = [
+  { name: 'SVGO', detail: 'Optimizes the SVG files' },
+  { name: 'svg-sprite', detail: 'Writes the sprite' },
+  { name: 'Fantasticon', detail: 'Writes the icon font' },
+  { name: 'svg2vectordrawable', detail: 'Writes the vector drawables' }
+]
+
+const doors = [
+  {
+    label: 'Getting started',
+    doors: [
+      {
+        name: 'Welcome to Chassis Icons',
+        href: getDocsPath('/getting-started/introduction/'),
+        body: 'What the builder does, and what a set is.'
+      },
+      {
+        name: 'Quick Start',
+        href: getDocsPath('/getting-started/quick-start/'),
+        body: 'Make a repository and build its first icons.'
+      },
+      {
+        name: 'Build System',
+        href: getDocsPath('/getting-started/build-system/'),
+        body: 'The commands, the settings and the output.'
+      }
+    ]
+  },
+  {
+    label: 'Icon design',
+    doors: [
+      {
+        name: 'Frame and Color',
+        href: getDocsPath('/icon-design/frame-and-color/'),
+        body: 'The frame and the one color of an icon.'
+      },
+      {
+        name: 'Names and Styles',
+        href: getDocsPath('/icon-design/names-and-styles/'),
+        body: 'How files are named, and the pairs of styles.'
+      },
+      {
+        name: 'Source Lint',
+        href: getDocsPath('/icon-design/source-lint/'),
+        body: 'What the lint checks in each file.'
+      }
+    ]
+  },
+  {
+    label: 'Use in project',
+    doors: [
+      {
+        name: 'Icon Font',
+        href: getDocsPath('/use-in-project/icon-font/'),
+        body: 'A class on an element, sized by its text.'
+      },
+      {
+        name: 'SVG Sprite',
+        href: getDocsPath('/use-in-project/svg-sprite/'),
+        body: 'One file, and a use element per icon.'
+      },
+      {
+        name: 'iOS and Android',
+        href: getDocsPath('/use-in-project/ios-and-android/'),
+        body: 'The asset catalog, the enum and the drawables.'
+      }
+    ]
+  }
+]
 ---
 
-<BaseLayout title="Chassis Icons - The builder of icon sets of Chassis UI">
-  <!-- Hero Section -->
-  <HeroSection />
-  <hr class="hr container" />
-  <!-- A repository of icons per team -->
-  <IntroSection />
-  <!-- From the SVG files to a release -->
-  <HowSection />
-  <!-- What a build writes -->
-  <OutputSection />
-  <!-- The ways to use an icon -->
-  <UsageSection />
-  <!-- The source lint and verify -->
-  <ChecksSection />
-  <!-- The tools of the build -->
-  <TechSection />
-  <!-- Documentation Section -->
-  <DocsSection />
-  <div class="d-none">
-    <Fragment set:html={HomeIcons} />
-  </div>
+<BaseLayout title="Chassis Icons" description={description} navbarContext="alternate">
+  <Hero
+    kicker="Chassis Icons"
+    lead="The chassis-icons command builds a repository of SVG files into an icon font, a sprite, optimized SVG files and the files of iOS and Android apps."
+    command="npx @chassis-ui/icons init acme-icons"
+    illustration="images/illustrations/hero-icons.svg"
+    illustrationLabel="A grid of icons on a panel, one of them selected"
+  >
+    <Fragment slot="title">
+      <span class="d-block">Icons from a folder of SVGs.</span>{' '}
+      <mark class="d-block">
+        <span class="lg:d-block">One build for the web,</span>{' '}
+        <span class="lg:d-block">iOS and Android.</span>
+      </mark>
+    </Fragment>
+    <Fragment slot="actions">
+      <a class="button primary lg" href={getDocsPath('/getting-started/introduction/')}>
+        <Icon name="book-open-outline" />
+        Getting Started
+      </a>
+      <a class="button alternate lg" href={repo}>
+        <Icon name="github-brand" />
+        View on GitHub
+      </a>
+    </Fragment>
+    <Fragment slot="meta">
+      Currently v{currentVersion}
+      <span aria-hidden="true">&nbsp;/&nbsp;</span>
+      <a href={changelog}>Releases</a>
+    </Fragment>
+  </Hero>
+
+  <Section
+    id="what"
+    eyebrow="What you get"
+    title={['A repository of icons per team.', 'Every format from one build.']}
+    lead="The builder ships no icons. Everything that is particular to a set is in its own repository, and one build writes every output."
+  >
+    <Rows rows={benefits} />
+  </Section>
+
+  <Section
+    id="how"
+    eyebrow="How it works"
+    title={['From SVG files', 'to a release.']}
+    lead="The repository that init writes has a script for each step, a CI workflow and a release workflow."
+  >
+    <Steps stages={steps} />
+  </Section>
+
+  <Section
+    id="works-with"
+    eyebrow="Works with"
+    title={['Your set is its own package.', 'The others can use it.']}
+    lead="A set you build works alone, or as the icons of Chassis CSS and Chassis React. Assets builds the other files of a brand."
+  >
+    <Cards cards={related} />
+  </Section>
+
+  <Facts label="Built on" facts={facts} />
+
+  <Section
+    id="docs"
+    eyebrow="Get started"
+    title={['Start with the guide', 'that matches your task.']}
+    lead="Set up a repository for your set, learn how to draw an icon for it, or use the output in a project."
+  >
+    <Doors groups={doors} />
+  </Section>
 </BaseLayout>
