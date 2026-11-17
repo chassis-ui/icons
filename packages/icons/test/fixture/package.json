@@ -31,6 +31,7 @@
         "woff2",
         "ttf"
       ],
+      "ligatures": true,
       "header": [
         "Acme Glyphs v{version}",
         "Copyright Acme Works"

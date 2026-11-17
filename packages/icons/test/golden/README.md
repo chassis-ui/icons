@@ -11,7 +11,7 @@ npm install @acme/glyphs
 ## What the package holds
 
 - `dist/svgs/<name>.svg`: one optimized file per icon
-- `dist/web/acme-glyphs.css` and `dist/web/acme-glyphs.min.css`: the stylesheet of the icon font, with one class per icon
+- `dist/web/acme-glyphs.css` and `dist/web/acme-glyphs.min.css`: the stylesheet of the icon font, with one class per icon and the class `ag`, which draws an icon from its name
 - `dist/web/acme-glyphs.scss`: the same stylesheet for Sass, with the folder of the font and the map of the icons as variables
 - `dist/web/acme-glyphs.woff2`, `dist/web/acme-glyphs.ttf`: the icon font, which the stylesheets load from their own folder
 - `dist/web/acme-glyphs.svg`: the SVG sprite, one `<symbol>` per icon with the name of the icon as its `id`
@@ -37,6 +37,16 @@ One class per icon, `ag-<name>`, on an empty element:
 ```
 
 With a bundler, `import '@acme/glyphs'` loads the same stylesheet and its font.
+
+### The names in the font
+
+The font draws an icon for its name, in an element of the class `ag`:
+
+```html
+<i class="ag" aria-hidden="true">bar-fill</i>
+```
+
+A screen reader reads the name, so an icon that means something gets a label of its own in place of `aria-hidden`. While the font loads, the stylesheet hides the name for up to three seconds.
 
 ### The SVG sprite
 

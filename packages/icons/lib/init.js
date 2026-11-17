@@ -332,6 +332,7 @@ export function planFiles(options = {}) {
         pairs: [],
         startCodepoint: 'f101',
         formats: DEFAULTS.formats,
+        ligatures: false,
         header: [
           `${toTitle(font)} v{version}`,
           ...(authorName ? [`Copyright ${authorName}`] : []),

@@ -10,7 +10,7 @@ The command runs on one repository of icons, and reads three things of it.
 
 ```text
 package.json ──────────┐  chassis.build: name, prefix, frame, styles, pairs, startCodepoint,
-                       │  formats, header, targets, source, checks
+                       │  formats, ligatures, header, targets, source, checks
 source/<name>.svg ─────┤  only read, never written
 codepoints.json ───────┘  the code points the set has given out, and the retired ones
         │
@@ -29,8 +29,9 @@ sprite.js            svg-sprite: one <symbol> per file
         │
         ▼ step font                            (reads dist/svgs/ and codepoints.json)
 codepoints.js        keeps, gives and retires code points → codepoints.json
-font.js              Fantasticon: the font in each format; Handlebars: the stylesheets;
-                     clean-css: the minified CSS
+font.js              Fantasticon: the SVG font; svg2ttf, ttf2woff and ttf2woff2: the font
+                     in each format, with a ligature of each name when `ligatures` is set;
+                     Handlebars: the stylesheets; clean-css: the minified CSS
                      → dist/web/<font>.{woff2,woff,ttf}, .css, .min.css, .scss, .json
 set-index.js         the index of the set: the settings and every icon with its code point
                      → dist/icons.json
@@ -67,29 +68,29 @@ preview.js           Handlebars: index.html, every icon with its name; its style
 
 Each module of `lib/` does one thing, and takes what it needs as arguments.
 
-| Module             | What it does                                                                                                   |
-| ------------------ | -------------------------------------------------------------------------------------------------------------- |
-| `cli.js`           | The command line: `build`, `verify`, `lint-source`, `preview`, `archive`, `release-notes`, `init`              |
-| `root.js`          | The repository of a run, from `--cwd` or found upward from the working directory, and the version of the build |
-| `config.js`        | Reads `chassis.build`, fills in the defaults, refuses a setting it does not know, and resolves the folders     |
-| `names.js`         | Lists the icons of a folder in a fixed order, and splits a name into what it shows and its style               |
-| `optimize.js`      | The one SVGO configuration, in two forms: a file of `dist/svgs/`, and a symbol of the sprite                   |
-| `sprite.js`        | Builds the sprite with svg-sprite                                                                              |
-| `codepoints.js`    | The registry: reads it, brings it up to date with the icons of the set, and checks it                          |
-| `font.js`          | Draws the font with Fantasticon, renders the stylesheets from the templates, minifies the CSS                  |
-| `set-index.js`     | The index of the set, `dist/icons.json`, and its text: one line per icon                                       |
-| `ios.js`           | The `ios` target: the asset catalog, and the Swift file and its names                                          |
-| `android.js`       | The `android` target: the vector drawables, with svg2vectordrawable                                            |
-| `preview.js`       | Writes the page of the set into a folder from the output and its templates, and serves a folder over HTTP      |
-| `manifest.js`      | The fields of `package.json` that follow from the configuration, and the README of the package                 |
-| `build.js`         | Runs the steps, in the folders of the repository or in any others; `compareWithBuild`                          |
-| `lint-source.js`   | Checks whether each file of the source folder can be an icon of the set                                        |
-| `verify.js`        | Builds twice, compares the committed files that the build writes, the code points and the contracts            |
-| `archive.js`       | Writes `<font>-<target>-<version>.zip` of the web, with the page, and of each target, for a release            |
-| `release-notes.js` | The entry of a version in `CHANGELOG.md`, without its heading, for the body of a release                       |
-| `init.js`          | Writes the files of a new repository of icons from `templates/`, and checks a repository against them          |
-| `logger.js`        | The one logger. A module never writes to the console itself                                                    |
-| `lib/templates/`   | `css.hbs` and `scss.hbs`, the stylesheets, `readme.hbs`, the README, and `preview/`, the page of the set       |
+| Module             | What it does                                                                                                          |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| `cli.js`           | The command line: `build`, `verify`, `lint-source`, `preview`, `archive`, `release-notes`, `init`                     |
+| `root.js`          | The repository of a run, from `--cwd` or found upward from the working directory, and the version of the build        |
+| `config.js`        | Reads `chassis.build`, fills in the defaults, refuses a setting it does not know, and resolves the folders            |
+| `names.js`         | Lists the icons of a folder in a fixed order, and splits a name into what it shows and its style                      |
+| `optimize.js`      | The one SVGO configuration, in two forms: a file of `dist/svgs/`, and a symbol of the sprite                          |
+| `sprite.js`        | Builds the sprite with svg-sprite                                                                                     |
+| `codepoints.js`    | The registry: reads it, brings it up to date with the icons of the set, and checks it                                 |
+| `font.js`          | Draws the SVG font with Fantasticon, adds the ligatures, makes each format, renders the stylesheets, minifies the CSS |
+| `set-index.js`     | The index of the set, `dist/icons.json`, and its text: one line per icon                                              |
+| `ios.js`           | The `ios` target: the asset catalog, and the Swift file and its names                                                 |
+| `android.js`       | The `android` target: the vector drawables, with svg2vectordrawable                                                   |
+| `preview.js`       | Writes the page of the set into a folder from the output and its templates, and serves a folder over HTTP             |
+| `manifest.js`      | The fields of `package.json` that follow from the configuration, and the README of the package                        |
+| `build.js`         | Runs the steps, in the folders of the repository or in any others; `compareWithBuild`                                 |
+| `lint-source.js`   | Checks whether each file of the source folder can be an icon of the set                                               |
+| `verify.js`        | Builds twice, compares the committed files that the build writes, the code points and the contracts                   |
+| `archive.js`       | Writes `<font>-<target>-<version>.zip` of the web, with the page, and of each target, for a release                   |
+| `release-notes.js` | The entry of a version in `CHANGELOG.md`, without its heading, for the body of a release                              |
+| `init.js`          | Writes the files of a new repository of icons from `templates/`, and checks a repository against them                 |
+| `logger.js`        | The one logger. A module never writes to the console itself                                                           |
+| `lib/templates/`   | `css.hbs` and `scss.hbs`, the stylesheets, `readme.hbs`, the README, and `preview/`, the page of the set              |
 
 `templates/` of the package holds what `init` writes into a repository: `AGENTS.md`, `CHANGELOG.md`, `CLAUDE.md`, `gitignore` and the workflows `workflows/ci.yml` and `workflows/release.yml`. `init` fills in the name of the package, the font, the prefix and the package manager, and writes `package.json` and `.nvmrc` from values of its own.
 
@@ -174,11 +175,17 @@ An app takes the files of its platform from the archive of a release, not from n
 
 ### Tools are called through their APIs
 
-SVGO, svg-sprite, Fantasticon, clean-css and svg2vectordrawable are called as libraries, in one Node.js process. A whole build of a set of a few hundred icons takes a few seconds. Replacing one of the tools is a task of its own, with a comparison of the output before and after.
+SVGO, svg-sprite, Fantasticon, svg2ttf, ttf2woff, ttf2woff2, clean-css and svg2vectordrawable are called as libraries, in one Node.js process. A whole build of a set of a few hundred icons takes a few seconds. Replacing one of the tools is a task of its own, with a comparison of the output before and after.
+
+### The names of the icons are ligatures, on request
+
+With `"ligatures": true`, the font draws an icon for its name, as Material Icons does: `<i class="<prefix>"><name></i>`. The font has a glyph for each character of the names, which draws nothing, and the feature `liga` replaces the characters of a name with the glyph of its icon. A longer name comes first, so `bar-fill` is not drawn as `bar` and `-fill`. The code points stay, and so does the class of each icon.
+
+Fantasticon gives a glyph its code point only. So the build asks Fantasticon for the SVG font alone, adds to it a glyph per icon whose characters are the name, as svgicons2svgfont writes the second `unicode` of an icon, and makes the other formats of it with the tools and the options that Fantasticon uses: svg2ttf, then ttf2woff and ttf2woff2. svg2ttf writes the ligatures, and gives the glyph of a name the drawing of its icon, so the font holds each drawing once. Without the setting, the font is byte for byte the one that Fantasticon writes, which `font.test.js` holds it to. The setting is off by default: a name in the font is text, which a screen reader reads, and which shows while the font loads.
 
 ## Configuration
 
-`config.js` reads the `chassis.build` block of the `package.json` of the repository. The settings and their defaults are in the [README of the package](../packages/icons/README.md#configuration). `resolveConfig` refuses, with a message that names the setting: a block that is missing, a setting it does not know, a `name` or `prefix` that is not in kebab-case, a `frame` that is not a whole number above zero, a style that is named twice, a pair of fewer than two styles or of a style that `styles` does not list, a format other than `woff2`, `woff` and `ttf`, a `startCodepoint` outside the Private Use Area, a `header` line that would end the comment, and a target other than `ios` and `android`, or one named twice. The `ios` step refuses two icons whose names give one Swift case, such as `arrow-2` and `arrow2`.
+`config.js` reads the `chassis.build` block of the `package.json` of the repository. The settings and their defaults are in the [README of the package](../packages/icons/README.md#configuration). `resolveConfig` refuses, with a message that names the setting: a block that is missing, a setting it does not know, a `name` or `prefix` that is not in kebab-case, a `frame` that is not a whole number above zero, a style that is named twice, a pair of fewer than two styles or of a style that `styles` does not list, a format other than `woff2`, `woff` and `ttf`, a `ligatures` that is not `true` or `false`, a `startCodepoint` outside the Private Use Area, a `header` line that would end the comment, and a target other than `ios` and `android`, or one named twice. The `ios` step refuses two icons whose names give one Swift case, such as `arrow-2` and `arrow2`.
 
 `source` and `checks` are resolved from the folder of `package.json`, which is the root of the repository: `source/` and `chassis.checks.json` beside it by default, which is what `init` leaves them at. The output is fixed: `dist/` and `codepoints.json` beside `package.json`, and the page of the set in `preview/`.
 
@@ -196,7 +203,7 @@ The sprite: one `<symbol>` per icon, in the order of the names, with `id="<name>
 
 ### `dist/web/<font>.woff2`, `.woff` and `.ttf`
 
-The icon font, in each format of `formats`. Its family name is `<font>`, and each icon is the glyph of its code point in the Private Use Area.
+The icon font, in each format of `formats`. Its family name is `<font>`, and each icon is the glyph of its code point in the Private Use Area. With `ligatures`, the feature `liga` draws each icon for its name too, and each character of a name has a glyph that draws nothing.
 
 ### `dist/web/<font>.css` and `dist/web/<font>.min.css`
 
@@ -204,12 +211,12 @@ The stylesheet of the font, in this order:
 
 1. A comment with the lines of `header`, which the minified file keeps.
 2. An `@font-face` rule for the family `<font>`, with one `url()` per format in the order of `formats`. Each address is relative, `./<font>.<format>`, so the stylesheet loads the font from its own folder, and ends in `?<hash>`, the MD5 hash of the font, so that a browser asks for a changed font again.
-3. Inside `@layer content`, the rule that sets the font on `::before` of every element whose class starts with `<prefix>-`.
+3. Inside `@layer content`, the rule that sets the font on `::before` of every element whose class starts with `<prefix>-`, and with `ligatures` the rule of the class `<prefix>`, which sets the font and its ligatures on the element itself, and keeps a name on one line.
 4. One rule per icon, `.<prefix>-<name>::before { content: "\<code point>"; }`, outside the layer, in the order of the registry.
 
 ### `dist/web/<font>.scss`
 
-The same stylesheet for Sass. `$<font>-font`, `$<font>-font-dir`, `$<font>-font-file`, `$<font>-font-hash` and `$<font>-font-src` are `!default` values, so a project that serves the font from another folder sets `$<font>-font-dir`. `$<font>-map` maps each name to its code point, and the classes are written from it.
+The same stylesheet for Sass. `$<font>-font`, `$<font>-font-dir`, `$<font>-font-file`, `$<font>-font-hash` and `$<font>-font-src` are `!default` values, so a project that serves the font from another folder sets `$<font>-font-dir`. `$<font>-map` maps each name to its code point, and the classes are written from it. With `ligatures`, it has the rule of the class `<prefix>` too.
 
 ### `dist/web/<font>.json`
 
@@ -246,7 +253,7 @@ The registry, at the root of the repository: `icons`, the code point of each ico
 
 `main` and `style` are `dist/web/<font>.css`, `sass` is `dist/web/<font>.scss`, and `files` is `dist/icons.json`, `dist/svgs` and `dist/web`, the files for the web, followed by the entries of the team. npm packs them although `.gitignore` names `dist/`, since `files` comes first. `exports` has `"."`, which is the SCSS under the condition `sass` and the CSS under `style` and `default`, then `"./dist/*"` and `"./package.json"`, followed by the keys of the team. `sideEffects` is `*.css` and `*.scss`.
 
-The README, at the root of the repository, is `lib/templates/readme.hbs` with the values of the manifest and the configuration: what the package holds, the four ways to use an icon, and the source. The section of the source says that the package is built from the files of the repository with `@chassis-ui/icons`, and, when `package.json` has the scripts `build`, `lint` and `verify` that `init` writes, names them as the commands of the repository, with `preview` when it has that script too: with `pnpm` when a `pnpm-lock.yaml` is beside `package.json`, and with `npm run` otherwise.
+The README, at the root of the repository, is `lib/templates/readme.hbs` with the values of the manifest and the configuration: what the package holds, the four ways to use an icon, with a fifth for the names in the font when `ligatures` is set, and the source. The section of the source says that the package is built from the files of the repository with `@chassis-ui/icons`, and, when `package.json` has the scripts `build`, `lint` and `verify` that `init` writes, names them as the commands of the repository, with `preview` when it has that script too: with `pnpm` when a `pnpm-lock.yaml` is beside `package.json`, and with `npm run` otherwise.
 
 ## Contracts with the siblings
 

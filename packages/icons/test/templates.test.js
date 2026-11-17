@@ -37,6 +37,16 @@ describe('the CSS template', () => {
     )
   })
 
+  it('writes the class of the names with ligatures only', async () => {
+    const { css } = await renderStylesheets({ ...config, ligatures: true }, { codepoints, hash })
+
+    expect(css).toContain(
+      '  .ag {\n    display: inline-block;\n    font-family: acme-glyphs !important;'
+    )
+    expect(css).toContain('font-feature-settings: "liga";')
+    expect((await renderStylesheets(config, { codepoints, hash })).css).not.toContain('.ag {')
+  })
+
   it('writes no empty header', async () => {
     const { css } = await renderStylesheets({ ...config, header: [] }, { codepoints, hash })
 
@@ -66,6 +76,15 @@ describe('the SCSS template', () => {
       '$acme-glyphs-map: (\n  "bar-fill": "\\e900",\n  "ring-line": "\\e905",\n);'
     )
     expect(scss).toContain('.ag-#{$icon}::before { content: $codepoint; }')
+  })
+
+  it('writes the class of the names with ligatures only', async () => {
+    const { scss } = await renderStylesheets({ ...config, ligatures: true }, { codepoints, hash })
+
+    expect(scss).toContain(
+      '  .ag {\n    display: inline-block;\n    font-family: $acme-glyphs-font !important;'
+    )
+    expect((await renderStylesheets(config, { codepoints, hash })).scss).not.toContain('.ag {')
   })
 
   it('names one format without a comma', async () => {
