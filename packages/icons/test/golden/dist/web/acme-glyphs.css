@@ -5,8 +5,8 @@
 
 @font-face {
   font-family: "acme-glyphs";
-  src: url("./acme-glyphs.woff2?aa43795381e42b41330f76182eea0eca") format("woff2"),
-url("./acme-glyphs.ttf?aa43795381e42b41330f76182eea0eca") format("truetype");
+  src: url("./acme-glyphs.woff2?7ac4b7fad8e3b6e992145ac853d85261") format("woff2"),
+url("./acme-glyphs.ttf?7ac4b7fad8e3b6e992145ac853d85261") format("truetype");
   font-display: block;
 }
 
@@ -20,6 +20,24 @@ url("./acme-glyphs.ttf?aa43795381e42b41330f76182eea0eca") format("truetype");
     font-variant: normal;
     line-height: 1;
     text-transform: none;
+    vertical-align: -.125em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .ag {
+    display: inline-block;
+    font-family: acme-glyphs !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    font-feature-settings: "liga";
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    direction: ltr;
     vertical-align: -.125em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;

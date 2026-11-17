@@ -35,7 +35,7 @@ and `dist/icons.json`, the index of the set. `dist/` is not committed: `.gitigno
 it, and the release workflow builds it again. The build also writes `codepoints.json`, the
 registry of the code points, the fields of `package.json` that name the files, and
 `README.md`, which shows the four ways to use an icon of your set: the font class, the
-sprite, the SVG file and Sass. Commit those with `source/`. The package publishes
+sprite, the SVG file and Sass, and with `ligatures` a fifth, the name in the font. Commit those with `source/`. The package publishes
 `dist/icons.json`, `dist/svgs/` and `dist/web/`.
 
 With `"targets": ["ios", "android"]` in `chassis.build`, the build also writes
@@ -82,6 +82,7 @@ The `chassis.build` block of `package.json`:
 | `pairs`          | `[]`                    | The styles an icon comes in together, such as `[["line", "fill"]]`                                |
 | `startCodepoint` | `"f101"`                | The code point of the first icon of a new set, in the Private Use Area                            |
 | `formats`        | `["woff2", "woff"]`     | The font formats, in the order of the `src` of the font face: `woff2`, `woff`, `ttf`              |
+| `ligatures`      | `false`                 | With `true`, the font draws an icon for its name, in an element of the class `<prefix>`           |
 | `header`         | `[]`                    | The lines of the comment at the top of each stylesheet. `{version}` is the version of the package |
 | `targets`        | `[]`                    | The targets besides the web, which is always built: `ios`, `android`                              |
 

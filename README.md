@@ -113,6 +113,7 @@ Everything that is particular to your set is in `package.json`: the details of t
       "pairs": [],
       "startCodepoint": "f101",
       "formats": ["woff2", "woff"],
+      "ligatures": false,
       "header": ["Acme Icons v{version}", "Copyright Acme", "Licensed under MIT"]
     }
   },
@@ -151,7 +152,7 @@ pnpm verify
 
 `pnpm preview` writes the page of the set into `preview/` from the output, and serves it at `http://localhost:4325/` until you stop it: every icon with its name, and on a click its class, its code point and the code that draws it. `preview/` is not committed.
 
-The `README.md` that the build writes for your set shows the four ways to use an icon: the font class, the sprite, the SVG file and Sass. A project takes the two folders of `dist/` of a build as they are:
+The `README.md` that the build writes for your set shows the four ways to use an icon: the font class, the sprite, the SVG file and Sass, and with `ligatures` a fifth, the name in the font. A project takes the two folders of `dist/` of a build as they are:
 
 ```bash
 cp -r dist/web dist/svgs /path/to/your-project/static/icons/
@@ -303,6 +304,7 @@ The build reads one block of the `package.json` of a repository of icons. A sett
 | `pairs`          | `[]`                    | The styles an icon comes in together, such as `[["line", "fill"]]`                                  |
 | `startCodepoint` | `"f101"`                | The code point of the first icon of a new set, in the Private Use Area (`e000` to `f8ff`)           |
 | `formats`        | `["woff2", "woff"]`     | The font formats, in the order of the `src` of the font face: `woff2`, `woff`, `ttf`                |
+| `ligatures`      | `false`                 | With `true`, the font draws an icon for its name, in an element of the class `<prefix>`             |
 | `header`         | `[]`                    | The lines of the comment at the top of each stylesheet. `{version}` is the version of the package   |
 | `targets`        | `[]`                    | The targets besides the web, which is always built: `ios`, `android`                                |
 
@@ -333,9 +335,9 @@ The other fields of the `package.json` of a repository of icons describe the pac
 
 ### The templates
 
-`packages/icons/lib/templates/css.hbs` and `scss.hbs` are the Handlebars templates of the stylesheets. Change them to change what the stylesheets hold, for every set. They get `name`, `prefix`, `header`, `formats`, `fontSrc`, `fontsUrl`, `fontHash` and `codepoints` from the build.
+`packages/icons/lib/templates/css.hbs` and `scss.hbs` are the Handlebars templates of the stylesheets. Change them to change what the stylesheets hold, for every set. They get `name`, `prefix`, `ligatures`, `header`, `formats`, `fontSrc`, `fontsUrl`, `fontHash` and `codepoints` from the build.
 
-`readme.hbs` is the template of the `README.md` of a set. It gets `packageName`, `description`, `homepage`, `repository` and `license` from `package.json`, `name`, `prefix`, `frame`, `styles` and `formats` from the configuration, the number of icons as `count`, the first icon as `icon`, and, for the targets of the set, their platforms as `platforms`, the Swift names of the set and the first icon as `ios`, and the drawable of the first icon as `android`.
+`readme.hbs` is the template of the `README.md` of a set. It gets `packageName`, `description`, `homepage`, `repository` and `license` from `package.json`, `name`, `prefix`, `frame`, `styles`, `formats` and `ligatures` from the configuration, the number of icons as `count`, the first icon as `icon`, and, for the targets of the set, their platforms as `platforms`, the Swift names of the set and the first icon as `ios`, and the drawable of the first icon as `android`.
 
 `preview/` holds the template of the page of a set: `index.hbs`, written as `index.html`, and `preview.css` and `preview.js`, copied beside it. `index.hbs` gets the index of the set, `dist/icons.json`, and the name and the version of the package.
 

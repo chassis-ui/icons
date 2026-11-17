@@ -29,6 +29,7 @@ const DEFAULTS = {
   pairs: [],
   startCodepoint: 'f101',
   formats: ['woff2', 'woff'],
+  ligatures: false,
   header: [],
   targets: []
 }
@@ -67,6 +68,7 @@ export class ConfigError extends Error {
  * @property {string[][]} pairs - The styles an icon has to come in together
  * @property {number} startCodepoint - The code point of the first icon of a new set
  * @property {string[]} formats - The font formats, in the order of the `src` descriptor
+ * @property {boolean} ligatures - Whether the font draws an icon for its name, as a ligature
  * @property {string[]} header - The lines of the comment at the top of each stylesheet
  * @property {string[]} targets - The targets besides the web, in the order of `TARGETS`
  * @property {string} packageName - `name` of package.json
@@ -128,7 +130,19 @@ export function resolveConfig(manifest, packageDir) {
   }
 
   const settings = { ...DEFAULTS, ...block }
-  const { name, prefix, source, checks, frame, styles, pairs, formats, header, targets } = settings
+  const {
+    name,
+    prefix,
+    source,
+    checks,
+    frame,
+    styles,
+    pairs,
+    formats,
+    ligatures,
+    header,
+    targets
+  } = settings
 
   if (typeof name !== 'string' || !NAME.test(name)) {
     throw new ConfigError(
@@ -190,6 +204,10 @@ export function resolveConfig(manifest, packageDir) {
     )
   }
 
+  if (typeof ligatures !== 'boolean') {
+    throw new ConfigError(`"ligatures" has to be true or false, and is ${show(ligatures)}`)
+  }
+
   if (!isStringArray(header)) {
     throw new ConfigError(`"header" has to be a list of lines, and is ${show(header)}`)
   }
@@ -218,6 +236,7 @@ export function resolveConfig(manifest, packageDir) {
     pairs,
     startCodepoint: parseStartCodepoint(settings.startCodepoint),
     formats,
+    ligatures,
     header: header.map((line) => line.replaceAll('{version}', version)),
     targets: TARGETS.filter((target) => targets.includes(target)),
     packageName: typeof manifest.name === 'string' ? manifest.name : '',

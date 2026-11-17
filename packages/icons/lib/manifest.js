@@ -148,6 +148,7 @@ export function renderReadme(config, manifest, names) {
     prefix: config.prefix,
     frame: config.frame,
     formats: config.formats,
+    ligatures: config.ligatures,
     styles: config.styles,
     packageName: config.packageName,
     description: text(manifest.description),

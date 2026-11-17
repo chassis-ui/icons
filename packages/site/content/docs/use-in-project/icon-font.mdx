@@ -80,6 +80,18 @@ An icon that carries meaning gets a role and a label:
 <i class="ag-ring-line" role="img" aria-label="Notifications"></i>
 ```
 
+## Names in the font
+
+A set built with `"ligatures": true` in `chassis.build` draws an icon for its name too. Put the name in an element of the class `<prefix>`:
+
+```html
+<i class="ag" aria-hidden="true">ring-line</i>
+```
+
+The class sets the font on the element and turns on its ligatures, so the font draws the characters of the name as one icon. The class of each icon and its code point stay as they are, and a page can use both.
+
+The name is text. A screen reader reads it, so hide a decorative icon, and give an icon that carries meaning a role and a label, as with a class. While the font loads, the stylesheet hides the name for up to three seconds, and shows it after that until the font is there.
+
 ## Customization
 
 The stylesheet has no settings of its own. What it holds follows from the configuration of the set, and Sass sets where the font is loaded from.
@@ -106,7 +118,7 @@ The class of an icon is its name with the prefix, and the font is found beside t
 
 Avoid the habits that undo this:
 
-- **Do not start a class of your own with the prefix:** the stylesheet sets the font on the `::before` of every element whose class starts with `<prefix>-`.
+- **Do not start a class of your own with the prefix:** the stylesheet sets the font on the `::before` of every element whose class starts with `<prefix>-`, and with `ligatures` on every element of the class `<prefix>`.
 - **Do not write a code point into a page:** `dist/web/<font>.json` and the Sass map hold the code points, and a class or the map reads them by name.
 
 ## Troubleshooting
@@ -120,6 +132,10 @@ The page shows an empty square in place of the icon, and the browser logs a `404
 ### Nothing is shown
 
 The element is empty and the browser logs no error. The class is not a class of the stylesheet: the name is misspelled, or the icon is not in the version of the set that the page loads. Find the name in `dist/icons.json` of that version.
+
+### Name shows as text
+
+The element shows the name of the icon, or nothing, in place of the icon. The set is built without `ligatures`, the element does not have the class `<prefix>`, or the name is not an icon of the set. Check `chassis.build.ligatures` of the set, and find the name in `dist/icons.json`.
 
 ### Old icon after an update
 

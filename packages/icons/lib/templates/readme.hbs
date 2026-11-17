@@ -13,7 +13,7 @@ npm install {{ packageName }}
 ## What the package holds
 
 - `dist/svgs/<name>.svg`: one optimized file per icon
-- `dist/web/{{ name }}.css` and `dist/web/{{ name }}.min.css`: the stylesheet of the icon font, with one class per icon
+- `dist/web/{{ name }}.css` and `dist/web/{{ name }}.min.css`: the stylesheet of the icon font, with one class per icon{{# if ligatures }} and the class `{{ prefix }}`, which draws an icon from its name{{/ if }}
 - `dist/web/{{ name }}.scss`: the same stylesheet for Sass, with the folder of the font and the map of the icons as variables
 - {{# each formats }}`dist/web/{{ ../name }}.{{ this }}`{{# unless @last }}, {{/ unless }}{{/ each }}: the icon font, which the stylesheets load from their own folder
 - `dist/web/{{ name }}.svg`: the SVG sprite, one `<symbol>` per icon with the name of the icon as its `id`
@@ -47,6 +47,18 @@ One class per icon, `{{ prefix }}-<name>`, on an empty element:
 ```
 
 With a bundler, `import '{{ packageName }}'` loads the same stylesheet and its font.
+{{# if ligatures }}
+
+### The names in the font
+
+The font draws an icon for its name, in an element of the class `{{ prefix }}`:
+
+```html
+<i class="{{ prefix }}" aria-hidden="true">{{ icon }}</i>
+```
+
+A screen reader reads the name, so an icon that means something gets a label of its own in place of `aria-hidden`. While the font loads, the stylesheet hides the name for up to three seconds.
+{{/ if }}
 
 ### The SVG sprite
 

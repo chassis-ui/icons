@@ -42,6 +42,7 @@ describe('planFiles', () => {
           prefix: 'ag',
           frame: 24,
           formats: ['woff2', 'woff'],
+          ligatures: false,
           header: ['Acme Glyphs v{version}', 'Licensed under MIT']
         }
       },

@@ -18,6 +18,7 @@ describe('resolveConfig', () => {
       pairs: [],
       startCodepoint: 0xf101,
       formats: ['woff2', 'woff'],
+      ligatures: false,
       header: [],
       packageName: '@acme/glyphs',
       version: '1.2.3'
@@ -80,6 +81,7 @@ describe('resolveConfig', () => {
     ],
     ['a font format the build does not write', { ...minimal, formats: ['eot'] }, '"formats"'],
     ['no font format', { ...minimal, formats: [] }, '"formats"'],
+    ['ligatures that are not true or false', { ...minimal, ligatures: 'yes' }, '"ligatures"'],
     ['a header that closes its comment', { ...minimal, header: ['*/ body{}'] }, '"header"']
   ])('refuses %s', (_case, build, message) => {
     expect(() => resolveConfig(manifest(build), '/set')).toThrow(ConfigError)

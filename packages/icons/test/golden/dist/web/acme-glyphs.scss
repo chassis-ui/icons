@@ -6,7 +6,7 @@
 $acme-glyphs-font: "acme-glyphs" !default;
 $acme-glyphs-font-dir: "." !default;
 $acme-glyphs-font-file: "#{$acme-glyphs-font-dir}/#{$acme-glyphs-font}" !default;
-$acme-glyphs-font-hash: "aa43795381e42b41330f76182eea0eca" !default;
+$acme-glyphs-font-hash: "7ac4b7fad8e3b6e992145ac853d85261" !default;
 $acme-glyphs-font-src:
   url("#{$acme-glyphs-font-file}.woff2?#{$acme-glyphs-font-hash}") format("woff2"),
   url("#{$acme-glyphs-font-file}.ttf?#{$acme-glyphs-font-hash}") format("truetype") !default;
@@ -27,6 +27,24 @@ $acme-glyphs-font-src:
     font-variant: normal;
     text-transform: none;
     line-height: 1;
+    vertical-align: -.125em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .ag {
+    display: inline-block;
+    font-family: $acme-glyphs-font !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    font-feature-settings: "liga";
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    white-space: nowrap;
+    overflow-wrap: normal;
+    direction: ltr;
     vertical-align: -.125em;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
